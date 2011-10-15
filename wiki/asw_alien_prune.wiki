@@ -1,13 +1,8 @@
 #summary One-sentence summary of this page.
 
-= Introduction =
+= Description =
 
-Add your content here.
+Enables or disables [Pruning alien pruning].
 
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[OriginalCvarList Original Cvar]* ||
+|| r4 || `1` || [FCVAR_NONE] || No ||
