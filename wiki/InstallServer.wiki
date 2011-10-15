@@ -1,5 +1,5 @@
 #summary How to install the Ch1ckensCoop server.
-#labels Featured
+#labels Featured,Tutorial
 
 = Installing the base server =
 
