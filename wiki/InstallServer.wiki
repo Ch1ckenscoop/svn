@@ -1,13 +1,10 @@
 #summary How to install the Ch1ckensCoop server.
 
-= Introduction =
+= Installing the base server =
 
-Add your content here.
+If you already have a base server installation, make sure that it is not modified in any way.
 
 
-= Details =
+= Installing Ch1ckensCoop =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+You will need [http://tortoisesvn.net/downloads.html TortoiseSVN] to download, install, and update Ch1ckensCoop. Make sure that you install the version that is appropriate for your OS.
