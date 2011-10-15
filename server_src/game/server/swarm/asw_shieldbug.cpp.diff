@@ -1,0 +1,4 @@
+919c919
+< 	BaseClass::ASW_Ignite(MIN(flFlameLifetime, 3.0f), flSize, pAttacker, pDamagingWeapon );
+---
+> 	BaseClass::ASW_Ignite(flFlameLifetime, flSize, pAttacker, pDamagingWeapon );
