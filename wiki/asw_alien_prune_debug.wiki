@@ -1,13 +1,11 @@
-#summary One-sentence summary of this page.
+#summary Displays debug messages for alien pruning.
 
-= Introduction =
+= Description =
 
-Add your content here.
+Displays a debug message whenever aliens are removed via pruning. The message displays how many aliens were removed and how many times the code in asw_alien_prune.cpp looped. 
 
+== Example ==
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+<pre>
+Removed 13 aliens and looped 5879 times. 
+</pre>
