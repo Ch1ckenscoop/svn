@@ -1,0 +1,12 @@
+#summary Explains cvar flags.
+
+= Introduction =
+
+[ConVar Cvar] flags are a way of marking cvars in code with special properties. 
+
+= Available Cvar Flags =
+
+|| *Cvar Flag* || *Description* ||
+|| [FCVAR_CHEAT] || A cvar that requires [sv_cheats] 1 or [sm_cvar] to activate. ||
+|| [FCVAR_NOTIFY] || A cvar that will send a message to all clients when it is changed. ||
+|| [FCVAR_ARCHIVE] || A cvar that will save its value to [config.cfg] when it is modified, so it will be restored to its previous value upon launching the game again. ||
