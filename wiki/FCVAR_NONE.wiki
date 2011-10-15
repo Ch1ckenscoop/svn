@@ -1,0 +1,5 @@
+#summary Default cvar flag.
+
+= Description =
+
+This [CvarFlags flag] is added to a [ConVar cvar] when it has no other flags. This flag has no special properties. 
