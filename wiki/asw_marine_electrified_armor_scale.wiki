@@ -4,3 +4,6 @@
 = Description =
 
 Scales the amount of damage taken by a marine when he is using electrified armor.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[OriginalCvarList Original Cvar]* ||
+|| r7 || `0.25` || [FCVAR_CHEAT] || No ||
