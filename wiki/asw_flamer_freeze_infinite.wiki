@@ -1,14 +1,5 @@
-#summary One-sentence summary of this page.
-#labels Obsolete
+#summary Enables infinite flamer secondary fire.
+#labels Obsolete,D-Cvar
 
-= Introduction =
-
-Add your content here.
-
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+= Description =
+This cvar has been replaced by [asw_flamer_extinguisher_infinite].
