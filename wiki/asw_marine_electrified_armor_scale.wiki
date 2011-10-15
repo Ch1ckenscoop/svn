@@ -1,13 +1,6 @@
-#summary One-sentence summary of this page.
+#summary Scales electrified armor damage.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
-
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+Scales the amount of damage taken by a marine when he is using electrified armor.
