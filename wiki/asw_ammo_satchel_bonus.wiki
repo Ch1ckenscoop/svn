@@ -1,13 +1,9 @@
-#summary One-sentence summary of this page.
+#summary Enables alien pruning.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+If a marine chooses ammo satchels during mission preparation, the amount he will have in game is this value + the default (3).
 
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || `1` || [FCVAR_NONE] || [Int] ||
