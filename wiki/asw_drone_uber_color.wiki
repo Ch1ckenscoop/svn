@@ -1,0 +1,10 @@
+#summary Sets the uber drones' color.
+#labels D-Cvar
+
+= Description =
+
+Adjusts the color of the uber drones.
+
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r140 || `255 255 255` || [FCVAR_NONE] || [Color255] ||
