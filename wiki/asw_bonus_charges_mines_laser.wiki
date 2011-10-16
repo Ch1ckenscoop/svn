@@ -7,4 +7,4 @@ Sets the starting number of laser mines.
 
 
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
-|| r7 || `1` || [FCVAR_NONE] || [Bool] ||
+|| r7 || `1` || [FCVAR_NONE] || [Int] ||
