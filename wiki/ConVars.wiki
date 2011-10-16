@@ -1,2 +1,2 @@
-#labels Redirect
+#labels Redirect,Deprecated
 See [ConVar]. 
