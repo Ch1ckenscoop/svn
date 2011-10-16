@@ -5,5 +5,5 @@
 
 Enables or disables [Pruning alien pruning].
 
-|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[OriginalCvarList Original Cvar]* ||
-|| r7 || `1` || [FCVAR_NONE] || No ||
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || `1` || [FCVAR_NONE] || [Bool] ||
