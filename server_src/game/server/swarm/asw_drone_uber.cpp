@@ -8,9 +8,10 @@
 #include "tier0/memdbgon.h"
 
 //Ch1ckenscoop - drone uber color mod
-ConVar asw_drone_uber_color_r("asw_drone_uber_color_r", "255", FCVAR_NONE, "Adjusts the red componant of the Uber drones' color.", true, 0.0f, true, 255.0f);
-ConVar asw_drone_uber_color_g("asw_drone_uber_color_g", "255", FCVAR_NONE, "Adjusts the green componant of the Uber drones' color.", true, 0.0f, true, 255.0f);
-ConVar asw_drone_uber_color_b("asw_drone_uber_color_b", "255", FCVAR_NONE, "Adjusts the blue componant of the Uber drones' color.", true, 0.0f, true, 255.0f);
+ConVar asw_drone_uber_color("asw_drone_uber_color", "255 255 255", FCVAR_NONE, "Color255: Adjusts the Uber drones' color.");
+//ConVar asw_drone_uber_color_r("asw_drone_uber_color_r", "255", FCVAR_NONE, "Adjusts the red componant of the Uber drones' color.", true, 0.0f, true, 255.0f);
+//ConVar asw_drone_uber_color_g("asw_drone_uber_color_g", "255", FCVAR_NONE, "Adjusts the green componant of the Uber drones' color.", true, 0.0f, true, 255.0f);
+//ConVar asw_drone_uber_color_b("asw_drone_uber_color_b", "255", FCVAR_NONE, "Adjusts the blue componant of the Uber drones' color.", true, 0.0f, true, 255.0f);
 // Doesn't change anything - ConVar asw_drone_uber_color("asw_drone_uber_color", "1", FCVAR_NONE, "Enables/disables the Color rendermode for the Uber drones.");
 ConVar asw_drone_uber_scale("asw_drone_uber_scale", "1.0", FCVAR_CHEAT, "Scales the Uber drone model.");
 
@@ -46,7 +47,8 @@ void CASW_Drone_Uber::Spawn( void )
 {	
 	BaseClass::Spawn();
 
-	SetRenderColor(asw_drone_uber_color_r.GetInt(), asw_drone_uber_color_g.GetInt(), asw_drone_uber_color_b.GetInt());
+	//SetRenderColor(asw_drone_uber_color_r.GetInt(), asw_drone_uber_color_g.GetInt(), asw_drone_uber_color_b.GetInt());
+	SetRenderColor(asw_drone_uber_color.GetColor().r(), asw_drone_uber_color.GetColor().g(), asw_drone_uber_color.GetColor().b());
 
 	SetModel( SWARM_NEW_DRONE_MODEL );	
 	Precache();	
