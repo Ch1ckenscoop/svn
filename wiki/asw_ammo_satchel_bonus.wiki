@@ -1,4 +1,4 @@
-#summary Enables alien pruning.
+#summary Increases ammo satchel number.
 #labels D-Cvar
 
 = Description =
@@ -6,4 +6,4 @@
 If a marine chooses ammo satchels during mission preparation, the amount he will have in game is this value + the default (3).
 
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
-|| r7 || `1` || [FCVAR_NONE] || [Int] ||
+|| r7 || `0` || [FCVAR_CHEAT] || [Int] ||
