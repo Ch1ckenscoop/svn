@@ -7,4 +7,4 @@ Sets the starting number of freeze grenades.
 
 
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
-|| r7 || `1` || [FCVAR_CHEAT] || [Bool] ||
+|| r7 || `1` || [FCVAR_CHEAT] || [Int] ||
