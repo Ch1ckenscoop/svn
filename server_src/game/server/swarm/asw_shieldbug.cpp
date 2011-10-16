@@ -650,6 +650,7 @@ int CASW_Shieldbug::MeleeAttack1Conditions( float flDot, float flDist )
 ConVar asw_shieldbug_knockdown( "asw_shieldbug_knockdown", "1", FCVAR_CHEAT, "If set shieldbug will knock marines down with his melee attacks" );
 ConVar asw_shieldbug_knockdown_force( "asw_shieldbug_knockdown_force", "500", FCVAR_CHEAT, "Magnitude of knockdown force for shieldbug's melee attack" );
 ConVar asw_shieldbug_knockdown_lift( "asw_shieldbug_knockdown_lift", "300", FCVAR_CHEAT, "Upwards force for shieldbug's melee attack" );
+extern ConVar asw_god;	//Ch1ckensCoop: Disable shieldbug knockdown if asw_god is enabled.
 
 void CASW_Shieldbug::MeleeAttack( float distance, float damage, QAngle &viewPunch, Vector &shove )
 {
@@ -667,7 +668,7 @@ void CASW_Shieldbug::MeleeAttack( float distance, float damage, QAngle &viewPunc
 
 	CBaseEntity *pHurt = CheckTraceHullAttack( distance, -Vector(16,16,32), Vector(16,16,32), damage, DMG_SLASH, asw_shieldbug_melee_force.GetFloat() );
 
-	if ( pHurt && asw_shieldbug_knockdown.GetBool() )
+	if ( pHurt && asw_shieldbug_knockdown.GetBool() && !asw_god.GetBool() )
 	{
 		CASW_Marine *pMarine = CASW_Marine::AsMarine( pHurt );
 		if ( pMarine )

@@ -27,6 +27,7 @@ ConVar asw_tesla_trap_ammo("asw_tesla_trap_ammo", "30", FCVAR_CHEAT, "Sets the s
 ConVar asw_tesla_trap_infinite_ammo("asw_tesla_trap_infinite_ammo", "1", FCVAR_CHEAT, "If set to 1, tesla traps won't use their ammo.");
 ConVar asw_tesla_trap_range("asw_tesla_trap_range", "200.0", FCVAR_CHEAT, "Sets the zap radius of the tesla traps.");
 ConVar asw_tesla_trap_damage("asw_tesla_trap_damage", "5.0", FCVAR_CHEAT, "Sets the damage for tesla traps.");
+ConVar asw_tesla_trap_fr("asw_tesla_trap_fr", "0.3", FCVAR_CHEAT, "Sets the firing rate for the tesla trap.", true, 0.1f, false, 10.0f);
 
 enum
 {
@@ -174,7 +175,7 @@ void CASW_TeslaTrap::Spawn()
 	m_flDamage = asw_tesla_trap_damage.GetFloat();
 	m_iAmmo = asw_tesla_trap_ammo.GetInt();
 	m_iMaxAmmo = asw_tesla_trap_ammo.GetInt();
-	m_flChargeInterval = 0.3f;
+	m_flChargeInterval = asw_tesla_trap_fr.GetFloat();
 	m_bAssembled = false;	
 	m_bActive = false;
 	m_flNextFullChargeTime = gpGlobals->curtime + 1.0f;
