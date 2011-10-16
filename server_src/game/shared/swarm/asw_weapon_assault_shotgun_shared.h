@@ -25,6 +25,8 @@ public:
 	int GetPierceNum( void );
 	float GetPierceChance( void );
 
+	float GetFireRate(void);
+
 	//float	GetFireRate( void ) { return 0.65f; }
 	virtual float GetWeaponDamage();
 	virtual int GetNumPellets();
