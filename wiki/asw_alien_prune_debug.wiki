@@ -5,8 +5,8 @@
 
 Displays a debug message whenever aliens are removed via pruning. The message displays how many aliens were removed and how many times the code in asw_alien_prune.cpp looped. 
 
-|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[OriginalCvarList Original Cvar]* ||
-|| r7 || `1` || [FCVAR_NONE] || No ||
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || `1` || [FCVAR_NONE] || [Bool] ||
 
 == Example ==
 
