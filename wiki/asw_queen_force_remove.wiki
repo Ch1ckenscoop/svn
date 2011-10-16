@@ -1,13 +1,10 @@
-#summary One-sentence summary of this page.
+#summary Fixes removal of queens.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Forces removal of queens 4 seconds after they are killed.
 
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r116 || `1` || [FCVAR_NONE] || [Bool] ||
