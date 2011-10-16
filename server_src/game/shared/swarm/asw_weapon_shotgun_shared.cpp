@@ -33,6 +33,8 @@ IMPLEMENT_NETWORKCLASS_ALIASED( ASW_Weapon_Shotgun, DT_ASW_Weapon_Shotgun )
 //ConVar asw_shotgun_projectile("asw_shotgun_projectile", "0", FCVAR_CHEAT, "Set to 0 to use hitscan, otherwise will use physical pellets.");	//Ch1ckensCoop: Bad idea, very laggy with a large delay between pellet firing and leaving the muzzle.
 ConVar asw_shotgun_piercing("asw_shotgun_piercing", "0", FCVAR_CHEAT, "Number of aliens for shotgun pellets to pierce through. 0 to disable.");
 ConVar asw_shotgun_piercing_chance("asw_shotgun_piercing_chance", "0.2", FCVAR_CHEAT, "Base pierce chance for each pellet.");
+ConVar asw_shotgun_fire_rate("asw_shotgun_fire_rate", "1.0", FCVAR_CHEAT, "Firing rate of shotgun.");
+ConVar asw_shotgun_pellet_num("asw_shotgun_pellet_num", "7", FCVAR_CHEAT, "Number of pellets for the shotgun.");
 
 BEGIN_NETWORK_TABLE( CASW_Weapon_Shotgun, DT_ASW_Weapon_Shotgun )
 #ifdef CLIENT_DLL
@@ -330,7 +332,9 @@ float CASW_Weapon_Shotgun::GetWeaponDamage()
 
 int CASW_Weapon_Shotgun::GetNumPellets()
 {
-	return GetWeaponInfo()->m_iNumPellets;
+	//return GetWeaponInfo()->m_iNumPellets;
+	//Ch1ckensCoop: Get # of pellets from cvar
+	return asw_shotgun_pellet_num.GetInt();
 }
 
 
@@ -388,11 +392,14 @@ int CASW_Weapon_Shotgun::ASW_SelectWeaponActivity(int idealActivity)
 float CASW_Weapon_Shotgun::GetFireRate()
 {
 	//float flRate = 1.0f;
-	float flRate = GetWeaponInfo()->m_flFireRate;
+	//float flRate = GetWeaponInfo()->m_flFireRate;
 
 	//CALL_ATTRIB_HOOK_FLOAT( flRate, mod_fire_rate );
 
-	return flRate;
+	//return flRate;
+
+	//Ch1ckensCoop: Get firing rate from cvar
+	return asw_shotgun_fire_rate.GetFloat();
 }
 
 #ifdef CLIENT_DLL
