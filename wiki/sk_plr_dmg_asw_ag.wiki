@@ -1,13 +1,10 @@
-#summary One-sentence summary of this page.
+#summary Sets damage of the autogun.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Sets damage of the autogun. Note that this does not affect the minigun.
 
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || `12.5` || [FCVAR_CHEAT] || [Float] ||
