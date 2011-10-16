@@ -1,4 +1,4 @@
-#summary One-sentence summary of this page.
+#summary Sets starting number of damage amplifiers.
 #labels D-Cvar
 
 = Description =
