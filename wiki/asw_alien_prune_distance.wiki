@@ -1,13 +1,9 @@
-#summary One-sentence summary of this page.
+#summary Sets the distance for alien pruning.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+If an alien that is prune-able is within this distance from any marine, it is not removed. If it is not within this distance from any marine, it will be removed on the next frame.
 
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[OriginalCvarList Original Cvar]* ||
+|| r7 || `3000` || [FCVAR_CHEAT] || No ||
