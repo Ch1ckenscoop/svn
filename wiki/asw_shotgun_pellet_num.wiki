@@ -1,14 +1,10 @@
-#summary One-sentence summary of this page.
+#summary Controls shotgun # of pellets.
 #labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Sets the number of shotgun pellets. Due to the client relying on the same code that was changed server-side, the client tracer effects will always show 7 pellets.
 
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r94 || `7` || [FCVAR_CHEAT] || [Int] ||
