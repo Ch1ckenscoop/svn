@@ -1,8 +1,12 @@
 #summary Displays debug messages for alien pruning.
+#labels D-Cvar
 
 = Description =
 
 Displays a debug message whenever aliens are removed via pruning. The message displays how many aliens were removed and how many times the code in asw_alien_prune.cpp looped. 
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[OriginalCvarList Original Cvar]* ||
+|| r4 || `1` || [FCVAR_NONE] || No ||
 
 == Example ==
 
