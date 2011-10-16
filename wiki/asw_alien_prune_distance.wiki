@@ -3,7 +3,7 @@
 
 = Description =
 
-If an alien that is prune-able is within this distance from any marine, it is not removed. If it is not within this distance from any marine, it will be removed on the next frame.
+If an alien that is prune-able is within this distance (in world units) from any marine, it is not removed. If it is not within this distance from any marine, it will be removed on the next frame.
 
-|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[OriginalCvarList Original Cvar]* ||
-|| r7 || `3000` || [FCVAR_CHEAT] || No ||
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || `3000` || [FCVAR_CHEAT] || [Int] ||
