@@ -1,14 +1,9 @@
-#summary One-sentence summary of this page.
+#summary Sentry: Keep shooting this long after killing something.
 #labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Sentries will keep firing this long after killing something "because it's more badass" (comment in the code - asw_sentry_top_machinegun.cpp).
 
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || `0.45f` || [FCVAR_CHEAT] || [Float] ||
