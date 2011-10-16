@@ -107,6 +107,10 @@ ConVar asw_queen_max_parasites("asw_queen_max_parasites", "5", FCVAR_CHEAT, "Set
 //Ch1ckensCoop: Fix for queen attacking more than once per swipe. This appears to be intended behavior however, so I'll just make it a cvar.
 ConVar asw_queen_slash_multi("asw_queen_slash_multi", "0", FCVAR_CHEAT, "Set to one to have the queen attack more than once (usually 5 times) per slash.");
 
+ConVar asw_queen_damage_reductions("asw_queen_damage_reductions", "1", FCVAR_CHEAT, "Enables damage reductions for certain player weapons vs the queen.");
+
+ConVar asw_queen_force_remove("asw_queen_force_remove", "1", FCVAR_NONE, "Hack: instantly removes queen on death.");
+
 #define ASW_QUEEN_CLAW_MINS Vector(-asw_queen_slash_size.GetFloat(), -asw_queen_slash_size.GetFloat(), -asw_queen_slash_size.GetFloat() * 2.0f)
 #define ASW_QUEEN_CLAW_MAXS Vector(asw_queen_slash_size.GetFloat(), asw_queen_slash_size.GetFloat(), asw_queen_slash_size.GetFloat() * 2.0f)
 
@@ -1370,31 +1374,33 @@ int CASW_Queen::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 
 	float damage = info.GetDamage();
 	
-	// reduce all damage because the queen is TUFF!
-	damage *= 0.2f;
-
-	// reduce damage from shotguns and mining laser
-	if (info.GetDamageType() & DMG_ENERGYBEAM)
+	if (asw_queen_damage_reductions.GetBool())	//Ch1ckensCoop: BS. We could always just increase the health anyway...
 	{
-		damage *= 0.4f;
-	}
-	if (info.GetDamageType() & DMG_BUCKSHOT)
-	{
-		// hack to reduce vindicator damage (not reducing normal shotty as much as it's not too strong)
-		if (info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_MARINE)
+		// reduce all damage because the queen is TUFF!
+		damage *= 0.2f;
+	
+		// reduce damage from shotguns and mining laser
+		if (info.GetDamageType() & DMG_ENERGYBEAM)
 		{
-			CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(info.GetAttacker());
-			if (pMarine)
+			damage *= 0.4f;
+		}
+		if (info.GetDamageType() & DMG_BUCKSHOT)
+		{
+			// hack to reduce vindicator damage (not reducing normal shotty as much as it's not too strong)
+			if (info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_MARINE)
 			{
-				CASW_Weapon_Assault_Shotgun *pVindicator = dynamic_cast<CASW_Weapon_Assault_Shotgun*>(pMarine->GetActiveASWWeapon());
-				if (pVindicator)
-					damage *= 0.45f;
-				else
-					damage *= 0.6f;
-			}
-		}		
+				CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(info.GetAttacker());
+				if (pMarine)
+				{
+					CASW_Weapon_Assault_Shotgun *pVindicator = dynamic_cast<CASW_Weapon_Assault_Shotgun*>(pMarine->GetActiveASWWeapon());
+					if (pVindicator)
+						damage *= 0.45f;
+					else
+						damage *= 0.6f;
+				}
+			}		
+		}
 	}
-
 	// make queen immune to buzzers
 	if (dynamic_cast<CASW_Buzzer*>(info.GetAttacker()))
 	{
@@ -1442,6 +1448,12 @@ void CASW_Queen::Event_Killed( const CTakeDamageInfo &info )
 		if (m_hDiver.Get())
 			m_hDiver.Get()->SetBurrowing(false);
 	}
+	if (asw_queen_force_remove.GetBool())	//Ch1ckensCoop: Hack Hack Hack... TALK TO JIM
+	{
+		SetThink(&CASW_Queen::SUB_Remove);
+		SetNextThink(gpGlobals->curtime += 4.0f);
+	}
+	
 }
 
 Vector CASW_Queen::GetDiverSpot()
