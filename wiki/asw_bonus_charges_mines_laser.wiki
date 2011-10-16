@@ -1,7 +1,7 @@
 #summary Sets the starting number of laser mines.
 #labels D-Cvar
 
-= Introduction =
+= Description =
 
 Sets the starting number of laser mines.
 
