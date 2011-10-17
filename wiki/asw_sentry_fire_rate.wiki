@@ -1,8 +1,8 @@
-#summary One-sentence summary of this page.
+#summary Sets the fire rate of the sentry.
 
-= Introduction =
+= Description =
 
-Add your content here.
+Sets the firing rate of the machine gun sentry.
 
 
 = Details =
