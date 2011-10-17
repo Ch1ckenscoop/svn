@@ -1,13 +1,17 @@
-#summary One-sentence summary of this page.
+#summary Enables bones on normal drones.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Enables the possibility of having bones on a drone. This cvar does not guarantee bones, it simply add the possibility of randomly having them. This cvar was added to prevent drones from getting confused with the uber drones while [asw_uber_scary] was enabled.
 
 
-= Details =
+= Example =
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+=== Bones Enabled ===
+
+http://ch1ckenscoop.googlecode.com/svn/wiki/drone_bones.PNG
+
+=== Bones Disabled ===
+
+http://ch1ckenscoop.googlecode.com/svn/wiki/drone_no_bones.PNG
