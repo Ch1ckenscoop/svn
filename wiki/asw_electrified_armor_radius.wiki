@@ -1,13 +1,10 @@
-#summary One-sentence summary of this page.
+#summary Sets the radius of the electrified armor.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Sets the radius in which aliens will be stunned when electrified armor is first activated.
 
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || `160.0` || [FCVAR_CHEAT] || [Float] ||
