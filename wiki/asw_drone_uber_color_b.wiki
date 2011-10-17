@@ -3,4 +3,4 @@
 
 = Description =
 
-Sets the blue componant of the uber drones' color. This cvar has been replaced by [asw_drone_uber_color].
+Sets the blue component of the uber drones' color. This cvar has been replaced by [asw_drone_uber_color].
