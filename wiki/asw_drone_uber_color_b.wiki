@@ -1,13 +1,6 @@
-#summary One-sentence summary of this page.
+#summary Sets the blue component of the uber drones' color.
+#labels D-Cvar,Obsolete
 
-= Introduction =
+= Description =
 
-Add your content here.
-
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+Sets the blue componant of the uber drones' color. This cvar has been replaced by [asw_drone_uber_color].
