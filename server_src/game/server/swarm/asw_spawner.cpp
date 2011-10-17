@@ -29,22 +29,22 @@ ConVar asw_spawning_enabled( "asw_spawning_enabled", "1", FCVAR_CHEAT, "If set t
 ConVar asw_spawner_impossimode("asw_spawner_impossimode", "0", FCVAR_CHEAT, "Makes ALL spawners infinite >:D Could crash stuff!");	//Ch1ckensCoop: TROLOLOLOLOL
 
 //Ch1ckenscoop: Reduce console spam by default
-ConVar asw_carnage_debug("asw_carnage_debug", "0", FCVAR_NONE, "Print debug messages on each spawner that asw_carnage tries to change.", true, 0.0f, true, 1.0f);
+ConVar asw_carnage_debug("asw_carnage_debug", "0", FCVAR_NONE | FCVAR_DEVELOPMENTONLY, "Print debug messages on each spawner that asw_carnage tries to change.", true, 0.0f, true, 1.0f);
 
 //Ch1ckenscoop: Control over asw_carnage
-ConVar asw_carnage_drone("asw_carnage_drone", "1.0", FCVAR_CHEAT, "Sets whether the asw_carnage command affects normal drones.");
-ConVar asw_carnage_drone_jumper("asw_carnage_drone_jumper", "1.0", FCVAR_CHEAT, "Sets whether the asw_carnage command affects drone jumpers.");
-ConVar asw_carnage_drone_uber("asw_carnage_drone_uber", "1.0", FCVAR_CHEAT, "Sets whether the asw_carnage command affects uber drones.");
-ConVar asw_carnage_buzzer("asw_carnage_buzzer", "1.0", FCVAR_CHEAT, "Sets whether the asw_carnage command affects buzzers.");
-ConVar asw_carnage_parasite("asw_carnage_parasite", "1.0", FCVAR_CHEAT, "Sets whether the asw_carnage command affects parasites.");
-ConVar asw_carnage_shieldbug("asw_carnage_shieldbug", "1.0", FCVAR_CHEAT, "Sets whether the asw_carnage command affects shieldbugs.");
+ConVar asw_carnage_drone("asw_carnage_drone", "1.0", FCVAR_CHEAT, "Multiplies drones in the level by this amount.");
+ConVar asw_carnage_drone_jumper("asw_carnage_drone_jumper", "1.0", FCVAR_CHEAT, "Multiplies jumper drones in the level by this amount.");
+ConVar asw_carnage_drone_uber("asw_carnage_drone_uber", "1.0", FCVAR_CHEAT, "Multiplies uber drones in the level by this amount.");
+ConVar asw_carnage_buzzer("asw_carnage_buzzer", "1.0", FCVAR_CHEAT, "Multiplies buzzer in the level by this amount.");
+ConVar asw_carnage_parasite("asw_carnage_parasite", "1.0", FCVAR_CHEAT, "Multiplies parasites in the level by this amount.");
+ConVar asw_carnage_shieldbug("asw_carnage_shieldbug", "1.0", FCVAR_CHEAT, "Multiplies shieldbugs in the level by this amount.");
 //Ch1ckenscoop: no asw_carnage control command for grubs; that'd be stupid
-ConVar asw_carnage_harvester("asw_carnage_harvester", "1.0", FCVAR_CHEAT, "Sets whether the asw_carnage command affects harvesters.");
-ConVar asw_carnage_parasite_defanged("asw_carnage_parasite_defanged", "1.0", FCVAR_CHEAT, "Sets whether the asw_carnage command affects defanged parasites.");
+ConVar asw_carnage_harvester("asw_carnage_harvester", "1.0", FCVAR_CHEAT, "Multiplies harvesters in the level by this amount.");
+ConVar asw_carnage_parasite_defanged("asw_carnage_parasite_defanged", "1.0", FCVAR_CHEAT, "Multiplies defanged parasites in the level by this amount.");
 //Ch1ckenscoop: no asw_carnage control command for queens; there aren't spawners for them.
-ConVar asw_carnage_boomer("asw_carnage_boomer", "1.0", FCVAR_CHEAT, "Sets whether the asw_carnage command affects boomers.");
-ConVar asw_carnage_ranger("asw_carnage_ranger", "1.0", FCVAR_CHEAT, "Sets whether the asw_carnage command affects rangers.");
-ConVar asw_carnage_mortar("asw_carnage_mortar", "1.0", FCVAR_CHEAT, "Sets whether the asw_carnage command affects mortars.");
+ConVar asw_carnage_boomer("asw_carnage_boomer", "1.0", FCVAR_CHEAT, "Multiplies boomers in the level by this amount.");
+ConVar asw_carnage_ranger("asw_carnage_ranger", "1.0", FCVAR_CHEAT, "Multiplies rangers in the level by this amount.");
+ConVar asw_carnage_mortar("asw_carnage_mortar", "1.0", FCVAR_CHEAT, "Multiplies mortars in the level by this amount.");
 ConVar asw_carnage_min_interval("asw_carnage_min_interval", "0", FCVAR_CHEAT, "Sets the minimum spawn interval when using asw_carnage commands.");
 //Ch1ckensCoop TODO: won't do anything at the moment; no spawners for shamen.
 //ConVar asw_carnage_shamen("asw_carnage_shamen", "0", FCVAR_CHEAT, "Sets whether the asw_carnage command affects shamen.", true, 0.0f, true, 1.0f);
@@ -584,7 +584,10 @@ bool CASW_Spawner::ApplyCarnageMode( float fScaler, float fInvScaler )
 
 bool CASW_Spawner::RandomizeUber(float percent)
 {
-	if ( m_AlienClassNum == 0 && random->RandomFloat() <= percent)
+	if (m_AlienClassNum == g_nDroneClassEntry || m_AlienClassNum == g_nUberDroneClassEntry)
+		m_AlienClassName = ASWSpawnManager()->GetAlienClass( g_nDroneClassEntry )->m_iszAlienClass;	//Reset spawner
+
+	if ( (m_AlienClassNum == g_nDroneClassEntry || m_AlienClassNum == g_nUberDroneClassEntry) && random->RandomFloat() <= percent)
 	{
 		//m_AlienClassNum = g_nUberDroneClassEntry;
 		//Ch1ckensCoop: Doesn't work ^^^^^
@@ -679,6 +682,6 @@ void asw_carnage_random_uber_f(const CCommand &args)
 	}
 }
 
-ConCommand asw_carnage( "asw_carnage", asw_carnage_f, "Scales the number of aliens each spawner will put out", FCVAR_CHEAT );
+//ConCommand asw_carnage( "asw_carnage", asw_carnage_f, "Scales the number of aliens each spawner will put out", FCVAR_CHEAT );
 //Ch1ckensCoop: randomize asw_drone spawners with asw_drone_uber spawners
 ConCommand asw_carnage_randomize_uber( "asw_carnage_randomize_uber", asw_carnage_random_uber_f, "Randomizes asw_drone spawners with asw_drone_uber spawners.", FCVAR_CHEAT);
