@@ -79,6 +79,7 @@ ConVar asw_drone_melee_force("asw_drone_melee_force", "1.67", FCVAR_CHEAT, "Forc
 ConVar asw_drone_touch_damage( "asw_drone_touch_damage", "0",FCVAR_CHEAT , "Damage caused by drones on touch" );
 ConVar asw_new_drone("asw_new_drone", "1", FCVAR_CHEAT, "Set to 1 to use the new drone model");
 ConVar asw_drone_bones("asw_drone_bones", "0", FCVAR_NONE, "Should normal drones have bones coming out of their backs?");
+ConVar asw_drone_efficient("asw_drone_efficient", "0", FCVAR_NONE, "Uses lower-polycount appendages. Disables asw_drone_bones.");
 
 
 extern ConVar asw_debug_alien_damage;
@@ -185,6 +186,8 @@ CAI_Navigator *CASW_Drone_Advanced::CreateNavigator()
 void CASW_Drone_Advanced::Spawn( void )
 {
 	BaseClass::Spawn();
+	if (asw_drone_efficient.GetBool())
+		asw_drone_bones.SetValue(false);
 	
 
 	//m_debugOverlays |= OVERLAY_NPC_ROUTE_BIT | OVERLAY_BBOX_BIT | OVERLAY_PIVOT_BIT | OVERLAY_TASK_TEXT_BIT | OVERLAY_TEXT_BIT;
@@ -197,11 +200,15 @@ void CASW_Drone_Advanced::Spawn( void )
 	{
 		//claws
 		SetBodygroup ( 1, RandomInt (0, 2 ) );
+
+		if (asw_drone_efficient.GetBool())
+			SetBodygroup ( 1, RandomInt (1, 2 ) );	//Ch1ckensCoop: for some reason the shortest claw here has 500 more polygons than the rest...
+
 		SetBodygroup ( 2, RandomInt (0, 2 ) );
 		SetBodygroup ( 3, RandomInt (0, 2 ) );
 		SetBodygroup ( 4, RandomInt (0, 2 ) );
 		// body
-		if ( RandomFloat() < .5 )
+		if ( RandomFloat() < .5 && !asw_drone_efficient.GetBool())
 		{
 		  SetBodygroup ( 0, RandomInt (0, 1 ) );
 		}
