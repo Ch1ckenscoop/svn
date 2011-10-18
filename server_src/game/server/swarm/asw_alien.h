@@ -309,11 +309,19 @@ public:
 	float	m_flRangeAttackLastUpdateTime;
 	Vector	m_vecRangeAttackTargetPosition;
 
+	void	SetTagState(int TagState) { m_iTagState = TagState; }
+	int 	GetTagState() { return m_iTagState; }
+
 	enum
 	{
 		COND_ASW_BEGIN_COMBAT_STUN = BaseClass::NEXT_CONDITION,
 		COND_ASW_FLINCH,
 		NEXT_CONDITION,
+	};
+	enum
+	{
+		ASW_TAG_REMOVE,		//Alien is outside the pruning radius and should be removed
+		ASW_TAG_SAFE,		//Alien is inside the pruning radius
 	};
 
 protected:	
@@ -329,6 +337,10 @@ protected:
 	CUtlVector<CASW_AlienVolley>	m_volleys;
 	CUtlVector<CASW_AlienShot>		m_shots;
 	DEFINE_CUSTOM_AI;
+
+private:
+
+	int		m_iTagState;	//Current tag state
 };
 
 // activities

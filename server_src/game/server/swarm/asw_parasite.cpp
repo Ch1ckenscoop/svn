@@ -1233,6 +1233,11 @@ void CASW_Parasite::SetHealthByDifficultyLevel()
 
 void CASW_Parasite::NPCThink()
 {
+	if (m_bDoEggIdle)
+	{
+		SetTagState(ASW_TAG_SAFE);
+	}
+
 	BaseClass::NPCThink();
 
 	if ( GetEfficiency() < AIE_DORMANT && GetSleepState() == AISS_AWAKE 

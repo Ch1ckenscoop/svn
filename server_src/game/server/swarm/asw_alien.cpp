@@ -30,6 +30,7 @@
 #include "asw_tesla_trap.h"
 #include "sendprop_priorities.h"
 #include "asw_spawn_manager.h"
+#include "asw_parasite.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -561,7 +562,8 @@ void CASW_Alien::CallBehaviorThink()
 		pCurrent->BehaviorThink();
 	}
 }
-
+ConVar asw_alien_prune_distance("asw_alien_prune_distance", "3000", FCVAR_CHEAT, "Distance from nearest marine at which aliens are removed.");
+ConVar asw_alien_prune("asw_alien_prune", "1", FCVAR_NONE, "Set to 1 to enable alien pruning.");
 void CASW_Alien::NPCThink( void )
 {
 	BaseClass::NPCThink();
@@ -595,6 +597,25 @@ void CASW_Alien::NPCThink( void )
 		UpdateRangedAttack();
 
 	UpdateThawRate();
+
+	//Ch1ckensCoop: Alien pruning
+	if (asw_alien_prune.GetBool() && strcmp(this->GetClassname(), "asw_egg") != 0 && strcmp(this->GetClassname(), "asw_shieldbug") != 0)
+	{
+
+	CBaseEntity* pEntity = NULL;
+	while ((pEntity = gEntList.FindEntityInSphere( pEntity, this->GetAbsOrigin(), asw_alien_prune_distance.GetFloat() )) != NULL)
+	{
+		if(strcmp(pEntity->GetClassname(), "asw_marine") == 0)
+		{
+			SetTagState(ASW_TAG_SAFE);
+			break;
+		}
+	}
+	if (GetTagState() != ASW_TAG_SAFE)
+		UTIL_Remove(this);
+
+	SetTagState(ASW_TAG_REMOVE);
+	}
 
 	m_flLastThinkTime = gpGlobals->curtime;
 }
