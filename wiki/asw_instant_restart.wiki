@@ -1,13 +1,10 @@
-#summary One-sentence summary of this page.
+#summary Skips "mission failed" screen.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Skips the mission failed screen when restarting a mission, the tech has died, or all marines have died. NOTE: Players will not receive experience if this cvar is enabled and a quick restart is performed.
 
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || `0` || [FCVAR_NONE] || [Bool] ||
