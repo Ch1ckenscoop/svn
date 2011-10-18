@@ -1,13 +1,10 @@
-#summary One-sentence summary of this page.
+#summary Makes drones use lower poly models.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Makes drones use lower-poly (7000 polys) models rather than the high poly (14000 polys) ones. Useful if you're spawning a lot of aliens and don't want to lag clients too much. Automagically disables [asw_drone_bones].
 
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r150 || `0` || [FCVAR_NONE] || [Bool] ||
