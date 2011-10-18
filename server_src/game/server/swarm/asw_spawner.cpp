@@ -217,8 +217,6 @@ void CASW_Spawner::MissionStart()
 			&& m_bInfiniteAliens)
 	{
 		m_bInfiniteAliens = false;
-		if (asw_spawner_impossimode.GetBool())
-			m_bInfiniteAliens = true;
 		if (m_nNumAliens < 8)
 			m_nNumAliens = 8;
 
@@ -319,6 +317,9 @@ void CASW_Spawner::MissionStart()
 		if (m_flSpawnInterval < asw_carnage_min_interval.GetFloat())
 			m_flSpawnInterval = asw_carnage_min_interval.GetFloat();
 	}
+	
+		if (asw_spawner_impossimode.GetBool())
+			m_bInfiniteAliens = true;
 
 	if (m_SpawnerState == SST_StartSpawningWhenMissionStart)
 		SetSpawnerState(SST_Spawning);
