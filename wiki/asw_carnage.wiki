@@ -1,14 +1,19 @@
-#summary One-sentence summary of this page.
+#summary Increases the number of aliens.
 #labels D-Command,Obsolete
 
-= Introduction =
+= Description =
 
-Add your content here.
+Increases the number of aliens spawned from asw_spawners. This command has been replaced by the following cvars:
 
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+  *[[asw_carnage_boomer]
+  *[[asw_carnage_buzzer]
+  *[[asw_carnage_drone]
+  *[[asw_carnage_drone_jumper]
+  *[[asw_carnage_drone_uber]
+  *[[asw_carnage_harvester]
+  *[[asw_carnage_min_interval]
+  *[[asw_carnage_mortar]
+  *[[asw_carnage_parasite]
+  *[[asw_carnage_parasite_defanged]
+  *[[asw_carnage_ranger]
+  *[[asw_carnage_shieldbug]
