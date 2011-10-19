@@ -1,5 +1,5 @@
 #summary Displays debug messages for alien pruning.
-#labels D-Cvar
+#labels D-Cvar,Obsolete
 
 = Description =
 
