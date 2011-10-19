@@ -6,4 +6,4 @@
 Looks for any spawners that are set to spawn boomers, and multiplies the set max aliens and set total aliens to spawn by this number. It then divides the set time between spawns by this number. This can be controlled with [asw_carnage_min_interval].
 
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
-|| r7 || `1` || [FCVAR_NONE] || [Float] ||
+|| r7 || `1` || [FCVAR_CHEAT] || [Float] ||
