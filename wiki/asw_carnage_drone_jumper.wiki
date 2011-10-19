@@ -1,13 +1,9 @@
-#summary One-sentence summary of this page.
+#summary Controls asw_drone_jumper spawners.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Looks for any spawners that are set to spawn drone jumpers, and multiplies the set max aliens and set total aliens to spawn by this number. It then divides the set time between spawns by this number. This can be controlled with [asw_carnage_min_interval].
 
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || `1` || [FCVAR_CHEAT] || [Float] ||
