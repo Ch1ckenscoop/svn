@@ -1,13 +1,10 @@
 #summary Sets the fire rate of the sentry.
+#labels D-Cvar
 
 = Description =
 
 Sets the firing rate of the machine gun sentry.
 
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || `1` || [FCVAR_CHEAT] || [Float] ||
