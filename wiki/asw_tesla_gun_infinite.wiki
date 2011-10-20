@@ -1,13 +1,10 @@
-#summary One-sentence summary of this page.
+#summary Enables infinite ammo for tesla gun.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Prevents the tesla gun from using ammo. Note that this is not the same effect as setting the starting ammo super high, as this makes the tesla gun not require reloading.
 
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || `1` || [FCVAR_CHEAT] || [Bool] ||
