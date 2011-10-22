@@ -24,7 +24,7 @@
 #include "asw_marine.h"
 
 ConVar asw_tesla_trap_ammo("asw_tesla_trap_ammo", "30", FCVAR_CHEAT, "Sets the starting ammo for the tesla trap.");
-ConVar asw_tesla_trap_infinite_ammo("asw_tesla_trap_infinite_ammo", "1", FCVAR_CHEAT, "If set to 1, tesla traps won't use their ammo.");
+ConVar asw_tesla_trap_infinite_ammo("asw_tesla_trap_infinite_ammo", "0", FCVAR_CHEAT, "If set to 1, tesla traps won't use their ammo.");
 ConVar asw_tesla_trap_range("asw_tesla_trap_range", "200.0", FCVAR_CHEAT, "Sets the zap radius of the tesla traps.");
 ConVar asw_tesla_trap_damage("asw_tesla_trap_damage", "5.0", FCVAR_CHEAT, "Sets the damage for tesla traps.");
 ConVar asw_tesla_trap_fr("asw_tesla_trap_fr", "0.3", FCVAR_CHEAT, "Sets the firing rate for the tesla trap.", true, 0.1f, false, 10.0f);

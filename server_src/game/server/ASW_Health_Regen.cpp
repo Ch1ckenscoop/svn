@@ -10,7 +10,7 @@
 
 //Ch1ckensCoop: Replacement for spamming medkits.
 
-ConVar asw_marine_health_regen_speed("asw_marine_health_regen_speed", "0.5", FCVAR_CHEAT, "Adjusts the number of seconds between healing marines this amount.", true, 0.001f, false, 0.0f);
+ConVar asw_marine_health_regen_speed("asw_marine_health_regen_speed", "0.5", FCVAR_CHEAT, "Adjusts the number of seconds between healing marines this amount.", true, 0.01f, false, 0.0f);
 ConVar asw_marine_health_regen_amount("asw_marine_health_regen_amount", "1", FCVAR_CHEAT, "Adjusts the amount that is healed every <asw_marine_health_regen_speed> seconds.");
 ConVar asw_marine_health_regen_amount_low("asw_marine_health_regen_amount_low", "10", FCVAR_CHEAT, "Adjusts the amount that is healed after crossing below the threshold.");
 ConVar asw_marine_health_regen_threshold("asw_marine_health_regen_threshold", "0.2", FCVAR_CHEAT, "Adjusts the threshold below which <asw_marine_health_regen_amount_low> takes effect.", true, 0.0f, true, 1.0f);
