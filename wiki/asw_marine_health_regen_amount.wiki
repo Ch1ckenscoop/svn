@@ -3,7 +3,7 @@
 
 = Description =
 
-Amount to heal marines every [asw_health_regen_speed].
+Amount to heal marines every [asw_marine_health_regen_speed].
 
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `1` || [FCVAR_CHEAT] || [Float] ||
