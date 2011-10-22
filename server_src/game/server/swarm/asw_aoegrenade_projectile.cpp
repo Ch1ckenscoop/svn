@@ -172,7 +172,7 @@ void CASW_AOEGrenade_Projectile::Spawn( void )
 	m_flTimeBurnOut = gpGlobals->curtime + GetBurnDuration();
 	m_flTimePulse = -1;
 
-	AddEffects( EF_NOSHADOW|EF_NORECEIVESHADOW );
+	//AddEffects( EF_NOSHADOW|EF_NORECEIVESHADOW );	//Ch1ckensCoop: GIMME MAH SHADOWS
 	AddFlag( FL_OBJECT );
 	SetCollisionGroup( ASW_COLLISION_GROUP_IGNORE_NPCS );
 

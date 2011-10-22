@@ -596,6 +596,12 @@ bool CASW_Spawner::RandomizeUber(float percent)
 		DevMsg("Set m_AlienClassNum to %i\n", m_AlienClassNum);
 		return true;
 	}
+	else if (m_AlienClassNum == g_nDroneClassEntry || m_AlienClassNum == g_nUberDroneClassEntry)	//Prevents asw_carnage_randomize_uber from compounding on itself if used multiple times, and asw_carnage_randomize_uber 0 should change all uber spawners back to drone ones.
+	{
+		m_AlienClassName = ASWSpawnManager()->GetAlienClass( g_nDroneClassEntry )->m_iszAlienClass;
+		DevMsg("Set m_AlienClassNum to %i\n", m_AlienClassNum);
+		return false;
+	}
 	return false;
 }
 int	CASW_Spawner::DrawDebugTextOverlays()

@@ -45,7 +45,7 @@ PRECACHE_WEAPON_REGISTER(asw_weapon_vindicator);
 
 ConVar asw_vindicator_piercing("asw_vindicator_piercing", "0", FCVAR_CHEAT, "Number of aliens for vindicator to pierce. Set 0 to disable.");
 ConVar asw_vindicator_piercing_chance("asw_vindicator_piercing_chance", "0.5", FCVAR_CHEAT, "Base pierce chance for each pellet.");
-ConVar asw_vindicator_fire_rate("asw_vindicator_fire_rate", "1.0", FCVAR_CHEAT, "Fire rate for the vindicator.");
+ConVar asw_vindicator_fire_rate("asw_vindicator_fire_rate", "0.65", FCVAR_CHEAT, "Fire rate for the vindicator.");
 
 #ifndef CLIENT_DLL
 extern ConVar asw_debug_marine_damage;

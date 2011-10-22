@@ -267,6 +267,9 @@ void CASW_Drone_Advanced::Precache( void )
 	PrecacheModel( "models/aliens/drone/ragdoll_leg_r.mdl" );
 	PrecacheModel( "models/aliens/drone/ragdoll_leg.mdl" );
 	PrecacheModel( "models/aliens/drone/gib_torso.mdl" );
+
+	//Ch1ckensCoop: Fix late precache
+	PrecacheModel( SWARM_DRONE_MODEL );
 	
 	BaseClass::Precache();
 }
