@@ -1,13 +1,9 @@
-#summary One-sentence summary of this page.
+#summary Prevents tesla trap from using ammo.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Prevents the tesla trap from using ammo.
 
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || `0` || [FCVAR_CHEAT] || [Bool] ||
