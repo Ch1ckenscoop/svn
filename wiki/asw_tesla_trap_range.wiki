@@ -1,13 +1,9 @@
-#summary One-sentence summary of this page.
+#summary Sets the range of the tesla trap.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Sets the range of the tesla trap's shock.
 
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || `200.0` || [FCVAR_CHEAT] || [Float] ||
