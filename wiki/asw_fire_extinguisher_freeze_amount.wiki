@@ -1,13 +1,9 @@
-#summary One-sentence summary of this page.
+#summary Adjusts fire extinguisher freeze strength.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Adjusts the how long and how fast aliens are frozen.
 
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || `0.4` || [FCVAR_CHEAT] || [Float] ||
