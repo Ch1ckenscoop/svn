@@ -1,13 +1,9 @@
-#summary One-sentence summary of this page.
+#summary Amount to heal marines.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Amount to heal marines every [asw_health_regen_speed].
 
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || `1` || [FCVAR_CHEAT] || [Float] ||
