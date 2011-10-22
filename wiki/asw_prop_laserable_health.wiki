@@ -1,0 +1,9 @@
+#summary Sets the health of laserable props.
+#labels D-Cvar
+
+= Description=
+
+Sets the health of laserable props, such as the boulders in timor station.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r189 || `100` || [FCVAR_CHEAT] || [Int] ||
