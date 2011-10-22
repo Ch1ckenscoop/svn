@@ -1,13 +1,9 @@
-#summary One-sentence summary of this page.
+#summary Infested low healing boost.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Heals marines by this value + the value set in [asw_marine_health_regen_amount_low] *if* the marine's health is below the percentage set in [asw_marine_health_regen_threshold] *and* they are currently infested.
 
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || `5` || [FCVAR_CHEAT] || [Int] ||
