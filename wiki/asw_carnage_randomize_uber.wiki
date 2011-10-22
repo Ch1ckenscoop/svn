@@ -1,13 +1,15 @@
-#summary One-sentence summary of this page.
+#summary Randomly creates uber drone spawners.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Randomly replaces asw_drone spawners with asw_drone_uber spawners. 
 
+=== Usage ===
 
-= Details =
+`asw_carnage_randomize_uber 0.24`
 
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+This give each asw_drone spawner a 24% chance of becoming an asw_drone_uber spawner. Keep in mind that THIS DOES NOT MEAN that exactly 24% of spawners will become asw_drone_uber spawners.
+
+|| *Revision Added* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || [FCVAR_CHEAT] || [Float] ||
