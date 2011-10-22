@@ -1,13 +1,11 @@
-#summary One-sentence summary of this page.
+#summary Threshold for low healing amount.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Percentage of marine's health to stop healing the amount set in [asw_marine_health_regen_amount] and start healing the amount set in [asw_marine_health_regen_amount_low].
 
+Default value is 20%. Set to 0 to disable.
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || `0.2` || [FCVAR_CHEAT] || [Float] ||
