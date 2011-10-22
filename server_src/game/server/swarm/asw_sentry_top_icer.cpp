@@ -221,7 +221,8 @@ CAI_BaseNPC * CASW_Sentry_Top_Icer::SelectOptimalEnemy()
 			best = i;
 	}
 
-	// NDebugOverlay::EntityBounds(candidates[best], 255, 255, 0, 255, 0.2f );
+	if (asw_sentry_debug_aim.GetBool())
+		NDebugOverlay::EntityBounds(candidates[best], 255, 255, 0, 255, 0.2f );
 
 	return candidates[best];
 }
