@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<profile time="1309330335" uptime="498.444679">
+ <report name="natives">
+ </report>
+ <report name="callbacks">
+  <item name="asw_stats.smx!Event_Alien_Died" numcalls="643" mintime="0.000011" maxtime="0.001675" totaltime="0.791320"/>
+  <item name="asw_stats.smx!Event_Mission_Success" numcalls="1" mintime="0.000211" maxtime="0.000211" totaltime="0.000211"/>
+  <item name="asw_stats.smx!OnMapEnd" numcalls="3" mintime="0.000960" maxtime="0.000998" totaltime="0.002946"/>
+  <item name="asw_stats.smx!__ext_core_SetNTVOptional" numcalls="2" mintime="0.000009" maxtime="0.000012" totaltime="0.000022"/>
+  <item name="asw_stats.smx!OnPluginStart" numcalls="2" mintime="0.000008" maxtime="0.000009" totaltime="0.000017"/>
+ </report>
+ <report name="functions">
+ </report>
+</profile>

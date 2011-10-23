@@ -1,0 +1,1 @@
+START srcds.exe -port 27015 +map lobby -game swarm -console
