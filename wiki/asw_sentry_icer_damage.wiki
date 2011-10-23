@@ -6,4 +6,4 @@
 Sets the damage of the icer sentry.
 
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
-|| r7 || `1` || [FCVAR_CHEAT] || [Int] ||
+|| r211 || `1` || [FCVAR_CHEAT] || [Int] ||
