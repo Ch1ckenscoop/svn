@@ -8,4 +8,6 @@ If you already have a base server installation, make sure that it is not modifie
 
 = Installing Ch1ckensCoop =
 
+http://ch1ckenscoop.googlecode.com/svn-history/r215/wiki/tsvn_logo.png
+
 You will need [http://tortoisesvn.net/downloads.html TortoiseSVN] to download, install, and update Ch1ckensCoop. Make sure that you install the version that is appropriate for your OS.
