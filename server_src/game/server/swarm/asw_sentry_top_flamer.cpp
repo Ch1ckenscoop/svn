@@ -158,9 +158,9 @@ void CASW_Sentry_Top_Flamer::Fire() RESTRICT
 		//m_hEnemy->GetVelocity( &vEnemyVelocity );
 		if ( asw_sentry_debug_aim.GetBool() )
 		{
-			NDebugOverlay::HorzArrow( vecSrc, m_hEnemy->WorldSpaceCenter(), 2, 0, 255, 0, 255, true, 0.2f );
+			NDebugOverlay::HorzArrow( vecSrc, m_hEnemy->WorldSpaceCenter(), 2, 0, 255, 0, 255, true, 0.1f );
 			NDebugOverlay::HorzArrow( m_hEnemy->WorldSpaceCenter(), m_hEnemy->WorldSpaceCenter()+ vEnemyVelocity, 
-				2, 0, 0, 255, 255, true, 0.2f );
+				2, 0, 0, 255, 255, true, 0.1f );
 		}
 
 		Vector intercept = ProjectileIntercept( vecSrc, GetProjectileVelocity(),
@@ -168,13 +168,13 @@ void CASW_Sentry_Top_Flamer::Fire() RESTRICT
 		if ( intercept.IsZero( ) )
 		{
 			if ( asw_sentry_debug_aim.GetBool() ) 
-				NDebugOverlay::Cross( m_hEnemy->WorldSpaceCenter(), 8, 255, 0, 0 , true, 0.2f );
+				NDebugOverlay::Cross( m_hEnemy->WorldSpaceCenter(), 8, 255, 0, 0 , true, 0.1f );
 		}
 		else
 		{
 			videalToEnemy = intercept;
 			if ( asw_sentry_debug_aim.GetBool() ) 
-				NDebugOverlay::HorzArrow( vecSrc, vecSrc + videalToEnemy, 2, 255, 255, 0, 255, true, 0.2f );
+				NDebugOverlay::HorzArrow( vecSrc, vecSrc + videalToEnemy, 2, 255, 255, 0, 255, true, 0.1f );
 		}
 
 
