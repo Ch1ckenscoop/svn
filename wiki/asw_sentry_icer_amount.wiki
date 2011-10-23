@@ -1,0 +1,9 @@
+#summary Sets the freeze amount for the icer sentry.
+#labels D-Cvar
+
+= Description =
+
+Sets the freeze amount and freeze time for the icer sentry.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || `0.4` || [FCVAR_CHEAT] || [Float] ||
