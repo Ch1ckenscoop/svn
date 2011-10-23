@@ -1,13 +1,24 @@
 #summary How to install the Ch1ckensCoop server.
 #labels Featured,Tutorial
 
-= Installing the base server =
-
-If you already have a base server installation, make sure that it is not modified in any way.
-
-
 = Installing Ch1ckensCoop =
 
 http://ch1ckenscoop.googlecode.com/svn-history/r215/wiki/tsvn_logo.png
 
-You will need [http://tortoisesvn.net/downloads.html TortoiseSVN] to download, install, and update Ch1ckensCoop. Make sure that you install the version that is appropriate for your OS.
+  * You will need [http://tortoisesvn.net/downloads.html TortoiseSVN] to download, install, and update Ch1ckensCoop. Make sure that you install the version that is appropriate for your OS.
+
+  * After installing TortoiseSVN and rebooting your computer, create a folder (let's call it AlienSwarmServer) on a drive that has at least 3 GB of free space.
+
+  * Right click on the folder and select "SVN Checkout". 
+
+  * Set the URL to http://ch1ckenscoop.googlecode.com/svn/server and click OK.
+
+  * After the checkout is complete, click OK again.
+
+  * Double click on the "Install Base Server" batch file.
+
+  * After HLDSUpdateTool has completed installing the base server, right click on the AlienSwarmServer folder and click "TortoiseSVN>Revert..."
+
+  * Tick the box for "Select all" and click OK.
+
+  * Good job! You've installed the Ch1ckensCoop Alien Swarm Server and can now run it by double-clicking the "Start Server" batch file in your AlienSwarmServer folder.
