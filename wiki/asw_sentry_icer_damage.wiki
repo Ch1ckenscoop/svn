@@ -1,0 +1,9 @@
+#summary Sets the damage of the icer sentry.
+#labels D-Cvar
+
+= Description =
+
+Sets the damage of the icer sentry.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || `1` || [FCVAR_CHEAT] || [Int] ||
