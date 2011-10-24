@@ -1,13 +1,11 @@
-#summary One-sentence summary of this page.
+#summary Sets shotgun piercing.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Controls how many aliens shotgun pellets will pierce. Set to 0 to disable.
 
+This cvar will only have an effect if the damage for the shotgun pellets is high enough to kill an alien and still have some damage left AND [asw_shotgun_pierce_chance] is a reasonable value.
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || `0` || [FCVAR_CHEAT] || [Int] ||
