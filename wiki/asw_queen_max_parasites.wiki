@@ -1,13 +1,9 @@
-#summary One-sentence summary of this page.
+#summary Controls queen parasite count.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Sets the maximum number of live aliens a queen can have.
 
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || `5` || [FCVAR_CHEAT] || [Int] ||
