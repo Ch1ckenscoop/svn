@@ -101,7 +101,7 @@ ConVar asw_queen_force_parasite_spawn("asw_queen_force_parasite_spawn", "0", FCV
 ConVar asw_queen_force_spit("asw_queen_force_spit", "0", FCVAR_CHEAT, "Set to 1 to force the queen to spit");
 
 //Ch1ckensCoop: Smaller queen model
-ConVar asw_queen_model_scale("asw_queen_model_scale", "0.4", FCVAR_CHEAT, "Sets the model scale for the queen.");
+ConVar asw_queen_model_scale("asw_queen_model_scale", "1.0", FCVAR_CHEAT, "Sets the model scale for the queen.");
 //Ch1ckensCoop: Customizable parasite numbers
 ConVar asw_queen_max_parasites("asw_queen_max_parasites", "5", FCVAR_CHEAT, "Sets the maximum number of parasites that a queen can spawn.");
 //Ch1ckensCoop: Fix for queen attacking more than once per swipe. This appears to be intended behavior however, so I'll just make it a cvar.
