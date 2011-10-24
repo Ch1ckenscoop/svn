@@ -1,13 +1,14 @@
-#summary One-sentence summary of this page.
+#summary Makes the queen take less damage from some weapons.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Enables damage reductions for the queen with the following player weapons:
 
+  * Reduces mining laser damage by 60%
+  * Reduces normal shotgun damage by 40%
+  * Reduces vindicator damage by 55%
+  * Reduces any other damage by 80%
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r116 || `1` || [FCVAR_NONE] || [Bool] ||
