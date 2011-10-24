@@ -5,7 +5,7 @@
 
 Number of aliens for vindicator pellets to pierce. Set to 0 to disable.
 
-This cvar will only have an effect if the damage for the vindicator pellets is high enough to kill an alien and still have some damage left.
+This cvar will only have an effect if the damage for the vindicator pellets is high enough to kill an alien and still have some damage left AND [asw_vindicator_pierce_chance] is a reasonable value.
 
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `0` || [FCVAR_CHEAT] || [Int] ||
