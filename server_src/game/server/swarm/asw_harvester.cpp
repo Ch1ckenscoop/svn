@@ -41,6 +41,9 @@ ConVar asw_harvester_new( "asw_harvester_new", "1", FCVAR_CHEAT, "If set to 1, u
 ConVar asw_harvester_spawn_height( "asw_harvester_spawn_height", "16", FCVAR_CHEAT, "Height above harvester origin to spawn harvesites at" );
 ConVar asw_harvester_spawn_interval( "asw_harvester_spawn_interval", "1.0", FCVAR_CHEAT, "Time between spawning a harvesite and starting to spawn another" );
 
+//Ch1ckensCoop: Allow setting harvester health
+ConVar asw_harvester_health("asw_harvester_health", "200", FCVAR_CHEAT, "Sets health of harvesters.");
+
 // Anim Events
 int AE_HARVESTER_SPAWN_CRITTER;
 int AE_HARVESTER_SPAWN_SOUND;
@@ -73,7 +76,7 @@ void CASW_Harvester::Spawn( void )
 	SetHullType(HULL_WIDE_SHORT);
 	UTIL_SetSize(this, Vector(-23,-23,0), Vector(23,23,69));
 				
-	m_iHealth = ASWGameRules()->ModifyAlienHealthBySkillLevel(200);
+	m_iHealth = ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_harvester_health.GetFloat());
 
 	CapabilitiesAdd( bits_CAP_MOVE_GROUND | bits_CAP_INNATE_RANGE_ATTACK1 );
 
