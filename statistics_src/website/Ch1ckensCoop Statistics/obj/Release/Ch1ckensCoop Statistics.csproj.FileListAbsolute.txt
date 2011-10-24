@@ -1,0 +1,9 @@
+C:\Users\Matt\Documents\Visual Studio 2008\Projects\Ch1ckensCoop Statistics\Ch1ckensCoop Statistics\bin\Web.sitemap
+C:\Users\Matt\Documents\Visual Studio 2008\Projects\Ch1ckensCoop Statistics\Ch1ckensCoop Statistics\bin\Ch1ckensCoop Statistics.dll
+C:\Users\Matt\Documents\Visual Studio 2008\Projects\Ch1ckensCoop Statistics\Ch1ckensCoop Statistics\bin\Ch1ckensCoop Statistics.pdb
+C:\Users\Matt\Documents\Visual Studio 2008\Projects\Ch1ckensCoop Statistics\Ch1ckensCoop Statistics\obj\Release\ResolveAssemblyReference.cache
+C:\Users\Matt\Documents\Visual Studio 2008\Projects\Ch1ckensCoop Statistics\Ch1ckensCoop Statistics\obj\Release\Ch1ckensCoop Statistics.dll
+C:\Users\Matt\Documents\Visual Studio 2008\Projects\Ch1ckensCoop Statistics\Ch1ckensCoop Statistics\obj\Release\Ch1ckensCoop Statistics.pdb
+C:\Users\Matt\Documents\Visual Studio 2008\Projects\Ch1ckensCoop Statistics\Ch1ckensCoop Statistics\bin\question_mark.png
+C:\Users\Matt\Documents\Visual Studio 2008\Projects\Ch1ckensCoop Statistics\Ch1ckensCoop Statistics\bin\SourceRconLib.dll
+C:\Users\Matt\Documents\Visual Studio 2008\Projects\Ch1ckensCoop Statistics\Ch1ckensCoop Statistics\bin\SourceRconLib.pdb

@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ch1ckensCoop Statistics", "Ch1ckensCoop Statistics\Ch1ckensCoop Statistics.csproj", "{29C0010D-5976-4B69-BA6C-207B6F191CE0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SourceRconLib", "F:\Downloads\aiusepsi-SourceRcon-afb3093\SourceRconLib\SourceRconLib.csproj", "{6F184EA5-616C-4A08-AADE-4B171F4BBDA0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{29C0010D-5976-4B69-BA6C-207B6F191CE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29C0010D-5976-4B69-BA6C-207B6F191CE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29C0010D-5976-4B69-BA6C-207B6F191CE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29C0010D-5976-4B69-BA6C-207B6F191CE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F184EA5-616C-4A08-AADE-4B171F4BBDA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F184EA5-616C-4A08-AADE-4B171F4BBDA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F184EA5-616C-4A08-AADE-4B171F4BBDA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F184EA5-616C-4A08-AADE-4B171F4BBDA0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,20 @@
+<publishData>
+  <publishTarget publishUrl="E:\htdocs\ch1ckenscoop\stats\">
+    <file relUrl="Player.aspx" publishTime="07/23/2011 16:13:44" />
+    <file relUrl="bin/GoogleChartSharp.dll" publishTime="12/16/2007 16:49:50" />
+    <file relUrl="bin/Ch1ckensCoop Statistics.dll" publishTime="10/23/2011 23:02:09" />
+    <file relUrl="bin/Web.sitemap" publishTime="07/19/2011 15:05:16" />
+    <file relUrl="backgrounds.css" publishTime="07/23/2011 15:03:40" />
+    <file relUrl="asw.png" publishTime="07/23/2011 15:31:03" />
+    <file relUrl="bin/Ch1ckensCoop Statistics.pdb" publishTime="10/23/2011 23:02:08" />
+    <file relUrl="Web.config" publishTime="07/23/2011 14:31:28" />
+    <file relUrl="Default.aspx" publishTime="09/05/2011 13:19:43" />
+    <file relUrl="question_mark.png" publishTime="06/30/2011 23:22:11" />
+    <file relUrl="bin/question_mark.png" publishTime="06/30/2011 23:22:11" />
+    <file relUrl="bin/SourceRconLib.pdb" publishTime="07/31/2011 20:16:58" />
+    <file relUrl="errors/no_steamid.htm" publishTime="07/23/2011 17:13:08" />
+    <file relUrl="PointsInfo.aspx" publishTime="06/29/2011 12:58:15" />
+    <file relUrl="bin/SourceRconLib.dll" publishTime="07/31/2011 20:16:58" />
+    <file relUrl="Web.sitemap" publishTime="07/19/2011 15:05:16" />
+  </publishTarget>
+</publishData>
