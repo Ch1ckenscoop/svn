@@ -1,0 +1,9 @@
+#summary Sets the health of harvesters..
+#labels D-Cvar
+
+= Description =
+
+Sets the base health of harvesters.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r257 || `200` || [FCVAR_CHEAT] || [Float] ||
