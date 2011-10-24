@@ -1,0 +1,11 @@
+#summary Controls healing amount of the medical satchel.
+#labels D-Cvar
+
+= Description =
+
+Controls how much health the medical satchel will heal before destroying itself. Base value comes from marine skills, and setting this to a positive or negative number will add or subtract from that value respectively.
+
+Note: If the time limit set int [asw_healgrenade_duration] is reached before this value, the satchel will self-destruct anyway.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r252 || `0.0` || [FCVAR_CHEAT] || [Float] ||
