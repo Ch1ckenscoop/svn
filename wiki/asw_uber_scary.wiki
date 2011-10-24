@@ -1,13 +1,11 @@
-#summary One-sentence summary of this page.
+#summary Forces uber drones to have the largest appendages.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Forces all uber drones to have the longest claws, thickest body, and bones on their backs.
 
+http://ch1ckenscoop.googlecode.com/svn-history/r245/wiki/drone_scary.PNG
 
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r7 || `1` || [FCVAR_NONE] || [Bool] ||
