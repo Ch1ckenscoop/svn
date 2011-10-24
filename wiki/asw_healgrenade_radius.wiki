@@ -1,0 +1,9 @@
+#summary Sets the radius of the ammo satchel.
+#labels D-Cvar
+
+= Description =
+
+Sets the radius of the medical satchel healing effect..
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r252 || `100.0` || [FCVAR_CHEAT] || [Float] ||
