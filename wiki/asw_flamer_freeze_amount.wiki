@@ -6,4 +6,4 @@
 Sets the freeze amount and freeze time for the flamer's secondary fire.
 
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
-|| r211 || `0.4` || [FCVAR_CHEAT] || [Float] ||
+|| r7 || `0.4` || [FCVAR_CHEAT] || [Float] ||
