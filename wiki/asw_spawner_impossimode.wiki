@@ -1,13 +1,9 @@
-#summary One-sentence summary of this page.
+#summary Sets all spawners to infinite.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Forces ALL spawners to be infinite. I don't recommend enabling this unless you have fairly small pruning settings and you have [asw_carnage_min_interval] set to a fairly high amount.
 
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r150 || `0` || [FCVAR_CHEAT] || [Bool] ||
