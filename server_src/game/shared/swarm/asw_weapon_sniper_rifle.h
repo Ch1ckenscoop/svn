@@ -26,7 +26,7 @@ public:
 	virtual ~CASW_Weapon_Sniper_Rifle();
 	void Precache();
 
-	//virtual float	GetFireRate( void ) { return 1.2f; }
+	virtual float	GetFireRate( void );	//Ch1ckensCoop: Get fire rate from cvar.
 	
 	void ItemPostFrame();
 	Activity	GetPrimaryAttackActivity( void ) { return ACT_VM_PRIMARYATTACK; }
