@@ -1,0 +1,11 @@
+#summary Controls medical satchel duration.
+#labels D-Cvar
+
+= Description =
+
+Controls how long medical satchel will heal for. 
+
+Note: If the limit set by [asw_healgrenade_healing] is reached before this time limit, the medical satchel will self-destruct anyway.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r252 || `20.0` || [FCVAR_CHEAT] || [Float] ||
