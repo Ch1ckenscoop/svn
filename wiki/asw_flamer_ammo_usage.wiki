@@ -1,0 +1,9 @@
+#summary Controls flamer ammo usage.
+#labels D-Cvar
+
+= Description =
+
+Controls how much ammo a flamer uses per clip when it is refilled from an ammo satchel.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r224 || `20` || [FCVAR_CHEAT] || [Int] ||
