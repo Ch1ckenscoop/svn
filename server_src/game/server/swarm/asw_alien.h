@@ -72,6 +72,8 @@ public:
 	virtual void OnRestore();
 	virtual void CallBehaviorThink();
 	virtual void StartTouch( CBaseEntity *pOther );
+	virtual int	ShouldTransmit( const CCheckTransmitInfo *pInfo ) { return FL_EDICT_ALWAYS; }
+	virtual int UpdateTransmitState() { return SetTransmitState( FL_EDICT_FULLCHECK ); }
 	virtual void Spawn();
 	float m_flLastThinkTime;
 

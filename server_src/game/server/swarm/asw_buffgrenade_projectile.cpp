@@ -114,8 +114,27 @@ CASW_BuffGrenade_Projectile* CASW_BuffGrenade_Projectile::Grenade_Projectile_Cre
 {
 	CASW_BuffGrenade_Projectile *pGrenade = (CASW_BuffGrenade_Projectile *)CreateEntityByName( "asw_buffgrenade_projectile" );
 	pGrenade->m_flRadius = flRadius;
+	pGrenade->m_flScale = 1.0f;
 	pGrenade->m_flDuration = flDuration;
 	pGrenade->SetAbsAngles( angles );
+	
+	//Ch1ckensCoop: Reserved code for when we modify the buff grenade into a shield
+	/*CBaseAnimating *pBubble = dynamic_cast<CBaseAnimating*>(CreateEntityByName("prop_dynamic"));
+	if (pBubble)
+	{
+	//pBubble->PrecacheModel("models/swarm/drone/UberDrone.mdl");
+	//pBubble->Precache();
+	pBubble->SetModel("models/items/shield_bubble/shield_bubble.mdl");
+	pBubble->SetAbsAngles( angles );
+	pBubble->SetRenderColor(0, 0, 255);
+	pBubble->SetRenderMode(kRenderTransColor);
+	//pBubble->SetParent(pGrenade);
+	pBubble->m_nSkin = 0;
+	pBubble->Spawn();
+	//DispatchSpawn(pBubble);
+	UTIL_SetOrigin( pBubble, position );
+	}*/
+
 	pGrenade->Spawn();
 	pGrenade->SetOwnerEntity( pOwner );
 	//Msg("making pBuffGrenade with velocity %f,%f,%f\n", velocity.x, velocity.y, velocity.z);

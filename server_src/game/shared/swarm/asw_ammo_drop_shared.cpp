@@ -1,9 +1,12 @@
 #include "cbase.h"
 #include "asw_ammo_drop_shared.h"
 #include "ammodef.h"
+#include "convar.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
+
+ConVar asw_flamer_ammo_usage("asw_flamer_ammo_usage", "20", FCVAR_CHEAT, "Controls how much flamer picks up from satchels.");
 
 bool CASW_Ammo_Drop_Shared::ms_bAmmoCostInitiated = false;
 int CASW_Ammo_Drop_Shared::ms_iAmmoType[ASW_AMMO_DROP_TYPE_COUNT];
@@ -31,7 +34,7 @@ void CASW_Ammo_Drop_Shared::InitAmmoCosts()
 	ms_iAmmoUnitCost[ASW_AMMO_DROP_TYPE_AUTOGUN] = 100;
 	ms_iAmmoUnitCost[ASW_AMMO_DROP_TYPE_SHOTGUN] = 10;
 	ms_iAmmoUnitCost[ASW_AMMO_DROP_TYPE_ASSAULT_SHOTGUN] = 20;
-	ms_iAmmoUnitCost[ASW_AMMO_DROP_TYPE_FLAMER] = 20;
+	ms_iAmmoUnitCost[ASW_AMMO_DROP_TYPE_FLAMER] = asw_flamer_ammo_usage.GetInt();
 	ms_iAmmoUnitCost[ASW_AMMO_DROP_TYPE_RAILGUN] = 10;
 	ms_iAmmoUnitCost[ASW_AMMO_DROP_TYPE_PDW] = 20;
 	ms_iAmmoUnitCost[ASW_AMMO_DROP_TYPE_PISTOL] = 20;
