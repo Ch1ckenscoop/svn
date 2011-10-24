@@ -32,7 +32,7 @@
 extern ConVar asw_weapon_max_shooting_distance;
 extern ConVar sk_plr_dmg_asw_sg; 
 extern ConVar asw_weapon_force_scale;
-ConVar asw_sniper_rifle_fr("asw_sniper_rifle_fr", "1.2", FCVAR_CHEAT, "Sets sniper rifle fire rate.");
+ConVar asw_sniper_rifle_fr("asw_sniper_rifle_fr", "1.2", FCVAR_CHEAT, "Sets sniper rifle fire rate.");	//Ch1ckensCoop: Get fire rate from cvar.
 
 IMPLEMENT_NETWORKCLASS_ALIASED( ASW_Weapon_Sniper_Rifle, DT_ASW_Weapon_Sniper_Rifle )
 
