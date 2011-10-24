@@ -1,0 +1,11 @@
+#summary Sets medical satchel healing per second.
+#labels D-Cvar
+
+= Description=
+
+Controls how much health per second the medical satchel will heal.
+
+Related: [asw_healgrenade_healing]
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r252 || `3.0` || [FCVAR_CHEAT] || [Float] ||
