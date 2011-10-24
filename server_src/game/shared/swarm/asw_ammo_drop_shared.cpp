@@ -6,7 +6,7 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-ConVar asw_flamer_ammo_usage("asw_flamer_ammo_usage", "20", FCVAR_CHEAT, "Controls how much flamer picks up from satchels.");
+ConVar asw_flamer_ammo_usage("asw_flamer_ammo_usage", "20", FCVAR_CHEAT, "Controls how much flamer picks up from satchels.", false, 0.0f, true, 100.0f);
 
 bool CASW_Ammo_Drop_Shared::ms_bAmmoCostInitiated = false;
 int CASW_Ammo_Drop_Shared::ms_iAmmoType[ASW_AMMO_DROP_TYPE_COUNT];

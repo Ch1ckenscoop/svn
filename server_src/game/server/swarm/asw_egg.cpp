@@ -80,6 +80,7 @@ BEGIN_DATADESC( CASW_Egg )
 END_DATADESC()
 
 ConVar asw_egg_respawn( "asw_egg_respawn", "0", FCVAR_CHEAT, "If set, eggs will respawn the parasite inside" );
+ConVar asw_egg_respawn_time("asw_egg_respawn_time", "20.0", FCVAR_CHEAT, "Sets how fast eggs will respawn parasites.");
 
 float CASW_Egg::s_fNextSpottedChatterTime = 0;
 
@@ -437,7 +438,8 @@ void  CASW_Egg::Hatch(CBaseEntity* pOther)
 
 		if ( asw_egg_respawn.GetBool() )
 		{
-			m_fEggResetTime = gpGlobals->curtime + ASW_EGG_RESET_DELAY * random->RandomFloat(1.0f, 2.0f);
+			//m_fEggResetTime = gpGlobals->curtime + ASW_EGG_RESET_DELAY * random->RandomFloat(1.0f, 2.0f);
+			m_fEggResetTime = gpGlobals->curtime + asw_egg_respawn_time.GetFloat();
 		}
 	}
 }
