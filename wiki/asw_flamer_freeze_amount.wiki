@@ -1,13 +1,9 @@
-#summary One-sentence summary of this page.
+#summary Sets the freeze amount for the flamer.
+#labels D-Cvar
 
-= Introduction =
+= Description =
 
-Add your content here.
+Sets the freeze amount and freeze time for the flamer's secondary fire.
 
-
-= Details =
-
-Add your content here.  Format your content with:
-  * Text in *bold* or _italic_
-  * Headings, paragraphs, and lists
-  * Automatic links to other wiki pages
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r211 || `0.4` || [FCVAR_CHEAT] || [Float] ||
