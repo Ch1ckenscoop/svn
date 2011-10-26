@@ -1,0 +1,9 @@
+#summary Sets the maximum lifetime of ranger projectiles.
+#labels D-Cvar
+
+= Description =
+
+Sets the maximum lifetime of ranger projectiles, thus determining their maximum range based on this value and [asw_ranger_spit_speed].
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r259 || `5.0` || [FCVAR_CHEAT] || [Float] ||
