@@ -2868,6 +2868,7 @@ ConVar asw_bonus_charges_grenades_freeze("asw_bonus_charges_grenades_freeze", "5
 ConVar asw_bonus_charges_smart_bomb("asw_bonus_charges_smart_bomb", "1", FCVAR_CHEAT, "Number of smart bomb usages a marine starts out with.");
 ConVar asw_bonus_charges_laser_mines("asw_bonus_charges_mines_laser", "12", FCVAR_CHEAT, "Number of laser mines a marine starts out with.");
 ConVar asw_bonus_charges_stun_grenade("asw_bonus_charges_stun_grenade", "5", FCVAR_CHEAT, "Number of P-rifle grenades marine starts out with.");
+ConVar asw_bonus_charges_stim("asw_bonus_charges_stim", "3", FCVAR_CHEAT, "Number of adrenaline usages a marine starts out with.");
 
 void CAlienSwarm::GiveStartingWeaponToMarine(CASW_Marine* pMarine, int iEquipIndex, int iSlot)
 {
@@ -2963,6 +2964,8 @@ void CAlienSwarm::GiveStartingWeaponToMarine(CASW_Marine* pMarine, int iEquipInd
 		pWeapon->SetClip1(asw_bonus_charges_smart_bomb.GetInt());
 	if ( !stricmp(szWeaponClass, "asw_weapon_grenades"))
 		pWeapon->SetClip1(asw_bonus_charges_grenades.GetInt());
+	if ( !stricmp(szWeaponClass, "asw_weapon_stim"))
+		pWeapon->SetClip1(asw_bonus_charges_stim.GetInt());
 	
 	// equip the weapon
 	pMarine->Weapon_Equip_In_Index( pWeapon, iSlot );

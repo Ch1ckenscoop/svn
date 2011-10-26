@@ -33,12 +33,14 @@
 #include "asw_weapon_mining_laser_shared.h"
 #include "asw_weapon_parse.h"
 
-#define ASW_MINING_LASER_CHARGE_UP_TIME  1.6
+//#define ASW_MINING_LASER_CHARGE_UP_TIME  1.6
 #define ASW_MINING_LASER_PULSE_INTERVAL			0.1
 #define ASW_MINING_LASER_DISCHARGE_INTERVAL		0.1
 
 
 ConVar asw_mininglaser_damage_snd_interval("asw_mininglaser_damage_snd_interval", "1.0", FCVAR_CHEAT | FCVAR_REPLICATED, "How often to play the damage sound when the laser beam is on");
+ConVar asw_mininglaser_charge_time("asw_mininglaser_charge_time", "1.6", FCVAR_CHEAT, "How fast the mining laser reaches the charged state.");
+ConVar asw_mininglaser_infinite("asw_mininglaser_infinite", "0", FCVAR_CHEAT, "Prevents the mining laser from using ammo.");
 extern ConVar sk_plr_dmg_asw_ml;
 extern int	g_sModelIndexSmoke;			// (in combatweapon.cpp) holds the index for the smoke cloud
 
@@ -393,7 +395,7 @@ void CASW_Weapon_Mining_Laser::PrimaryAttack( void )
 			m_bCutting = false;
 			m_bIsFiring = true;
 
-			if ( gpGlobals->curtime >= ( m_flStartFireTime + ASW_MINING_LASER_CHARGE_UP_TIME ) )
+			if ( gpGlobals->curtime >= ( m_flStartFireTime + asw_mininglaser_charge_time.GetFloat() ) )
 			{
 				m_bPlayingCuttingSound = false;	
 				StartRunSound();
@@ -493,7 +495,8 @@ bool CASW_Weapon_Mining_Laser::Fire( const Vector &vecOrigSrc, const Vector &vec
 		if ( pEntity->m_takedamage != DAMAGE_NO )
 		{
 			ClearMultiDamage();
-			float fDamage = GetWeaponInfo()->m_flBaseDamage;  //sk_plr_dmg_asw_ml.GetFloat();
+			//float fDamage = GetWeaponInfo()->m_flBaseDamage;  //sk_plr_dmg_asw_ml.GetFloat();		//Ch1ckensCoop: No YOU get commented out!
+			float fDamage = sk_plr_dmg_asw_ml.GetFloat();
 			CTakeDamageInfo info( this, pMarine, fDamage * g_pGameRules->GetDamageMultiplier(), DMG_ENERGYBEAM | DMG_ALWAYSGIB );
 			info.SetWeapon( this );
 			CalculateMeleeDamageForce( &info, vecDir, tr.endpos );
@@ -510,7 +513,7 @@ bool CASW_Weapon_Mining_Laser::Fire( const Vector &vecOrigSrc, const Vector &vec
 			return false;
 
 		// uses 5 ammo/second
-		if ( gpGlobals->curtime >= m_flAmmoUseTime )
+		if ( gpGlobals->curtime >= m_flAmmoUseTime && !asw_mininglaser_infinite.GetBool())
 		{
 			// decrement ammo
 			m_iClip1 -= 1;

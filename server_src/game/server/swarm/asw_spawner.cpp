@@ -159,7 +159,7 @@ bool CASW_Spawner::CanSpawn( const Vector &vecHullMins, const Vector &vecHullMax
 	if ( !asw_spawning_enabled.GetBool() )
 		return false;
 
-	//Ch1ckensCoop: over 2000 edicts?
+	//Ch1ckensCoop: over 1900 edicts?
 	if (gEntList.NumberOfEdicts() > 1900)
 	{
 		if (asw_cc_debug_spawners.GetBool())
