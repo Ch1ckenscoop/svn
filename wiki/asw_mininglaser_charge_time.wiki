@@ -1,0 +1,9 @@
+#summary Controls mining laser fire time.
+#labels D-Cvar
+
+= Description =
+
+Controls how long it takes the mining laser to reach the charged (ready to fire) state.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r271 || `1.6` || [FCVAR_CHEAT] || [Float] ||
