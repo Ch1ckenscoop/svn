@@ -25,6 +25,8 @@
 #define ASW_MINE_EXPLODE_TIME 0.6f
 
 extern ConVar asw_debug_mine;
+ConVar asw_mine_laser_radius("asw_mine_laser_radius", "256.0", FCVAR_CHEAT, "Sets the radius of the laser mine explosion.");
+ConVar asw_mine_laser_damage("asw_mine_laser_damage", "100.0", FCVAR_CHEAT, "Sets the damage of the laser mine explosion.");
 
 LINK_ENTITY_TO_CLASS( asw_laser_mine, CASW_Laser_Mine );
 
@@ -64,12 +66,12 @@ void CASW_Laser_Mine::Spawn( void )
 	SetMoveType( MOVETYPE_NONE );
 	m_takedamage	= DAMAGE_NO;
 
-	m_flDamageRadius = 256.0f;	// TODO: grab from marine skill
-	m_flDamage = 100.0f;	// TODO: Grab from marine skill
+	m_flDamageRadius = asw_mine_laser_radius.GetFloat();	// TODO: grab from marine skill
+	m_flDamage = asw_mine_laser_damage.GetFloat();	// TODO: Grab from marine skill
 	m_bMineActive = false;
 	m_nSkin = 3;
 
-	AddEffects( EF_NOSHADOW|EF_NORECEIVESHADOW );
+	//AddEffects( EF_NOSHADOW|EF_NORECEIVESHADOW );	//Ch1ckensCoop: I want my shadows!
 
 	SetThink( &CASW_Laser_Mine::LaserThink );
 	SetNextThink( gpGlobals->curtime + 0.1f );

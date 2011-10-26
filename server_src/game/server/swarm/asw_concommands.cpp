@@ -1564,3 +1564,31 @@ void SpawnBuzzerAboveMe( const CCommand &args )
 	CBaseEntity::SetAllowPrecache( allowPrecache );
 }
 static ConCommand asw_spawn_buzzer("asw_spawn_buzzer", SpawnBuzzerAboveMe, "Refills all marine health", FCVAR_CHEAT);
+
+void ASW_DropExtra_f()
+{
+	CASW_Player *pPlayer = ToASW_Player(UTIL_GetCommandClient());;
+	
+	if (pPlayer && pPlayer->GetMarine())
+	{
+		CASW_Marine *pMarine = pPlayer->GetMarine();
+		if (pMarine->GetFlags() & FL_FROZEN)	// don't allow this if the marine is frozen
+			return;
+		if (pPlayer->GetFlags() & FL_FROZEN)
+			return;
+		
+		CBaseCombatWeapon *pWeapon = pMarine->GetWeapon(2);
+		if (!pWeapon)
+			return;
+		pMarine->DropWeapon(2);
+
+		IGameEvent * event = gameeventmanager->CreateEvent( "player_dropped_weapon" );
+		if ( event )
+		{
+			event->SetInt( "userid", pPlayer->GetUserID() );
+
+			gameeventmanager->FireEvent( event );
+		}
+	}
+}
+ConCommand ASW_DropExtra( "ASW_DropExtra", ASW_DropExtra_f, "Makes your marine drop his current extra", 0 );
