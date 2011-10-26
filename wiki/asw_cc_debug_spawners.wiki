@@ -1,0 +1,19 @@
+#summary Prints verbose debug messages on spawners.
+#labels D-Cvar
+
+= Description =
+
+Prints verbose debug messages relating to the Ch1ckensCoop mod and spawners.
+
+These messages include:
+
+  * Warning: over 2000 edicts, won't spawn
+  * Warning: ran out of aliens, won't spawn
+  * Message: Set number of aliens, max live, and interval
+
+If this cvar is set to 3, it will also display:
+
+  * Warning: current number of aliens = max live aliens, won't spawn
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r259 || `0` || [FCVAR_NONE] || [Int] ||
