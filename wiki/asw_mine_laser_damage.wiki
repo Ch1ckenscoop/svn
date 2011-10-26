@@ -1,0 +1,9 @@
+#summary Sets laser mine damage.
+#labels D-Cvar
+
+= Description =
+
+Sets the damage of laser mine explosions.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r279 || `100.0` || [FCVAR_CHEAT] || [Float] ||
