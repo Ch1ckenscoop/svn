@@ -1,0 +1,9 @@
+#summary Sets the speed for ranger projectiles.
+#labels D-Cvar
+
+= Description =
+
+Sets the speed for ranger spit projectiles.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r259 || `425.0` || [FCVAR_CHEAT] || [Float] ||
