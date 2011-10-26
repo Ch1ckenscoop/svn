@@ -1,0 +1,11 @@
+#summary Sets the damage of the mortar bug shells.
+#labels D-Cvar
+
+= Description =
+
+Sets the damage for mortar bug shells.
+
+Check out [asw_mortarbug_shell_radius] as well.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r259 || `50.0` || [FCVAR_CHEAT] || [Float] ||
