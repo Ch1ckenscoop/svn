@@ -45,6 +45,8 @@ ConVar asw_mortarbug_spitspeed( "asw_mortarbug_spitspeed", "350", FCVAR_CHEAT, "
 ConVar asw_debug_mortarbug( "asw_debug_mortarbug", "0", FCVAR_NONE, "Display mortarbug debug info" );
 ConVar asw_mortarbug_face_target("asw_mortarbug_face_target", "1", FCVAR_CHEAT, "Mortarbug faces his target when moving" );
 
+ConVar asw_mortarbug_health("asw_mortarbug_health", "350", FCVAR_CHEAT, "Sets the health of the mortar bug.");
+
 extern ConVar sv_gravity;
 extern ConVar asw_mortarbug_shell_gravity;	// TODO: Replace with proper spit projectile's gravity
 
@@ -76,7 +78,7 @@ void CASW_Mortarbug::Spawn( void )
 	SetHullType(HULL_WIDE_SHORT);
 	UTIL_SetSize(this, Vector(-23,-23,0), Vector(23,23,69));
 				
-	m_iHealth	= ASWGameRules()->ModifyAlienHealthBySkillLevel(350);
+	m_iHealth	= ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_mortarbug_health.GetInt());
 
 	CapabilitiesAdd( bits_CAP_MOVE_GROUND | bits_CAP_INNATE_RANGE_ATTACK1 );
 		

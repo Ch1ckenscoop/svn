@@ -202,7 +202,7 @@ CASW_Alien::CASW_Alien( void ) :
 	rangeAttack2.Init( 64.0f, 512.0f, 0.5f, false );
 }
 
-int	ShouldTransmit( const CCheckTransmitInfo *pInfo )
+int	CASW_Alien::ShouldTransmit( const CCheckTransmitInfo *pInfo )
 {
 	return FL_EDICT_ALWAYS;
 }

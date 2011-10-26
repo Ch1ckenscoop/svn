@@ -29,6 +29,8 @@ public:
 	virtual void		Spawn();
 	virtual void		Precache();
 
+	virtual float		GetIdealSpeed() const;	//Ch1ckensCoop: speed scale settings for the ranger.
+
 	virtual void		SetHealthByDifficultyLevel();
 
 	virtual float		MaxYawSpeed( void );

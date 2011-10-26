@@ -46,6 +46,7 @@ ConVar asw_carnage_boomer("asw_carnage_boomer", "1.0", FCVAR_CHEAT, "Multiplies 
 ConVar asw_carnage_ranger("asw_carnage_ranger", "1.0", FCVAR_CHEAT, "Multiplies rangers in the level by this amount.");
 ConVar asw_carnage_mortar("asw_carnage_mortar", "1.0", FCVAR_CHEAT, "Multiplies mortars in the level by this amount.");
 ConVar asw_carnage_min_interval("asw_carnage_min_interval", "0", FCVAR_CHEAT, "Sets the minimum spawn interval when using asw_carnage commands.");
+ConVar asw_cc_debug_spawners("asw_cc_debug_spawners", "0", FCVAR_NONE, "Shows ch1ckenscoop debug messages on spawners.");
 //Ch1ckensCoop TODO: won't do anything at the moment; no spawners for shamen.
 //ConVar asw_carnage_shamen("asw_carnage_shamen", "0", FCVAR_CHEAT, "Sets whether the asw_carnage command affects shamen.", true, 0.0f, true, 1.0f);
 
@@ -160,15 +161,33 @@ bool CASW_Spawner::CanSpawn( const Vector &vecHullMins, const Vector &vecHullMax
 
 	//Ch1ckensCoop: over 2000 edicts?
 	if (gEntList.NumberOfEdicts() > 2000)
+	{
+		if (asw_cc_debug_spawners.GetBool())
+		{
+			Warning("Unable to spawn alien: edict# = %i\n", m_AlienClassNum, gEntList.NumberOfEdicts());
+		}
 		return false;
+	}
 
 	// too many alive already?
 	if (m_nMaxLiveAliens>0 && m_nCurrentLiveAliens>=m_nMaxLiveAliens)
+	{
+		if (asw_cc_debug_spawners.GetInt() == 3)
+		{
+			Warning("Unable to spawn alien: too many alive\n");
+		}
 		return false;
+	}
 
 	// have we run out?
 	if (!m_bInfiniteAliens && m_nNumAliens<=0)
+	{
+		if (asw_cc_debug_spawners.GetBool())
+		{
+			Warning("Unable to spawn alien: out of aliens\n");
+		}
 		return false;
+	}
 
 	return BaseClass::CanSpawn( vecHullMins, vecHullMaxs );
 }
@@ -317,6 +336,11 @@ void CASW_Spawner::MissionStart()
 		if (m_flSpawnInterval < asw_carnage_min_interval.GetFloat())
 			m_flSpawnInterval = asw_carnage_min_interval.GetFloat();
 	}
+
+	if (asw_cc_debug_spawners.GetBool())
+	{
+		Msg("Set #aliens to %i, max live to %i, interval to %f\n", m_nNumAliens, m_nMaxLiveAliens, m_flSpawnInterval);
+	}
 	
 		if (asw_spawner_impossimode.GetBool())
 			m_bInfiniteAliens = true;
@@ -350,7 +374,7 @@ void CASW_Spawner::SetSpawnerState(SpawnerState_t newState)
 void CASW_Spawner::SpawnerThink()
 {	
 	// calculate jitter
-	float fInterval = random->RandomFloat(1.0f - m_flSpawnIntervalJitter, 1.0f + m_flSpawnIntervalJitter) * m_flSpawnInterval;
+	float fInterval = /*random->RandomFloat(1.0f - m_flSpawnIntervalJitter, 1.0f + m_flSpawnIntervalJitter) **/ m_flSpawnInterval;	//Ch1ckensCoop: Get rid of this jitter nonsense
 	SetNextThink( gpGlobals->curtime + fInterval );
 
 	if ( ASWDirector() && ASWDirector()->CanSpawnAlien( this ) )

@@ -53,6 +53,9 @@ extern int g_sModelIndexFireball;
 ConVar asw_mortarbug_shell_gravity("asw_mortarbug_shell_gravity", "0.8f", FCVAR_CHEAT, "Gravity of mortarbug shell");
 ConVar asw_mortarbug_shell_fuse("asw_mortarbug_shell_fuse", "3.0f", FCVAR_CHEAT, "Time before mortarbug shell explodes");
 
+ConVar asw_mortarbug_shell_damage("asw_mortarbug_shell_damage", "50.0", FCVAR_CHEAT, "Sets the damage of the mortar bug shells.");
+ConVar asw_mortarbug_shell_radius("asw_mortarbug_shell_radius", "220.0", FCVAR_CHEAT, "Sets the damage radius of the mortar bug shells.");
+
 CASW_Mortarbug_Shell::CASW_Mortarbug_Shell()
 {
 	m_bDoScreenShake = false;
@@ -86,8 +89,8 @@ void CASW_Mortarbug_Shell::Spawn( void )
 	SetSequence( LookupSequence( "MortarBugProjectile_Closed" ) );
 
 	// TODO: 
-	m_flDamage		= 50;
-	m_DmgRadius		= 220.0f;
+	m_flDamage		= asw_mortarbug_shell_damage.GetFloat();
+	m_DmgRadius		= asw_mortarbug_shell_radius.GetFloat();
 
 	//Ignite(3.0, false, 0, false);
 

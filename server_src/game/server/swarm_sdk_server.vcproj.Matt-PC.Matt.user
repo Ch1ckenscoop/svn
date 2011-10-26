@@ -9,10 +9,10 @@
 			Name="Debug|Win32"
 			>
 			<DebugSettings
-				Command=""
-				WorkingDirectory=""
-				CommandArguments=""
-				Attach="true"
+				Command="F:\Steam\steamapps\common\alien swarm\swarm.exe"
+				WorkingDirectory="F:\Steam\steamapps\common\alien swarm"
+				CommandArguments=" -game swarm -windowed -w 1366 -h 768 -novid +map asi +exec hax +asw_flamer_ammo_usage 100"
+				Attach="false"
 				DebuggerType="3"
 				Remote="1"
 				RemoteMachine="MATT-PC"

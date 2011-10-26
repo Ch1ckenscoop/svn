@@ -29,6 +29,12 @@ DEFINE_EMBEDDEDBYREF( m_pExpresser ),
 END_DATADESC()
 
 ConVar asw_ranger_health( "asw_ranger_health", "101.5", FCVAR_CHEAT );
+ConVar asw_ranger_speedboost( "asw_ranger_speedboost", "1.0", FCVAR_CHEAT, "Sets the speed boost scale for the ranger.");
+ConVar asw_ranger_damage("asw_ranger_damage", "12.0", FCVAR_CHEAT, "Sets the direct hit damage of the ranger spit.");
+ConVar asw_ranger_spit_rate("asw_ranger_spit_rate", "4.0", FCVAR_CHEAT, "Sets the firing rate for rangers.");
+ConVar asw_ranger_fuse("asw_ranger_fuse", "5.0", FCVAR_CHEAT, "Sets the maximum lifetime for ranger projectiles.");
+ConVar asw_ranger_spit_speed("asw_ranger_spit_speed", "425", FCVAR_CHEAT, "Sets the speed of ranger projectiles.");
+//ConVar asw_ranger_damage_splash("asw_ranger_damage_splash", "0.0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "Sets the spash damage of the ranger spit.");	//Ch1ckensCoop: TODO: splash damage?
 extern ConVar asw_debug_alien_damage;
 
 extern int AE_MORTARBUG_LAUNCH;		// actual launch of the projectile
@@ -47,11 +53,11 @@ CASW_Ranger::CASW_Ranger()
 void CASW_Ranger::SetupRangerShot( CASW_AlienShot &shot )
 {
 	shot.m_flSize = 4;
-	shot.m_flDamage_direct = 12;
+	shot.m_flDamage_direct = asw_ranger_damage.GetFloat();
 	shot.m_flDamage_splash = 0;
 	shot.m_flSeek_strength = 0;
 	shot.m_flGravity = 0;
-	shot.m_flFuse = 5;
+	shot.m_flFuse = asw_ranger_fuse.GetFloat();
 	shot.m_flBounce = 0;
 	shot.m_bShootable = false;
 	shot.m_strModel = "models/aliens/rangerSpit/rangerspit.mdl";
@@ -96,7 +102,7 @@ void CASW_Ranger::Spawn( void )
 	volley.m_rounds[0].m_flEndAngle			= 0;
 	volley.m_rounds[0].m_nNumShots			= 1;
 	volley.m_rounds[0].m_flShotDelay		= 0;
-	volley.m_rounds[0].m_flSpeed			= 425;
+	volley.m_rounds[0].m_flSpeed			= asw_ranger_spit_speed.GetFloat();
 	volley.m_rounds[0].m_flHorizontalOffset = 0;
 
 	volley.m_rounds[1].m_flTime				= 0.1;
@@ -105,7 +111,7 @@ void CASW_Ranger::Spawn( void )
 	volley.m_rounds[1].m_flEndAngle			= 0;
 	volley.m_rounds[1].m_nNumShots			= 1;
 	volley.m_rounds[1].m_flShotDelay		= 0;
-	volley.m_rounds[1].m_flSpeed			= 425;
+	volley.m_rounds[1].m_flSpeed			= asw_ranger_spit_speed.GetFloat();
 	volley.m_rounds[1].m_flHorizontalOffset = 0;
 
 	volley.m_rounds[2].m_flTime				= 0.2;
@@ -114,7 +120,7 @@ void CASW_Ranger::Spawn( void )
 	volley.m_rounds[2].m_flEndAngle			= 0;
 	volley.m_rounds[2].m_nNumShots			= 1;
 	volley.m_rounds[2].m_flShotDelay		= 0;
-	volley.m_rounds[2].m_flSpeed			= 425;
+	volley.m_rounds[2].m_flSpeed			= asw_ranger_spit_speed.GetFloat();
 	volley.m_rounds[2].m_flHorizontalOffset = 0;
 	CreateVolley( "volley1", &volley );
 }
@@ -245,7 +251,7 @@ bool CASW_Ranger::CreateBehaviors()
 
 	m_RangedAttackBehavior.KeyValue( "minRange", "0" );
 	m_RangedAttackBehavior.KeyValue( "maxRange", "600" );
-	m_RangedAttackBehavior.KeyValue( "rate", "4.0" );
+	m_RangedAttackBehavior.KeyValue( "rate", asw_ranger_spit_rate.GetString() );
 	m_RangedAttackBehavior.KeyValue( "global_shot_delay", "1" );
 	m_RangedAttackBehavior.KeyValue( "volley_type", "volley1" );
 	AddBehavior( &m_RangedAttackBehavior );
@@ -275,6 +281,11 @@ void CASW_Ranger::DeathSound( const CTakeDamageInfo &info )
 	else
 		EmitSound( "Ranger.GibSplatHeavy" );
 
+}
+
+float CASW_Ranger::GetIdealSpeed() const
+{
+	return asw_ranger_speedboost.GetFloat() * BaseClass::GetIdealSpeed() * m_flPlaybackRate;
 }
 
 //-----------------------------------------------------------------------------
