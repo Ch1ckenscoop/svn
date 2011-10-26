@@ -680,7 +680,7 @@ bool CASW_Parasite::CheckInfestTarget( CBaseEntity *pOther )
 void CASW_Parasite::StartInfestation()
 {
 	CASW_Marine* pMarine = CASW_Marine::AsMarine( m_hPrepareToInfest.Get() );
-	if ( pMarine && !asw_god.GetBool())
+	if ( pMarine && !asw_god.GetBool() && this->GetHealth() > 0)
 	{
 		InfestMarine( pMarine );
 	}
