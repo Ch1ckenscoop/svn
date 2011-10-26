@@ -1,0 +1,13 @@
+#summary Drops your marine's extra.
+#labels D-Command
+
+= Description =
+
+Drops your marine's 3rd slot item, or "extra". To use, bind it to a key:
+
+`bind "i" "asw_dropextra"`
+
+The "i" key would now drop your extra item.
+
+|| *Revision Added* || *[CvarFlags Flags]* ||
+|| r279 || [FCVAR_NONE] ||
