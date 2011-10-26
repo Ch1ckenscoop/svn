@@ -1,0 +1,9 @@
+#summary Sets the damage radius for mortar bug shells.
+#labels D-Cvar
+
+= Description =
+
+Sets the damage radius of the mortar bug shells.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r259 || `220.0` || [FCVAR_CHEAT] || [Float] ||
