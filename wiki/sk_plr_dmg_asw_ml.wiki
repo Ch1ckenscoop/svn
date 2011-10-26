@@ -3,7 +3,7 @@
 
 = Description =
 
-Sets the damage of the mining laser. The mining laser "fires" about 9 times a second.
+Sets the damage of the mining laser. The mining laser "fires" about 10 times a second.
 
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r271 || `50` || [FCVAR_CHEAT] || [Int] ||
