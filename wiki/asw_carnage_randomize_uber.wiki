@@ -1,5 +1,5 @@
 #summary Randomly creates uber drone spawners.
-#labels D-Cvar
+#labels D-Command
 
 = Description =
 
