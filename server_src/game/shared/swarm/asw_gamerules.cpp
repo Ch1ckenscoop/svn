@@ -227,7 +227,7 @@ ConVar	sk_plr_dmg_asw_p			( "sk_plr_dmg_asw_p","0", FCVAR_REPLICATED | FCVAR_DEV
 ConVar	sk_npc_dmg_asw_p			( "sk_npc_dmg_asw_p","0", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY);
 ConVar	sk_max_asw_p				( "sk_max_asw_p","0", FCVAR_REPLICATED);
 // Mining laser
-ConVar	sk_plr_dmg_asw_ml			( "sk_plr_dmg_asw_ml","0", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY );
+ConVar	sk_plr_dmg_asw_ml			( "sk_plr_dmg_asw_ml","50", FCVAR_REPLICATED | FCVAR_CHEAT, "Sets the damage for the mining laser." );
 ConVar	sk_npc_dmg_asw_ml			( "sk_npc_dmg_asw_ml","0", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY);
 ConVar	sk_max_asw_ml				( "sk_max_asw_ml","0", FCVAR_REPLICATED);
 // TeslaGun
