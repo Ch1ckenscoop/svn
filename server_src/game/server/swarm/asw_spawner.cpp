@@ -160,7 +160,7 @@ bool CASW_Spawner::CanSpawn( const Vector &vecHullMins, const Vector &vecHullMax
 		return false;
 
 	//Ch1ckensCoop: over 2000 edicts?
-	if (gEntList.NumberOfEdicts() > 2000)
+	if (gEntList.NumberOfEdicts() > 1900)
 	{
 		if (asw_cc_debug_spawners.GetBool())
 		{

@@ -618,8 +618,8 @@ bool CASW_Spawn_Manager::GetAlienBounds( string_t iszAlienClass, Vector &vecMins
 // spawn a group of aliens at the target point
 int CASW_Spawn_Manager::SpawnAlienBatch( const char* szAlienClass, int iNumAliens, const Vector &vecPosition, const QAngle &angFacing, float flMarinesBeyondDist )
 {
-	//Ch1ckensCoop: Make sure we're not over 1900 edicts to prevent crashing and leave some room for normal spawners
-	if (gEntList.NumberOfEdicts() > 1900)
+	//Ch1ckensCoop: Make sure we're not over 1800 edicts to prevent crashing and leave some room for normal spawners
+	if (gEntList.NumberOfEdicts() > 1800)
 	{
 		if (asw_director_debug.GetBool())
 			Msg("Current edicts is over 1900; prevented director from spawning aliens.");
