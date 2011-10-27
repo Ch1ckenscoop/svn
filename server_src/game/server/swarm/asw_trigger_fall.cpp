@@ -6,6 +6,7 @@
 //=============================================================================//
 #include "cbase.h"
 #include "triggers.h"
+#include "asw_marine.h"
 
 //-----------------------------------------------------------------------------
 // Purpose: Used at the bottom of maps where objects should fall away to infinity
@@ -53,18 +54,22 @@ void CASW_Trigger_Fall::Spawn( void )
 //-----------------------------------------------------------------------------
 void CASW_Trigger_Fall::FallTouch( CBaseEntity *pOther )
 {
-	// If it's a player, just kill him for now
-	if ( pOther->IsNPC() )
+	// If it's a player, just kill him for now	//Ch1ckensCoop: NOOOOOOOO!
+
+	CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(pOther);
+
+
+	if(pMarine)
+	{
+		pMarine->TeleportToFreeNode();
+		DevWarning(1, "Teleported marine to nearest free node!");
+	}
+	else if ( pOther->IsNPC() )
 	{
 		if ( pOther->IsAlive() == false )
 			return;
 
 		pOther->TakeDamage( CTakeDamageInfo( this, this, 500, DMG_FALL ) );
-	}
-	else 
-	{
-		// Just remove the entity
-		//UTIL_Remove( pOther );
 	}
 
 	// Fire our output

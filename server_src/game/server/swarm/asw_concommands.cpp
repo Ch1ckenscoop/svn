@@ -1580,7 +1580,7 @@ void ASW_DropExtra_f()
 		CBaseCombatWeapon *pWeapon = pMarine->GetWeapon(2);
 		if (!pWeapon)
 			return;
-		pMarine->DropWeapon(2);
+		pMarine->DropWeapon(2, true);
 
 		IGameEvent * event = gameeventmanager->CreateEvent( "player_dropped_weapon" );
 		if ( event )
@@ -1592,3 +1592,17 @@ void ASW_DropExtra_f()
 	}
 }
 ConCommand ASW_DropExtra( "ASW_DropExtra", ASW_DropExtra_f, "Makes your marine drop his current extra", 0 );
+
+void ASW_GetGroundEntity_f()
+{
+	CASW_Player *pPlayer = ToASW_Player(UTIL_GetCommandClient());;
+	
+	if (pPlayer && pPlayer->GetMarine())
+	{
+		CASW_Marine *pMarine = pPlayer->GetMarine();
+		CBaseEntity *pEntity = pMarine->GetGroundEntity();
+		if (pEntity)
+			Warning("Ground entity: %s\n", pEntity->GetEntityName());
+	}
+}
+ConCommand ASW_GetGroundEntity("asw_getgroundentity", ASW_GetGroundEntity_f, "Prints the marine's current ground entity.", FCVAR_NONE);

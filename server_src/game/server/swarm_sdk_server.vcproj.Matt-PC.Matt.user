@@ -11,7 +11,7 @@
 			<DebugSettings
 				Command="F:\Steam\steamapps\common\alien swarm\swarm.exe"
 				WorkingDirectory="F:\Steam\steamapps\common\alien swarm"
-				CommandArguments=" -game swarm -windowed -w 1366 -h 768 -novid +map asi +exec hax +asw_flamer_ammo_usage 100"
+				CommandArguments=" -game swarm -windowed -w 1366 -h 768 -novid +showtriggers 1 +map asi +exec hax +asw_flamer_ammo_usage 100 +asw_map_configs 1"
 				Attach="false"
 				DebuggerType="3"
 				Remote="1"

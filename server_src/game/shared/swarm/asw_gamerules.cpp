@@ -142,6 +142,8 @@ extern ConVar old_radius_damage;
 	ConVar sv_timeout_when_fully_connected( "sv_timeout_when_fully_connected", "30", FCVAR_NONE, "Once fully connected, player will be kicked if he doesn't send a network message within this interval." );
 	ConVar mm_swarm_state( "mm_swarm_state", "ingame", FCVAR_DEVELOPMENTONLY );
 
+	ConVar asw_map_configs("asw_map_configs", "1", FCVAR_NONE, "On mapchange: exec asw_mapconfigs/<bspname>");
+
 	static void UpdateMatchmakingTagsCallback( IConVar *pConVar, const char *pOldValue, float flOldValue )
 	{
 		// update sv_tags to force an update of the matchmaking tags
@@ -6638,6 +6640,15 @@ void CAlienSwarm::LevelInitPostEntity()
 
 #ifndef CLIENT_DLL
 	engine->ServerCommand("exec newmapsettings\n");
+
+	if (asw_map_configs.GetBool())
+	{
+		//Ch1ckensCoop: Fix the per-map configs.
+		char execCmd[350];
+		Q_snprintf(execCmd, sizeof(execCmd), "exec asw_mapconfigs/%s\n", mapName);
+		engine->ServerCommand(execCmd);
+		DevMsg("Ran command '%s'\n", execCmd);
+	}
 
 	m_bPlayedBlipSpeech = false;
 	m_bQuickStart = false;
