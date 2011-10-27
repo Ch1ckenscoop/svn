@@ -1,0 +1,9 @@
+#summary Sets door health.
+#labels D-Cvar
+
+= Description =
+
+Sets un-reinforced door health. For reinforced door health, see [asw_door_health_reinforced].
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r289 || `1800` || [FCVAR_CHEAT] || [Int] ||
