@@ -1,0 +1,9 @@
+#summary Allows doors to take melee damage.
+#labels D-Cvar
+
+= Description =
+
+Allows doors to take melee damage (marine punches).
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r289 || `0` || [FCVAR_CHEAT] || [Bool] ||
