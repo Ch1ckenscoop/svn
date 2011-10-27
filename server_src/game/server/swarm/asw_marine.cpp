@@ -392,6 +392,8 @@ extern ConVar asw_marine_ff_absorption;
 ConVar asw_movement_direction_tolerance( "asw_movement_direction_tolerance", "30.0", FCVAR_CHEAT );
 ConVar asw_movement_direction_interval( "asw_movement_direction_interval", "0.5", FCVAR_CHEAT );
 
+ConVar asw_marine_death_notifications("asw_marine_death_notifications", "1", FCVAR_NONE, "Display marine death notifications in the server console.");
+
 float CASW_Marine::s_fNextMadFiringChatter = 0;
 float CASW_Marine::s_fNextIdleChatterTime = 0;
 
@@ -3191,6 +3193,12 @@ CRagdollProp* CASW_Marine::GetRagdollProp()
 void CASW_Marine::Event_Killed( const CTakeDamageInfo &info )
 {
 	bool bAllDead = false;
+
+	if (asw_marine_death_notifications.GetBool())
+	{
+		//Ch1ckensCoop: I wanna know when my victims die...
+		Msg("***** Player %s died! *****\n", this->GetPlayerName());
+	}
 
 	if ( ASWGameRules() && ASWGameRules()->GetMissionManager() )
 	{

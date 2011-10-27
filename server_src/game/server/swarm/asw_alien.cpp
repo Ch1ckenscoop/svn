@@ -72,6 +72,8 @@ ConVar asw_springcol_radius( "asw_springcol_radius", "50.0", FCVAR_CHEAT, "Radiu
 ConVar asw_springcol_force_scale( "asw_springcol_force_scale", "3.0", FCVAR_CHEAT, "Multiplier for each individual push force" );
 ConVar asw_springcol_debug( "asw_springcol_debug", "0", FCVAR_CHEAT, "Display the direction of the pushaway vector. Set to entity index or -1 to show all." );
 
+ConVar asw_alien_longrange("asw_alien_longrange", "0", FCVAR_CHEAT, "If non-zero, allow swarm to see this far.");
+
 float CASW_Alien::sm_flLastHurlTime = 0;
 
 int ACT_MELEE_ATTACK1_HIT;
@@ -551,6 +553,13 @@ void CASW_Alien::NPCInit()
 		SetDistSwarmSense(1152.0f);
 		SetDistLook( 1536.0f );
 		m_flDistTooFar = 2000.0f;
+	}
+
+	if (asw_alien_longrange.GetInt() > 0)
+	{
+		SetDistSwarmSense( asw_alien_longrange.GetFloat() );
+		SetDistLook( asw_alien_longrange.GetFloat() );
+		m_flDistTooFar = asw_alien_longrange.GetFloat();
 	}
 	SetCollisionBounds( GetHullMins(), GetHullMaxs() );
 
