@@ -127,6 +127,11 @@ LINK_ENTITY_TO_CLASS(asw_door, CASW_Door);
 ConVar asw_door_drone_damage_scale("asw_door_drone_damage_scale", "2.0f", FCVAR_CHEAT, "Damage scale for drones hitting doors");
 ConVar asw_door_seal_damage_reduction("asw_door_seal_damage_reduction", "0.6f", FCVAR_CHEAT, "Alien damage scale when door is fully sealed");
 ConVar asw_door_physics("asw_door_physics", "0", FCVAR_CHEAT, "If set, doors will turn into vphysics objects upon death.");
+
+ConVar asw_door_melee("asw_door_melee", "0", FCVAR_CHEAT, "Allow doors to take melee damage.");
+ConVar asw_door_health("asw_door_health", "1800", FCVAR_CHEAT, "Normal health of doors.");
+ConVar asw_door_health_reinforced("asw_door_health_reinforced", "2400", FCVAR_CHEAT, "Reinforced health of doors.");
+
 extern ConVar asw_debug_marine_chatter;
 extern ConVar asw_difficulty_alien_damage_step;
 
@@ -225,14 +230,14 @@ void CASW_Door::Spawn()
 	{
 		m_bBashable = true;
 		m_bShootable = true;
-		m_iDoorStrength = ASW_DOOR_NORMAL_HEALTH;
+		m_iDoorStrength = asw_door_health.GetInt();
 		m_nSkin = 0;		
 	}
 	else if (m_iDoorType == 1)
 	{
 		m_bBashable = true;
 		m_bShootable = true;
-		m_iDoorStrength = ASW_DOOR_REINFORCED_HEALTH;
+		m_iDoorStrength = asw_door_health_reinforced.GetInt();
 		m_nSkin = 1;
 	}
 	else if (m_iDoorType == 2)	// indestructable
@@ -1190,11 +1195,14 @@ int CASW_Door::OnTakeDamage( const CTakeDamageInfo &info )
 
 				damage *= asw_door_drone_damage_scale.GetFloat();
 			}
-			else if (info.GetAttacker()->Classify() == CLASS_ASW_MARINE
+			else if (!asw_door_melee.GetBool())
+			{
+			if (info.GetAttacker()->Classify() == CLASS_ASW_MARINE
 					&& info.GetDamageType() & DMG_CLUB)	// make doors immune to kick damage
 			{
 				damage *= 0;
-			}			
+			}
+			}
 			
 			// reduce damage from welding
 			if (GetTotalSealTime() > 0)
