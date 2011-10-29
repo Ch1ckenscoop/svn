@@ -1,0 +1,9 @@
+#summary ALWAYS checks marine distance.
+#labels D-Cvar
+
+= Description =
+
+Checks distance to marines every single time the AI director tries to spawn aliens. This prevents aliens spawning directly under marines, or within view depending on the range settings.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r304 || `1` || [FCVAR_CHEAT] || [Bool] ||
