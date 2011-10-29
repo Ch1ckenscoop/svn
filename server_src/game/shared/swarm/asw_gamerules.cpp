@@ -6647,7 +6647,7 @@ void CAlienSwarm::LevelInitPostEntity()
 	if (asw_full_treatment_tradeoff.GetBool() && m_bIsFullTreatment)
 	{
 		CBaseEntity* pEntity = NULL;
-		string_t spriteName = AllocPooledString("asi-jac4-residential");
+		string_t spriteName = AllocPooledString("env_sprite");
 		while ((pEntity = gEntList.FindEntityByClassnameFast(pEntity, spriteName)) != NULL)// pEntity, this->GetAbsOrigin(), asw_alien_prune_distance.GetFloat() )) != NULL)
 		{
 			UTIL_Remove(pEntity);
