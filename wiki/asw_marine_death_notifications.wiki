@@ -1,0 +1,9 @@
+#summary Displays death notifications.
+#labels D-Cvar
+
+= Description =
+
+Displays death notifications on marines in the server console. This is just if you want to know what's going on in your server; has no effect in-game.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r296 || `1` || [FCVAR_NONE] || [Bool] ||
