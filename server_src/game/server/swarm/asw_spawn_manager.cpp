@@ -261,7 +261,8 @@ void CASW_Spawn_Manager::Update()
 		}
 		else if ( m_vecHordePosition == vec3_origin )
 		{
-			Msg( "Warning: Had horde to spawn but no position, clearing.\n" );
+			if (asw_director_debug.GetBool())
+				Msg( "Warning: Had horde to spawn but no position, clearing.\n" );
 			m_iHordeToSpawn = 0;
 			ASWDirector()->OnHordeFinishedSpawning();
 		}
@@ -381,7 +382,8 @@ bool CASW_Spawn_Manager::AddHorde( int iHordeSize )
 	{
 		if ( !FindHordePosition() )
 		{
-			Msg("Error: Failed to find horde position\n");
+			if (asw_director_debug.GetBool())
+				Msg("Error: Failed to find horde position\n");
 			return false;
 		}
 		else
