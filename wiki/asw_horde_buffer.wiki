@@ -1,0 +1,9 @@
+#summary Spawn manager hull buffer.
+#labels D-Cvar
+
+= Description =
+
+Prevents aliens from getting stuck in walls partially when spawning non-drone aliens with the AI director. This cvar adds this many units to the alien's collision hull when determining where the AI director can spawn aliens.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r304 || `25` || [FCVAR_CHEAT] || [Float] ||
