@@ -581,7 +581,7 @@ CBasePlayer *UTIL_GetListenServerHost( void )
 	if (engine->IsDedicatedServer())
 	{
 		Assert( !"UTIL_GetListenServerHost" );
-		Warning( "UTIL_GetListenServerHost() called from a dedicated server or single-player game.\n" );
+		DevWarning( "UTIL_GetListenServerHost() called from a dedicated server or single-player game.\n" );
 		return NULL;
 	}
 

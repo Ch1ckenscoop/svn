@@ -37,6 +37,9 @@ ConVar asw_batch_interval("asw_batch_interval", "5", FCVAR_CHEAT, "Time between 
 ConVar asw_candidate_interval("asw_candidate_interval", "1.0", FCVAR_CHEAT, "Interval between updating candidate spawning nodes");
 ConVar asw_horde_class( "asw_horde_class", "asw_drone", FCVAR_CHEAT, "Alien class used when spawning hordes" );
 
+ConVar asw_horde_enforce_range("asw_horde_enforce_range", "1", FCVAR_CHEAT, "ALWAYS check if marines are within the min and max distances.");
+ConVar asw_horde_buffer("asw_horde_buffer", "25", FCVAR_CHEAT, "Buffer to prevent aliens from spawning partly inside walls.");
+
 CASW_Spawn_Manager::CASW_Spawn_Manager()
 {
 	m_nAwakeAliens = 0;
@@ -216,7 +219,25 @@ void CASW_Spawn_Manager::Update()
 		if ( m_vecHordePosition != vec3_origin && ( !m_batchInterval.HasStarted() || m_batchInterval.IsElapsed() ) )
 		{
 			int iToSpawn = MIN( m_iHordeToSpawn, asw_max_alien_batch.GetInt() );
-			int iSpawned = SpawnAlienBatch( asw_horde_class.GetString(), iToSpawn, m_vecHordePosition, m_angHordeAngle, 0 );
+			int iSpawned = 0;
+			if (asw_horde_enforce_range.GetBool())		//Ch1ckensCoop: Make sure aliens are off screen. ALWAYS.
+			{
+						float flDistance = 0.0f;
+						CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(UTIL_ASW_NearestMarine( m_vecHordePosition, flDistance ));
+
+						if ( flDistance < asw_horde_max_distance.GetFloat() && flDistance > asw_horde_min_distance.GetFloat() )
+							iSpawned = SpawnAlienBatch( asw_horde_class.GetString(), iToSpawn, m_vecHordePosition, m_angHordeAngle );
+						else
+						{
+							if (asw_director_debug.GetBool())
+								Warning("Marine too far/close from spawn point!\n");
+						}
+			}
+			else
+			{
+				iSpawned = SpawnAlienBatch( asw_horde_class.GetString(), iToSpawn, m_vecHordePosition, m_angHordeAngle, asw_horde_min_distance.GetFloat() );
+			}
+
 			m_iHordeToSpawn -= iSpawned;
 			if ( m_iHordeToSpawn <= 0 )
 			{
@@ -322,7 +343,7 @@ bool CASW_Spawn_Manager::SpawnAlientAtRandomNode()
 		}
 		
 		Vector vecSpawnPos = pNode->GetPosition( CANDIDATE_ALIEN_HULL ) + Vector( 0, 0, 32 );
-		if ( ValidSpawnPoint( vecSpawnPos, vecMins, vecMaxs, true, MARINE_NEAR_DISTANCE ) )
+		if ( ValidSpawnPoint( vecSpawnPos, vecMins, vecMaxs, true ) )
 		{
 			if ( SpawnAlienAt( szAlienClass, vecSpawnPos, vec3_angle ) )
 			{
@@ -622,7 +643,7 @@ int CASW_Spawn_Manager::SpawnAlienBatch( const char* szAlienClass, int iNumAlien
 	if (gEntList.NumberOfEdicts() > 1800)
 	{
 		if (asw_director_debug.GetBool())
-			Msg("Current edicts is over 1900; prevented director from spawning aliens.");
+			Msg("Current edicts is over 1800; prevented director from spawning aliens.");
 		return 0;
 	}
 
@@ -752,11 +773,14 @@ CBaseEntity* CASW_Spawn_Manager::SpawnAlienAt(const char* szAlienClass, const Ve
 bool CASW_Spawn_Manager::ValidSpawnPoint( const Vector &vecPosition, const Vector &vecMins, const Vector &vecMaxs, bool bCheckGround, float flMarineNearDistance )
 {
 	// check if we can fit there
+	
+	Vector vecBuffer = Vector(asw_horde_buffer.GetFloat(), asw_horde_buffer.GetFloat(), 0);
+
 	trace_t tr;
 	UTIL_TraceHull( vecPosition,
 		vecPosition + Vector( 0, 0, 1 ),
-		vecMins,
-		vecMaxs,
+		vecMins - vecBuffer,
+		vecMaxs + vecBuffer,
 		MASK_NPCSOLID,
 		NULL,
 		COLLISION_GROUP_NONE,
@@ -793,6 +817,8 @@ bool CASW_Spawn_Manager::ValidSpawnPoint( const Vector &vecPosition, const Vecto
 				distance = pMR->GetMarineEntity()->GetAbsOrigin().DistTo( vecPosition );
 				if ( distance < flMarineNearDistance )
 				{
+					if (asw_director_debug.GetBool())
+						Warning("Marine too close to spawn point!\n");
 					return false;
 				}
 			}
