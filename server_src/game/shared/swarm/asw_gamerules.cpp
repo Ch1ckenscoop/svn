@@ -143,6 +143,7 @@ extern ConVar old_radius_damage;
 	ConVar mm_swarm_state( "mm_swarm_state", "ingame", FCVAR_DEVELOPMENTONLY );
 
 	ConVar asw_map_configs("asw_map_configs", "1", FCVAR_NONE, "On mapchange: exec asw_mapconfigs/<bspname>");
+	ConVar asw_full_treatment_tradeoff("asw_full_treatment_tradeoff", "1", FCVAR_NONE, "Remove some useless entities in exchange for more aliens on syntek_hospital.");
 
 	static void UpdateMatchmakingTagsCallback( IConVar *pConVar, const char *pOldValue, float flOldValue )
 	{
@@ -6628,6 +6629,8 @@ void CAlienSwarm::LevelInitPostEntity()
 	m_bIsTutorial = ( !Q_strnicmp( mapName, "tutorial", 8 ) );
 	m_bIsLobby = ( !Q_strnicmp( mapName, "Lobby", 5 ) );
 
+	bool m_bIsFullTreatment = ( !Q_strnicmp( mapName, "syntek_hospital", 15 ) );
+
 	if ( ASWHoldoutMode() )
 	{
 		ASWHoldoutMode()->LevelInitPostEntity();
@@ -6639,7 +6642,17 @@ void CAlienSwarm::LevelInitPostEntity()
 	}
 
 #ifndef CLIENT_DLL
-	engine->ServerCommand("exec newmapsettings\n");
+	//engine->ServerCommand("exec newmapsettings\n");	//Ch1ckensCoop: Useless...
+
+	if (asw_full_treatment_tradeoff.GetBool() && m_bIsFullTreatment)
+	{
+		CBaseEntity* pEntity = NULL;
+		string_t spriteName = AllocPooledString("asi-jac4-residential");
+		while ((pEntity = gEntList.FindEntityByClassnameFast(pEntity, spriteName)) != NULL)// pEntity, this->GetAbsOrigin(), asw_alien_prune_distance.GetFloat() )) != NULL)
+		{
+			UTIL_Remove(pEntity);
+		}
+	}
 
 	if (asw_map_configs.GetBool())
 	{

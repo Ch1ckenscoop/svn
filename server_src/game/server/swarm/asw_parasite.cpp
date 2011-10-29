@@ -1233,7 +1233,7 @@ void CASW_Parasite::SetHealthByDifficultyLevel()
 
 void CASW_Parasite::NPCThink()
 {
-	if (m_bDoEggIdle)
+	if (m_bDoEggIdle || stricmp(gpGlobals->mapname.ToCStr(), "asi-jac4-residential"))
 	{
 		SetTagState(ASW_TAG_SAFE);
 	}
