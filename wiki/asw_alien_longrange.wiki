@@ -1,0 +1,29 @@
+#summary Allows aliens to see this far.
+#labels D-Cvar
+
+= Description =
+
+If non-zero, allows aliens to see this far in units. 
+
+Default alien sight range is:
+
+  * SwarmSense (ability to sense marines through walls): 576.0
+  * Look Distance: 768.0
+  * Too Far Distance: 1500.0
+
+Long range flagged aliens have the following capabilities:
+
+  * SwarmSense: 1152.0
+  * Look Distance: 1536.0
+  * Too Far Distance: 2000.0
+
+If you set this value to 3000.0, the properties would be this:
+
+  * SwarmSense: 3000.0
+  * Look Distance: 3000.0
+  * Too Far Distance: 3000.0
+
+You might try setting this cvar's value to that of your pruning radius, however it might cause lag.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r296 || `0` || [FCVAR_CHEAT] || [Float] ||
