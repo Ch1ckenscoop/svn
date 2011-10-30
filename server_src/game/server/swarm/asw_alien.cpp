@@ -212,7 +212,6 @@ struct marineInfo		//Ch1ckensCoop: Network culling
 {
 public:
 	edict_t *playerEdict;
-	//CASW_Player *pPlayer;
 	float fl_MarineDist;
 };
 
@@ -230,11 +229,14 @@ int	CASW_Alien::ShouldTransmit( const CCheckTransmitInfo *pInfo )
 			if (pMarineResource)
 			{
 				pMarine = pMarineResource->GetMarineEntity();
-				if (pMarine)
+				if (pMarine && pMarine->GetHealth() > 0)
 				{
 					marineEdicts[i].playerEdict = pMarineResource->GetCommander()->edict();
 					marineEdicts[i].fl_MarineDist = pMarine->GetAbsOrigin().DistTo(this->GetAbsOrigin());
-					//marineEdicts[i].pPlayer = pMarineResource->GetCommander();
+				}
+				else
+				{
+					return FL_EDICT_ALWAYS
 				}
 			}
 		}
