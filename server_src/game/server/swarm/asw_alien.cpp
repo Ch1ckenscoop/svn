@@ -31,6 +31,9 @@
 #include "sendprop_priorities.h"
 #include "asw_spawn_manager.h"
 #include "asw_parasite.h"
+#include "asw_player.h"
+#include "asw_game_resource.h"
+#include "asw_marine_resource.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -73,6 +76,7 @@ ConVar asw_springcol_force_scale( "asw_springcol_force_scale", "3.0", FCVAR_CHEA
 ConVar asw_springcol_debug( "asw_springcol_debug", "0", FCVAR_CHEAT, "Display the direction of the pushaway vector. Set to entity index or -1 to show all." );
 
 ConVar asw_alien_longrange("asw_alien_longrange", "0", FCVAR_CHEAT, "If non-zero, allow swarm to see this far.");
+ConVar asw_alien_network_cull("asw_alien_network_cull", "1100", FCVAR_NONE, "If non-zero, don't send aliens farther than this distance from marines.");
 
 float CASW_Alien::sm_flLastHurlTime = 0;
 
@@ -204,8 +208,53 @@ CASW_Alien::CASW_Alien( void ) :
 	rangeAttack2.Init( 64.0f, 512.0f, 0.5f, false );
 }
 
+struct marineInfo		//Ch1ckensCoop: Network culling
+{
+public:
+	edict_t *playerEdict;
+	//CASW_Player *pPlayer;
+	float fl_MarineDist;
+};
+
 int	CASW_Alien::ShouldTransmit( const CCheckTransmitInfo *pInfo )
 {
+	if(asw_alien_network_cull.GetInt() > 0)
+	{
+		CASW_Game_Resource *pGameResource = ASWGameResource();
+		marineInfo marineEdicts [ASW_MAX_MARINE_RESOURCES];
+		CASW_Marine_Resource *pMarineResource = NULL;
+		CASW_Marine *pMarine = NULL;
+		for (int i = 0; i < ASW_MAX_MARINE_RESOURCES; i++)
+		{
+			pMarineResource = pGameResource->GetMarineResource(i);
+			if (pMarineResource)
+			{
+				pMarine = pMarineResource->GetMarineEntity();
+				if (pMarine)
+				{
+					marineEdicts[i].playerEdict = pMarineResource->GetCommander()->edict();
+					marineEdicts[i].fl_MarineDist = pMarine->GetAbsOrigin().DistTo(this->GetAbsOrigin());
+					//marineEdicts[i].pPlayer = pMarineResource->GetCommander();
+				}
+			}
+		}
+
+		marineInfo marineEdict;
+
+		for (int i = 0; i < ASW_MAX_MARINE_RESOURCES; i++)
+		{
+			if (marineEdicts[i].playerEdict == pInfo->m_pClientEnt)
+				marineEdict = marineEdicts[i];
+		}
+
+		Assert(marineEdict.fl_MarineDist);		//If this get's triggered, something's majorly screwed up.
+
+		if (marineEdict.fl_MarineDist <= asw_alien_network_cull.GetFloat())
+			return FL_EDICT_ALWAYS;
+		else
+			return FL_EDICT_DONTSEND;
+	}
+
 	return FL_EDICT_ALWAYS;
 }
 
