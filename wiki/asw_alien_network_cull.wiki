@@ -1,0 +1,10 @@
+#summary Don't send aliens farther than this distance from marines.
+#labels D-Cvar
+
+= Description =
+
+If this cvar's value is greater than 0, network culling will be active for the aliens. 
+This means that they will check for each player to see if that player can see them, and if they can't see this alien, it won't be sent to that player.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r309 || `1100` || [FCVAR_NONE] || [Int] ||
