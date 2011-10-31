@@ -2595,6 +2595,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\message_entity.h"
+				>
+			</File>
+			<File
 				RelativePath="..\..\public\model_types.h"
 				>
 			</File>

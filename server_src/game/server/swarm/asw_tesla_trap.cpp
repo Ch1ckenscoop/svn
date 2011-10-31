@@ -22,10 +22,15 @@
 #include "asw_trace_filter_shot.h"
 #include "asw_alien.h"
 #include "asw_marine.h"
-#include "env_instructor_hint.h"
-#include "dlight.h"
-#include "iefx.h"
-#include "r_efx.h"
+#include "asw_player_shared.h"
+#include "asw_marine_speech.h"
+#include "asw_player.h"
+#include "asw_marine_resource.h"
+#include "asw_game_resource.h"
+#include "asw_equipment_list.h"
+#include "asw_pickup_weapon.h"
+#include "asw_weapon_tesla_trap.h"
+#include "util.h"
 
 ConVar asw_tesla_trap_ammo("asw_tesla_trap_ammo", "30", FCVAR_CHEAT, "Sets the starting ammo for the tesla trap.");
 ConVar asw_tesla_trap_infinite_ammo("asw_tesla_trap_infinite_ammo", "0", FCVAR_CHEAT, "If set to 1, tesla traps won't use their ammo.");
@@ -126,15 +131,19 @@ static const char *s_pTeslaAnimThink = "TeslaAnimThink";
 
 //---------------------------------------------------------
 //---------------------------------------------------------
-
-/*void CASW_TeslaTrap::ActivateUseIcon( CASW_Marine* pMarine, int nHoldType )
+void CASW_TeslaTrap::ActivateUseIcon( CASW_Marine* pMarine, int nHoldType )
 {
-/*	if (!m_bIsInUse && !m_bAssembled && nHoldType != ASW_USE_HOLD_RELEASE_FULL)
+	bool m_bIsInUse = false;
+	bool m_bAssembled = true;
+	bool m_bAlreadyTaken = false;
+
+	if (!m_bIsInUse && !m_bAssembled && nHoldType != ASW_USE_HOLD_RELEASE_FULL)
 	{
 		pMarine->StartUsing(this);
 		pMarine->GetMarineSpeech()->Chatter(CHATTER_USE);
+		m_bIsInUse = true;
 	}
-	else if (m_bAssembled && GetSentryTop())
+	else if (m_bAssembled)
 	{
 		if ( nHoldType == ASW_USE_HOLD_START )
 		{
@@ -143,35 +152,43 @@ static const char *s_pTeslaAnimThink = "TeslaAnimThink";
 		}
 		else if ( nHoldType == ASW_USE_HOLD_RELEASE_FULL )
 		{
-			pMarine->StopUsing();
+			//pMarine->StopUsing();
 
 			if ( !m_bAlreadyTaken )
 			{			
-				//Msg( "Disassembling sentry gun!\n" );
-				IGameEvent * event = gameeventmanager->CreateEvent( "sentry_dismantled" );
-				if ( event )
+				bool bSuccessfulAdd = false;
+				
+				CASW_Game_Resource *pGameResource = ASWGameResource();
+				if (pGameResource)
 				{
-					CBasePlayer *pPlayer = pMarine->GetCommander();
-					event->SetInt( "userid", ( pPlayer ? pPlayer->GetUserID() : 0 ) );
-					event->SetInt( "entindex", entindex() );
+					for (int i = 0; i < ASW_MAX_MARINE_RESOURCES; i++)
+					{
+						
+						CASW_Marine_Resource *pMarineResource = pGameResource->GetMarineResource(i);
 
-					gameeventmanager->FireEvent( event );
+						if (pMarineResource && pMarineResource->GetMarineEntity() == pMarine && (pMarineResource->m_iWeaponsInSlots.Get(2) == g_pASWEquipmentList->GetExtraIndex("asw_weapon_tesla_trap")) )
+						{
+							CASW_Weapon_Tesla_Trap *pWeapon = (CASW_Weapon_Tesla_Trap*)pMarine->GetWeapon(2);
+							if (pWeapon)
+							{
+								pWeapon->SetClip1(pWeapon->GetClip1() + 1);
+								bSuccessfulAdd = true;
+							}
+						}
+					}
+				}
+				if (!bSuccessfulAdd)
+				{
+					CASW_Weapon *pWeapon = (CASW_Weapon*) CreateEntityByName("asw_weapon_tesla_trap");
+					pWeapon->Spawn();
+					pWeapon->SetClip1(1);
+					pMarine->TakeWeaponPickup( pWeapon );
 				}
 
-				CASW_Weapon_Sentry *pWeapon = dynamic_cast<CASW_Weapon_Sentry*>( Create( GetWeaponNameForGunType( GetGunType() ), WorldSpaceCenter(), GetAbsAngles(), NULL ) );
-				pWeapon->SetSentryAmmo( m_iAmmo );
-				pMarine->TakeWeaponPickup( pWeapon );
 				EmitSound( "ASW_Sentry.Dismantled" );
 				UTIL_Remove( this );
 				m_bAlreadyTaken = true;
 			}
-
-			// TODO: just have the marine pick it up now and let that logic deal with the slot?
-
-			// TODO: Find an empty inv slot. Or default to 2nd.
-			//       Drop whatever's in that slot currently
-			//		 Create a new sentry gun weapon with our ammo amount and give it to the marine
-			//		 Destroy ourselves
 		}
 		else if ( nHoldType == ASW_USE_RELEASE_QUICK )
 		{
@@ -179,7 +196,7 @@ static const char *s_pTeslaAnimThink = "TeslaAnimThink";
 
 			pMarine->GetMarineSpeech()->Chatter(CHATTER_USE);
 
-			IGameEvent * event = gameeventmanager->CreateEvent( "sentry_rotated" );
+			/*IGameEvent * event = gameeventmanager->CreateEvent( "sentry_rotated" );
 			if ( event )
 			{
 				CBasePlayer *pPlayer = pMarine->GetCommander();
@@ -187,13 +204,13 @@ static const char *s_pTeslaAnimThink = "TeslaAnimThink";
 				event->SetInt( "entindex", entindex() );
 
 				gameeventmanager->FireEvent( event );
-			}
+			}*/
 
 			// tell the top piece to turn to face the same way as pMarine is facing
-			GetSentryTop()->SetDeployYaw(pMarine->ASWEyeAngles().y);
-			GetSentryTop()->PlayTurnSound();
+			//GetSentryTop()->SetDeployYaw(pMarine->ASWEyeAngles().y);
+			//GetSentryTop()->PlayTurnSound();
 		}
-	}*/
+	}
 	/*static int s_InstructorServerHintEventCreate = 0;
 
 	IGameEvent *pEvent = gameeventmanager->CreateEvent( "instructor_server_hint_create", true, &s_InstructorServerHintEventCreate );
@@ -205,27 +222,33 @@ static const char *s_pTeslaAnimThink = "TeslaAnimThink";
 		pEvent->SetInt( "hint_timeout", 1 );
 
 		gameeventmanager->FireEvent( pEvent );
-	}
+	}*/
 }
 
 bool CASW_TeslaTrap::IsUsable(CBaseEntity *pUser)
 {
-	static int s_InstructorServerHintEventCreate = 0;
-
-	IGameEvent *pEvent = gameeventmanager->CreateEvent( "instructor_server_hint_create", true, &s_InstructorServerHintEventCreate );
-	if ( pEvent )
+	if (pUser && pUser->GetAbsOrigin().DistTo(GetAbsOrigin()) < ASW_MARINE_USE_RADIUS)	// near enough?
 	{
-		pEvent->SetInt( "hint_target", this->entindex() );
-		pEvent->SetString( "hint_caption", "Use me O.o" );
-		pEvent->SetFloat( "hint_range", 5000.0f );
-		pEvent->SetInt( "hint_timeout", 1 );
-
-		if (gameeventmanager->FireEvent( pEvent ))
-			return true;
+		CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(pUser);
+		CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(pMarine->GetCommander());
+		CBasePlayer *pBasePlayer = dynamic_cast<CBasePlayer*>(pPlayer);
+		if (pBasePlayer)
+		{
+			ClientPrint(pBasePlayer, HUD_PRINTCENTER, "Hold <use> (e) to dissasemble tesla coil.");
+		}
+		return true;
 	}
-
-
-	return false;
+	else
+	{
+		CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(pUser);
+		CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(pMarine->GetCommander());
+		CBasePlayer *pBasePlayer = dynamic_cast<CBasePlayer*>(pPlayer);
+		if (pBasePlayer)
+		{
+			ClientPrint(pBasePlayer, HUD_PRINTCENTER, "");
+		}
+		return false;
+	}
 }
 
 void CASW_TeslaTrap::MarineUsing(CASW_Marine* pMarine, float deltatime)
@@ -241,7 +264,7 @@ void CASW_TeslaTrap::MarineStartedUsing(CASW_Marine* pMarine)
 void CASW_TeslaTrap::MarineStoppedUsing(CASW_Marine* pMarine)
 {
 
-}*/
+}
 
 void CASW_TeslaTrap::Spawn()
 {
@@ -283,7 +306,6 @@ void CASW_TeslaTrap::Spawn()
 	AddEFlags( EFL_NO_DISSOLVE | EFL_NO_MEGAPHYSCANNON_RAGDOLL | EFL_NO_PHYSCANNON_INTERACTION );
 
 	SetCollisionGroup( ASW_COLLISION_GROUP_PASSABLE );
-
 
 	m_takedamage = DAMAGE_EVENTS_ONLY;
 

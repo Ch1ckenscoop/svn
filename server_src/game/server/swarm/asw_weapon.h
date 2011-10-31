@@ -29,6 +29,9 @@ public:
 
 	virtual void SetClip1(int i) { m_iClip1 = i; }
 	virtual void SetClip2(int i) { m_iClip2 = i; }
+	virtual int GetClip1()	{ return m_iClip1; }	//Ch1ckensCoop: Not sure if this is somewhere else or not, but I need to be able to see how much ammo they have at the moment.
+	virtual int GetClip2()	{ return m_iClip2; }
+
 	virtual int GetNumPellets() { return 1; }	// how many projectiles are fired off per firerate
 
 	int	UpdateTransmitState();

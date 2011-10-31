@@ -17,6 +17,7 @@
 #include "vstdlib/random.h"
 #include "engine/IEngineSound.h"
 #include "game.h"
+#include "message_entity.h"
 
 #include "player.h"
 #include "entitylist.h"
@@ -30,31 +31,6 @@
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-class CMessageEntity : public CPointEntity
-{
-	DECLARE_CLASS( CMessageEntity, CPointEntity );
-
-public:
-	void	Spawn( void );
-	void	Activate( void );
-	void	Think( void );
-	void	DrawOverlays(void);
-
-	virtual void UpdateOnRemove();
-
-	void	InputEnable( inputdata_t &inputdata );
-	void	InputDisable( inputdata_t &inputdata );
-
-	DECLARE_DATADESC();
-
-protected:
-	int				m_radius;
-	string_t		m_messageText;
-	bool			m_drawText;
-	bool			m_bDeveloperOnly;
-	bool			m_bEnabled;
-};
-
 LINK_ENTITY_TO_CLASS( point_message, CMessageEntity );
 
 BEGIN_DATADESC( CMessageEntity )
@@ -64,6 +40,7 @@ BEGIN_DATADESC( CMessageEntity )
 	DEFINE_KEYFIELD( m_bDeveloperOnly, FIELD_BOOLEAN, "developeronly" ),
 	DEFINE_FIELD( m_drawText, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_bEnabled, FIELD_BOOLEAN ),
+	DEFINE_FIELD( m_bAlwaysDraw, FIELD_BOOLEAN ),
 
 	// Inputs
 	DEFINE_INPUTFUNC( FIELD_VOID,	 "Enable", InputEnable ),
@@ -111,6 +88,11 @@ void CMessageEntity::UpdateOnRemove()
 	BaseClass::UpdateOnRemove();
 }
 
+void CMessageEntity::SetText(const char *t)
+{
+	m_messageText = AllocPooledString(t);
+}
+
 //-----------------------------------------
 // Think
 //-----------------------------------------
@@ -118,21 +100,23 @@ void CMessageEntity::Think( void )
 {
 	SetNextThink( gpGlobals->curtime + 0.1f );
 
-	// check for player distance
-	CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
-
-	if ( !pPlayer || ( pPlayer->GetFlags() & FL_NOTARGET ) )
-		return;
-
-	Vector worldTargetPosition = pPlayer->EyePosition();
-
-	// bail if player is too far away
-	if ( (worldTargetPosition - GetAbsOrigin()).Length() > m_radius )
+	if (!m_bAlwaysDraw)
 	{
-		m_drawText = false;
-		return;
-	}
+		// check for player distance
+		CBasePlayer *pPlayer = UTIL_GetLocalPlayer();
 
+		if ( !pPlayer || ( pPlayer->GetFlags() & FL_NOTARGET ) )
+			return;
+
+		Vector worldTargetPosition = pPlayer->EyePosition();
+
+		// bail if player is too far away
+		if ( (worldTargetPosition - GetAbsOrigin()).Length() > m_radius )
+		{
+			m_drawText = false;
+			return;
+		}
+	}
 	// turn on text
 	m_drawText = true;
 }
