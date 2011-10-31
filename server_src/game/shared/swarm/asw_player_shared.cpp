@@ -725,7 +725,7 @@ int CASW_Player::GetUsePriority( CBaseEntity* pEnt )
 		if ( pButton->IsWaitingForInput() )
 		{
 			// Button wants to be pushed oh so badly
-			return 2;
+			return 3;
 		}
 
 		return 0;
@@ -737,7 +737,7 @@ int CASW_Player::GetUsePriority( CBaseEntity* pEnt )
 		if ( pComputer->IsWaitingForInput() )
 		{
 			// Button wants to be pushed oh so badly
-			return 2;
+			return 3;
 		}
 
 		return 0;
@@ -749,7 +749,7 @@ int CASW_Player::GetUsePriority( CBaseEntity* pEnt )
 	{
 		if ( pWeapon->AllowedToPickup( GetMarine() ) )
 		{
-			return 1;
+			return 2;
 		}
 		else
 		{
@@ -763,7 +763,7 @@ int CASW_Player::GetUsePriority( CBaseEntity* pEnt )
 	{
 		if ( pPickup->AllowedToPickup( GetMarine() ) )
 		{
-			return 1;
+			return 2;
 		}
 		else
 		{

@@ -236,7 +236,7 @@ int	CASW_Alien::ShouldTransmit( const CCheckTransmitInfo *pInfo )
 				}
 				else
 				{
-					return FL_EDICT_ALWAYS
+					return FL_EDICT_ALWAYS;
 				}
 			}
 		}

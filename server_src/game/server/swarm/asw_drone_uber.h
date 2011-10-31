@@ -19,6 +19,7 @@ public:
 
 	virtual void Spawn();
 	virtual void Precache();
+	virtual bool ShouldMoveSlow() const;
 	virtual void SetHealthByDifficultyLevel();
 	virtual float GetIdealSpeed() const;
 	virtual int OnTakeDamage_Alive( const CTakeDamageInfo &info );

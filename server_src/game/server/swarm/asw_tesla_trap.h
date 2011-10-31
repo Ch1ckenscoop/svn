@@ -14,6 +14,8 @@
 #include "Color.h"
 #include "asw_prop_physics.h"
 #include "asw_shareddefs.h"
+#include "iasw_server_usable_entity.h"
+#include "asw_dynamic_light.h"
 
 class CSoundPatch;
 class CASW_Marine;
@@ -22,7 +24,7 @@ class CASW_Marine;
 //---------------------------------------------------------
 #define ASW_TESLATRAP_HOOK_RANGE		64
 
-class CASW_TeslaTrap : public CBaseCombatCharacter
+class CASW_TeslaTrap : public CBaseCombatCharacter//, public IASW_Server_Usable_Entity
 {
 	DECLARE_CLASS( CASW_TeslaTrap, CBaseCombatCharacter );
 
@@ -67,8 +69,20 @@ public:
 	EHANDLE m_hCreatorWeapon;
 	Class_T m_CreatorWeaponClass;
 	CHandle<CASW_Marine> m_hMarineDeployer;
+	CHandle<CASW_Dynamic_Light> m_hTeslaDLight;
 
 	DECLARE_DATADESC();
+
+	//Ch1ckensCoop: Pick-uppable tesla traps
+	// IASW_Server_Usable_Entity implementation
+	/*virtual CBaseEntity* GetEntity() { return this; }
+	virtual bool IsUsable(CBaseEntity *pUser);
+	virtual bool RequirementsMet( CBaseEntity *pUser ) { return true; }
+	virtual void ActivateUseIcon( CASW_Marine* pMarine, int nHoldType );
+	virtual void MarineUsing(CASW_Marine* pMarine, float deltatime);
+	virtual void MarineStartedUsing(CASW_Marine* pMarine);
+	virtual void MarineStoppedUsing(CASW_Marine* pMarine);
+	virtual bool NeedsLOSCheck() { return true; }*/
 
 	// Classification
 	virtual Class_T		Classify( void ) { return (Class_T) CLASS_ASW_TESLA_TRAP_PROJECTILE; }

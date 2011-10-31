@@ -1735,6 +1735,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\env_instructor_hint.h"
+				>
+			</File>
+			<File
 				RelativePath=".\env_particlescript.cpp"
 				>
 			</File>

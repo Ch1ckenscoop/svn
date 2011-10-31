@@ -102,7 +102,7 @@ void CASW_EquipmentList::LoadEquipmentList()
 					CASW_EquipItem* equip = new CASW_EquipItem();
 					equip->m_EquipClass = MAKE_STRING( details->GetString() );
 					equip->m_iItemIndex = iNumEquip;
-					equip->m_bSelectableInBriefing = false;
+					equip->m_bSelectableInBriefing = true;
 					m_Regular.AddToTail(equip);	
 					iNumEquip++;
 				}

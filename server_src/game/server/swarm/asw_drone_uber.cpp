@@ -85,6 +85,10 @@ void CASW_Drone_Uber::Precache( void )
 	BaseClass::Precache();
 }
 
+bool CASW_Drone_Uber::ShouldMoveSlow() const
+{
+	return false;
+}
 
 void CASW_Drone_Uber::SetHealthByDifficultyLevel()
 {
