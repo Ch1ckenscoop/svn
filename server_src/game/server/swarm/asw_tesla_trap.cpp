@@ -135,7 +135,6 @@ void CASW_TeslaTrap::ActivateUseIcon( CASW_Marine* pMarine, int nHoldType )
 {
 	bool m_bIsInUse = false;
 	bool m_bAssembled = true;
-	bool m_bAlreadyTaken = false;
 
 	if (!m_bIsInUse && !m_bAssembled && nHoldType != ASW_USE_HOLD_RELEASE_FULL)
 	{
@@ -285,7 +284,7 @@ void CASW_TeslaTrap::Spawn()
 
 	//AddEffects( EF_NOSHADOW|EF_NORECEIVESHADOW );
 
-	CASW_Dynamic_Light* pTeslaGlowLight = (CASW_Dynamic_Light*) CreateEntityByName("asw_dynamic_light");
+	/*CASW_Dynamic_Light* pTeslaGlowLight = (CASW_Dynamic_Light*) CreateEntityByName("asw_dynamic_light");
 	if (pTeslaGlowLight)
 	{
 		UTIL_SetOrigin( pTeslaGlowLight, GetAbsOrigin() + Vector(0, 0, 25));
@@ -300,7 +299,7 @@ void CASW_TeslaTrap::Spawn()
 		//Msg("Fire: Spawned dynamic light with rad:%f exp:%d r:%d g:%d b:%d\n", f*asw_fire_glow_radius.GetFloat()*m_fLightRadiusScale,
 		//m_iLightBrightness, m_LightColor.r, m_LightColor.g, m_LightColor.b);
 		m_hTeslaDLight = pTeslaGlowLight;
-	}
+	}*/
 
 	AddFlag( FL_OBJECT );
 	AddEFlags( EFL_NO_DISSOLVE | EFL_NO_MEGAPHYSCANNON_RAGDOLL | EFL_NO_PHYSCANNON_INTERACTION );

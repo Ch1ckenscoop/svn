@@ -69,7 +69,7 @@ public:
 	EHANDLE m_hCreatorWeapon;
 	Class_T m_CreatorWeaponClass;
 	CHandle<CASW_Marine> m_hMarineDeployer;
-	CHandle<CASW_Dynamic_Light> m_hTeslaDLight;
+	//CHandle<CASW_Dynamic_Light> m_hTeslaDLight;
 
 	DECLARE_DATADESC();
 
@@ -102,6 +102,8 @@ private:
 
 	bool	m_bPlacedByPlayer;
 	bool	m_bActive;
+
+	bool	m_bAlreadyTaken;	//Ch1ckensCoop: Tesla traps pick-up
 	//int     m_iModification;
 
 	float m_flChargeInterval;
