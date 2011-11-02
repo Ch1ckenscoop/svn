@@ -248,7 +248,7 @@ void CASW_Spawner::MissionStart()
 	m_nNumAliens = m_nSetNumAliens;
 	m_nMaxLiveAliens = m_nSetMaxLiveAliens;
 
-	if (asw_carnage_drone.GetFloat() > 0 && m_AlienClassNum == g_nDroneClassEntry)				//Regular drones
+	if (asw_carnage_drone.GetFloat() > 0 && m_AlienClassNum == DRONE_CLASS_ENTRY)				//Regular drones
 	{
 		m_nNumAliens = m_nSetNumAliens * asw_carnage_drone.GetFloat();
 		m_nMaxLiveAliens = m_nSetMaxLiveAliens * asw_carnage_drone.GetFloat();
@@ -256,7 +256,7 @@ void CASW_Spawner::MissionStart()
 		if (m_flSpawnInterval < asw_carnage_min_interval.GetFloat())
 			m_flSpawnInterval = asw_carnage_min_interval.GetFloat();
 	}	
-	if (asw_carnage_drone_jumper.GetFloat() > 0 && m_AlienClassNum == g_nDroneJumperClassEntry)	//Drone jumpers
+	if (asw_carnage_drone_jumper.GetFloat() > 0 && m_AlienClassNum == JUMPER_CLASS_ENTRY)	//Drone jumpers
 	{
 		m_nNumAliens = m_nSetNumAliens * asw_carnage_drone_jumper.GetFloat();
 		m_nMaxLiveAliens = m_nSetMaxLiveAliens * asw_carnage_drone_jumper.GetFloat();
@@ -264,7 +264,7 @@ void CASW_Spawner::MissionStart()
 		if (m_flSpawnInterval < asw_carnage_min_interval.GetFloat())
 			m_flSpawnInterval = asw_carnage_min_interval.GetFloat();
 	}	
-	if (asw_carnage_drone_uber.GetFloat() > 0 && m_AlienClassNum == g_nUberDroneClassEntry)		//Uber drones
+	if (asw_carnage_drone_uber.GetFloat() > 0 && m_AlienClassNum == UBER_CLASS_ENTRY)		//Uber drones
 	{
 		m_nNumAliens = m_nSetNumAliens * asw_carnage_drone_uber.GetFloat();
 		m_nMaxLiveAliens = m_nSetMaxLiveAliens * asw_carnage_drone_uber.GetFloat();
@@ -272,7 +272,7 @@ void CASW_Spawner::MissionStart()
 		if (m_flSpawnInterval < asw_carnage_min_interval.GetFloat())
 			m_flSpawnInterval = asw_carnage_min_interval.GetFloat();
 	}	
-	if (asw_carnage_buzzer.GetFloat() > 0 && m_AlienClassNum == g_nBuzzerClassEntry)			//Buzzers
+	if (asw_carnage_buzzer.GetFloat() > 0 && m_AlienClassNum == BUZZER_CLASS_ENTRY)			//Buzzers
 	{
 		m_nNumAliens = m_nSetNumAliens * asw_carnage_buzzer.GetFloat();
 		m_nMaxLiveAliens = m_nSetMaxLiveAliens * asw_carnage_buzzer.GetFloat();
@@ -280,7 +280,7 @@ void CASW_Spawner::MissionStart()
 		if (m_flSpawnInterval < asw_carnage_min_interval.GetFloat())
 			m_flSpawnInterval = asw_carnage_min_interval.GetFloat();
 	}	
-	if (asw_carnage_parasite.GetFloat() > 0 && m_AlienClassNum == g_nParasiteClassEntry)		//Parasites
+	if (asw_carnage_parasite.GetFloat() > 0 && m_AlienClassNum == PARASITE_CLASS_ENTRY)		//Parasites
 	{
 		m_nNumAliens = m_nSetNumAliens * asw_carnage_parasite.GetFloat();
 		m_nMaxLiveAliens = m_nSetMaxLiveAliens * asw_carnage_parasite.GetFloat();
@@ -288,7 +288,7 @@ void CASW_Spawner::MissionStart()
 		if (m_flSpawnInterval < asw_carnage_min_interval.GetFloat())
 			m_flSpawnInterval = asw_carnage_min_interval.GetFloat();
 	}	
-	if (asw_carnage_shieldbug.GetFloat() > 0 && m_AlienClassNum == g_nShieldbugClassEntry)		//Shieldbugs
+	if (asw_carnage_shieldbug.GetFloat() > 0 && m_AlienClassNum == SHIELDBUG_CLASS_ENTRY)		//Shieldbugs
 	{
 		m_nNumAliens = m_nSetNumAliens * asw_carnage_shieldbug.GetFloat();
 		m_nMaxLiveAliens = m_nSetMaxLiveAliens * asw_carnage_shieldbug.GetFloat();
@@ -296,7 +296,7 @@ void CASW_Spawner::MissionStart()
 		if (m_flSpawnInterval < asw_carnage_min_interval.GetFloat())
 			m_flSpawnInterval = asw_carnage_min_interval.GetFloat();
 	}	
-	if (asw_carnage_harvester.GetFloat() > 0 && m_AlienClassNum == g_nHarvesterClassEntry)		//Harvesters
+	if (asw_carnage_harvester.GetFloat() > 0 && m_AlienClassNum == HARVESTER_CLASS_ENTRY)		//Harvesters
 	{
 		m_nNumAliens = m_nSetNumAliens * asw_carnage_harvester.GetFloat();
 		m_nMaxLiveAliens = m_nSetMaxLiveAliens * asw_carnage_harvester.GetFloat();
@@ -304,7 +304,7 @@ void CASW_Spawner::MissionStart()
 		if (m_flSpawnInterval < asw_carnage_min_interval.GetFloat())
 			m_flSpawnInterval = asw_carnage_min_interval.GetFloat();
 	}	
-	if (asw_carnage_parasite_defanged.GetFloat() > 0 && m_AlienClassNum == g_nSafeParasiteClassEntry)	//Defanged parasites
+	if (asw_carnage_parasite_defanged.GetFloat() > 0 && m_AlienClassNum == PARASITE_DEFANGED_CLASS_ENTRY)	//Defanged parasites
 	{
 		m_nNumAliens = m_nSetNumAliens * asw_carnage_parasite_defanged.GetFloat();
 		m_nMaxLiveAliens = m_nSetMaxLiveAliens * asw_carnage_parasite_defanged.GetFloat();
@@ -312,7 +312,7 @@ void CASW_Spawner::MissionStart()
 		if (m_flSpawnInterval < asw_carnage_min_interval.GetFloat())
 			m_flSpawnInterval = asw_carnage_min_interval.GetFloat();
 	}	
-	if (asw_carnage_boomer.GetFloat() > 0 && m_AlienClassNum == g_nBoomerClassEntry)			//Boomers
+	if (asw_carnage_boomer.GetFloat() > 0 && m_AlienClassNum == BOOMER_CLASS_ENTRY)			//Boomers
 	{
 		m_nNumAliens = m_nSetNumAliens * asw_carnage_boomer.GetFloat();
 		m_nMaxLiveAliens = m_nSetMaxLiveAliens * asw_carnage_boomer.GetFloat();
@@ -320,7 +320,7 @@ void CASW_Spawner::MissionStart()
 		if (m_flSpawnInterval < asw_carnage_min_interval.GetFloat())
 			m_flSpawnInterval = asw_carnage_min_interval.GetFloat();
 	}	
-	if (asw_carnage_ranger.GetFloat() > 0 && m_AlienClassNum == g_nRangerClassEntry)			//Rangers
+	if (asw_carnage_ranger.GetFloat() > 0 && m_AlienClassNum == RANGER_CLASS_ENTRY)			//Rangers
 	{
 		m_nNumAliens = m_nSetNumAliens * asw_carnage_ranger.GetFloat();
 		m_nMaxLiveAliens = m_nSetMaxLiveAliens * asw_carnage_ranger.GetFloat();
@@ -328,7 +328,7 @@ void CASW_Spawner::MissionStart()
 		if (m_flSpawnInterval < asw_carnage_min_interval.GetFloat())
 			m_flSpawnInterval = asw_carnage_min_interval.GetFloat();
 	}	
-	if (asw_carnage_mortar.GetFloat() > 0 && m_AlienClassNum == g_nMortarClassEntry)			//Mortars
+	if (asw_carnage_mortar.GetFloat() > 0 && m_AlienClassNum == MORTAR_CLASS_ENTRY)			//Mortars
 	{
 		m_nNumAliens = m_nSetNumAliens * asw_carnage_mortar.GetFloat();
 		m_nMaxLiveAliens = m_nSetMaxLiveAliens * asw_carnage_mortar.GetFloat();
@@ -435,7 +435,7 @@ const Vector& CASW_Spawner::GetAlienMaxs()
 
 bool CASW_Spawner::ApplyCarnageMode( float fScaler, float fInvScaler )
 {
-	if (asw_carnage_drone.GetBool() && m_AlienClassNum == g_nDroneClassEntry)
+	/*if (asw_carnage_drone.GetBool() && m_AlienClassNum == g_nDroneClassEntry)
 	{
 		if (asw_carnage_debug.GetBool())
 		{
@@ -601,28 +601,28 @@ bool CASW_Spawner::ApplyCarnageMode( float fScaler, float fInvScaler )
 		//Msg( "  Set its numaliens to %d; max live to %d; interval %f\n", m_nNumAliens, m_nMaxLiveAliens, m_flSpawnInterval );
 
 		return true;
-	}	*/
+	}	
 	if (asw_carnage_debug.GetBool())
-		Msg( "[%d] Found a spawner (%d) but asw_carnage is not enabled for it\n", entindex(), m_AlienClassNum );
+		Msg( "[%d] Found a spawner (%d) but asw_carnage is not enabled for it\n", entindex(), m_AlienClassNum );*/
 	return false;
 }
 
 bool CASW_Spawner::RandomizeUber(float percent)
 {
-	if (m_AlienClassNum == g_nDroneClassEntry || m_AlienClassNum == g_nUberDroneClassEntry)
-		m_AlienClassName = ASWSpawnManager()->GetAlienClass( g_nDroneClassEntry )->m_iszAlienClass;	//Reset spawner
+	if (m_AlienClassNum == DRONE_CLASS_ENTRY || m_AlienClassNum == UBER_CLASS_ENTRY)
+		m_AlienClassName = ASWSpawnManager()->GetAlienClass( DRONE_CLASS_ENTRY )->m_iszAlienClass;	//Reset spawner
 
-	if ( (m_AlienClassNum == g_nDroneClassEntry || m_AlienClassNum == g_nUberDroneClassEntry) && random->RandomFloat() <= percent)
+	if ( (m_AlienClassNum == DRONE_CLASS_ENTRY || m_AlienClassNum == UBER_CLASS_ENTRY) && random->RandomFloat() <= percent)
 	{
 		//m_AlienClassNum = g_nUberDroneClassEntry;
 		//Ch1ckensCoop: Doesn't work ^^^^^
-		m_AlienClassName = ASWSpawnManager()->GetAlienClass( g_nUberDroneClassEntry )->m_iszAlienClass;
+		m_AlienClassName = ASWSpawnManager()->GetAlienClass( UBER_CLASS_ENTRY )->m_iszAlienClass;
 		DevMsg("Set m_AlienClassNum to %i\n", m_AlienClassNum);
 		return true;
 	}
-	else if (m_AlienClassNum == g_nDroneClassEntry || m_AlienClassNum == g_nUberDroneClassEntry)	//Prevents asw_carnage_randomize_uber from compounding on itself if used multiple times, and asw_carnage_randomize_uber 0 should change all uber spawners back to drone ones.
+	else if (m_AlienClassNum == DRONE_CLASS_ENTRY || m_AlienClassNum == UBER_CLASS_ENTRY)	//Prevents asw_carnage_randomize_uber from compounding on itself if used multiple times, and asw_carnage_randomize_uber 0 should change all uber spawners back to drone ones.
 	{
-		m_AlienClassName = ASWSpawnManager()->GetAlienClass( g_nDroneClassEntry )->m_iszAlienClass;
+		m_AlienClassName = ASWSpawnManager()->GetAlienClass( DRONE_CLASS_ENTRY )->m_iszAlienClass;
 		DevMsg("Set m_AlienClassNum to %i\n", m_AlienClassNum);
 		return false;
 	}

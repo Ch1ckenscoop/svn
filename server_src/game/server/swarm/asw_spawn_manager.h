@@ -103,6 +103,7 @@ private:
 	CUtlVector<TriggerMultiple_t> m_EscapeTriggers;
 };
 //Ch1ckensCoop: expanded to include all alien types
+/*
 extern const int g_nDroneClassEntry;
 extern const int g_nBuzzerClassEntry;
 extern const int g_nParasiteClassEntry;
@@ -117,6 +118,26 @@ extern const int g_nRangerClassEntry;
 extern const int g_nMortarClassEntry;
 extern const int g_nShamenClassEntry;
 extern const int g_nUberDroneClassEntry;
+*/
+enum AlienClassNames
+{
+	DRONE_CLASS_ENTRY,
+	BUZZER_CLASS_ENTRY,
+	PARASITE_CLASS_ENTRY,
+	SHIELDBUG_CLASS_ENTRY,
+	GRUB_CLASS_ENTRY,
+	JUMPER_CLASS_ENTRY,
+	HARVESTER_CLASS_ENTRY,
+	PARASITE_DEFANGED_CLASS_ENTRY,
+	QUEEN_CLASS_ENTRY,
+	BOOMER_CLASS_ENTRY,
+	RANGER_CLASS_ENTRY,
+	MORTAR_CLASS_ENTRY,
+	SHAMEN_CLASS_ENTRY,
+	UBER_CLASS_ENTRY,
+
+	HIGHEST_CLASS_ENTRY,	//Ch1ckensCoop: If you're going to add anything, add it before this!
+};
 
 CASW_Spawn_Manager* ASWSpawnManager();
 

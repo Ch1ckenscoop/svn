@@ -78,6 +78,8 @@ ASW_Alien_Class_Entry g_Aliens[]=
 };
 //Ch1ckensCoop: Expanded to include all alien types
 // Array indices of drones.  Used by carnage mode.
+//Ch1ckensCoop: Converted to enumeration.
+/*
 const int g_nDroneClassEntry = 0;
 const int g_nBuzzerClassEntry = 1;
 const int g_nParasiteClassEntry = 2;
@@ -92,6 +94,7 @@ const int g_nRangerClassEntry = 10;
 const int g_nMortarClassEntry = 11;
 const int g_nShamenClassEntry = 12;
 const int g_nUberDroneClassEntry = 13;
+*/
 
 int CASW_Spawn_Manager::GetNumAlienClasses()
 {

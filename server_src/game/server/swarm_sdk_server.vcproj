@@ -7471,6 +7471,14 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\ASW_Horde_Mode.cpp"
+			>
+		</File>
+		<File
+			RelativePath=".\ASW_Horde_Mode.h"
+			>
+		</File>
 	</Files>
 	<Globals>
 	</Globals>
