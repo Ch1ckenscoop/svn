@@ -1,5 +1,5 @@
 #pragma once
-#include "asw_spawn_manager.h"
+#include "convar.h"
 
 class CASW_Horde_Mode : public CLogicalEntity
 {
@@ -14,15 +14,40 @@ public:
 	virtual void SetHordeMode(bool bEnabled);
 	virtual int GetRandomValidAlien();
 	virtual void InitAlienData();
+	
+	enum HordeModeAliens
+	{
+		DRONE_INDEX,
+		BUZZER_INDEX,
+		PARASITE_INDEX,
+		SHIELDBUG_INDEX,
+		GRUB_INDEX,
+		JUMPER_INDEX,
+		HARVESTER_INDEX,
+		PARASITE_DEFANGED_INDEX,
+		QUEEN_INDEX,
+		BOOMER_INDEX,
+		RANGER_INDEX,
+		MORTAR_INDEX,
+		SHAMEN_INDEX,
+		UBER_INDEX,
 
-	//AlienInfo[HIGHEST_CLASS_ENTRY - 1];
+		BETA_DRONE_INDEX,
+		BETA_SHIELDBUG_INDEX,
 
+		HIGHEST_INDEX,	//Ch1ckensCoop: If you're going to add anything, add it before this!
+	};
+	
 	struct AlienInfo
 	{
 		const char *pAlienClassName;
 		int flag;
-		int max;
-		int min;
-	} AlienInfoArray [HIGHEST_CLASS_ENTRY - 1];
-
+		ConVarRef max;
+		ConVarRef min;
+		ConVarRef healthMax;
+		ConVarRef healthMin;
+		ConVarRef betaAlienConVar;
+		bool betaAlienCvarReversed;
+		//int defaultHealth;
+	} AlienInfoArray [HIGHEST_INDEX - 1];
 };
