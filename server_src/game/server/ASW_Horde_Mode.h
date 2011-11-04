@@ -1,19 +1,14 @@
 #pragma once
 #include "convar.h"
+#include "igamesystem.h"
 
-class CASW_Horde_Mode : public CLogicalEntity
+class CASW_Horde_Mode : public CAutoGameSystemPerFrame
 {
 public:
 	DECLARE_CLASS( CASW_Horde_Mode, CLogicalEntity );
 
-	CASW_Horde_Mode(void);
-	~CASW_Horde_Mode(void);
-	
-	virtual void Spawn();
-	virtual void Think();
-	virtual void SetHordeMode(bool bEnabled);
-	virtual int GetRandomValidAlien();
-	virtual void InitAlienData();
+	CASW_Horde_Mode();
+	~CASW_Horde_Mode();
 	
 	enum HordeModeAliens
 	{
@@ -21,7 +16,6 @@ public:
 		BUZZER_INDEX,
 		PARASITE_INDEX,
 		SHIELDBUG_INDEX,
-		GRUB_INDEX,
 		JUMPER_INDEX,
 		HARVESTER_INDEX,
 		PARASITE_DEFANGED_INDEX,
@@ -48,6 +42,24 @@ public:
 		ConVarRef healthMin;
 		ConVarRef betaAlienConVar;
 		bool betaAlienCvarReversed;
-		//int defaultHealth;
-	} AlienInfoArray [HIGHEST_INDEX - 1];
+		bool isBeta;
+		ConVarRef alienHealthCvar;
+		
+		AlienInfo() {}
+
+	} AlienInfoArray[HIGHEST_INDEX];
+	
+	virtual bool Init();
+	virtual void LevelInitPostEntity();
+	virtual void FrameUpdatePostEntityThink();
+
+	virtual void HordeFinishedSpawning();
+	virtual int GetRandomValidAlien();
+	virtual void InitAlienData();
+	virtual void UpdateHordeMode();
+
+	float fl_LastThinkTime;
+	
 };
+
+CASW_Horde_Mode* ASWHordeMode();

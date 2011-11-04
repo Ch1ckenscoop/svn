@@ -13,6 +13,7 @@
 #include "asw_objective_escape.h"
 #include "asw_director_control.h"
 #include "asw_mission_manager.h"
+#include "asw_horde_mode.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -24,8 +25,8 @@ extern ConVar asw_spawning_enabled;
 
 extern ConVar asw_horde_override;
 extern ConVar asw_wanderer_override;
-ConVar asw_horde_interval_min("asw_horde_interval_min", "45", FCVAR_CHEAT, "Min time between hordes" );
-ConVar asw_horde_interval_max("asw_horde_interval_max", "65", FCVAR_CHEAT, "Min time between hordes" );
+ConVar asw_horde_interval_min("asw_horde_interval_min", "10", FCVAR_CHEAT, "Min time between hordes" );
+ConVar asw_horde_interval_max("asw_horde_interval_max", "20", FCVAR_CHEAT, "Min time between hordes" );
 ConVar asw_horde_size_min("asw_horde_size_min", "9", FCVAR_CHEAT, "Min horde size" );
 ConVar asw_horde_size_max("asw_horde_size_max", "14", FCVAR_CHEAT, "Max horde size" );
 
@@ -325,6 +326,10 @@ void CASW_Director::OnHordeFinishedSpawning()
 		Msg("Horde finishes spawning\n");
 	}
 	m_bHordeInProgress = false;
+
+	//Ch1ckensCoop: Let horde mode know that the horde has finished spawning.
+	if (ASWHordeMode())
+		ASWHordeMode()->UpdateHordeMode();
 }
 
 void CASW_Director::UpdateSpawningState()

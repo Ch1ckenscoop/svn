@@ -31,7 +31,7 @@ END_DATADESC()
 int AE_SHAMAN_SPRAY_START;
 int AE_SHAMAN_SPRAY_END;
 
-ConVar asw_shaman_health( "asw_shaman_health", "59.8", FCVAR_CHEAT );
+ConVar asw_shaman_health( "asw_shaman_health", "60", FCVAR_CHEAT );
 extern ConVar asw_debug_alien_damage;
 
 //-----------------------------------------------------------------------------

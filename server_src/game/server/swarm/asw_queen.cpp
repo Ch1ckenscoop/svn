@@ -100,6 +100,8 @@ ConVar asw_queen_flame_flinch_chance("asw_queen_flame_flinch_chance", "0", FCVAR
 ConVar asw_queen_force_parasite_spawn("asw_queen_force_parasite_spawn", "0", FCVAR_CHEAT, "Set to 1 to force the queen to spawn parasites");
 ConVar asw_queen_force_spit("asw_queen_force_spit", "0", FCVAR_CHEAT, "Set to 1 to force the queen to spit");
 
+ConVar asw_queen_override_health("asw_queen_override_health", "0", FCVAR_CHEAT, "If non-zero, set queen health to this no matter difficulty level.");	//Used by hordemode.
+
 //Ch1ckensCoop: Smaller queen model
 ConVar asw_queen_model_scale("asw_queen_model_scale", "1.0", FCVAR_CHEAT, "Sets the model scale for the queen.");
 //Ch1ckensCoop: Customizable parasite numbers
@@ -1474,21 +1476,29 @@ bool CASW_Queen::PassesDamageFilter( const CTakeDamageInfo &info )
 
 void CASW_Queen::SetHealthByDifficultyLevel()
 {
-	int health = 5000;
-	if (ASWGameRules())
+	if (asw_queen_override_health.GetInt() > 0)
 	{
-		switch (ASWGameRules()->GetSkillLevel())
-		{
-		case 1: health = asw_queen_health_easy.GetInt(); break;
-		case 2: health = asw_queen_health_normal.GetInt(); break;
-		case 3: health = asw_queen_health_hard.GetInt(); break;
-		case 4: health = asw_queen_health_insane.GetInt(); break;
-		case 5: health = asw_queen_health_insane.GetInt(); break;
-		default: 5000;
-		}
+		SetHealth(asw_queen_override_health.GetInt());
+		SetMaxHealth(asw_queen_override_health.GetInt());
 	}
-	SetHealth(health);
-	SetMaxHealth(health);
+	else
+	{
+		int health = 5000;
+		if (ASWGameRules())
+		{
+			switch (ASWGameRules()->GetSkillLevel())
+			{
+			case 1: health = asw_queen_health_easy.GetInt(); break;
+			case 2: health = asw_queen_health_normal.GetInt(); break;
+			case 3: health = asw_queen_health_hard.GetInt(); break;
+			case 4: health = asw_queen_health_insane.GetInt(); break;
+			case 5: health = asw_queen_health_insane.GetInt(); break;
+			default: 5000;
+			}
+		}
+		SetHealth(health);
+		SetMaxHealth(health);
+	}
 }
 
 int	CASW_Queen::DrawDebugTextOverlays()

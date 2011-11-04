@@ -28,7 +28,7 @@ BEGIN_DATADESC( CASW_Ranger )
 DEFINE_EMBEDDEDBYREF( m_pExpresser ),
 END_DATADESC()
 
-ConVar asw_ranger_health( "asw_ranger_health", "101.5", FCVAR_CHEAT );
+ConVar asw_ranger_health( "asw_ranger_health", "100", FCVAR_CHEAT );
 ConVar asw_ranger_speedboost( "asw_ranger_speedboost", "1.0", FCVAR_CHEAT, "Sets the speed boost scale for the ranger.");
 ConVar asw_ranger_damage("asw_ranger_damage", "12.0", FCVAR_CHEAT, "Sets the direct hit damage of the ranger spit.");
 ConVar asw_ranger_spit_rate("asw_ranger_spit_rate", "4.0", FCVAR_CHEAT, "Sets the firing rate for rangers.");

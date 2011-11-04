@@ -596,7 +596,7 @@ static bool InitGameSystems( CreateInterfaceFn appSystemFactory )
 
 	// load Mod specific game events ( MUST be before InitAllSystems() so it can pickup the mod specific events)
 	gameeventmanager->LoadEventsFromFile("resource/ModEvents.res");
-	gameeventmanager->LoadEventsFromFile("resource/customevents.res");
+	//gameeventmanager->LoadEventsFromFile("resource/ch1ckenscoop_events.res");	//Ch1ckensCoop: Load our own events without having to have it in a vpk and worry about overwriting stuff.
 
 
 

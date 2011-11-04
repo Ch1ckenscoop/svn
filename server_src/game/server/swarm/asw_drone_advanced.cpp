@@ -53,6 +53,8 @@ ConVar asw_drone_override_speedboost( "asw_drone_override_speedboost", "0.32",FC
 ConVar asw_drone_auto_speed_scale("asw_drone_auto_speed_scale", "0.5", FCVAR_CHEAT, "Speed scale for the drones while melee attacking");
 ConVar asw_drone_health("asw_drone_health", "40", FCVAR_CHEAT, "How much health the Swarm drones have");
 
+ConVar asw_drone_jumper_health("asw_drone_jumper_health", "40", FCVAR_CHEAT, "Base health for drone jumpers.");	//Ch1ckensCoop: Used by hordemode.
+
 // these settings make the drones quite undodgeable and more lethal
 //ConVar asw_drone_yaw_speed("asw_drone_yaw_speed", "32.0", FCVAR_CHEAT, "How fast the swarm drone can turn");
 //ConVar asw_drone_yaw_speed_attacking("asw_drone_yaw_speed_attacking", "16.0", FCVAR_CHEAT, "How fast the swarm drone can turn while doing a melee attack");
@@ -2340,11 +2342,18 @@ void CASW_Drone_Advanced::SetDoorBashYaw()
 
 void CASW_Drone_Advanced::SetHealthByDifficultyLevel()
 {
-	int iHealth = MAX(25, ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_drone_health.GetInt()));
+	int iHealth = ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_drone_health.GetInt());
+	//MAX(25, ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_drone_health.GetInt()));	//Ch1ckensCoop: NOOOOO!!!! I want my control.
 	if (asw_debug_alien_damage.GetBool())
 		Msg("Setting drone's initial health to %d\n", iHealth);
 	SetHealth(iHealth);
 	SetMaxHealth(iHealth);
+	if (FClassnameIs(this, "asw_drone_jumper"))
+	{
+		iHealth = ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_drone_jumper_health.GetInt());
+		SetHealth(iHealth);
+		SetMaxHealth(iHealth);
+	}
 	SetHitboxSet(0);
 }
 

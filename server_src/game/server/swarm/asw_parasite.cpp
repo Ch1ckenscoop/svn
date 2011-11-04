@@ -33,6 +33,8 @@ ConVar asw_parasite_speedboost( "asw_parasite_speedboost", "1.0", FCVAR_CHEAT, "
 ConVar asw_infest_angle("asw_infest_angle", "0", 0, "Angle adjustment for parasite infestation attachment");
 ConVar asw_infest_pitch("asw_infest_pitch", "-45", 0, "Angle adjustment for parasite infestation attachment");
 ConVar asw_parasite_inside("asw_parasite_inside", "0", FCVAR_NONE, "If set, parasites will burrow into their victims rather than staying attached");
+ConVar asw_parasite_health("asw_parasite_health", "25", FCVAR_CHEAT, "Base health of parasites.");
+ConVar asw_parasite_defanged_health("asw_parasite_defanged_health", "10", FCVAR_CHEAT, "Base health of defanged parasites.");
 extern ConVar asw_debug_alien_damage;
 extern ConVar asw_god;
 extern ConVar sv_gravity;
@@ -111,14 +113,14 @@ void CASW_Parasite::Spawn( void )
 	if (FClassnameIs(this, "asw_parasite_defanged"))
 	{
 		m_bDefanged = true;
-		m_iHealth	= ASWGameRules()->ModifyAlienHealthBySkillLevel(10);
+		m_iHealth	= ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_parasite_defanged_health.GetInt());
 		SetBodygroup( 0, 1 );
 		m_fSuicideTime = gpGlobals->curtime + 60;
 	}
 	else
 	{
 		m_bDefanged = false;
-		m_iHealth	= ASWGameRules()->ModifyAlienHealthBySkillLevel(25);
+		m_iHealth	= ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_parasite_health.GetInt());
 		SetBodygroup( 0, 0 );
 		m_fSuicideTime = 0;
 	}
