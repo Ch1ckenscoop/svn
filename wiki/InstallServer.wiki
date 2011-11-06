@@ -1,5 +1,5 @@
 #summary How to install the Ch1ckensCoop server.
-#labels Featured,Tutorial
+#labels Featured
 
 = Installing Ch1ckensCoop =
 
@@ -22,3 +22,7 @@ http://ch1ckenscoop.googlecode.com/svn-history/r215/wiki/tsvn_logo.png
   * Tick the box for "Select all" and click OK.
 
   * Good job! You've installed the Ch1ckensCoop Alien Swarm Server and can now run it by double-clicking the "Start Server" batch file in your AlienSwarmServer folder.
+
+= What's Next? =
+
+  * [Changing_Settings Modifying Ch1ckensCoop]
