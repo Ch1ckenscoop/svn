@@ -12,13 +12,61 @@ To avoid spamming the wiki with tons of asw_hordemode cvars, I've decided to agg
 
 ==== asw_hordemode ====
 
+Enables/disables hordemode.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `0` || [FCVAR_CHEAT] || [Bool] ||
+
 ==== asw_hordemode_debug ====
+
+Shows debug messages for hordemode. Set to 2 for more verbose messages.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `0` || [FCVAR_CHEAT] || [Int] ||
 
 ==== asw_hordemode_update_mode ====
 
+If non-zero, update this often. If zero, update only after each horde has finished spawning.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `0` || [FCVAR_CHEAT] || [Int] ||
+
 ==== asw_hordemode_mode ====
 
+Set to 0 to randomize alien healths only. Set to 1 to randomized spawned aliens as well.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `1` || [FCVAR_CHEAT] || [Int] ||
+
 ==== asw_hordemode_aliens ====
+
+Binary flags of aliens to spawn. Note: will not spawn aliens set in this cvar if their max spawn is 0.
+
+Flags are as follows:
+
+  * Drone: 1
+  * Buzzer: 2
+  * Parasite: 4
+  * Shieldbug: 8
+  * Drone Jumper: 16
+  * Harvester: 32
+  * Defanged parasite: 64
+  * Queen: 128
+  * Boomer: 256
+  * Ranger: 512
+  * Mortar: 1024
+  * Shaman: 2048
+  * Uber Drone: 4096
+  * Beta Drone: 8192
+  * Beta Shieldbug: 16384
+  * Beta Harvester: 32768
+
+All aliens would be `65535`. So if you wanted to spawn all types of drones and rangers, the equation would be this:
+
+`1 + 16 + 4096 + 512 = 4625`
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `65535` || [FCVAR_CHEAT] || [Int] ||
 
 = Alien Health Cvars =
 
