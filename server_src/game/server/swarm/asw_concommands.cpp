@@ -1017,8 +1017,8 @@ void asw_gimme_ammo_f(void)
 				pWeapon->m_iClip2 = pWeapon->GetMaxClip2();
 
 				// give the marine a load of ammo of that type
-				pMarine->GiveAmmo(10000, pWeapon->GetPrimaryAmmoType());
-				pMarine->GiveAmmo(10000, pWeapon->GetSecondaryAmmoType());
+				pMarine->GiveAmmo(1000000, pWeapon->GetPrimaryAmmoType());		//Ch1ckensCoop: Add a few more zeros ;)
+				pMarine->GiveAmmo(1000000, pWeapon->GetSecondaryAmmoType());
 			}
 		}
 	}

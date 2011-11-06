@@ -329,7 +329,7 @@ void CASW_Director::OnHordeFinishedSpawning()
 
 	//Ch1ckensCoop: Let horde mode know that the horde has finished spawning.
 	if (ASWHordeMode())
-		ASWHordeMode()->UpdateHordeMode();
+		ASWHordeMode()->HordeFinishedSpawning();
 }
 
 void CASW_Director::UpdateSpawningState()

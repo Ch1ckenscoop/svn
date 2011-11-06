@@ -23,11 +23,12 @@ public:
 		BOOMER_INDEX,
 		RANGER_INDEX,
 		MORTAR_INDEX,
-		SHAMEN_INDEX,
+		SHAMAN_INDEX,
 		UBER_INDEX,
 
 		BETA_DRONE_INDEX,
 		BETA_SHIELDBUG_INDEX,
+		BETA_HARVESTER_INDEX,
 
 		HIGHEST_INDEX,	//Ch1ckensCoop: If you're going to add anything, add it before this!
 	};
@@ -57,8 +58,11 @@ public:
 	virtual int GetRandomValidAlien();
 	virtual void InitAlienData();
 	virtual void UpdateHordeMode();
+	virtual void RandomizeHealth(int alienNum);	//Randomize a specific alien type's health.
+	virtual void RandomizeHealth();	//Randomize all alien healths.
 
 	float fl_LastThinkTime;
+	int i_LastAlienClass;
 	
 };
 

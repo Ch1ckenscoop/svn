@@ -1,0 +1,1 @@
+DO NOT edit the files in this folder. Instead, copy (or create) the config you want to edit to the asw_mapconfigs/custom/ folder and edit it there. It will be run automatically.

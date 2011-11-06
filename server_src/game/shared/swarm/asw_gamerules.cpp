@@ -142,7 +142,7 @@ extern ConVar old_radius_damage;
 	ConVar sv_timeout_when_fully_connected( "sv_timeout_when_fully_connected", "30", FCVAR_NONE, "Once fully connected, player will be kicked if he doesn't send a network message within this interval." );
 	ConVar mm_swarm_state( "mm_swarm_state", "ingame", FCVAR_DEVELOPMENTONLY );
 
-	ConVar asw_map_configs("asw_map_configs", "1", FCVAR_NONE, "On mapchange: exec asw_mapconfigs/<bspname>");
+	ConVar asw_map_configs("asw_map_configs", "1", FCVAR_NONE, "On mapchange: exec asw_mapconfigs/<bspname> and asw_mapconfigs/custom/<bspname>.");
 	ConVar asw_full_treatment_tradeoff("asw_full_treatment_tradeoff", "1", FCVAR_NONE, "Remove some useless entities in exchange for more aliens on syntek_hospital.");
 
 	static void UpdateMatchmakingTagsCallback( IConVar *pConVar, const char *pOldValue, float flOldValue )
@@ -6659,6 +6659,11 @@ void CAlienSwarm::LevelInitPostEntity()
 		//Ch1ckensCoop: Fix the per-map configs.
 		char execCmd[350];
 		Q_snprintf(execCmd, sizeof(execCmd), "exec asw_mapconfigs/%s\n", mapName);
+		engine->ServerCommand(execCmd);
+		DevMsg("Ran command '%s'\n", execCmd);
+
+		
+		Q_snprintf(execCmd, sizeof(execCmd), "exec asw_mapconfigs/custom/%s\n", mapName);
 		engine->ServerCommand(execCmd);
 		DevMsg("Ran command '%s'\n", execCmd);
 	}
