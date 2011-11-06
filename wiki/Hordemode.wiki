@@ -26,33 +26,181 @@ All cvars in this category do the same thing: Set the minimum or maximum health 
 
 == Drones ==
 
+==== asw_hordemode_drone_health_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `50` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_health_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `25` || [FCVAR_CHEAT] || [Int] ||
+
+----
+
 == Uber Drones ==
+
+==== asw_hordemode_drone_health_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `350` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_health_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `275` || [FCVAR_CHEAT] || [Int] ||
+
+----
 
 == Drone Jumpers ==
 
+==== asw_hordemode_drone_health_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `45` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_health_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `30` || [FCVAR_CHEAT] || [Int] ||
+
+----
+
 == Beta Drones ==
+
+==== asw_hordemode_drone_health_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `50` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_health_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `25` || [FCVAR_CHEAT] || [Int] ||
+
+----
 
 == Buzzers ==
 
+==== asw_hordemode_drone_health_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `35` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_health_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `10` || [FCVAR_CHEAT] || [Int] ||
+
+----
+
 == Parasites ==
+
+==== asw_hordemode_drone_health_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `35` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_health_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `20` || [FCVAR_CHEAT] || [Int] ||
+
+----
 
 == Defanged Parasites ==
 
+==== asw_hordemode_drone_health_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `20` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_health_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `10` || [FCVAR_CHEAT] || [Int] ||
+
+----
+
 == Shieldbugs == 
+
+==== asw_hordemode_drone_health_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `1500` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_health_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `750` || [FCVAR_CHEAT] || [Int] ||
+
+----
 
 == Beta Shieldbugs ==
 
+==== asw_hordemode_drone_health_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `1500` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_health_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `750` || [FCVAR_CHEAT] || [Int] ||
+
+----
+
 == Harvesters ==
+
+==== asw_hordemode_drone_health_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `325` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_health_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `150` || [FCVAR_CHEAT] || [Int] ||
+
+----
 
 == Beta Harvesters ==
 
+==== asw_hordemode_drone_health_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `325` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_health_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `150` || [FCVAR_CHEAT] || [Int] ||
+
+----
+
 == Queens ==
+
+==== asw_hordemode_drone_health_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `2500` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_health_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `1000` || [FCVAR_CHEAT] || [Int] ||
+
+----
 
 == Boomers ==
 
+==== asw_hordemode_drone_health_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `900` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_health_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `750` || [FCVAR_CHEAT] || [Int] ||
+
+----
+
 == Rangers ==
 
+==== asw_hordemode_drone_health_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `125` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_health_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `75` || [FCVAR_CHEAT] || [Int] ||
+
+----
+
 == Mortars ==
+
+==== asw_hordemode_drone_health_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `425` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_health_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `300` || [FCVAR_CHEAT] || [Int] ||
 
 = Alien Maximums/Minimums =
 
@@ -60,30 +208,178 @@ All cvars in this category do the same thing: Set the minimum or maximum number 
 
 == Drones ==
 
+==== asw_hordemode_drone_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `50` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `25` || [FCVAR_CHEAT] || [Int] ||
+
+----
+
 == Uber Drones ==
+
+==== asw_hordemode_drone_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `50` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `25` || [FCVAR_CHEAT] || [Int] ||
+
+----
 
 == Drone Jumpers ==
 
+==== asw_hordemode_drone_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `50` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `25` || [FCVAR_CHEAT] || [Int] ||
+
+----
+
 == Beta Drones ==
+
+==== asw_hordemode_drone_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `50` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `25` || [FCVAR_CHEAT] || [Int] ||
+
+----
 
 == Buzzers ==
 
+==== asw_hordemode_drone_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `50` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `25` || [FCVAR_CHEAT] || [Int] ||
+
+----
+
 == Parasites ==
+
+==== asw_hordemode_drone_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `50` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `25` || [FCVAR_CHEAT] || [Int] ||
+
+----
 
 == Defanged Parasites ==
 
+==== asw_hordemode_drone_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `50` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `25` || [FCVAR_CHEAT] || [Int] ||
+
+----
+
 == Shieldbugs == 
+
+==== asw_hordemode_drone_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `50` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `25` || [FCVAR_CHEAT] || [Int] ||
+
+----
 
 == Beta Shieldbugs ==
 
+==== asw_hordemode_drone_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `50` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `25` || [FCVAR_CHEAT] || [Int] ||
+
+----
+
 == Harvesters ==
+
+==== asw_hordemode_drone_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `50` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `25` || [FCVAR_CHEAT] || [Int] ||
+
+----
 
 == Beta Harvesters ==
 
+==== asw_hordemode_drone_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `50` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `25` || [FCVAR_CHEAT] || [Int] ||
+
+----
+
 == Queens ==
+
+==== asw_hordemode_drone_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `50` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `25` || [FCVAR_CHEAT] || [Int] ||
+
+----
 
 == Boomers ==
 
+==== asw_hordemode_drone_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `50` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `25` || [FCVAR_CHEAT] || [Int] ||
+
+----
+
 == Rangers ==
 
+==== asw_hordemode_drone_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `50` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `25` || [FCVAR_CHEAT] || [Int] ||
+
+----
+
 == Mortars ==
+
+==== asw_hordemode_drone_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `50` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_drone_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `25` || [FCVAR_CHEAT] || [Int] ||
