@@ -3,16 +3,87 @@
 
 To avoid spamming the wiki with tons of asw_hordemode cvars, I've decided to aggregate them all onto this page.
 
+----
+*Table of Contents*
 <wiki:toc max_depth="2" />
+----
 
 = Core Hordemode Cvars =
+
+==== asw_hordemode ====
+
+==== asw_hordemode_debug ====
+
+==== asw_hordemode_update_mode ====
+
+==== asw_hordemode_mode ====
+
+==== asw_hordemode_aliens ====
 
 = Alien Health Cvars =
 
 All cvars in this category do the same thing: Set the minimum or maximum health for an alien. The health for the alien is a random number between these two cvars.
 
+== Drones ==
 
+== Uber Drones ==
+
+== Drone Jumpers ==
+
+== Beta Drones ==
+
+== Buzzers ==
+
+== Parasites ==
+
+== Defanged Parasites ==
+
+== Shieldbugs == 
+
+== Beta Shieldbugs ==
+
+== Harvesters ==
+
+== Beta Harvesters ==
+
+== Queens ==
+
+== Boomers ==
+
+== Rangers ==
+
+== Mortars ==
 
 = Alien Maximums/Minimums =
 
 All cvars in this category do the same thing: Set the minimum or maximum number of an alien to spawn. The number to spawn is chosen as a random number between these two cvars.
+
+== Drones ==
+
+== Uber Drones ==
+
+== Drone Jumpers ==
+
+== Beta Drones ==
+
+== Buzzers ==
+
+== Parasites ==
+
+== Defanged Parasites ==
+
+== Shieldbugs == 
+
+== Beta Shieldbugs ==
+
+== Harvesters ==
+
+== Beta Harvesters ==
+
+== Queens ==
+
+== Boomers ==
+
+== Rangers ==
+
+== Mortars ==
