@@ -1,0 +1,18 @@
+#summary Hordemode cvars and descriptions.
+#labels D-Cvar,Featured
+
+To avoid spamming the wiki with tons of asw_hordemode cvars, I've decided to aggregate them all onto this page.
+
+<wiki:toc max_depth="2" />
+
+= Core Hordemode Cvars =
+
+= Alien Health Cvars =
+
+All cvars in this category do the same thing: Set the minimum or maximum health for an alien. The health for the alien is a random number between these two cvars.
+
+
+
+= Alien Maximums/Minimums =
+
+All cvars in this category do the same thing: Set the minimum or maximum number of an alien to spawn. The number to spawn is chosen as a random number between these two cvars.
