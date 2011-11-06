@@ -7,5 +7,7 @@ Allows custom config files for each map.
 
 To use, create the folder `swarm/cfg/asw_mapconfigs/`. Then create a cfg file for the name of the map you would like to configure. For example, `asi-jac1-landingbay_01.cfg`. You can now place any custom settings for that map in this cfg file.
 
+*NOTE:* It is recommended to place your settings in a file called `<mapname>_custom.cfg`. Otherwise, your settings will be overwritten in an update.
+
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r288 || `1` || [FCVAR_NONE] || [Bool] ||
