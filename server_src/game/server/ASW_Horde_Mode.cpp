@@ -22,6 +22,7 @@ ConVar asw_hordemode_aliens("asw_hordemode_aliens", "65535", FCVAR_CHEAT, "Binar
 //ConVar asw_hordemode_aliens_static("asw_hordemode_aliens_static", "0", FCVAR_CHEAT, "Single binary flag of aliens to spawn in static mode.");
 
 //Ch1ckensCoop: Hordemode horde_size_max settings and alien health settings
+
 //Drones
 ConVar asw_hordemode_drone_max("asw_hordemode_drone_max", "1", FCVAR_CHEAT, "Maximum drones to spawn.");
 ConVar asw_hordemode_drone_min("asw_hordemode_drone_min", "1", FCVAR_CHEAT, "Minimum drones to spawn.");
@@ -264,7 +265,8 @@ int CASW_Horde_Mode::GetRandomValidAlien()
 
 void CASW_Horde_Mode::RandomizeHealth(int alienNum)
 {
-	AlienInfoArray[alienNum].alienHealthCvar.SetValue(RandomInt(AlienInfoArray[alienNum].healthMin.GetInt(), AlienInfoArray[alienNum].healthMax.GetInt()));
+	if (!(AlienInfoArray[alienNum].pAlienClassName == "asw_queen" && AlienInfoArray[alienNum].max == 0))
+		AlienInfoArray[alienNum].alienHealthCvar.SetValue(RandomInt(AlienInfoArray[alienNum].healthMin.GetInt(), AlienInfoArray[alienNum].healthMax.GetInt()));
 }
 
 void CASW_Horde_Mode::RandomizeHealth()
