@@ -1,0 +1,9 @@
+#summary Maximum parasites to spawn.
+#labels D-Cvar
+
+= Description =
+
+Maximum parasites (respawns) an egg can have. This cvar has no affect if asw_egg_respawn is disabled. If this cvar is 0, eggs will respawn forever.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r333 || `0` || [FCVAR_CHEAT] || [Int] ||
