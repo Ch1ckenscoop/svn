@@ -1,0 +1,9 @@
+#summary Sets the health of the queen.
+#labels D-Cvar
+
+= Description =
+
+If non-zero, forces the queen's health to this amount no matter what difficulty level.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r320 || `0` || [FCVAR_CHEAT] || [Int] ||
