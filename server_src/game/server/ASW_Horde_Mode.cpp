@@ -265,7 +265,7 @@ int CASW_Horde_Mode::GetRandomValidAlien()
 
 void CASW_Horde_Mode::RandomizeHealth(int alienNum)
 {
-	if (!(AlienInfoArray[alienNum].pAlienClassName == "asw_queen" && AlienInfoArray[alienNum].max == 0))
+	if (!(AlienInfoArray[alienNum].pAlienClassName == "asw_queen" && AlienInfoArray[alienNum].max.GetInt() == 0))
 		AlienInfoArray[alienNum].alienHealthCvar.SetValue(RandomInt(AlienInfoArray[alienNum].healthMin.GetInt(), AlienInfoArray[alienNum].healthMax.GetInt()));
 }
 

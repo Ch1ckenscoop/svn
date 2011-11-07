@@ -29,10 +29,10 @@
 #define EGG_HATCH_ANIM "egg_pop"
 
 #define ASW_EGG_HATCH_DELAY 3.0f
-#define ASW_EGG_ALWAYS_BURST_DISTANCE 120.0f
+//#define ASW_EGG_ALWAYS_BURST_DISTANCE 120.0f
 #define ASW_EGG_BURST_DISTANCE_EASY 250.0f
-#define ASW_EGG_BURST_DISTANCE 450.0f
-#define ASW_EGG_RESET_DELAY 20.0f
+//#define ASW_EGG_BURST_DISTANCE 450.0f
+//#define ASW_EGG_RESET_DELAY 20.0f
 
 
 LINK_ENTITY_TO_CLASS( asw_egg, CASW_Egg );
@@ -81,6 +81,11 @@ END_DATADESC()
 
 ConVar asw_egg_respawn( "asw_egg_respawn", "0", FCVAR_CHEAT, "If set, eggs will respawn the parasite inside" );
 ConVar asw_egg_respawn_time("asw_egg_respawn_time", "20.0", FCVAR_CHEAT, "Sets how fast eggs will respawn parasites.");
+
+ConVar asw_egg_health("asw_egg_health", "50", FCVAR_CHEAT, "Sets the health of eggs.");
+ConVar ASW_EGG_ALWAYS_BURST_DISTANCE("asw_egg_always_burst_distance", "120.0", FCVAR_CHEAT, "*Always* burst if marines are this close.");
+ConVar ASW_EGG_BURST_DISTANCE("asw_egg_burst_distance", "450.0", FCVAR_CHEAT, "Sometimes burst if a marine comes this close.");
+ConVar asw_egg_max_respawns("asw_egg_max_respawns", "0", FCVAR_CHEAT, "Maximum parasites for an egg to spawn. 0 = infinite.");
 
 float CASW_Egg::s_fNextSpottedChatterTime = 0;
 
@@ -154,7 +159,7 @@ void CASW_Egg::Spawn( void )
 	}
 
 	m_takedamage = DAMAGE_YES;
-	m_iHealth = 50;
+	m_iHealth = asw_egg_health.GetInt();
 	m_iMaxHealth = m_iHealth;
 	m_fNextMarineCheckTime = gpGlobals->curtime + random->RandomFloat(5.0f, 10.0f);
 
@@ -162,6 +167,8 @@ void CASW_Egg::Spawn( void )
 	{
 		ASWGameResource()->m_iStartingEggsInMap++;
 	}
+
+	m_iRespawns = asw_egg_max_respawns.GetInt();	//Ch1ckensCoop: Control over how many times an egg can respawn.
 }
 
 bool CASW_Egg::CreateVPhysics()
@@ -187,17 +194,6 @@ void CASW_Egg::Precache()
 	BaseClass::Precache();
 	UTIL_PrecacheOther( "asw_parasite" );
 }
-
-
-// int CASW_Egg::ShouldTransmit( const CCheckTransmitInfo *pInfo )
-// {
-// 	return FL_EDICT_ALWAYS;
-// }
-// 
-// int CASW_Egg::UpdateTransmitState()
-// {
-// 	return SetTransmitState( FL_EDICT_FULLCHECK );
-// }
 
 void CASW_Egg::SetupParasiteThink()
 {
@@ -271,7 +267,7 @@ void CASW_Egg::AnimThink( void )
 			else
 				s_fNextSpottedChatterTime = gpGlobals->curtime + 1.0f;		
 		}
-		float flOpenDist = ASW_EGG_BURST_DISTANCE;
+		float flOpenDist = ASW_EGG_BURST_DISTANCE.GetFloat();
 		if ( ASWGameRules() && ASWGameRules()->GetSkillLevel() == 1 )
 		{
 			flOpenDist = ASW_EGG_BURST_DISTANCE_EASY;
@@ -436,10 +432,11 @@ void  CASW_Egg::Hatch(CBaseEntity* pOther)
 			GetParasite()->Wake();
 		}
 
-		if ( asw_egg_respawn.GetBool() )
+		if ( asw_egg_respawn.GetBool() && (m_iRespawns < asw_egg_max_respawns.GetInt() || asw_egg_max_respawns.GetInt() == 0) )
 		{
 			//m_fEggResetTime = gpGlobals->curtime + ASW_EGG_RESET_DELAY * random->RandomFloat(1.0f, 2.0f);
 			m_fEggResetTime = gpGlobals->curtime + asw_egg_respawn_time.GetFloat();
+			m_iRespawns++;
 		}
 	}
 }
