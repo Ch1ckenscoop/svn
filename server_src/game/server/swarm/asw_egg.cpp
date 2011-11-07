@@ -275,11 +275,11 @@ void CASW_Egg::AnimThink( void )
 		if ( pMarine  )
 		{
 			//Msg( "Egg %d check.  Distance = %f\n", entindex(), marine_distance );
-			if ( marine_distance <= ASW_EGG_ALWAYS_BURST_DISTANCE )
+			if ( marine_distance <= ASW_EGG_ALWAYS_BURST_DISTANCE.GetFloat() )
 			{
 				Open(pMarine);
 			}
-			else if ( marine_distance <= ASW_EGG_BURST_DISTANCE && RandomFloat() < 0.1f )
+			else if ( marine_distance <= ASW_EGG_BURST_DISTANCE.GetFloat() && RandomFloat() < 0.1f )
 			{
 				Open(pMarine);
 			}

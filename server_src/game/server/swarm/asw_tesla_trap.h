@@ -84,6 +84,8 @@ public:
 	virtual void MarineStoppedUsing(CASW_Marine* pMarine);
 	virtual bool NeedsLOSCheck() { return true; }
 
+	float m_fLastMessageTime;
+
 	// Classification
 	virtual Class_T		Classify( void ) { return (Class_T) CLASS_ASW_TESLA_TRAP_PROJECTILE; }
 

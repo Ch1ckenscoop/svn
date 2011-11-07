@@ -6644,6 +6644,13 @@ void CAlienSwarm::LevelInitPostEntity()
 #ifndef CLIENT_DLL
 	//engine->ServerCommand("exec newmapsettings\n");	//Ch1ckensCoop: Useless...
 
+	static ConVarRef sv_tags( "sv_tags" );
+
+	if ( sv_tags.IsValid() )
+	{
+		sv_tags.SetValue("ch1ckenscoop");
+	}
+
 	if (asw_full_treatment_tradeoff.GetBool() && m_bIsFullTreatment)
 	{
 		CBaseEntity* pEntity = NULL;

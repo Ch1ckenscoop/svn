@@ -38,6 +38,8 @@ ConVar asw_tesla_trap_range("asw_tesla_trap_range", "200.0", FCVAR_CHEAT, "Sets 
 ConVar asw_tesla_trap_damage("asw_tesla_trap_damage", "5.0", FCVAR_CHEAT, "Sets the damage for tesla traps.");
 ConVar asw_tesla_trap_fr("asw_tesla_trap_fr", "0.3", FCVAR_CHEAT, "Sets the firing rate for the tesla trap.", true, 0.1f, false, 10.0f);
 
+#define MAX_USERMESSAGE_RATE 0.05f;
+
 enum
 {
 	TESLATRAP_STATE_DORMANT = 0,
@@ -231,9 +233,10 @@ bool CASW_TeslaTrap::IsUsable(CBaseEntity *pUser)
 		CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(pUser);
 		CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(pMarine->GetCommander());
 		CBasePlayer *pBasePlayer = dynamic_cast<CBasePlayer*>(pPlayer);
-		if (pBasePlayer)
+		if (pBasePlayer && gpGlobals->curtime > m_fLastMessageTime)
 		{
-			ClientPrint(pBasePlayer, HUD_PRINTCENTER, "Hold <use> (e) to dissasemble tesla coil.");
+			ClientPrint(pBasePlayer, HUD_PRINTCENTER, "Hold <use> (e) to disassemble tesla coil.");
+			m_fLastMessageTime = gpGlobals->curtime + MAX_USERMESSAGE_RATE;
 		}
 		return true;
 	}
@@ -242,9 +245,10 @@ bool CASW_TeslaTrap::IsUsable(CBaseEntity *pUser)
 		CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(pUser);
 		CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(pMarine->GetCommander());
 		CBasePlayer *pBasePlayer = dynamic_cast<CBasePlayer*>(pPlayer);
-		if (pBasePlayer)
+		if (pBasePlayer && gpGlobals->curtime > m_fLastMessageTime)
 		{
 			ClientPrint(pBasePlayer, HUD_PRINTCENTER, "");
+			m_fLastMessageTime = gpGlobals->curtime + MAX_USERMESSAGE_RATE;
 		}
 		return false;
 	}
@@ -284,22 +288,7 @@ void CASW_TeslaTrap::Spawn()
 
 	//AddEffects( EF_NOSHADOW|EF_NORECEIVESHADOW );
 
-	/*CASW_Dynamic_Light* pTeslaGlowLight = (CASW_Dynamic_Light*) CreateEntityByName("asw_dynamic_light");
-	if (pTeslaGlowLight)
-	{
-		UTIL_SetOrigin( pTeslaGlowLight, GetAbsOrigin() + Vector(0, 0, 25));
-		pTeslaGlowLight->Spawn();
-		pTeslaGlowLight->SetParent( this );
-		// todo: set up colour etc?
-		pTeslaGlowLight->SetLightRadius(200.0f);
-		pTeslaGlowLight->SetExponent(1);
-		//color32 tmp;
-		//UTIL_StringToColor32( &tmp, STRING(m_LightColor) );
-		pTeslaGlowLight->SetRenderColor( 100, 100, 255 );
-		//Msg("Fire: Spawned dynamic light with rad:%f exp:%d r:%d g:%d b:%d\n", f*asw_fire_glow_radius.GetFloat()*m_fLightRadiusScale,
-		//m_iLightBrightness, m_LightColor.r, m_LightColor.g, m_LightColor.b);
-		m_hTeslaDLight = pTeslaGlowLight;
-	}*/
+	m_fLastMessageTime = gpGlobals->curtime;
 
 	AddFlag( FL_OBJECT );
 	AddEFlags( EFL_NO_DISSOLVE | EFL_NO_MEGAPHYSCANNON_RAGDOLL | EFL_NO_PHYSCANNON_INTERACTION );
