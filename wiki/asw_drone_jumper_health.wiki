@@ -6,4 +6,4 @@
 Sets the health of drone jumpers.
 
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
-|| r320 || `40` || [FCVAR_CHEAT] || [Float] ||
+|| r320 || `40` || [FCVAR_CHEAT] || [Int] ||
