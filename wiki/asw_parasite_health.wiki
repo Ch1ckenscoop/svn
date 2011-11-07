@@ -6,4 +6,4 @@
 Sets the health of parasites.
 
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
-|| r320 || `40` || [FCVAR_CHEAT] || [Float] ||
+|| r320 || `25` || [FCVAR_CHEAT] || [Float] ||
