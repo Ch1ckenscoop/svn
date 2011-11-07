@@ -5,5 +5,7 @@
 
 Forces eggs to burst if they're this close to a marine.
 
+See also: [asw_egg_burst_distance].
+
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r333 || `120.0` || [FCVAR_CHEAT] || [Float] ||
