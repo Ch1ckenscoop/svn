@@ -6,4 +6,4 @@
 Sets the base health of harvesters.
 
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
-|| r257 || `200` || [FCVAR_CHEAT] || [Float] ||
+|| r257 || `200` || [FCVAR_CHEAT] || [Int] ||
