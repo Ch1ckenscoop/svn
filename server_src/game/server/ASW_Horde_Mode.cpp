@@ -215,7 +215,7 @@ void CASW_Horde_Mode::UpdateHordeMode()
 	//ConVarRef alienHealthMin = AlienInfoArray[alienIndex].healthMin;
 	ConVarRef alienMax = AlienInfoArray[alienIndex].max;
 	ConVarRef alienMin = AlienInfoArray[alienIndex].min;
-	//ConVarRef alienHealthCvar = AlienInfoArray[alienIndex].alienHealthCvar;
+	ConVarRef alienHealthCvar = AlienInfoArray[alienIndex].alienHealthCvar;
 	ConVarRef alienBetaCvar = AlienInfoArray[alienIndex].betaAlienConVar;
 	bool alienBetaCvarReversed = AlienInfoArray[alienIndex].betaAlienCvarReversed;
 	bool alienIsBeta = AlienInfoArray[alienIndex].isBeta;
@@ -223,7 +223,7 @@ void CASW_Horde_Mode::UpdateHordeMode()
 
 	asw_horde_size_max.SetValue(alienMax.GetInt());
 	asw_horde_size_min.SetValue(alienMin.GetInt());
-	//alienHealthCvar.SetValue(RandomInt(alienHealthMin.GetInt(), alienHealthMax.GetInt()));
+	RandomizeHealth();
 	
 	if (alienIsBeta && alienBetaCvar.GetLinkedConVar())
 	{
@@ -250,13 +250,16 @@ void CASW_Horde_Mode::UpdateHordeMode()
 		else
 			boolText = "false";
 
-		Msg("Hordemode set alien class to %s, health to %i, isBeta = %s.\n", alienClassName, alienHealthCvar.GetInt(), boolText);
+		engine->Con_NPrintf( 19, "Hordemode set alien class to %s, health to %i, isBeta = %s.\n", alienClassName, alienHealthCvar.GetInt(), boolText);
+		Msg("Hordemode set alien class to %s, health to %i, isBeta = %s.\n", alienClassName, alienHealthCvar.GetInt(), boolText);		
 	}
 }
 
 int CASW_Horde_Mode::GetRandomValidAlien()
 {
 	int alienNum = 1;
+	int allowedAliens = asw_hordemode_aliens.GetInt();
+	int alienMax = 0;
 	do 
 	{
 		alienNum = RandomInt(0, HIGHEST_INDEX - 1);
@@ -264,10 +267,9 @@ int CASW_Horde_Mode::GetRandomValidAlien()
 		if (asw_hordemode_debug.GetInt() == 2)
 			Msg("Hordemode: alienNum = %i\n", alienNum);
 
-		//Randomize health here, so it has a chance of getting randomized even if that alien isn't selected.
-		RandomizeHealth(alienNum);
+		alienMax = AlienInfoArray[alienNum].max.GetInt();
 	}
-	while (i_LastAlienClass == alienNum || !(asw_hordemode_aliens.GetInt() & AlienInfoArray[alienNum].flag) || (AlienInfoArray[alienNum].max.GetInt() == 0));
+	while ((allowedAliens & AlienInfoArray[alienNum].flag) == 0 || (alienMax == 0));
 	i_LastAlienClass = alienNum;
 	return alienNum;
 }
