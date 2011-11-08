@@ -33,7 +33,7 @@ If non-zero, update this often. If zero, update only after each horde has finish
 
 ==== asw_hordemode_mode ====
 
-Set to 0 to randomize alien healths only. Set to 1 to randomized spawned aliens as well.
+Set to 0 to randomize alien healths only. Set to 1 to randomize spawned aliens and healths (binary setting + max horde size settings + health cvars). Set to 2 to randomize spawned aliens only (binary setting + max horde size settings), while not changing alien healths.
 
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r326 || `1` || [FCVAR_CHEAT] || [Int] ||
