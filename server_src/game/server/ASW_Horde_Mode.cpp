@@ -15,7 +15,7 @@ extern ConVar asw_horde_size_max;
 ConVar asw_hordemode("asw_hordemode", "0", FCVAR_CHEAT, "Enables hordemode on the server.");
 ConVar asw_hordemode_debug("asw_hordemode_debug", "0", FCVAR_CHEAT, "Show hordemode debug messages.");
 ConVar asw_hordemode_update_mode("asw_hordemode_update_mode", "0", FCVAR_CHEAT, "0 - update after each horde spawn; >0 - Update every x seconds.");
-ConVar asw_hordemode_mode("asw_hordemode_mode", "1", FCVAR_CHEAT, "0 = Health settings only; 1 = Binary + horde_size_max settings + health");
+ConVar asw_hordemode_mode("asw_hordemode_mode", "1", FCVAR_CHEAT, "0 = Health settings only; 1 = Binary + horde_size_max settings + health; 2 = Binary + horde_size_max settings");
 
 //Ch1ckensCoop: Hordemode spawning settings
 ConVar asw_hordemode_aliens("asw_hordemode_aliens", "65535", FCVAR_CHEAT, "Binary flag of allowed aliens. (65535 = all)");
@@ -178,7 +178,7 @@ void CASW_Horde_Mode::FrameUpdatePostEntityThink()
 	asw_horde_override.SetValue(1);
 
 	float thinkRate = asw_hordemode_update_mode.GetFloat();
-	if (thinkRate > 0 && fl_LastThinkTime <= gpGlobals->curtime)
+	if (thinkRate > 0 && fl_LastThinkTime <= gpGlobals->curtime)	//Check if we're actually supposed to be updating on a timed basis.
 	{
 		UpdateHordeMode();
 		fl_LastThinkTime = gpGlobals->curtime + thinkRate;
@@ -223,8 +223,11 @@ void CASW_Horde_Mode::UpdateHordeMode()
 
 	asw_horde_size_max.SetValue(alienMax.GetInt());
 	asw_horde_size_min.SetValue(alienMin.GetInt());
-	RandomizeHealth();
-	
+
+	int mode = asw_hordemode_mode.GetInt();
+	if (mode == 0 || mode == 1)
+		RandomizeHealth();
+
 	if (alienIsBeta && alienBetaCvar.GetLinkedConVar())
 	{
 		if (!alienBetaCvarReversed)
