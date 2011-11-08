@@ -939,21 +939,30 @@ void CAlienSwarm::ReserveMarines()
 	if ( ASWGameResource() && ASWGameResource()->IsOfflineGame() )
 		return;
 
-	for (int i=0;i<ASW_NUM_MARINE_PROFILES;i++)
+	//Ch1ckensCoop: Marine reservation fix
+	for ( int i = 1; i <= gpGlobals->maxClients; i++ )
 	{
-		//Ch1ckensCoop: Marine reservation fix
-		//pGameResource->GetMarineResource(i)->GetCommander()->
+		CASW_Player* pPlayer = dynamic_cast<CASW_Player*>(UTIL_PlayerByIndex(i));
 
-		// if no-one was using this marine, skip it
-		if ( ( Q_strlen( STRING( GetCampaignSave()->m_LastCommanders[i] ) ) <= 1 )
-			|| !GetCampaignSave()->IsMarineAlive(i) )
-			continue;
-		Msg("reserving marine %d for %s\n", i, STRING(GetCampaignSave()->m_LastCommanders[i]));
-
-		// someone was using it, so flag the marine as reserved
-		if ( !pGameResource->IsRosterSelected( i ) )
-			pGameResource->SetRosterSelected( i, 2 );
+		if ( pPlayer )
+		{
+			pPlayer->ReserveMainMarine();
+		}
 	}
+
+	//for (int i=0;i<ASW_NUM_MARINE_PROFILES;i++)
+	//{
+
+	//	// if no-one was using this marine, skip it
+	//	if ( ( Q_strlen( STRING( GetCampaignSave()->m_LastCommanders[i] ) ) <= 1 )
+	//		|| !GetCampaignSave()->IsMarineAlive(i) )
+	//		continue;
+	//	Msg("reserving marine %d for %s\n", i, STRING(GetCampaignSave()->m_LastCommanders[i]));
+
+	//	// someone was using it, so flag the marine as reserved
+	//	if ( !pGameResource->IsRosterSelected( i ) )
+	//		pGameResource->SetRosterSelected( i, 2 );
+	//}
 
 	m_fReserveMarinesEndTime = gpGlobals->curtime + asw_reserve_marine_time.GetFloat();
 }

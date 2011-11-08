@@ -1953,6 +1953,31 @@ bool CASW_Player::CanSwitchToMarine(int num)
 	return false;
 }
 
+//Ch1ckensCoop: Reserve ONLY the first marine that the player owns.
+void CASW_Player::ReserveMainMarine()
+{
+	if (!ASWGameResource())
+		return;
+	int max_marines = ASWGameResource()->GetMaxMarineResources();
+	int num = 0;
+	for (int i=0;i<max_marines;i++)
+	{		
+		CASW_Marine_Resource* pMR = ASWGameResource()->GetMarineResource(i);
+		if (pMR)
+		{
+			if ((CASW_Player*) pMR->m_Commander == this)
+			{
+				num--;
+				if (num < 0 && pMR->GetMarineEntity() )
+				{
+					if ( !ASWGameResource()->IsRosterSelected( pMR->GetProfileIndex() ) )
+						ASWGameResource()->SetRosterSelected( pMR->GetProfileIndex(), 2 );
+				}
+			}
+		}
+	}
+}
+
 // select the nth marine in the marine info list owned by this player
 void CASW_Player::SwitchMarine(int num)
 {	
