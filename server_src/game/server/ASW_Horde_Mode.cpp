@@ -211,11 +211,11 @@ void CASW_Horde_Mode::UpdateHordeMode()
 		Msg("Alien index is %i.\n", alienIndex);
 
 	const char *alienClassName = AlienInfoArray[alienIndex].pAlienClassName;
-	ConVarRef alienHealthMax = AlienInfoArray[alienIndex].healthMax;
-	ConVarRef alienHealthMin = AlienInfoArray[alienIndex].healthMin;
+	//ConVarRef alienHealthMax = AlienInfoArray[alienIndex].healthMax;
+	//ConVarRef alienHealthMin = AlienInfoArray[alienIndex].healthMin;
 	ConVarRef alienMax = AlienInfoArray[alienIndex].max;
 	ConVarRef alienMin = AlienInfoArray[alienIndex].min;
-	ConVarRef alienHealthCvar = AlienInfoArray[alienIndex].alienHealthCvar;
+	//ConVarRef alienHealthCvar = AlienInfoArray[alienIndex].alienHealthCvar;
 	ConVarRef alienBetaCvar = AlienInfoArray[alienIndex].betaAlienConVar;
 	bool alienBetaCvarReversed = AlienInfoArray[alienIndex].betaAlienCvarReversed;
 	bool alienIsBeta = AlienInfoArray[alienIndex].isBeta;
@@ -243,7 +243,15 @@ void CASW_Horde_Mode::UpdateHordeMode()
 	//Finally, set the classname and we're ready to go!
 	asw_horde_class.SetValue(alienClassName);
 	if (asw_hordemode_debug.GetBool())
-		Msg("Hordemode set alien class to %s and health to %i.\n", alienClassName, alienHealthCvar.GetInt());
+	{
+		const char *boolText;
+		if (alienIsBeta)
+			boolText = "true";
+		else
+			boolText = "false";
+
+		Msg("Hordemode set alien class to %s, health to %i, isBeta = %s.\n", alienClassName, alienHealthCvar.GetInt(), boolText);
+	}
 }
 
 int CASW_Horde_Mode::GetRandomValidAlien()
@@ -260,6 +268,7 @@ int CASW_Horde_Mode::GetRandomValidAlien()
 		RandomizeHealth(alienNum);
 	}
 	while (i_LastAlienClass == alienNum || !(asw_hordemode_aliens.GetInt() & AlienInfoArray[alienNum].flag) || (AlienInfoArray[alienNum].max.GetInt() == 0));
+	i_LastAlienClass = alienNum;
 	return alienNum;
 }
 
