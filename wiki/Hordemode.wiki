@@ -250,6 +250,18 @@ All cvars in this category do the same thing: Set the minimum or maximum health 
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r326 || `300` || [FCVAR_CHEAT] || [Int] ||
 
+----
+
+== Shaman ==
+
+==== asw_hordemode_shaman_health_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `80` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_shaman_health_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `45` || [FCVAR_CHEAT] || [Int] ||
+
 = Alien Maximums/Minimums =
 
 All cvars in this category do the same thing: Set the minimum or maximum number of an alien to spawn. The number to spawn is chosen as a random number between these two cvars.
@@ -429,5 +441,17 @@ All cvars in this category do the same thing: Set the minimum or maximum number 
 || r326 || `1` || [FCVAR_CHEAT] || [Int] ||
 
 ==== asw_hordemode_mortar_min ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `1` || [FCVAR_CHEAT] || [Int] ||
+
+----
+
+== Shaman ==
+
+==== asw_hordemode_shaman_max ====
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r326 || `1` || [FCVAR_CHEAT] || [Int] ||
+
+==== asw_hordemode_shaman_min ====
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r326 || `1` || [FCVAR_CHEAT] || [Int] ||
