@@ -196,6 +196,10 @@ bool CASW_Campaign_Save::LoadGameFromFile(const char *szFileName)
 					m_LastCommanders[i] = stringID;
 					Q_snprintf(buffer, sizeof(buffer), "Slot%d", i);
 					m_LastMarineResourceSlot[i] = pkvSubSection->GetInt(buffer);
+
+					//Ch1ckensCoop: Remember primary marines for each player, so we can handle reservations properly.
+					Q_snprintf(buffer, sizeof(buffer), "Primary%d", i);
+					m_LastPrimaryMarines[i] = pkvSubSection->GetBool(buffer);
 				}				
 			}
 			
@@ -379,6 +383,10 @@ bool CASW_Campaign_Save::SaveGameToFile(const char *szFileName)
 		pSubSection->SetString(buffer, STRING(m_LastCommanders[i]));		
 		Q_snprintf(buffer, sizeof(buffer), "Slot%d", i);
 		pSubSection->SetInt( buffer, m_LastMarineResourceSlot[i] );
+			
+		//Ch1ckensCoop: Record which marine was primary for reservations.
+		Q_snprintf(buffer, sizeof(buffer), "Primary%d", i);
+		pSubSection->SetBool( buffer, m_LastPrimaryMarines[i] );
 	}
 	pSaveKeyValues->AddSubKey(pSubSection);
 
@@ -430,6 +438,7 @@ void CASW_Campaign_Save::UpdateLastCommanders()
 					Q_snprintf(buffer, sizeof(buffer), "%s%s",pPlayer->GetPlayerName(), pPlayer->GetASWNetworkID());
 					m_LastCommanders[i] = AllocPooledString(buffer);
 					m_LastMarineResourceSlot[i] = k;
+					m_LastPrimaryMarines[i] = pPlayer->IsPrimaryMarine(i);
 					bFound = true;
 					break;
 				}

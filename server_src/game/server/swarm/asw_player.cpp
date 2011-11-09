@@ -1954,12 +1954,12 @@ bool CASW_Player::CanSwitchToMarine(int num)
 }
 
 //Ch1ckensCoop: Reserve ONLY the first marine that the player owns.
-void CASW_Player::ReserveMainMarine()
+bool CASW_Player::IsPrimaryMarine(int index)
 {
 	if (!ASWGameResource())
-		return;
+		return false;
 	int max_marines = ASWGameResource()->GetMaxMarineResources();
-	int num = 0;
+
 	for (int i=0;i<max_marines;i++)
 	{		
 		CASW_Marine_Resource* pMR = ASWGameResource()->GetMarineResource(i);
@@ -1967,15 +1967,14 @@ void CASW_Player::ReserveMainMarine()
 		{
 			if ((CASW_Player*) pMR->m_Commander == this)
 			{
-				num--;
-				if (num < 0 && pMR->GetMarineEntity() )
-				{
-					if ( !ASWGameResource()->IsRosterSelected( pMR->GetProfileIndex() ) )
-						ASWGameResource()->SetRosterSelected( pMR->GetProfileIndex(), 2 );
-				}
+				if (pMR->GetProfileIndex() == index)
+					return true;
+				else
+					return false;
 			}
 		}
 	}
+	return false;
 }
 
 // select the nth marine in the marine info list owned by this player
@@ -1984,6 +1983,14 @@ void CASW_Player::SwitchMarine(int num)
 	if (!ASWGameResource())
 		return;
 	int max_marines = ASWGameResource()->GetMaxMarineResources();
+	//CASW_Marine_Resource *pMarineResources[ASW_MAX_MARINE_RESOURCES];
+
+	//for (int i=0;i<max_marines;i++)
+	//{
+	//	CASW_Marine_Resource* pMR = ASWGameResource()->GetMarineResource(i);
+	//	pMarineResources[i] = pMR;
+	//}
+
 	for (int i=0;i<max_marines;i++)
 	{		
 		CASW_Marine_Resource* pMR = ASWGameResource()->GetMarineResource(i);

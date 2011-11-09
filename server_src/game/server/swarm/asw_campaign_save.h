@@ -84,6 +84,7 @@ public:
 
 	string_t m_LastCommanders[ ASW_NUM_MARINE_PROFILES ];	// player name + network ID combo of commanders who used these marines last
 	int	m_LastMarineResourceSlot[ ASW_NUM_MARINE_PROFILES ];		// MR last occupied by this profile.  Used for preserving order with autoselection.
+	bool m_LastPrimaryMarines[ ASW_NUM_MARINE_PROFILES ];	//Ch1ckensCoop: Used for remembering last primary marine for reservations.
 
 	// todo:  any extra data, such as optional objectives complete, fancy stuff unlocked?
 

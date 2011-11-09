@@ -95,7 +95,7 @@ public:
 	void SelectNextMarine( bool bReverse );
 	bool CanSwitchToMarine( int num );
 	void SwitchMarine( int num );
-	void ReserveMainMarine();
+	bool IsPrimaryMarine(int index);
 	void OrderMarineFace( int iMarine, float fYaw, Vector &vecOrderPos );
 	void LeaveMarines();
 	bool HasLiveMarines();
