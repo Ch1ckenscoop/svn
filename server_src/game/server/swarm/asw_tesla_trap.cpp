@@ -739,7 +739,7 @@ void CASW_TeslaTrap::TeslaSettleThink( void )
 		//}
 	//}
 
-	if ( GetAbsVelocity().Length() < 128.0f && GetGroundEntity() )//!m_bSettled && 
+	if ( GetAbsVelocity().Length() < asw_tesla_trap_stop_vel.GetFloat() && GetGroundEntity() )//!m_bSettled && 
 	{
 		TeslaTouch( GetGroundEntity() );	
 	}
