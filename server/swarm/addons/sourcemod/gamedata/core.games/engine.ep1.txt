@@ -24,6 +24,8 @@
 			"game"		"zombie_master"
 			"game"		"NeotokyoSource"
 			"game"		"esmod"
+			"game"		"ios"
+			"game"		"hl2ctf"
 		}
 		
 		"Offsets"

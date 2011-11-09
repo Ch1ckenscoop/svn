@@ -88,6 +88,7 @@
 		{
 			"engine"			"orangebox"
 			"engine"			"bloodygoodtime"
+			"engine"			"eye"
 			"engine"			"orangebox_valve"
 			"engine"			"left4dead"
 			"engine"			"left4dead2"
@@ -147,6 +148,7 @@
 			"game"					"fistful_of_frags"
 			"game"					"dinodday"
 			"game"					"esmod"
+			"game"					"nucleardawn"
 		}
 
 		"Keys"
@@ -176,6 +178,7 @@
 			"game"					"RnLBeta"
 			"game"					"fistful_of_frags"
 			"game"					"dinodday"
+			"game"					"nucleardawn"
 		}
 		
 		"Keys"
@@ -209,6 +212,10 @@
 			"game"					"swarm"
 			"game"					"dinodday"
 			"game"					"esmod"
+			"game"					"ios"
+			"game"					"eye"
+			"game"					"nucleardawn"
+			"game"					"hl2ctf"
 		}
 		
 		"Keys"
