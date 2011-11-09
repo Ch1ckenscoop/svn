@@ -72,7 +72,8 @@ protected:
 	// Does most of the player movement logic.
 	// Returns with origin, angles, and velocity modified in place.
 	// were contacted during the move.
-	virtual void	PlayerMove(	void );
+	// Ch1ckensCoop: CASW_Marine pointer so we can cancel reload on jump (eventually, farther down the line).
+	virtual void	PlayerMove(	CASW_Marine *pMarine );
 
 	// Set ground data, etc.
 	void			FinishMove( void );
@@ -106,7 +107,8 @@ protected:
 	virtual void	FullJumpJetMove();
 		
 	// Handle MOVETYPE_WALK.
-	virtual void	FullWalkMove();
+	// Ch1ckensCoop: CASW_Marine pointer so we can cancel reload on jump (eventually, farther down the line).
+	virtual void	FullWalkMove(CASW_Marine *pMarine);
 
 	// Implement this if you want to know when the player collides during OnPlayerMove
 	virtual void	OnTryPlayerMoveCollision( trace_t &tr ) {}
@@ -141,7 +143,8 @@ protected:
 	void			FullNoClipMove( float factor, float maxacceleration );	
 
 	// Returns true if he started a jump (ie: should he play the jump animation)?
-	virtual bool	CheckJumpButton( void );	// Overridden by each game.
+	// Ch1ckensCoop: CASW_Marine pointer so we can cancel reload on jump (eventually, farther down the line).
+	virtual bool	CheckJumpButton( CASW_Marine *pMarine );	// Overridden by each game.
 
 	// Dead player flying through air., e.g.
 	void			FullTossMove( void );
@@ -150,7 +153,8 @@ protected:
 	void			FullObserverMove( void );
 
 	// Handle movement when in MOVETYPE_LADDER mode.
-	virtual void	FullLadderMove();
+	// Ch1ckensCoop: Need the CASW_Marine pointer because this function calls CheckJumpButton().
+	virtual void	FullLadderMove(CASW_Marine *pMarine);
 
 	// The basic solid body movement clip that slides along multiple planes
 	virtual int		TryPlayerMove( Vector *pFirstDest=NULL, trace_t *pFirstTrace=NULL );

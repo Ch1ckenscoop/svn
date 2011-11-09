@@ -73,6 +73,8 @@ ConVar asw_melee_lock( "asw_melee_lock", "0", FCVAR_REPLICATED, "Marine is moved
 ConVar asw_melee_require_key_release( "asw_melee_require_key_release", "1", FCVAR_REPLICATED | FCVAR_CHEAT, "Melee requires key release between attacks" );
 ConVar asw_melee_base_damage( "asw_melee_base_damage", "12.0", FCVAR_REPLICATED | FCVAR_CHEAT, "The melee damage that marines do at level 1 (scales up with level)" );
 ConVar asw_marine_rolls( "asw_marine_rolls", "1", FCVAR_REPLICATED | FCVAR_CHEAT, "If set, marine will do rolls when jump is pressed" );
+ConVar asw_weapon_roll_clear("asw_weapon_roll_clear", "1", FCVAR_CHEAT, "If set, reset reloads when marines roll.");
+ConVar asw_weapon_jump_clear("asw_weapon_jump_clear", "0", FCVAR_CHEAT, "If set, reset reloads when marines jump.");
 #ifdef CLIENT_DLL
 ConVar asw_melee_lock_distance( "asw_melee_lock_distance", "35", FCVAR_CHEAT, "Dist marine slides to when locked onto a melee target" );
 ConVar asw_melee_lock_slide_speed( "asw_melee_lock_slide_speed", "200", FCVAR_CHEAT, "Speed at which marine slides into place when target locked in melee" );
@@ -455,7 +457,7 @@ void CASW_Melee_System::OnMeleePressed( CASW_Marine *pMarine, CMoveData *pMoveDa
 	}
 	StartMeleeAttack( m_candidateMeleeAttacks[ SharedRandomInt( "MeleeChoice", m_candidateMeleeAttacks.Count() - iCount, m_candidateMeleeAttacks.Count() - 1 ) ], pMarine, pMoveData );
 }
-
+//Ch1ckensCoop: This is for rolling, not actually jumping.
 // do rolls when jump is pressed
 void CASW_Melee_System::OnJumpPressed( CASW_Marine *pMarine, CMoveData *pMoveData )
 {
@@ -470,7 +472,7 @@ void CASW_Melee_System::OnJumpPressed( CASW_Marine *pMarine, CMoveData *pMoveDat
 		return;
 
 	CASW_Weapon *pWeapon = pMarine->GetActiveASWWeapon();
-	if ( pWeapon )
+	if ( pWeapon && asw_weapon_roll_clear.GetBool())
 	{
 		pWeapon->OnStartedRoll();
 	}

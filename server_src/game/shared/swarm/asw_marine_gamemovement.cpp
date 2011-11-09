@@ -930,7 +930,7 @@ void CASW_MarineGameMovement::ProcessMovement( CBasePlayer *pPlayer, CBaseEntity
 	ASWMeleeSystem()->ProcessMovement( pMarineEntity, mv );
 
 	// Run the command.
-	PlayerMove();
+	PlayerMove(pMarineEntity);	//Ch1ckensCoop: We're going to have to pass down the marine entity so we can clear reload on jump.
 
 	FinishMove();
 
@@ -2245,7 +2245,7 @@ void CASW_MarineGameMovement::MeleeMove( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CASW_MarineGameMovement::FullWalkMove( )
+void CASW_MarineGameMovement::FullWalkMove( CASW_Marine *pMarine )
 {
 	if ( marine->GetCurrentMeleeAttack() && marine->m_iMeleeAllowMovement == MELEE_MOVEMENT_FALLING_ONLY )
 	{
@@ -2290,7 +2290,7 @@ void CASW_MarineGameMovement::FullWalkMove( )
 		// Was jump button pressed?
 		if (mv->m_nButtons & IN_JUMP)
 		{
-			CheckJumpButton();
+			CheckJumpButton(pMarine);
 		}
 		else
 		{
@@ -2315,7 +2315,7 @@ void CASW_MarineGameMovement::FullWalkMove( )
 		// Was jump button pressed?
 		if (mv->m_nButtons & IN_JUMP)
 		{
- 			CheckJumpButton();
+ 			CheckJumpButton(pMarine);
 		}
 		else
 		{
@@ -2641,11 +2641,13 @@ void CASW_MarineGameMovement::DoJumpJet()
 }
 
 extern ConVar asw_marine_rolls;
+extern ConVar asw_weapon_jump_clear;
 
+//Ch1ckensCoop: This is for actually jumping. 
 //-----------------------------------------------------------------------------
 // Checks to see if we should actually jump 
 //-----------------------------------------------------------------------------
-bool CASW_MarineGameMovement::CheckJumpButton( void )
+bool CASW_MarineGameMovement::CheckJumpButton( CASW_Marine *pMarine )
 {
 	// fixme: don't jump if marine is dead
 	//if (player->pl.deadflag)
@@ -2833,7 +2835,14 @@ bool CASW_MarineGameMovement::CheckJumpButton( void )
 	mv->m_nOldButtons |= IN_JUMP;	// don't jump again until released
 
 	//Msg("jumping. m_outJumpVel.z = %f m_outStepHeight = %f vecvel.z = %f\n",
-		 //mv->m_outJumpVel.z, mv->m_outStepHeight, mv->m_vecVelocity[2]);
+	//mv->m_outJumpVel.z, mv->m_outStepHeight, mv->m_vecVelocity[2]);
+
+	//Ch1ckensCoop: Cvar to clear reload on jump
+	CASW_Weapon *pWeapon = pMarine->GetActiveASWWeapon();
+	if ( pWeapon && asw_weapon_jump_clear.GetBool())
+	{
+		pWeapon->OnStartedRoll();
+	}
 
 	return true;
 }
@@ -2842,14 +2851,14 @@ bool CASW_MarineGameMovement::CheckJumpButton( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CASW_MarineGameMovement::FullLadderMove()
+void CASW_MarineGameMovement::FullLadderMove(CASW_Marine *pMarine)
 {
 	CheckWater();
 
 	// Was jump button pressed? If so, set velocity to 270 away from ladder.  
 	if ( mv->m_nButtons & IN_JUMP )
 	{
-		CheckJumpButton();
+		CheckJumpButton(pMarine);
 	}
 	else
 	{
@@ -4681,7 +4690,7 @@ void CASW_MarineGameMovement::Duck( void )
 //-----------------------------------------------------------------------------
 // Purpose: 
 //-----------------------------------------------------------------------------
-void CASW_MarineGameMovement::PlayerMove( void )
+void CASW_MarineGameMovement::PlayerMove( CASW_Marine *pMarine )
 {
 	VPROF( "CASW_MarineGameMovement::PlayerMove" );
 
@@ -4786,7 +4795,7 @@ void CASW_MarineGameMovement::PlayerMove( void )
 			break;
 
 		case MOVETYPE_LADDER:
-			FullLadderMove();
+			FullLadderMove(pMarine);
 			break;
 
 		case MOVETYPE_WALK:
@@ -4796,14 +4805,14 @@ void CASW_MarineGameMovement::PlayerMove( void )
 			}
 			else
 			{
-				FullWalkMove();
+				FullWalkMove(pMarine);
 			}
 			break;
 
 		case MOVETYPE_ISOMETRIC:
 			//IsometricMove();
 			// Could also try:  FullTossMove();
-			FullWalkMove();
+			FullWalkMove(pMarine);
 			break;
 			
 		case MOVETYPE_OBSERVER:
