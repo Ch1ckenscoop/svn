@@ -38,6 +38,10 @@ ConVar asw_tesla_trap_range("asw_tesla_trap_range", "200.0", FCVAR_CHEAT, "Sets 
 ConVar asw_tesla_trap_damage("asw_tesla_trap_damage", "5.0", FCVAR_CHEAT, "Sets the damage for tesla traps.");
 ConVar asw_tesla_trap_fr("asw_tesla_trap_fr", "0.3", FCVAR_CHEAT, "Sets the firing rate for the tesla trap.", true, 0.1f, false, 10.0f);
 
+//Ch1ckensCoop: Hopefully fix tesla traps getting stuck in walls, but not sure how to yet. Try adjusting this cvar.
+ConVar asw_tesla_trap_stop_vel("asw_tesla_trap_stop_vel", "128.0", FCVAR_CHEAT, "If tesla trap is moving slower than this, stop movement and start settling.");
+
+//Ch1ckensCoop: 
 #define MAX_USERMESSAGE_RATE 0.05f;
 
 enum
