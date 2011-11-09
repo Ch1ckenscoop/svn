@@ -3,7 +3,7 @@
 
 = Description =
 
-Acts exactly like sm_cvar, except it doesn't print output to the console on success.
+Acts exactly like `sm_cvar`, except it doesn't print output to the console on success.
 
 = Usage =
 
