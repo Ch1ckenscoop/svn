@@ -1,0 +1,9 @@
+#summary Sets shieldbug color.
+#labels D-Cvar
+
+= Description =
+
+Sets the color of shieldbugs.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r371 || `255 255 255` || [FCVAR_NONE] || [Color255] ||
