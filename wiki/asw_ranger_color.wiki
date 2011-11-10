@@ -1,0 +1,9 @@
+#summary Sets ranger color.
+#labels D-Cvar
+
+= Description =
+
+Sets the color of rangers.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r371 || `255 255 255` || [FCVAR_NONE] || [Color255] ||
