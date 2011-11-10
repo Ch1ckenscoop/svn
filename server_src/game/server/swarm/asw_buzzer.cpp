@@ -78,10 +78,12 @@
 
 #define	ASW_BUZZER_CHARGE_MIN_DIST	200
 
+ConVar asw_buzzer_color("asw_buzzer_color", "255 255 255", FCVAR_NONE, "Sets the color of buzzers.");
+
 ConVar	sk_asw_buzzer_health( "sk_asw_buzzer_health","30", FCVAR_CHEAT, "Health of the buzzer");
 ConVar	sk_asw_buzzer_melee_dmg( "sk_asw_buzzer_melee_dmg","15", FCVAR_CHEAT, "Damage caused by buzzer");
 ConVar	sk_asw_buzzer_melee_interval( "sk_asw_buzzer_melee_interval", "1.5", FCVAR_CHEAT, "Min time between causing damage to marines");
-ConVar	sk_asw_buzzer_v2( "sk_asw_buzzer_v2","1", FCVAR_CHEAT, "");
+ConVar	sk_asw_buzzer_v2( "sk_asw_buzzer_v2","1", FCVAR_CHEAT, "Use new buzzer model.");
 ConVar asw_buzzer_poison_duration("asw_buzzer_poison_duration", "0.6f", FCVAR_CHEAT, "Base buzzer poison blur duration. This scales up to double the value based on mission difficulty.");
 extern ConVar showhitlocation;
 extern ConVar asw_debug_alien_damage;
@@ -2172,6 +2174,8 @@ void CASW_Buzzer::Spawn(void)
 	// for instance, we don't want him to bob whilst he's waiting for a script. This allows designers
 	// to 'hide' buzzers in small places. (sjb)
 	SetNoiseMod( ASW_BUZZER_NOISEMOD_HIDE, ASW_BUZZER_NOISEMOD_HIDE, ASW_BUZZER_NOISEMOD_HIDE );
+
+	SetRenderColor(asw_buzzer_color.GetColor().r(), asw_buzzer_color.GetColor().g(), asw_buzzer_color.GetColor().b());
 
 	// Start out with full power! 
 	m_fEnginePowerScale = GetMaxEnginePower();

@@ -35,6 +35,8 @@ ConVar asw_ranger_spit_rate("asw_ranger_spit_rate", "4.0", FCVAR_CHEAT, "Sets th
 ConVar asw_ranger_fuse("asw_ranger_fuse", "5.0", FCVAR_CHEAT, "Sets the maximum lifetime for ranger projectiles.");
 ConVar asw_ranger_spit_speed("asw_ranger_spit_speed", "425", FCVAR_CHEAT, "Sets the speed of ranger projectiles.");
 //ConVar asw_ranger_damage_splash("asw_ranger_damage_splash", "0.0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "Sets the spash damage of the ranger spit.");	//Ch1ckensCoop: TODO: splash damage?
+
+ConVar asw_ranger_color("asw_ranger_color", "255 255 255", FCVAR_NONE, "Sets the color of rangers.");
 extern ConVar asw_debug_alien_damage;
 
 extern int AE_MORTARBUG_LAUNCH;		// actual launch of the projectile
@@ -88,6 +90,8 @@ void CASW_Ranger::Spawn( void )
 	SetIdealState( NPC_STATE_ALERT );
 
 	m_bNeverRagdoll = true;
+	
+	SetRenderColor(asw_ranger_color.GetColor().r(), asw_ranger_color.GetColor().g(), asw_ranger_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
 
 	//
 	// Firing patterns

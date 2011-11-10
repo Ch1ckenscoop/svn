@@ -38,6 +38,9 @@
 ConVar asw_drone_melee_range("asw_drone_melee_range", "60.0", FCVAR_CHEAT, "Range of the drone's melee attack");
 ConVar asw_drone_start_melee_range("asw_drone_start_melee_range", "100.0", FCVAR_CHEAT, "Range at which the drone starts his melee attack");
 
+ConVar asw_drone_color("asw_drone_color", "255 255 255", FCVAR_NONE, "Sets the color of normal drones.");
+ConVar asw_drone_jumper_color("asw_drone_jumper_color", "255 255 255", FCVAR_NONE, "Sets the color of jumping drones.");
+
 #define ASW_DRONE_MELEE1_START_ATTACK_RANGE asw_drone_start_melee_range.GetFloat()
 #define ASW_DRONE_MELEE1_RANGE asw_drone_melee_range.GetFloat()
 
@@ -219,10 +222,14 @@ void CASW_Drone_Advanced::Spawn( void )
 		{
 			SetBodygroup ( 5, RandomInt (0, 1 ) );
 		}
+
+		SetRenderColor(asw_drone_color.GetColor().r(), asw_drone_color.GetColor().g(), asw_drone_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
 	}
+
 	if (FClassnameIs(this, "asw_drone_jumper"))
 	{
 		m_bJumper = true;
+		SetRenderColor(asw_drone_jumper_color.GetColor().r(), asw_drone_jumper_color.GetColor().g(), asw_drone_jumper_color.GetColor().b());	//Ch1ckensCoop: Allow setting colors.
 	}
 	else
 	{

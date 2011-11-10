@@ -35,6 +35,10 @@ ConVar asw_infest_pitch("asw_infest_pitch", "-45", 0, "Angle adjustment for para
 ConVar asw_parasite_inside("asw_parasite_inside", "0", FCVAR_NONE, "If set, parasites will burrow into their victims rather than staying attached");
 ConVar asw_parasite_health("asw_parasite_health", "25", FCVAR_CHEAT, "Base health of parasites.");
 ConVar asw_parasite_defanged_health("asw_parasite_defanged_health", "10", FCVAR_CHEAT, "Base health of defanged parasites.");
+
+ConVar asw_parasite_color("asw_parasite_color", "255 255 255", FCVAR_NONE, "Sets the color of parasites.");
+ConVar asw_parasite_safe_color("asw_parasite_safe_color", "255 255 255", FCVAR_NONE, "Sets the color of defanged parasites.");
+
 extern ConVar asw_debug_alien_damage;
 extern ConVar asw_god;
 extern ConVar sv_gravity;
@@ -116,6 +120,7 @@ void CASW_Parasite::Spawn( void )
 		m_iHealth	= ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_parasite_defanged_health.GetInt());
 		SetBodygroup( 0, 1 );
 		m_fSuicideTime = gpGlobals->curtime + 60;
+		SetRenderColor(asw_parasite_safe_color.GetColor().r(), asw_parasite_safe_color.GetColor().g(), asw_parasite_safe_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
 	}
 	else
 	{
@@ -123,6 +128,7 @@ void CASW_Parasite::Spawn( void )
 		m_iHealth	= ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_parasite_health.GetInt());
 		SetBodygroup( 0, 0 );
 		m_fSuicideTime = 0;
+		SetRenderColor(asw_parasite_color.GetColor().r(), asw_parasite_color.GetColor().g(), asw_parasite_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
 	}
 
 	SetMoveType( MOVETYPE_STEP );

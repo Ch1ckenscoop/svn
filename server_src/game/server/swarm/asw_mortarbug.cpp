@@ -47,6 +47,8 @@ ConVar asw_mortarbug_face_target("asw_mortarbug_face_target", "1", FCVAR_CHEAT, 
 
 ConVar asw_mortarbug_health("asw_mortarbug_health", "350", FCVAR_CHEAT, "Sets the health of the mortar bug.");
 
+ConVar asw_mortarbug_color("asw_mortarbug_color", "255 255 255", FCVAR_NONE, "Sets the color of mortarbugs.");
+
 extern ConVar sv_gravity;
 extern ConVar asw_mortarbug_shell_gravity;	// TODO: Replace with proper spit projectile's gravity
 
@@ -83,6 +85,8 @@ void CASW_Mortarbug::Spawn( void )
 	CapabilitiesAdd( bits_CAP_MOVE_GROUND | bits_CAP_INNATE_RANGE_ATTACK1 );
 		
 	m_takedamage = DAMAGE_NO;	// alien is invulnerable until she finds her first enemy
+	
+	SetRenderColor(asw_mortarbug_color.GetColor().r(), asw_mortarbug_color.GetColor().g(), asw_mortarbug_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
 }
 
 void CASW_Mortarbug::Precache( void )

@@ -41,6 +41,8 @@ ConVar asw_harvester_new( "asw_harvester_new", "1", FCVAR_CHEAT, "If set to 1, u
 ConVar asw_harvester_spawn_height( "asw_harvester_spawn_height", "16", FCVAR_CHEAT, "Height above harvester origin to spawn harvesites at" );
 ConVar asw_harvester_spawn_interval( "asw_harvester_spawn_interval", "1.0", FCVAR_CHEAT, "Time between spawning a harvesite and starting to spawn another" );
 
+ConVar asw_harvester_color("asw_harvester_color", "255 255 255", FCVAR_NONE, "Sets the color of harvesters.");
+
 //Ch1ckensCoop: Allow setting harvester health
 ConVar asw_harvester_health("asw_harvester_health", "200", FCVAR_CHEAT, "Sets health of harvesters.");
 
@@ -82,6 +84,8 @@ void CASW_Harvester::Spawn( void )
 
 	m_takedamage = DAMAGE_NO;	// alien is invulnerable until she finds her first enemy
 	m_bNeverRagdoll = true;
+
+	SetRenderColor(asw_harvester_color.GetColor().r(), asw_harvester_color.GetColor().g(), asw_harvester_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
 }
 
 void CASW_Harvester::Precache( void )

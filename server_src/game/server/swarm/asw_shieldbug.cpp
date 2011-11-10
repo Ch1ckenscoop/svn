@@ -68,6 +68,9 @@ ConVar asw_sb_gallop_max_range("asw_sb_gallop_max_range", "130.0", FCVAR_CHEAT, 
 ConVar asw_old_shieldbug ("asw_old_shieldbug", "0", FCVAR_CHEAT, "1= old shield bug, 0 = new model");
 ConVar asw_shieldbug_force_defend("asw_shieldbug_force_defend", "0", FCVAR_CHEAT, "0 = no force, 1 = force open, 2 = force defend");
 ConVar asw_shieldbug_health("asw_shieldbug_health", "1000", FCVAR_CHEAT, "Adjusts the health of the shieldbug."); //Ch1ckensCoop: convar for adjusting shieldbug health.
+
+ConVar asw_shieldbug_color("asw_shieldbug_color", "255 255 255", FCVAR_NONE, "Sets the color of shieldbugs.");
+
 extern ConVar sv_gravity;
 extern ConVar asw_debug_marine_chatter;
 
@@ -129,6 +132,8 @@ void CASW_Shieldbug::Spawn( void )
 	m_takedamage = DAMAGE_NO;	// alien is invulnerable until she finds her first enemy
 
 	m_bNeverInstagib = true;
+
+	SetRenderColor(asw_shieldbug_color.GetColor().r(), asw_shieldbug_color.GetColor().g(), asw_shieldbug_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
 }
 
 CASW_Shieldbug::~CASW_Shieldbug()

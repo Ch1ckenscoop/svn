@@ -35,6 +35,9 @@ END_DATADESC()
 ConVar asw_boomer_health( "asw_boomer_health", "800", FCVAR_CHEAT );
 ConVar asw_boomer_inflate_speed( "asw_boomer_inflate_speed", "6.0f", FCVAR_CHEAT );
 ConVar asw_boomer_inflate_debug( "asw_boomer_inflate_debug", "1.0f", FCVAR_CHEAT );
+
+ConVar asw_boomer_color("asw_boomer_color", "255 255 255", FCVAR_NONE, "Sets the color of boomers.");
+
 extern ConVar asw_alien_debug_death_style;
 
 extern ConVar asw_debug_alien_damage;
@@ -74,6 +77,8 @@ void CASW_Boomer::Spawn( void )
 	SetIdealState( NPC_STATE_ALERT );
 
 	m_bNeverRagdoll = true;
+
+	SetRenderColor(asw_boomer_color.GetColor().r(), asw_boomer_color.GetColor().g(), asw_boomer_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
 }
 
 
