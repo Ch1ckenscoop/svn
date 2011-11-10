@@ -3,6 +3,8 @@
 #include "convar.h"
 #include "asw_spawn_manager.h"
 
+#include "memdbgon.h"
+
 //LINK_ENTITY_TO_CLASS( asw_horde_mode, CASW_Horde_Mode );
 
 //Ch1ckensCoop: External convars we need to have control over
