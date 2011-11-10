@@ -1,5 +1,8 @@
 #pragma once
 
+#include "asw_player.h"
+#include "asw_marine_resource.h"
+
 class CASW_Client_Effects : CAutoGameSystemPerFrame
 {
 public:
@@ -14,7 +17,7 @@ public:
 		//Settings for local contrast enhancement
 		bool lce_isEnabled;
 		float lce_screenScale;
-		float lce_vStrength
+		float lce_vStrength;
 		float lce_vStart;
 		float lce_vEnd;
 		
