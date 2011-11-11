@@ -11,7 +11,7 @@
 			<DebugSettings
 				Command="F:\Steam\steamapps\common\alien swarm\swarm.exe"
 				WorkingDirectory="F:\Steam\steamapps\common\alien swarm"
-				CommandArguments="-game swarm -allowdebug -windowed -w 1366 -h 768 -developer +exec hax"
+				CommandArguments="-game swarm -allowdebug -windowed -w 1366 -h 768 -developer +exec hax +map asi"
 				Attach="false"
 				DebuggerType="3"
 				Remote="1"

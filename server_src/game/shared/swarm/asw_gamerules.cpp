@@ -85,6 +85,7 @@
 	#include "asw_buffgrenade_projectile.h"
 	#include "asw_achievements.h"
 	#include "asw_director.h"
+#include "asw_client_effects.h"	//Ch1ckensCoop: Include our client effects manager
 //Ch1ckensCoop: Include entitylist.h
 #include "entitylist.h"
 #endif
@@ -2395,6 +2396,9 @@ bool CAlienSwarm::SpawnMarineAt( CASW_Marine_Resource * RESTRICT pMR, const Vect
 	}
 
 	pMarine->GetMarineResource()->UpdateWeaponIndices();
+	
+	if ( !(ASW_Client_Effects() && ASW_Client_Effects()->MarineAdd(pMarine)) )
+		Warning("Unable to add marine '%s' to client effects list!\n", pMarine->GetMarineProfile()->m_ShortName);
 
 	return true;
 }
