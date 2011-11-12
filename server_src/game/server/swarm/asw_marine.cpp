@@ -81,6 +81,7 @@
 #include "asw_objective_escape.h"
 #include "sendprop_priorities.h"
 #include "asw_marine_gamemovement.h"
+#include "asw_client_effects.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -569,6 +570,10 @@ CASW_Marine::~CASW_Marine()
 		GetMarineResource()->SetMarineEntity(NULL);
 	m_PlayerAnimState->Release();
 	delete m_MarineSpeech;
+
+	//Ch1ckensCoop: Remove this marine from our client effects array.
+	if (ASW_Client_Effects())
+		ASW_Client_Effects()->MarineRemove(this);
 }
 
 // create our custom senses class

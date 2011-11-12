@@ -28,17 +28,14 @@ public:
 		CASW_Player *pPlayer;
 		CASW_Marine *pMarine;
 
-		//Global variables (affects all effects)
-		CFX_Float cfx_LastForceUpdate;
-
 		//Settings for local contrast enhancement
 		CFX_Bool LCE_isEnabled;
-		//float LCE_screenScale;
 		CFX_Float LCE_vStrength;
 		CFX_Float LCE_vStart;
 		CFX_Float LCE_vEnd;
 		
 		bool playerWantsDisabled;
+
 	} PlayerInfoArray[ASW_PLAYERINFO_SIZE];
 
 	enum EffectType_t
@@ -46,20 +43,22 @@ public:
 		EFFECT_LCE,
 	};
 
-	float globalIntensity;
-
 	void OnSpawnedHorde(int num);
 
 	bool ShouldUpdateCvar(CFX_Float PreviousValue, float NewValue, EffectType_t EffectType);
+	bool ShouldUpdateCvar(CFX_Bool OldValue, float NewValue);
 
 	float IsMarineHurt(CASW_Marine *pMarine);
 	float GetMarineIntensity(CASW_Marine *pMarine);
+	int i_DebugThinks;
 	
 	bool MarineAdd(CASW_Marine *pMarine);
 	void MarineRemove(CASW_Marine *pMarine);
 	void MarineSwitched(CASW_Player *pPlayer, CASW_Marine_Resource *pMR_New);
+	void ToggleForPlayer(CASW_Player *pPlayer);
 
 	bool SendClientCommand(CASW_Player *pPlayer, const char *Command, float Value);
+	bool SendClientCommand(CASW_Player *pPlayer, const char *Command, bool Value);
 
 	void FrameUpdatePostEntityThink();
 };
