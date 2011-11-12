@@ -20,10 +20,10 @@ ConVar asw_cfx_lce_hurt("asw_cfx_lce_hurt", "35", FCVAR_CHEAT, "Threshold of mar
 
 #define LCE	// Local Contrast Enhancement
 
-#define LCE_MAX	asw_cfx_lce_max.GetFloat()
-#define LCE_MULTI asw_cfx_lce_multi.GetFloat()
+#define LCE_MAX	asw_cfx_lce_max.GetFloat()						//Maximum intensity LCE can reach.
+#define LCE_MULTI asw_cfx_lce_multi.GetFloat()					//Multiplier for LCE intensity.
 
-#define LCE_DEADZONE asw_cfx_lce_deadzone.GetFloat()										//"Dead zone" where we won't worry about a client's cvar being off by this much, so we don't spam them with clientcommands.
+#define LCE_DEADZONE asw_cfx_lce_deadzone.GetFloat()			//"Dead zone" where we won't worry about a client's cvar being off by this much, so we don't spam them with clientcommands.
 
 #define LCE_ONOFF "mat_local_contrast_enable"					//Enables or disables LCE.
 #define LCE_VIGNETTE "mat_local_contrast_scale_override"		//Controls LCE in a vignette'd area (see below). Sort of a stressful, "tunnel vision" effect.
