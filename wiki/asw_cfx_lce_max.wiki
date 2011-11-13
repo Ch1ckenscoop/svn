@@ -1,0 +1,9 @@
+#summary Adjusts LCE maximum intensity.
+#labels D-Cvar
+
+= Description =
+
+Adjusts the maximum intensity of the local contrast enhancement effect.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r385 || `1.0` || [FCVAR_CHEAT] || [Float] ||
