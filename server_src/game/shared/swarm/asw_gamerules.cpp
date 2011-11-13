@@ -1102,6 +1102,7 @@ void CAlienSwarm::ClientDisconnected( edict_t *pClient )
 					if ( pMR->GetCommander() == pPlayer )
 					{
 						pMR->SetInhabited( false );
+						CASW_Client_Effects().MarineRemove(pMR->GetMarineEntity());
 					}
 				}
 			}

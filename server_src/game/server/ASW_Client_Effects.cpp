@@ -90,6 +90,9 @@ bool CASW_Client_Effects::MarineAdd(CASW_Marine *pMarine)
 
 void CASW_Client_Effects::MarineRemove(CASW_Marine *pMarine)
 {
+	if (asw_cfx_debug.GetBool())
+		Msg("Removing marine '%s' from CFX array.");
+
 	for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
 	{
 		if (PlayerInfoArray[i].pMarine == pMarine)
@@ -274,6 +277,9 @@ void CASW_Client_Effects::ToggleForPlayer(CASW_Player *pPlayer, bool bEnabled)
 	{
 		if (PlayerInfoArray[i].pPlayer == pPlayer)
 		{
+			if (asw_cfx_debug.GetBool())
+				Msg("Disabled cfx by request for player '%s'.", pPlayer->GetPlayerName());
+
 			PlayerInfoArray[i].playerWantsDisabled = bEnabled;
 		}
 	}
