@@ -2,6 +2,7 @@
 #include "ASW_Client_Effects.h"
 #include "asw_director.h"
 #include "asw_marine_resource.h"
+#include "asw_gamerules.h"
 
 #include "memdbgon.h"
 
@@ -201,8 +202,12 @@ void CASW_Client_Effects::PlayerSwitched(CASW_Player *pPlayer, CASW_Marine *pMar
 }
 
 void CASW_Client_Effects::FrameUpdatePostEntityThink()
-{
-	if (!asw_cfx_enable.GetBool())
+{	
+	if (!asw_cfx_enable.GetBool())	//Don't think if not enabled
+		return;
+
+	// only think when we're in-game
+	if ( !ASWGameRules() || ASWGameRules()->GetGameState() != ASW_GS_INGAME )
 		return;
 
 	for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
