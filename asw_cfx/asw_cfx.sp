@@ -17,6 +17,16 @@ public OnPluginStart()
 	RegConsoleCmd("say", Say_Called);
 }
 
+public OnClientAuthorized(client, const String:auth[])
+{
+	if (GetPreviousValue(auth))
+	{
+		SetCFX(true, client);
+	} else {
+		SetCFX(false, client);
+	}
+}
+
 public Action:Say_Called(client, args)
 {
 	new String:text[192]
@@ -40,11 +50,11 @@ public Action:Say_Called(client, args)
 		GetClientAuthString(client, SteamID, sizeof(SteamID));
 		if (GetPreviousValue(SteamID))
 		{
-			ReplyToCommand(client, "Client effects are now disabled.");
+			PrintToChat(client, "[CFX] Client effects are now disabled.");
 			SetNewValue(SteamID, 0);
 			SetCFX(false, client);
 		} else {
-			ReplyToCommand(client, "Client effects are now enabled!");
+			PrintToChat(client, "[CFX] Client effects are now enabled!");
 			SetNewValue(SteamID, 1);
 			SetCFX(true, client);
 		}
@@ -56,7 +66,7 @@ public Action:Say_Called(client, args)
 	return Plugin_Continue;
 }
 
-GetPreviousValue(String:steamID[])
+GetPreviousValue(const String:steamID[])
 {
 	new Handle:CFX_Prefs = CreateKeyValues("CFX_Settings");
 	
@@ -65,6 +75,8 @@ GetPreviousValue(String:steamID[])
 	KvJumpToKey(CFX_Prefs, steamID, true);
 	new value = KvGetNum(CFX_Prefs, "enabled", 1);
 	
+	//PrintToServer("Getting previous value (%i). Steamid = %s", value, steamID);
+	
 	CloseHandle(CFX_Prefs);
 	
 	return value;
@@ -72,12 +84,17 @@ GetPreviousValue(String:steamID[])
 
 SetNewValue(String:steamID[], value)
 {
-	new Handle:CFX_Prefs = CreateKeyValues("CFX_Settings");
+	new Handle:CFX_Prefs = CreateKeyValues("CFX_Settings", "CFX_Settings");
 	
 	FileToKeyValues(CFX_Prefs, "cfg/CFX/client_effects_prefs.cfg");
 	
 	KvJumpToKey(CFX_Prefs, steamID, true);
 	KvSetNum(CFX_Prefs, "enabled", value);
+	
+	//PrintToServer("Setting value to %i. Steamid = %s", value, steamID);
+	
+	KvRewind(CFX_Prefs);
+	KeyValuesToFile(CFX_Prefs, "cfg/CFX/client_effects_prefs.cfg");
 	
 	CloseHandle(CFX_Prefs);
 }
@@ -87,4 +104,6 @@ SetCFX(bool:bEnabled, client)
 	new String:command[128];
 	Format(command, sizeof(command), "cfx_toggle %i %i", client, bEnabled);
 	ServerCommand(command);
+	
+	//PrintToServer("Set CFX value to %i for client index %i!", bEnabled, client);
 }

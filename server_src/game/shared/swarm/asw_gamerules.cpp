@@ -6666,10 +6666,15 @@ void CAlienSwarm::LevelInitPostEntity()
 		}
 	}
 
+	//Ch1ckensCoop: WE DON'T NEED NO STINKIN' PLUGIN TO DO THIS!
+
+	char execCmd[350];
+	Q_snprintf(execCmd, sizeof(execCmd), "exec server\n", mapName);
+	engine->ServerCommand(execCmd);
+
 	if (asw_map_configs.GetBool())
 	{
 		//Ch1ckensCoop: Fix the per-map configs.
-		char execCmd[350];
 		Q_snprintf(execCmd, sizeof(execCmd), "exec asw_mapconfigs/%s\n", mapName);
 		engine->ServerCommand(execCmd);
 		DevMsg("Ran command '%s'\n", execCmd);
