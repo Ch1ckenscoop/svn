@@ -142,13 +142,15 @@ int CASW_Debrief_Stats::UpdateTransmitState()
 	return SetTransmitState( FL_EDICT_FULLCHECK );
 }
 
+extern ConVar sk_asw_points_per_mission;
+
 int CASW_Debrief_Stats::GetSkillPointsAwarded(int iProfileIndex)
 {
 	if (!ASWGameRules())
-		return ASW_SKILL_POINTS_PER_MISSION;
+		return sk_asw_points_per_mission.GetInt();
 	CASW_Game_Resource *pGameResource = ASWGameResource();
 	if (!pGameResource)
-		return ASW_SKILL_POINTS_PER_MISSION;
+		return sk_asw_points_per_mission.GetInt();
 
 	for (int i=0;i<ASW_MAX_MARINE_RESOURCES;i++)
 	{
@@ -156,7 +158,7 @@ int CASW_Debrief_Stats::GetSkillPointsAwarded(int iProfileIndex)
 		if (pMR && pMR->GetProfileIndex() == iProfileIndex)
 			return m_iSkillPointsAwarded[i];
 	}
-	return ASW_SKILL_POINTS_PER_MISSION;
+	return sk_asw_points_per_mission.GetInt();
 }
 
 void CASW_Debrief_Stats::SetWeaponStats( int nMarineIndex, int nWeaponIndex, int nWeaponClass, int nDamage, int nFFDamage, int nShotsFired, int nShotsHit, int nKills )

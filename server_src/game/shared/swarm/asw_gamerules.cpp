@@ -1102,7 +1102,7 @@ void CAlienSwarm::ClientDisconnected( edict_t *pClient )
 					if ( pMR->GetCommander() == pPlayer )
 					{
 						pMR->SetInhabited( false );
-						CASW_Client_Effects().PlayerRemove(pPlayer);
+						ASW_Client_Effects()->PlayerRemove(pPlayer);
 					}
 				}
 			}
@@ -1988,6 +1988,9 @@ void CAlienSwarm::ChangeLevel_Campaign(const char *map)
 
 // called when the marines have finished the mission and want to save their progress and pick the next map to play
 //  (Save and proceed)
+
+extern ConVar sk_asw_points_per_mission;
+
 void CAlienSwarm::CampaignSaveAndShowCampaignMap(CASW_Player* pPlayer, bool bForce)
 {
 	if (!bForce && pPlayer)
@@ -2051,7 +2054,7 @@ void CAlienSwarm::CampaignSaveAndShowCampaignMap(CASW_Player* pPlayer, bool bFor
 					//if (bOnMission)
 					{
 						// check the debrief stats to see how many skill points to give
-						int iPointsToGive = ASW_SKILL_POINTS_PER_MISSION;
+						int iPointsToGive = sk_asw_points_per_mission.GetInt();
 						if (m_hDebriefStats.Get())
 						{
 							iPointsToGive = m_hDebriefStats->GetSkillPointsAwarded(i);
@@ -3150,6 +3153,8 @@ void CAlienSwarm::CheatCompleteMission()
 		GetMissionManager()->CheatCompleteMission();
 }
 
+extern ConVar sk_asw_points_per_mission;
+
 void CAlienSwarm::MissionComplete( bool bSuccess )
 {
 	if ( m_iGameState >= ASW_GS_DEBRIEF )	// already completed the mission
@@ -3357,7 +3362,7 @@ void CAlienSwarm::MissionComplete( bool bSuccess )
 #endif
 
 			// give each marine a base of 4 skill points
-			m_hDebriefStats->m_iSkillPointsAwarded.Set( i, ASW_SKILL_POINTS_PER_MISSION + iMedalPoints );
+			m_hDebriefStats->m_iSkillPointsAwarded.Set( i, sk_asw_points_per_mission.GetInt() + iMedalPoints );
 
 			// tell everyone about bouncing shot kills for debugging:
 			if (pMR->m_iAliensKilledByBouncingBullets > 0)

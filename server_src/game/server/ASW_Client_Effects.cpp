@@ -277,7 +277,9 @@ float CASW_Client_Effects::IsMarineHurt(CASW_Marine *pMarine)
 		return 0.0f;
 
 	int curHealth = pMarine->GetHealth();
-	//int maxHealth = pMarine->GetMaxHealth();
+	
+	if (curHealth <= 0)
+		return 1.0f;
 
 	float hurtAmount = 0;
 	
@@ -296,7 +298,12 @@ float CASW_Client_Effects::GetMarineIntensity(CASW_Marine *pMarine)
 	if (!pMarine)
 		return 0.0f;
 
-	CASW_Intensity *pIntensity = pMarine->GetMarineResource()->GetIntensity();
+	CASW_Marine_Resource *pMR = pMarine->GetMarineResource();
+
+	if (!pMR)
+		return 0.0f;
+
+	CASW_Intensity *pIntensity = pMR->GetIntensity();
 	
 	if (pIntensity)
 	{
@@ -313,7 +320,7 @@ void CASW_Client_Effects::ToggleForPlayer(CASW_Player *pPlayer, bool bEnabled)
 
 	for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
 	{
-		if (pPlayer && PlayerInfoArray[i].pPlayer == pPlayer)
+		if (PlayerInfoArray[i].pPlayer == pPlayer)
 		{
 			if (asw_cfx_debug.GetBool())
 				Msg("Disabled cfx by request for player '%s'.\n", pPlayer->GetPlayerName());
