@@ -53,9 +53,9 @@ public:
 	float GetMarineIntensity(CASW_Marine *pMarine);
 	int i_DebugThinks;
 	
-	bool MarineAdd(CASW_Marine *pMarine);
-	void MarineRemove(CASW_Marine *pMarine);
-	void MarineSwitched(CASW_Player *pPlayer, CASW_Marine_Resource *pMR_New);
+	bool PlayerAdd(CASW_Player *pPlayer);
+	void PlayerRemove(CASW_Player *pPlayer);
+	void PlayerSwitched(CASW_Player *pPlayer, CASW_Marine *pMarine_new);
 	void ToggleForPlayer(CASW_Player *pPlayer, bool bEnabled);
 
 	bool SendClientCommand(edict_t *pPlayerEdict, const char *Command, float Value);

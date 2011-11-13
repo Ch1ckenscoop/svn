@@ -573,8 +573,9 @@ CASW_Marine::~CASW_Marine()
 	delete m_MarineSpeech;
 
 	//Ch1ckensCoop: Remove this marine from our client effects array.
-	if (ASW_Client_Effects())
-		ASW_Client_Effects()->MarineRemove(this);
+	//Ch1ckensCoop: EDIT: Nope, we're keeping track of players now instead of marines.
+	//if (ASW_Client_Effects())
+	//	ASW_Client_Effects()->MarineRemove(this);
 }
 
 // create our custom senses class

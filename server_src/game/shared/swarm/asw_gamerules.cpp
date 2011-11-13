@@ -1102,7 +1102,7 @@ void CAlienSwarm::ClientDisconnected( edict_t *pClient )
 					if ( pMR->GetCommander() == pPlayer )
 					{
 						pMR->SetInhabited( false );
-						CASW_Client_Effects().MarineRemove(pMR->GetMarineEntity());
+						CASW_Client_Effects().PlayerRemove(pPlayer);
 					}
 				}
 			}
@@ -1753,11 +1753,14 @@ void CAlienSwarm::UpdateLaunching()
 		for ( int i = 1; i <= gpGlobals->maxClients; i++ )
 		{
 			CASW_Player* pOtherPlayer = dynamic_cast<CASW_Player*>(UTIL_PlayerByIndex(i));
-			
+
 			if ( pOtherPlayer && pOtherPlayer->IsConnected() && ASWGameResource())
 			{
 				if (ASWGameResource()->GetNumMarines(pOtherPlayer) == 0)
 					pOtherPlayer->SpectateNextMarine();
+
+				if ( !(ASW_Client_Effects() && ASW_Client_Effects()->PlayerAdd(pOtherPlayer)) )
+					Warning("Unable to add player '%s' to client effects list!\n", pOtherPlayer->GetPlayerName());
 			}
 		}	
 
@@ -2398,8 +2401,8 @@ bool CAlienSwarm::SpawnMarineAt( CASW_Marine_Resource * RESTRICT pMR, const Vect
 
 	pMarine->GetMarineResource()->UpdateWeaponIndices();
 	
-	if ( !(ASW_Client_Effects() && ASW_Client_Effects()->MarineAdd(pMarine)) )
-		Warning("Unable to add marine '%s' to client effects list!\n", pMarine->GetMarineProfile()->m_ShortName);
+	//if ( !(ASW_Client_Effects() && ASW_Client_Effects()->PlayerAdd(pMarine->GetCommander())) )
+	//	Warning("Unable to add player '%s' to client effects list!\n", pMarine->GetMarineProfile()->m_ShortName);
 
 	return true;
 }

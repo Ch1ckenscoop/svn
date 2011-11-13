@@ -54,29 +54,39 @@ CASW_Client_Effects::~CASW_Client_Effects(void)
 {
 }
 
-bool CASW_Client_Effects::MarineAdd(CASW_Marine *pMarine)
+bool CASW_Client_Effects::PlayerAdd(CASW_Player *pPlayer)
 {
 	for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
 	{
-		if (PlayerInfoArray[i].pMarine == NULL)
+		if (PlayerInfoArray[i].pPlayer == NULL)
 		{
-			PlayerInfoArray[i].pMarine = pMarine;
-			PlayerInfoArray[i].pPlayer = pMarine->GetCommander();
+			PlayerInfoArray[i].pPlayer = pPlayer;
+
+			if (pPlayer->GetSpectatingMarine())
+				PlayerInfoArray[i].pMarine = pPlayer->GetSpectatingMarine();
+
+			if (pPlayer->GetMarine())
+			{
+				if (pPlayer->GetMarine()->GetHealth() >= 1)
+					PlayerInfoArray[i].pMarine = pPlayer->GetMarine();
+			}
+
+
 
 			if (asw_cfx_debug.GetBool())
 			{
-				Msg("Added marine '%s' to CFX array. Contents:\n", pMarine->GetMarineResource()->GetProfile()->m_ShortName);
+				Msg("Added player '%s' to CFX array. Contents:\n", pPlayer->GetPlayerName());
 
 				for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
 				{
-					CASW_Marine *pMarine2 = PlayerInfoArray[i].pMarine;
-					if (pMarine2)
+					CASW_Player *pPlayer2 = PlayerInfoArray[i].pPlayer;
+					if (pPlayer2)
 					{
-						Msg(" :: %s\n", pMarine2->GetMarineResource()->GetProfile()->m_ShortName);
+						Msg(" :: %s\n", pPlayer2->GetPlayerName());
 					}
 					else
 					{
-						Msg(" :: No marine\n");
+						Msg(" :: No player\n");
 					}
 				}
 			}
@@ -88,15 +98,14 @@ bool CASW_Client_Effects::MarineAdd(CASW_Marine *pMarine)
 	return false;
 }
 
-void CASW_Client_Effects::MarineRemove(CASW_Marine *pMarine)
+void CASW_Client_Effects::PlayerRemove(CASW_Player *pPlayer)
 {
-	if (asw_cfx_debug.GetBool())
-		Msg("Removing marine '%s' from CFX array.\n");
-
 	for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
 	{
-		if (PlayerInfoArray[i].pMarine == pMarine)
+		if (PlayerInfoArray[i].pPlayer == pPlayer)
 		{
+			if (asw_cfx_debug.GetBool())
+				Msg("Removing player '%s' from CFX array.\n", pPlayer->GetPlayerName());
 			PlayerInfoArray[i].pMarine = NULL;
 			PlayerInfoArray[i].pPlayer = NULL;
 		}
@@ -171,6 +180,17 @@ bool CASW_Client_Effects::SendClientCommand(edict_t *pPlayerEdict, const char *C
 	return true;
 }
 
+void CASW_Client_Effects::PlayerSwitched(CASW_Player *pPlayer, CASW_Marine *pMarine_new)
+{
+	for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
+	{
+		if (PlayerInfoArray[i].pPlayer == pPlayer)
+		{
+			PlayerInfoArray[i].pMarine = pMarine_new;
+		}
+	}
+}
+
 void CASW_Client_Effects::FrameUpdatePostEntityThink()
 {
 	if (!asw_cfx_enable.GetBool())
@@ -184,7 +204,7 @@ void CASW_Client_Effects::FrameUpdatePostEntityThink()
 
 #ifdef LCE
 
-		if (pMarine && pPlayer)
+		if (pMarine && pPlayer && pPlayer->IsConnected())
 		{
 			edict_t *pPlayerEdict = pPlayer->edict();
 			CFX_Float vStrength_old = PlayerInfoArray[i].LCE_vStrength;

@@ -51,6 +51,7 @@
 #include "asw_spawn_manager.h"
 #include "asw_campaign_info.h"
 #include "sendprop_priorities.h"
+#include "asw_client_effects.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -1862,6 +1863,7 @@ void CASW_Player::SetSpectatingMarine(CASW_Marine *pMarine)
 	{
 		//Msg("Starting spectating marine %s\n", pMarine->GetEntityName());
 		m_hSpectatingMarine = pMarine;
+		ASW_Client_Effects()->PlayerSwitched(this, pMarine);
 	}
 	else
 	{
@@ -2033,6 +2035,7 @@ void CASW_Player::SwitchMarine(int num)
 					SetSpectatingMarine(NULL);
 					pNewMarine->SetCommander(this);
 					pNewMarine->InhabitedBy(this);
+					ASW_Client_Effects()->PlayerSwitched(pMR->m_Commander, pNewMarine);
 
 					if ( gpGlobals->curtime > ASWGameRules()->m_fMissionStartedTime + 5.0f )
 					{
