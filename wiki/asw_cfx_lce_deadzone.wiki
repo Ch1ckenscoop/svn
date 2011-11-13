@@ -1,0 +1,9 @@
+#summary Adjusts LCE dead zone.
+#labels D-Cvar
+
+= Description =
+
+"Dead zone" where we don't worry about a client's cvar being off this much from what it actually should be. This is to avoid spamming the clients with commands constantly.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r385 || `0.1` || [FCVAR_CHEAT] || [Float] ||
