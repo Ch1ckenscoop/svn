@@ -119,7 +119,7 @@ bool CASW_Client_Effects::ShouldUpdateCvar(CFX_Float OldValue, float NewValue, E
 	return false;
 }
 
-bool CASW_Client_Effects::ShouldUpdateCvar(CFX_Bool OldValue, float NewValue)
+bool CASW_Client_Effects::ShouldUpdateCvar(CFX_Bool OldValue, bool NewValue)
 {
 	float forceUpdateTime = FORCE_UPDATE_TIME;
 	bool bOldValue = OldValue.m_bValue;

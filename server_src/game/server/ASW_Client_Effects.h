@@ -47,7 +47,7 @@ public:
 	void OnSpawnedHorde(int num);
 
 	bool ShouldUpdateCvar(CFX_Float PreviousValue, float NewValue, EffectType_t EffectType);
-	bool ShouldUpdateCvar(CFX_Bool OldValue, float NewValue);
+	bool ShouldUpdateCvar(CFX_Bool OldValue, bool NewValue);
 
 	float IsMarineHurt(CASW_Marine *pMarine);
 	float GetMarineIntensity(CASW_Marine *pMarine);
