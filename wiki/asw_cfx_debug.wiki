@@ -1,0 +1,9 @@
+#summary Shows client fx debug messages.
+#labels D-Cvar
+
+= Description =
+
+Shows debug messages for client effects.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r385 || `0` || [FCVAR_NONE] || [Bool] ||
