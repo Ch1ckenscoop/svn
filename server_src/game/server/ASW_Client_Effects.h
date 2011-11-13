@@ -41,6 +41,7 @@ public:
 	enum EffectType_t
 	{
 		EFFECT_LCE,
+		EFFECT_BLOOM,
 	};
 
 	void OnSpawnedHorde(int num);
@@ -55,7 +56,7 @@ public:
 	bool MarineAdd(CASW_Marine *pMarine);
 	void MarineRemove(CASW_Marine *pMarine);
 	void MarineSwitched(CASW_Player *pPlayer, CASW_Marine_Resource *pMR_New);
-	void ToggleForPlayer(CASW_Player *pPlayer);
+	void ToggleForPlayer(CASW_Player *pPlayer, bool bEnabled);
 
 	bool SendClientCommand(CASW_Player *pPlayer, const char *Command, float Value);
 	bool SendClientCommand(CASW_Player *pPlayer, const char *Command, bool Value);

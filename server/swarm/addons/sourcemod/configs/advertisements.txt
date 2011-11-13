@@ -45,7 +45,7 @@
 	"5"
 	{
 		"type"		"S"
-		"text"		"Grab something other than a medkit!\n Regenerative health is on."
+		"text"		"Grab something other than a medkit!\nRegenerative health is on."
 	}
 	"7"
 	{
@@ -77,6 +77,11 @@
 	{
 		"type"		"S"
 		"text"		"Join our steam group: Ch1ckensCoop Servers!"
+	}
+	"13"
+	{
+		"type"		"S"
+		"text"		"Have an idea? Found a bug?\nPost it at ch1ckenscoop.googlecode.com!"
 	}
 
 }

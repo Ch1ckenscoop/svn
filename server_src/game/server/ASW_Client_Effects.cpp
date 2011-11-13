@@ -264,25 +264,29 @@ float CASW_Client_Effects::GetMarineIntensity(CASW_Marine *pMarine)
 	return 0.0f;
 }
 
-void CASW_Client_Effects::ToggleForPlayer(CASW_Player *pPlayer)
+void CASW_Client_Effects::ToggleForPlayer(CASW_Player *pPlayer, bool bEnabled)
 {
 	for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
 	{
 		if (PlayerInfoArray[i].pPlayer == pPlayer)
 		{
-			bool m_bValue = PlayerInfoArray[i].playerWantsDisabled;
-			if(m_bValue)
-				PlayerInfoArray[i].playerWantsDisabled = false;
-			else
-				PlayerInfoArray[i].playerWantsDisabled = true;
+			PlayerInfoArray[i].playerWantsDisabled = bEnabled;
 		}
 	}
 }
 
 void DisableEffects_f( const CCommand &args )
 {
-	int plrIndex = atoi(args.Arg(1));
-	if (ASW_Client_Effects())
-		ASW_Client_Effects()->ToggleForPlayer(ToASW_Player(UTIL_PlayerByIndex(plrIndex)));
+	if (args.ArgC() == 2)
+	{
+		int plrIndex = atoi(args.Arg(1));
+		bool Enabled = static_cast<bool>( atoi(args.Arg(2)) );
+		if (ASW_Client_Effects())
+			ASW_Client_Effects()->ToggleForPlayer(ToASW_Player(UTIL_PlayerByIndex(plrIndex)), Enabled);
+	}
+	else
+	{
+		Msg("Incorrect syntax! 'cfx_toggle <player index> <1/0>\n");
+	}
 }
 ConCommand cfx_toggle("cfx_toggle", DisableEffects_f, "Disables CFX for a client index. Used by sourcemod.");
