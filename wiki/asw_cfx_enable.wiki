@@ -1,0 +1,9 @@
+#summary Enables client effects.
+#labels D-Cvar
+
+= Description =
+
+Enables client effects on the server.
+
+|| *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
+|| r385 || `1` || [FCVAR_CHEAT] || [Bool] ||
