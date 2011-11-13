@@ -6629,7 +6629,11 @@ void CheatsChangeCallback( IConVar *pConVar, const char *pOldString, float flOld
 
 void CAlienSwarm::LevelInitPostEntity()
 {
-	
+	//Ch1ckensCoop: Reset the client effects manager
+	if (ASW_Client_Effects())
+		ASW_Client_Effects()->ResetPlayers();
+
+
 	// check if we're the intro/outro map
 	char mapName[255];
 #ifdef CLIENT_DLL

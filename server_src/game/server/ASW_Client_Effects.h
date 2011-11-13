@@ -57,6 +57,7 @@ public:
 	void PlayerRemove(CASW_Player *pPlayer);
 	void PlayerSwitched(CASW_Player *pPlayer, CASW_Marine *pMarine_new);
 	void ToggleForPlayer(CASW_Player *pPlayer, bool bEnabled);
+	void ResetPlayers();
 
 	bool SendClientCommand(edict_t *pPlayerEdict, const char *Command, float Value);
 	bool SendClientCommand(edict_t *pPlayerEdict, const char *Command, bool Value);

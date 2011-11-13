@@ -55,6 +55,18 @@ CASW_Client_Effects::~CASW_Client_Effects(void)
 {
 }
 
+void CASW_Client_Effects::ResetPlayers()
+{
+	for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
+	{
+		PlayerInfoArray[i].pMarine = NULL;
+		PlayerInfoArray[i].pPlayer = NULL;
+
+		PlayerInfoArray[i].LCE_isEnabled.m_bValue = true;
+		PlayerInfoArray[i].playerWantsDisabled = true;
+	}
+}
+
 bool CASW_Client_Effects::PlayerAdd(CASW_Player *pPlayer)
 {
 	if (!pPlayer)
