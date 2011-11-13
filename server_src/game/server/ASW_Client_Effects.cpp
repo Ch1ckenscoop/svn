@@ -53,6 +53,7 @@ CASW_Client_Effects::CASW_Client_Effects(void)
 
 CASW_Client_Effects::~CASW_Client_Effects(void)
 {
+	ResetPlayers();
 }
 
 void CASW_Client_Effects::ResetPlayers()

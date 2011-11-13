@@ -145,6 +145,7 @@ extern ConVar old_radius_damage;
 
 	ConVar asw_map_configs("asw_map_configs", "1", FCVAR_NONE, "On mapchange: exec asw_mapconfigs/<bspname> and asw_mapconfigs/custom/<bspname>.");
 	ConVar asw_full_treatment_tradeoff("asw_full_treatment_tradeoff", "1", FCVAR_NONE, "Remove some useless entities in exchange for more aliens on syntek_hospital.");
+	ConVar asw_remove_prop_ragdolls("asw_remove_prop_ragdolls", "1", FCVAR_NONE, "Remove laggy prop_ragdolls from levels.");
 
 	static void UpdateMatchmakingTagsCallback( IConVar *pConVar, const char *pOldValue, float flOldValue )
 	{
@@ -6673,7 +6674,17 @@ void CAlienSwarm::LevelInitPostEntity()
 	{
 		CBaseEntity* pEntity = NULL;
 		string_t spriteName = AllocPooledString("env_sprite");
-		while ((pEntity = gEntList.FindEntityByClassnameFast(pEntity, spriteName)) != NULL)// pEntity, this->GetAbsOrigin(), asw_alien_prune_distance.GetFloat() )) != NULL)
+		while ((pEntity = gEntList.FindEntityByClassnameFast(pEntity, spriteName)) != NULL)
+		{
+			UTIL_Remove(pEntity);
+		}
+	}
+
+	if (asw_remove_prop_ragdolls.GetBool())
+	{
+		CBaseEntity* pEntity = NULL;
+		string_t spriteName = AllocPooledString("prop_ragdoll");
+		while ((pEntity = gEntList.FindEntityByClassnameFast(pEntity, spriteName)) != NULL)
 		{
 			UTIL_Remove(pEntity);
 		}
