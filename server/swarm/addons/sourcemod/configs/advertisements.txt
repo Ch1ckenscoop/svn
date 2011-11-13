@@ -82,6 +82,11 @@
 	{
 		"type"		"S"
 		"text"		"Have an idea? Found a bug?\nPost it at ch1ckenscoop.googlecode.com!"
+	}	
+	"14"
+	{
+		"type"		"S"
+		"text"		"Don't like the new effects? Type /cfx in chat to toggle."
 	}
 
 }

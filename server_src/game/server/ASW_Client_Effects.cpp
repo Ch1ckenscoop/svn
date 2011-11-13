@@ -44,6 +44,7 @@ CASW_Client_Effects::CASW_Client_Effects(void)
 	 PlayerInfoArray[i].cfx_LastForceUpdate = gpGlobals->curtime;*/
 
 		PlayerInfoArray[i].LCE_isEnabled.m_bValue = true;
+		PlayerInfoArray[i].playerWantsDisabled = true;
 	}
 	
 	i_DebugThinks = 0;
@@ -277,7 +278,7 @@ void CASW_Client_Effects::ToggleForPlayer(CASW_Player *pPlayer, bool bEnabled)
 
 void DisableEffects_f( const CCommand &args )
 {
-	if (args.ArgC() == 2)
+	if (args.ArgC() == 3)
 	{
 		int plrIndex = atoi(args.Arg(1));
 		bool Enabled = static_cast<bool>( atoi(args.Arg(2)) );
