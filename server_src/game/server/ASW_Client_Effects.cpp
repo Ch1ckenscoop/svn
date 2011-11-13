@@ -56,6 +56,9 @@ CASW_Client_Effects::~CASW_Client_Effects(void)
 
 bool CASW_Client_Effects::PlayerAdd(CASW_Player *pPlayer)
 {
+	if (!pPlayer)
+		return false;
+
 	for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
 	{
 		if (PlayerInfoArray[i].pPlayer == NULL)
@@ -100,6 +103,9 @@ bool CASW_Client_Effects::PlayerAdd(CASW_Player *pPlayer)
 
 void CASW_Client_Effects::PlayerRemove(CASW_Player *pPlayer)
 {
+	if (!pPlayer)
+		return;
+
 	for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
 	{
 		if (PlayerInfoArray[i].pPlayer == pPlayer)
@@ -182,6 +188,9 @@ bool CASW_Client_Effects::SendClientCommand(edict_t *pPlayerEdict, const char *C
 
 void CASW_Client_Effects::PlayerSwitched(CASW_Player *pPlayer, CASW_Marine *pMarine_new)
 {
+	if (!pPlayer || !pMarine_new)
+		return;
+
 	for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
 	{
 		if (PlayerInfoArray[i].pPlayer == pPlayer)
@@ -264,6 +273,9 @@ void CASW_Client_Effects::FrameUpdatePostEntityThink()
 
 float CASW_Client_Effects::IsMarineHurt(CASW_Marine *pMarine)
 {
+	if (!pMarine)
+		return 0.0f;
+
 	int curHealth = pMarine->GetHealth();
 	//int maxHealth = pMarine->GetMaxHealth();
 
@@ -281,6 +293,9 @@ float CASW_Client_Effects::IsMarineHurt(CASW_Marine *pMarine)
 
 float CASW_Client_Effects::GetMarineIntensity(CASW_Marine *pMarine)
 {
+	if (!pMarine)
+		return 0.0f;
+
 	CASW_Intensity *pIntensity = pMarine->GetMarineResource()->GetIntensity();
 	
 	if (pIntensity)
@@ -293,6 +308,9 @@ float CASW_Client_Effects::GetMarineIntensity(CASW_Marine *pMarine)
 
 void CASW_Client_Effects::ToggleForPlayer(CASW_Player *pPlayer, bool bEnabled)
 {
+	if (!pPlayer)
+		return;
+
 	for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
 	{
 		if (pPlayer && PlayerInfoArray[i].pPlayer == pPlayer)
