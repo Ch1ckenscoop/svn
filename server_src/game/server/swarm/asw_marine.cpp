@@ -363,6 +363,7 @@ ConVar asw_screenflash("asw_screenflash", "0", FCVAR_CHEAT, "Alpha of damage scr
 ConVar asw_damage_indicator("asw_damage_indicator", "1", FCVAR_CHEAT, "If set, directional damage indicator is shown");
 ConVar asw_marine_server_ragdoll("asw_marine_server_ragdoll", "0", FCVAR_CHEAT, "If set, marines will have server ragdolls instead of clientside ones.");
 ConVar asw_marine_death_protection("asw_marine_death_protection", "1", FCVAR_CHEAT, "Prevents marines from dying in one hit, unless on 1 health");
+ConVar asw_death_protection_debug("asw_death_protection_debug", "0", FCVAR_NONE, "Displays debug messages for death protection.");
 ConVar asw_marine_melee_distance("asw_marine_melee_distance", "50", FCVAR_CHEAT, "How far the marine can kick");
 ConVar asw_marine_melee_damage("asw_marine_melee_damage", "20", FCVAR_CHEAT, "How much damage the marine's kick does");
 ConVar asw_marine_melee_force("asw_marine_melee_force", "200000", FCVAR_CHEAT, "Marine kick force = this / dist");
@@ -1105,13 +1106,20 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 
 	// don't kill the marine in one hit unless he's on 1 health
 	bool bKillProtection = false;
-	if (asw_marine_death_protection.GetBool() && !(ASWGameRules() && ASWGameRules()->IsHardcoreMode()))	// no 1 hit protection in hardcore mode
+	if (asw_marine_death_protection.GetBool())
 	{
-		if (newInfo.GetDamageType() != DMG_CRUSH && newInfo.GetDamageType() != DMG_FALL
-				&& newInfo.GetDamageType() != DMG_INFEST && GetHealth() > 1)
+		if (newInfo.GetDamageType() != DMG_CRUSH && newInfo.GetDamageType() != DMG_FALL && newInfo.GetDamageType() != DMG_INFEST && GetHealth() > 1 && !(ASWGameRules() && ASWGameRules()->IsHardcoreMode()))	// no 1 hit protection in hardcore mode
 		{
 			if (newInfo.GetDamage() > GetHealth())
 				bKillProtection = true;
+			
+			if (asw_death_protection_debug.GetBool())
+				Msg("Blocked damage type %i. Marine health is %i.", newInfo.GetDamageType(), GetHealth());
+		}
+		else
+		{
+			if (asw_death_protection_debug.GetBool())
+				Msg("Didn't block damage type %i. Marine health is %i.", newInfo.GetDamageType(), GetHealth());
 		}
 	}
 
