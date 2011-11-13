@@ -700,7 +700,7 @@ void CASW_TeslaTrap::TeslaTouch( CBaseEntity *pOther )
 	SetAbsVelocity( vecNewVelocity );
 
 	//Stopped?
-	if ( GetAbsVelocity().Length() < 128.0f )
+	if ( GetAbsVelocity().Length() < asw_tesla_trap_stop_vel.GetFloat() )
 	{
 		LayFlat();
 		SetAbsVelocity( vec3_origin );

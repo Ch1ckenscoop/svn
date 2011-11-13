@@ -134,9 +134,9 @@ bool CASW_Client_Effects::ShouldUpdateCvar(CFX_Bool OldValue, bool NewValue)
 	return false;
 }
 
-bool CASW_Client_Effects::SendClientCommand(CASW_Player *pPlayer, const char *Command, float Value)
+bool CASW_Client_Effects::SendClientCommand(edict_t *pPlayerEdict, const char *Command, float Value)
 {
-	if (!pPlayer || !stricmp(Command, ""))
+	if (!pPlayerEdict || !stricmp(Command, ""))
 		return false;
 
 	char buffer[128];
@@ -146,13 +146,14 @@ bool CASW_Client_Effects::SendClientCommand(CASW_Player *pPlayer, const char *Co
 
 	strcpy(buffer, Command);
 	strcat(buffer, szValue);
-	engine->ClientCommand(pPlayer->edict(), buffer);
+
+	engine->ClientCommand(pPlayerEdict, buffer);
 	return true;
 }
 
-bool CASW_Client_Effects::SendClientCommand(CASW_Player *pPlayer, const char *Command, bool Value)
+bool CASW_Client_Effects::SendClientCommand(edict_t *pPlayerEdict, const char *Command, bool Value)
 {
-	if (!pPlayer || !stricmp(Command, ""))
+	if (!pPlayerEdict || !stricmp(Command, ""))
 		return false;
 
 	char buffer[128];
@@ -162,7 +163,8 @@ bool CASW_Client_Effects::SendClientCommand(CASW_Player *pPlayer, const char *Co
 
 	strcpy(buffer, Command);
 	strcat(buffer, szValue);
-	engine->ClientCommand(pPlayer->edict(), buffer);
+
+	engine->ClientCommand(pPlayerEdict, buffer);
 	return true;
 }
 
@@ -181,6 +183,7 @@ void CASW_Client_Effects::FrameUpdatePostEntityThink()
 
 		if (pMarine && pPlayer)
 		{
+			edict_t *pPlayerEdict = pPlayer->edict();
 			CFX_Float vStrength_old = PlayerInfoArray[i].LCE_vStrength;
 			CFX_Float vStart_old = PlayerInfoArray[i].LCE_vStart;
 			CFX_Float vEnd_old = PlayerInfoArray[i].LCE_vEnd;
@@ -203,28 +206,28 @@ void CASW_Client_Effects::FrameUpdatePostEntityThink()
 
 			if (ShouldUpdateCvar(vStrength_old, vStrength_new, EFFECT_LCE))
 			{
-				SendClientCommand(pPlayer, LCE_VIGNETTE, vStrength_new);
+				SendClientCommand(pPlayerEdict, LCE_VIGNETTE, vStrength_new);
 				PlayerInfoArray[i].LCE_vStrength.m_flValue = vStrength_new;
 				PlayerInfoArray[i].LCE_vStrength.m_flLastUpdate = gpGlobals->curtime;
 			}
 
 			if (ShouldUpdateCvar(vStart_old, vStart_new, EFFECT_LCE))
 			{
-				SendClientCommand(pPlayer, LCE_VSTART, vStart_new);
+				SendClientCommand(pPlayerEdict, LCE_VSTART, vStart_new);
 				PlayerInfoArray[i].LCE_vStart.m_flValue = vStart_new;
 				PlayerInfoArray[i].LCE_vStart.m_flLastUpdate = gpGlobals->curtime;
 			}
 
 			if (ShouldUpdateCvar(vEnd_old, vEnd_new, EFFECT_LCE))
 			{
-				SendClientCommand(pPlayer, LCE_VEND, vEnd_new);
+				SendClientCommand(pPlayerEdict, LCE_VEND, vEnd_new);
 				PlayerInfoArray[i].LCE_vEnd.m_flValue = vEnd_new;
 				PlayerInfoArray[i].LCE_vEnd.m_flLastUpdate = gpGlobals->curtime;
 			}
 
 			if (ShouldUpdateCvar(vEnabled, vEnabled_new))
 			{
-				SendClientCommand(pPlayer, LCE_ONOFF, vEnabled_new);
+				SendClientCommand(pPlayerEdict, LCE_ONOFF, vEnabled_new);
 				PlayerInfoArray[i].LCE_isEnabled.m_bValue = vEnabled_new;
 				PlayerInfoArray[i].LCE_isEnabled.m_flLastUpdate = gpGlobals->curtime;
 			}

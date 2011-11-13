@@ -58,8 +58,8 @@ public:
 	void MarineSwitched(CASW_Player *pPlayer, CASW_Marine_Resource *pMR_New);
 	void ToggleForPlayer(CASW_Player *pPlayer, bool bEnabled);
 
-	bool SendClientCommand(CASW_Player *pPlayer, const char *Command, float Value);
-	bool SendClientCommand(CASW_Player *pPlayer, const char *Command, bool Value);
+	bool SendClientCommand(edict_t *pPlayerEdict, const char *Command, float Value);
+	bool SendClientCommand(edict_t *pPlayerEdict, const char *Command, bool Value);
 
 	void FrameUpdatePostEntityThink();
 };
