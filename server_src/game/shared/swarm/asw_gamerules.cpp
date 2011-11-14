@@ -1991,6 +1991,7 @@ void CAlienSwarm::ChangeLevel_Campaign(const char *map)
 //  (Save and proceed)
 
 extern ConVar sk_asw_points_per_mission;
+extern ConVar asw_custom_skill_points;
 
 void CAlienSwarm::CampaignSaveAndShowCampaignMap(CASW_Player* pPlayer, bool bForce)
 {
@@ -2052,7 +2053,7 @@ void CAlienSwarm::CampaignSaveAndShowCampaignMap(CASW_Player* pPlayer, bool bFor
 							break;						
 						}
 					}
-					//if (bOnMission)
+					if (asw_custom_skill_points.GetInt() == 1)
 					{
 						// check the debrief stats to see how many skill points to give
 						int iPointsToGive = sk_asw_points_per_mission.GetInt();

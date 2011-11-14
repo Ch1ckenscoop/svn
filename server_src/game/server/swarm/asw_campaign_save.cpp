@@ -14,7 +14,7 @@
 
 LINK_ENTITY_TO_CLASS( asw_campaign_save, CASW_Campaign_Save );
 
-ConVar asw_custom_skill_points( "asw_custom_skill_points", "0", FCVAR_ARCHIVE, "If set, marines will start with no skill points and will spend them as they progress through the campaign." );
+ConVar asw_custom_skill_points( "asw_custom_skill_points", "0", FCVAR_ARCHIVE, "If set, marines will start with no skill points and will spend them as they progress through the campaign. 2: give at mission start" );
 ConVar sk_asw_points_per_mission("sk_asw_points_per_mission", "2", FCVAR_CHEAT, "Number of custom skill points to award each mission.");
 
 void ASWSendProxy_String_tToString( const SendProp *pProp, const void *pStruct, const void *pData, DVariant *pOut, int iElement, int objectID )

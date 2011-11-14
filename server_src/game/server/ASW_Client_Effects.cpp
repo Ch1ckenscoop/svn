@@ -16,7 +16,7 @@ ConVar asw_cfx_lce_hurt("asw_cfx_lce_hurt", "35", FCVAR_CHEAT, "Threshold of mar
 
 //Some defines so we don't have to type out the full convar name everywhere
 
-#define MARINE_HURT asw_cfx_lce_hurt.GetInt()	//Any health below this is defined as "hurt".
+#define MARINE_HURT asw_cfx_lce_hurt.GetFloat()	//Any health below this is defined as "hurt".
 #define FORCE_UPDATE_TIME 1.0f	//After this amount of time, update cvars anyway.
 
 #define LCE	// Local Contrast Enhancement
@@ -256,28 +256,36 @@ void CASW_Client_Effects::FrameUpdatePostEntityThink()
 
 			if (ShouldUpdateCvar(vStrength_old, vStrength_new, EFFECT_LCE))
 			{
-				SendClientCommand(pPlayerEdict, LCE_VIGNETTE, vStrength_new);
+				if (!SendClientCommand(pPlayerEdict, LCE_VIGNETTE, vStrength_new) && asw_cfx_debug.GetBool())
+					Msg("Unable to send command %s!\n", LCE_VIGNETTE);
+
 				PlayerInfoArray[i].LCE_vStrength.m_flValue = vStrength_new;
 				PlayerInfoArray[i].LCE_vStrength.m_flLastUpdate = gpGlobals->curtime;
 			}
 
 			if (ShouldUpdateCvar(vStart_old, vStart_new, EFFECT_LCE))
 			{
-				SendClientCommand(pPlayerEdict, LCE_VSTART, vStart_new);
+				if (!SendClientCommand(pPlayerEdict, LCE_VSTART, vStart_new) && asw_cfx_debug.GetBool())
+					Msg("Unable to send command %s!\n", LCE_VSTART);
+
 				PlayerInfoArray[i].LCE_vStart.m_flValue = vStart_new;
 				PlayerInfoArray[i].LCE_vStart.m_flLastUpdate = gpGlobals->curtime;
 			}
 
 			if (ShouldUpdateCvar(vEnd_old, vEnd_new, EFFECT_LCE))
 			{
-				SendClientCommand(pPlayerEdict, LCE_VEND, vEnd_new);
+				if (!SendClientCommand(pPlayerEdict, LCE_VEND, vEnd_new) && asw_cfx_debug.GetBool())
+					Msg("Unable to send command %s!\n", LCE_VEND);
+
 				PlayerInfoArray[i].LCE_vEnd.m_flValue = vEnd_new;
 				PlayerInfoArray[i].LCE_vEnd.m_flLastUpdate = gpGlobals->curtime;
 			}
 
 			if (ShouldUpdateCvar(vEnabled, vEnabled_new))
 			{
-				SendClientCommand(pPlayerEdict, LCE_ONOFF, vEnabled_new);
+				if (!SendClientCommand(pPlayerEdict, LCE_ONOFF, vEnabled_new) && asw_cfx_debug.GetBool())
+					Msg("Unable to send command %s!\n", LCE_ONOFF);
+
 				PlayerInfoArray[i].LCE_isEnabled.m_bValue = vEnabled_new;
 				PlayerInfoArray[i].LCE_isEnabled.m_flLastUpdate = gpGlobals->curtime;
 			}
@@ -296,7 +304,7 @@ float CASW_Client_Effects::IsMarineHurt(CASW_Marine *pMarine)
 
 	int curHealth = pMarine->GetHealth();
 	
-	if (curHealth <= 0)
+	if (curHealth < 1)
 		return 1.0f;
 
 	float hurtAmount = 0;
