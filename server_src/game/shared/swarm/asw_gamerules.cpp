@@ -1092,6 +1092,7 @@ void CAlienSwarm::ClientDisconnected( edict_t *pClient )
 		CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(CBaseEntity::Instance( pClient ) );
 		if ( pPlayer )
 		{
+			ASW_Client_Effects()->PlayerRemove(pPlayer);
 			if ( ASWGameResource() )
 			{
 				for ( int i = 0; i < ASWGameResource()->GetMaxMarineResources(); i++ )
@@ -1103,7 +1104,6 @@ void CAlienSwarm::ClientDisconnected( edict_t *pClient )
 					if ( pMR->GetCommander() == pPlayer )
 					{
 						pMR->SetInhabited( false );
-						ASW_Client_Effects()->PlayerRemove(pPlayer);
 					}
 				}
 			}
