@@ -4,6 +4,7 @@
 #include "asw_weapon.h"
 #include "asw_marine.h"
 #include "ASW_Health_Regen.h"
+#include "asw_marine_profile.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -16,6 +17,7 @@ ConVar asw_marine_health_regen_amount_low("asw_marine_health_regen_amount_low", 
 ConVar asw_marine_health_regen_threshold("asw_marine_health_regen_threshold", "0.2", FCVAR_CHEAT, "Adjusts the threshold below which <asw_marine_health_regen_amount_low> takes effect.", true, 0.0f, true, 1.0f);
 ConVar asw_marine_health_regen_infestation_boost("asw_marine_health_regen_infestation_boost", "5", FCVAR_CHEAT, "Boost the healing by this many points if the marine is infested and below the threshold.");
 ConVar asw_marine_heatlh_regen_medkitcheck("asw_marine_heatlh_regen_medkitcheck", "1", FCVAR_CHEAT, "Don't heal a marine if he's carrying a medkit.", true, 0.0f, true, 1.0f);
+
 
 LINK_ENTITY_TO_CLASS( asw_health_regen, CASW_Health_Regen );
 
@@ -48,7 +50,14 @@ void CASW_Health_Regen::Think()
 			int lowHealing = asw_marine_health_regen_amount_low.GetInt();
 			int infestedLowHealing = asw_marine_health_regen_infestation_boost.GetInt() + asw_marine_health_regen_amount_low.GetInt();
 			float threshold = asw_marine_health_regen_threshold.GetFloat();
-	
+
+			int medicBoost;
+
+			if ( pMarine->GetMarineProfile() && pMarine->GetMarineProfile()->CanUseFirstAid() )
+			{
+				medicBoost = 1;
+			}
+
 			if (currentHealth < maxHealth)
 			{
 				//Check if this player is carrying a medkit, and don't heal them if they are.
@@ -66,12 +75,12 @@ void CASW_Health_Regen::Think()
 				if ((currentHealth / maxHealth) < threshold)
 				{
 					if (pMarine->IsInfested())
-						pMarine->SetHealth(currentHealth + infestedLowHealing);
+						pMarine->SetHealth(currentHealth + infestedLowHealing + medicBoost);
 					else
-						pMarine->SetHealth(currentHealth + lowHealing);
+						pMarine->SetHealth(currentHealth + lowHealing + medicBoost);
 				}
 				else
-					pMarine->SetHealth(currentHealth + normalHealing);
+					pMarine->SetHealth(currentHealth + normalHealing + medicBoost);
 			}
 		}
 	}
