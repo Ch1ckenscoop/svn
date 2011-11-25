@@ -17,6 +17,7 @@ ConVar asw_marine_health_regen_amount_low("asw_marine_health_regen_amount_low", 
 ConVar asw_marine_health_regen_threshold("asw_marine_health_regen_threshold", "0.2", FCVAR_CHEAT, "Adjusts the threshold below which <asw_marine_health_regen_amount_low> takes effect.", true, 0.0f, true, 1.0f);
 ConVar asw_marine_health_regen_infestation_boost("asw_marine_health_regen_infestation_boost", "5", FCVAR_CHEAT, "Boost the healing by this many points if the marine is infested and below the threshold.");
 ConVar asw_marine_heatlh_regen_medkitcheck("asw_marine_heatlh_regen_medkitcheck", "1", FCVAR_CHEAT, "Don't heal a marine if he's carrying a medkit.", true, 0.0f, true, 1.0f);
+ConVar asw_marine_health_regen_medicboost("asw_marine_health_regen_medicboost", "1", FCVAR_CHEAT, "Medics get this much more healing every think compared to normal marines.");
 
 
 LINK_ENTITY_TO_CLASS( asw_health_regen, CASW_Health_Regen );
@@ -50,12 +51,13 @@ void CASW_Health_Regen::Think()
 			int lowHealing = asw_marine_health_regen_amount_low.GetInt();
 			int infestedLowHealing = asw_marine_health_regen_infestation_boost.GetInt() + asw_marine_health_regen_amount_low.GetInt();
 			float threshold = asw_marine_health_regen_threshold.GetFloat();
+			int medicHealing = asw_marine_health_regen_medicboost.GetInt();
 
 			int medicBoost = 0;
 
 			if ( pMarine->GetMarineProfile() && pMarine->GetMarineProfile()->CanUseFirstAid() )
 			{
-				medicBoost = 1;
+				medicBoost = medicHealing;
 			}
 
 			if (currentHealth < maxHealth)
