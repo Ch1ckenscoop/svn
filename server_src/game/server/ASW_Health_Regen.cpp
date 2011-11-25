@@ -51,7 +51,7 @@ void CASW_Health_Regen::Think()
 			int infestedLowHealing = asw_marine_health_regen_infestation_boost.GetInt() + asw_marine_health_regen_amount_low.GetInt();
 			float threshold = asw_marine_health_regen_threshold.GetFloat();
 
-			int medicBoost;
+			int medicBoost = 0;
 
 			if ( pMarine->GetMarineProfile() && pMarine->GetMarineProfile()->CanUseFirstAid() )
 			{
