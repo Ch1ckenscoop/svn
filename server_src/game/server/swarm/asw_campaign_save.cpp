@@ -87,7 +87,7 @@ CASW_Campaign_Save::CASW_Campaign_Save()
 			m_iPreviousMarineSkill[i][k] = 0;
 		}
 		// give 2 skill points to spend at the start
-		m_iMarineSkill[i][ASW_SKILL_SLOT_SPARE] = 2;
+		m_iMarineSkill[i][ASW_SKILL_SLOT_SPARE] = sk_asw_points_per_mission.GetInt();
 		m_iPreviousMarineSkill[i][ASW_SKILL_SLOT_SPARE] = 2;
 		m_iParasitesKilled[i] = 0;
 	}
@@ -171,6 +171,13 @@ bool CASW_Campaign_Save::LoadGameFromFile(const char *szFileName)
 
 					m_bMarineWounded.Set(MarineID, (pkvSubSection->GetInt("Wounded") == 1));
 					m_bMarineDead.Set(MarineID, (pkvSubSection->GetInt("Dead") == 1));
+
+					//Ch1ckensCoop: Hack to give marines skill points for the first mission in a campaign. I'm too lazy to edit missionchooser.
+					if (m_iCurrentPosition == 1)
+					{
+						m_iMarineSkill[MarineID][ASW_SKILL_SLOT_SPARE] = sk_asw_points_per_mission.GetInt();
+						m_iPreviousMarineSkill[MarineID][ASW_SKILL_SLOT_SPARE] = sk_asw_points_per_mission.GetInt();
+					}
 				}					
 			}
 
