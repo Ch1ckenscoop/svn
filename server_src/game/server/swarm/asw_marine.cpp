@@ -1018,18 +1018,18 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	}
 	
 	//Ch1ckensCoop: Players won't take damage from friendly fire or ranger fire while in the air.
-	if (info.GetAttacker())
+	if (info.GetAttacker() && info.GetAttacker() != this && GetGroundEntity() == NULL)
 	{
-		if (info.GetAttacker()->Classify() == CLASS_ASW_RANGER && GetGroundEntity() == NULL)
-		{
-			if ( asw_debug_marine_damage.GetBool() )
-				Msg( "Ignored damage from ranger; marine is airborne.\n" );
-			return 0;
-		}
-		if (info.GetAttacker()->Classify() == CLASS_ASW_MARINE && GetGroundEntity() == NULL)
+		if (info.GetAttacker()->Classify() == CLASS_ASW_MARINE)
 		{
 			if ( asw_debug_marine_damage.GetBool() )
 				Msg( "Ignored damage from teammate; marine is airborne.\n" );
+			return 0;
+		}
+		else if (info.GetAttacker()->Classify() == CLASS_ASW_RANGER)
+		{
+			if ( asw_debug_marine_damage.GetBool() )
+				Msg( "Ignored damage from ranger; marine is airborne.\n" );
 			return 0;
 		}
 	}
