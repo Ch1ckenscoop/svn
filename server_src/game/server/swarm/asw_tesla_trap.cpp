@@ -232,7 +232,7 @@ void CASW_TeslaTrap::ActivateUseIcon( CASW_Marine* pMarine, int nHoldType )
 
 bool CASW_TeslaTrap::IsUsable(CBaseEntity *pUser)
 {
-	if (pUser && pUser->GetAbsOrigin().DistTo(GetAbsOrigin()) < ASW_MARINE_USE_RADIUS && (pUser == this->GetOwnerEntity() || (this->GetOwnerEntity() && this->GetOwnerEntity()->GetHealth() == 0))	// near enough?
+	if (pUser && pUser->GetAbsOrigin().DistTo(GetAbsOrigin()) < ASW_MARINE_USE_RADIUS && (pUser == this->GetOwnerEntity() || (this->GetOwnerEntity() && this->GetOwnerEntity()->GetHealth() == 0)))	// near enough?
 	{
 		CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(pUser);
 		CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(pMarine->GetCommander());

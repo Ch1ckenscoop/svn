@@ -393,6 +393,7 @@ extern ConVar asw_sentry_friendly_fire_scale;
 extern ConVar asw_marine_ff_absorption;
 ConVar asw_movement_direction_tolerance( "asw_movement_direction_tolerance", "30.0", FCVAR_CHEAT );
 ConVar asw_movement_direction_interval( "asw_movement_direction_interval", "0.5", FCVAR_CHEAT );
+ConVar asw_marine_ff_immune("asw_marine_ff_immune", "1", FCVAR_CHEAT, "while airborne: 0: disabled, 1: immune to others ff, 2: immune to all ff");
 
 ConVar asw_marine_death_notifications("asw_marine_death_notifications", "1", FCVAR_NONE, "Display marine death notifications in the server console.");
 
@@ -1018,13 +1019,22 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	}
 	
 	//Ch1ckensCoop: Players won't take damage from friendly fire or ranger fire while in the air.
-	if (info.GetAttacker() && info.GetAttacker() != this && GetGroundEntity() == NULL)
+	if (info.GetAttacker() && GetGroundEntity() == NULL && asw_marine_ff_immune.GetInt() > 0)
 	{
 		if (info.GetAttacker()->Classify() == CLASS_ASW_MARINE)
 		{
-			if ( asw_debug_marine_damage.GetBool() )
-				Msg( "Ignored damage from teammate; marine is airborne.\n" );
-			return 0;
+			if (asw_marine_ff_immune.GetInt() == 2 && info.GetAttacker() == this)
+			{
+				if ( asw_debug_marine_damage.GetBool() )
+					Msg( "Ignored damage from self; marine is airborne.\n" );
+				return 0;
+			}
+			else if (info.GetAttacker() != this)
+			{
+				if ( asw_debug_marine_damage.GetBool() )
+					Msg( "Ignored damage from teammate; marine is airborne.\n" );
+				return 0;
+			}
 		}
 		else if (info.GetAttacker()->Classify() == CLASS_ASW_RANGER)
 		{
