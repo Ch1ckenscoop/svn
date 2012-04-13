@@ -60,6 +60,7 @@ extern ConVar asw_blink_debug;
 
 extern ConVar asw_blink_range;
 ConVar asw_jump_jet_time( "asw_jump_jet_time", "1.32", FCVAR_REPLICATED );
+ConVar asw_jump_jet_usages( "asw_jump_jet_usages", "0", FCVAR_CHEAT, "Set to 0 for default, -1 for infinite." );
 
 CASW_Weapon_Jump_Jet::CASW_Weapon_Jump_Jet()
 {
@@ -73,6 +74,15 @@ CASW_Weapon_Jump_Jet::~CASW_Weapon_Jump_Jet()
 void CASW_Weapon_Jump_Jet::Spawn()
 {
 	BaseClass::Spawn();
+	if (asw_jump_jet_usages.GetInt() == -1)
+		m_bInfinite = true;
+	else if (asw_jump_jet_usages.GetInt() >= 1)
+	{
+		m_bInfinite = false;
+		m_iClip1 = asw_jump_jet_usages.GetInt();
+	}
+	else
+		m_bInfinite = false;
 }
 
 void CASW_Weapon_Jump_Jet::PrimaryAttack( void )
@@ -130,9 +140,12 @@ void CASW_Weapon_Jump_Jet::DoJumpJet()
 	pMarine->OnWeaponFired( this, 1 );
 #endif
 
-	m_iClip1 -= 1;
+	if (!m_bInfinite)
+	{
+		m_iClip1 -= 1;
 
 #ifndef CLIENT_DLL
-	DestroyIfEmpty( true );
+		DestroyIfEmpty( true );
 #endif
+	}
 }
