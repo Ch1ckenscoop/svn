@@ -23,25 +23,42 @@
 {
 	"marine_hurt"
 	{
-		"marine"		"short"
-		"damagetaken"	"short"
+		"marine"		"short"	// Entindex of hurt marine
+		"damagetaken"	"short"	// Damage taken
 		"attacker"		"short"	// Classify() of attacker
+		"marineattacker"	"short"	// Entindex of marine attacker, if any
+		"weapon"		"short"	// Classify() of weapon
 	}
 	
 	"marine_died"
 	{
-		"marine"		"short"
+		"marine"		"short"	// Entindex of ded marine
+		"killer"		"short"	// Classify() of attacker
+		"killermarine"	"short"	// Entindex of marine attacker, if any
+		"weapon"		"short"	// Classify() of weapon
 	}
 	
 	"alien_hurt"
 	{
-		"marine"		"short"
-		"damagetaken"	"short"
-		"attacker"		"short"	// Classify() of attacker
+		"alien"			"short"	// Classify() of alien
+		"marine"		"short"	// Entindex of attacking marine, if any
+		"damagetaken"	"short"	// Damage taken
+		"weapon"		"short"	// Classify() of weapon
 	}
 	
 	"safepara_attack"
 	{
-		"marine"		"short"
+		"marine"		"short"	// Entindex of attacked marine
+	}
+	
+	"marine_rangermiss"	// We "dodged" a shot by being hit while we were airborne.
+	{
+		"marine"		"short"	// Entindex of dodging marine
+	}
+	
+	"marine_spawned"
+	{
+		"marine"		"short"	// Entindex of spawned marine
+		"client"		"short"	// Client index of marine
 	}
 }
