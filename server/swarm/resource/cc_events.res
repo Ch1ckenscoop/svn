@@ -26,7 +26,7 @@
 		"marine"		"short"	// Entindex of hurt marine
 		"damagetaken"	"short"	// Damage taken
 		"attacker"		"short"	// Classify() of attacker
-		"marineattacker"	"short"	// Entindex of marine attacker, if any
+		"marineattacker""short"	// Entindex of marine attacker, if any
 		"weapon"		"short"	// Classify() of weapon
 	}
 	
@@ -59,6 +59,11 @@
 	"marine_spawned"
 	{
 		"marine"		"short"	// Entindex of spawned marine
-		"client"		"short"	// Client index of marine
+	}
+	
+	"weapon_fired"
+	{
+		"marine"		"short"	// Entindex of spawned marine
+		"weapon"		"short"	// Classify() of weapon
 	}
 }
