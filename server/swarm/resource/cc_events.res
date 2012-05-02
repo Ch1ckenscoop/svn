@@ -61,9 +61,9 @@
 		"marine"		"short"	// Entindex of spawned marine
 	}
 	
-	"weapon_fired"
+	"marine_regenerated"
 	{
 		"marine"		"short"	// Entindex of spawned marine
-		"weapon"		"short"	// Classify() of weapon
+		"amount"		"byte"	// Amount the marine was healed
 	}
 }
