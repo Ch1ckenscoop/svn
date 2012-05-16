@@ -683,7 +683,9 @@ void CASW_Marine::FireBullets( const FireBulletsInfo_t &info )
 	else
 	{
 		FireRegularBullets(info);
-	}	
+	}
+
+
 }
 
 void CASW_Marine::FireRegularBullets( const FireBulletsInfo_t &info )

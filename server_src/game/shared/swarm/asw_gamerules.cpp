@@ -2409,6 +2409,13 @@ bool CAlienSwarm::SpawnMarineAt( CASW_Marine_Resource * RESTRICT pMR, const Vect
 	//if ( !(ASW_Client_Effects() && ASW_Client_Effects()->PlayerAdd(pMarine->GetCommander())) )
 	//	Warning("Unable to add player '%s' to client effects list!\n", pMarine->GetMarineProfile()->m_ShortName);
 
+	IGameEvent *pEvent = gameeventmanager->CreateEvent( "marine_spawned", true );
+	if (pEvent)
+	{
+		pEvent->SetInt("marine", pMarine->entindex());
+		gameeventmanager->FireEvent(pEvent);
+	}
+
 	return true;
 }
 
@@ -3631,21 +3638,7 @@ void CAlienSwarm::MarineKilled( CASW_Marine *pMarine, const CTakeDamageInfo &inf
 	{
 		CASW_Marines_Past_Area *pArea = static_cast< CASW_Marines_Past_Area* >( IASW_Marines_Past_Area_List::AutoList()[ i ] );
 		pArea->OnMarineKilled( pMarine );
-	}
-	
-	
-
-	/*IGameEvent *pEvent = gameeventmanager->CreateEvent( "marine_died", true );
-	pEvent->SetInt("marine", pMarine ? pMarine->entindex() : 0 );
-	if (info.GetAttacker()->Classify() == CLASS_ASW_MARINE)
-	{
-		CASW_Marine *pMarineAttacker = dynamic_cast<CASW_Marine*>(info.GetAttacker());
-		pEvent->SetInt("teamkiller", pMarineAttacker ? pMarineAttacker->entindex() : 0 );
-		Msg("Teamkill!\n");
-	}
-	Msg("Marine dead!\n");
-	gameeventmanager->FireEvent( pEvent );*/
-	
+	}	
 }
 
 void CAlienSwarm::AlienKilled(CBaseEntity *pAlien, const CTakeDamageInfo &info)

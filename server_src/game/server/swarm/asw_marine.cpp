@@ -1521,6 +1521,35 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		}		
 	}
 
+	// Ch1ckenscoop: Fire event for statistics
+	IGameEvent *pEvent = gameeventmanager->CreateEvent( "marine_hurt" );
+	if ( pEvent )
+	{
+		pEvent->SetInt( "marine", entindex() );
+		pEvent->SetInt( "damagetaken", result );
+		if (info.GetAttacker())
+		{
+			pEvent->SetInt( "attacker", info.GetAttacker()->Classify() );
+
+			CASW_Marine *pMarineAttacker = dynamic_cast<CASW_Marine*>(info.GetAttacker());
+			if (pMarineAttacker)
+			{
+				pEvent->SetInt("marineattacker", entindex());
+
+				CASW_Weapon *pWeapon = pMarineAttacker->GetActiveASWWeapon();
+				if (pWeapon)
+					pEvent->SetInt("weapon", pWeapon->Classify());
+				else
+					pEvent->SetInt("weapon", 0);
+			}
+			else
+			{
+				pEvent->SetInt( "marineattacker", 0 );
+			}
+		}
+		gameeventmanager->FireEvent( pEvent );
+	}
+
 	return result;
 }
 
@@ -3271,6 +3300,36 @@ void CASW_Marine::Event_Killed( const CTakeDamageInfo &info )
 				event->SetInt( "marine", entindex() );
 				gameeventmanager->FireEvent( event );
 			}
+		}
+
+		// Ch1ckensCoop: Fire event for statistics
+		IGameEvent *pEvent = gameeventmanager->CreateEvent( "marine_died", true );
+		if (pEvent)
+		{
+			pEvent->SetInt("marine", entindex());
+			if (info.GetAttacker())
+			{
+				pEvent->SetInt("killer", info.GetAttacker()->Classify());
+				if (info.GetAttacker()->Classify() == CLASS_ASW_MARINE)
+				{
+					CASW_Marine *pMarineAttacker = dynamic_cast<CASW_Marine*>(info.GetAttacker());
+					if (pMarineAttacker)
+					{
+						pEvent->SetInt("killermarine", pMarineAttacker->entindex() );
+						Msg("Teamkill! - ");
+						if (pMarineAttacker->GetActiveASWWeapon())
+							pEvent->SetInt("weapon", pMarineAttacker->GetActiveASWWeapon()->Classify());
+						else
+							pEvent->SetInt("weapon", 0);
+					}
+					else
+					{
+						pEvent->SetInt("killermarine", 0 );
+					}
+				}
+			}
+			Msg("Marine dead!\n");
+			gameeventmanager->FireEvent( pEvent );
 		}
 	}
 

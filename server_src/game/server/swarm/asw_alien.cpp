@@ -34,6 +34,7 @@
 #include "asw_player.h"
 #include "asw_game_resource.h"
 #include "asw_marine_resource.h"
+#include "asw_weapon.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -1053,6 +1054,22 @@ int CASW_Alien::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	if ( m_pFlinchBehavior )
 	{
 		m_pFlinchBehavior->OnOuterTakeDamage( info );
+	}
+
+	// Ch1ckenscoop: Fire event for statistics
+	IGameEvent * event = gameeventmanager->CreateEvent( "alien_hurt" );
+	if ( event )
+	{
+		event->SetInt( "alien", Classify() );
+		event->SetInt( "marine", pMarine ? pMarine->entindex() : 0 );
+		event->SetInt( "damagetaken", result );
+
+		CASW_Weapon *pWeapon = NULL;
+		if (pMarine && pMarine->GetActiveASWWeapon())
+			pWeapon = pMarine->GetActiveASWWeapon();
+
+		event->SetInt( "weapon", pWeapon ? (int)pWeapon->Classify() : 0 );
+		gameeventmanager->FireEvent( event );
 	}
 
 	return result;

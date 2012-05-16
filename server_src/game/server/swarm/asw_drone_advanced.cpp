@@ -230,12 +230,14 @@ void CASW_Drone_Advanced::Spawn( void )
 	{
 		m_bJumper = true;
 		SetRenderColor(asw_drone_jumper_color.GetColor().r(), asw_drone_jumper_color.GetColor().g(), asw_drone_jumper_color.GetColor().b());	//Ch1ckensCoop: Allow setting colors.
+		m_ClassType = (Class_T)CLASS_ASW_DRONE_JUMPER;
 	}
 	else
 	{
 		m_bJumper = false;
 		m_bDisableJump = true;
 		CapabilitiesRemove( bits_CAP_MOVE_JUMP );
+		m_ClassType = (Class_T)CLASS_ASW_DRONE;
 	}	
 
 	SetHullType(HULL_MEDIUMBIG);

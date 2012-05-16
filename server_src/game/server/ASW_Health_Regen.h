@@ -8,4 +8,7 @@ public:
 	~CASW_Health_Regen(void);
 	virtual void Spawn();
 	virtual void Think();
+
+private:
+	void SetMarineHealth(CASW_Marine *pMarine, int iHealth);
 };

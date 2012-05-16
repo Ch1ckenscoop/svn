@@ -77,15 +77,31 @@ void CASW_Health_Regen::Think()
 				if ((currentHealth / maxHealth) < threshold)
 				{
 					if (pMarine->IsInfested())
-						pMarine->SetHealth(currentHealth + infestedLowHealing + medicBoost);
+						SetMarineHealth(pMarine, currentHealth + infestedLowHealing + medicBoost);
 					else
-						pMarine->SetHealth(currentHealth + lowHealing + medicBoost);
+						SetMarineHealth(pMarine, currentHealth + lowHealing + medicBoost);
 				}
 				else
-					pMarine->SetHealth(currentHealth + normalHealing + medicBoost);
+					SetMarineHealth(pMarine, currentHealth + normalHealing + medicBoost);
 			}
 		}
 	}
 
 	SetNextThink( gpGlobals->curtime + asw_marine_health_regen_speed.GetFloat());
+}
+
+void CASW_Health_Regen::SetMarineHealth(CASW_Marine *pMarine, int iHealth)
+{
+	if (pMarine)
+	{
+		// Ch1ckensCoop: Fire event for statistics
+		IGameEvent * pEvent = gameeventmanager->CreateEvent( "marine_regenerated" );
+		if (pEvent)
+		{
+			pEvent->SetInt("marine", pMarine->entindex());
+			pEvent->SetInt("amount", iHealth - pMarine->GetHealth());
+		}
+
+		pMarine->SetHealth(iHealth);
+	}
 }

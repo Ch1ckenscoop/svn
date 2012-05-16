@@ -26,7 +26,7 @@ public:
 	float GetIdealAccel( ) const;
 	float MaxYawSpeed( void );
 
-	Class_T		Classify( void ) { return CLASS_VORTIGAUNT; }		// TODO: Different class from harvesters?
+	Class_T		Classify( void ) { return (Class_T)CLASS_ASW_MORTAR_BUG; }
 	virtual bool OverrideMoveFacing( const AILocalMoveGoal_t &move, float flInterval );
 	virtual int SelectSchedule();
 	virtual int SelectMortarbugCombatSchedule();

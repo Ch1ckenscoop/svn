@@ -569,7 +569,9 @@ enum
 	CLASS_ASW_FIRE,
 	CLASS_ASW_PHYSICS_PROP,
 	CLASS_ASW_SENTRY_BASE,		// bottom part of a deployed sentry gun
-	CLASS_ASW_DRONE_UBER,		//Ch1ckensCoop: Added class for statistics reporting.
+	CLASS_ASW_DRONE_UBER,		//Ch1ckensCoop: Added classes for statistics reporting.
+	CLASS_ASW_DRONE_JUMPER,
+	CLASS_ASW_PARASITE_DEFANGED,
 	
 	// Add new classes here ^^^^
 

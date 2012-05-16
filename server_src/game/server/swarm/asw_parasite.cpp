@@ -121,6 +121,7 @@ void CASW_Parasite::Spawn( void )
 		SetBodygroup( 0, 1 );
 		m_fSuicideTime = gpGlobals->curtime + 60;
 		SetRenderColor(asw_parasite_safe_color.GetColor().r(), asw_parasite_safe_color.GetColor().g(), asw_parasite_safe_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
+		m_ClassType = (Class_T)CLASS_ASW_PARASITE_DEFANGED;
 	}
 	else
 	{
@@ -129,6 +130,7 @@ void CASW_Parasite::Spawn( void )
 		SetBodygroup( 0, 0 );
 		m_fSuicideTime = 0;
 		SetRenderColor(asw_parasite_color.GetColor().r(), asw_parasite_color.GetColor().g(), asw_parasite_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
+		m_ClassType = (Class_T)CLASS_ASW_PARASITE;
 	}
 
 	SetMoveType( MOVETYPE_STEP );

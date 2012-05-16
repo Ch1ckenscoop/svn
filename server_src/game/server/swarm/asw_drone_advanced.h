@@ -41,7 +41,7 @@ public:
 	virtual bool ModifyAutoMovement( Vector &vecNewPos );
 	virtual bool IsNavigationUrgent();
 	virtual void NPCThink();
-	virtual Class_T		Classify( void ) { return (Class_T) CLASS_ASW_DRONE; }
+	virtual Class_T		Classify( void ) { return m_ClassType; }
 	virtual void HandleAnimEvent( animevent_t *pEvent );
 	virtual bool CorpseGib( const CTakeDamageInfo &info );
 	virtual bool IsHeavyDamage( const CTakeDamageInfo &info );
@@ -136,6 +136,8 @@ public:
 	};
 
 private:
+	Class_T			m_ClassType;
+
 	CHandle< CASW_Door > m_hBlockingDoor;
 	float				 m_flDoorBashYaw;
 	bool				m_bJumper;	// can this drone jump?

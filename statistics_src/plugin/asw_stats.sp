@@ -3,334 +3,850 @@
 #include <sourcemod>
 #include <swarmtools>
 
+#define MAX_MARINES 4	// Increase this if you plan to use the shitty crashing 5 player stuff
+
+// Class IDs
+enum Classes
+{
+	CLASS_ASW_DRONE = 27,
+	CLASS_ASW_SHIELDBUG,
+	CLASS_ASW_PARASITE,
+	CLASS_ASW_UNKNOWN,
+	CLASS_ASW_HARVESTER,
+	CLASS_ASW_GRUB,
+	CLASS_ASW_HYDRA,
+	CLASS_ASW_BLOB,
+	CLASS_ASW_SENTRY_GUN,
+	CLASS_ASW_BUTTON_PANEL,
+	CLASS_ASW_COMPUTER_AREA,
+	CLASS_ASW_DOOR_AREA,
+	CLASS_ASW_DOOR,
+	CLASS_ASW_MARINE,
+	CLASS_ASW_COLONIST,
+	CLASS_ASW_BOOMER,
+	CLASS_ASW_BOOMERMINI,
+	CLASS_ASW_MEATBUG,
+	CLASS_ASW_QUEEN,
+	CLASS_ASW_BUZZER,
+	CLASS_ASW_QUEEN_DIVER,
+	CLASS_ASW_QUEEN_GRABBER,
+	CLASS_ASW_ALIEN_GOO,
+	CLASS_ASW_T75,
+
+	CLASS_ASW_SHAMAN,
+	CLASS_ASW_EGG,
+	CLASS_ASW_RUNNER,
+	CLASS_ASW_MORTAR_BUG,
+	CLASS_ASW_RANGER,
+	CLASS_ASW_FLOCK,
+	CLASS_ASW_SPAWNER,
+	CLASS_ASW_HOLDOUT_SPAWNER,
+	CLASS_ASW_SPAWN_GROUP,
+	CLASS_ASW_NIGHT_VISION,
+	CLASS_ASW_SNIPER_RIFLE,
+	CLASS_ASW_STATUE,
+	CLASS_ASW_BAIT,
+
+	CLASS_ASW_FRIENDLY_ALIEN,
+
+	CLASS_ASW_RIFLE,
+	CLASS_ASW_MINIGUN,
+	CLASS_ASW_PDW,
+	CLASS_ASW_FLECHETTE,
+	CLASS_ASW_FIRE_EXTINGUISHER,
+	CLASS_ASW_WELDER,
+	CLASS_ASW_TESLA_TRAP,
+	CLASS_ASW_STIM,
+	CLASS_ASW_SHOTGUN,
+	CLASS_ASW_SENTRY_FLAMER,
+	CLASS_ASW_SENTRY_CANNON,
+	CLASS_ASW_SENTRY_FREEZE,
+	CLASS_ASW_RICOCHET,
+	CLASS_ASW_RAILGUN,
+	CLASS_ASW_PRIFLE,
+	CLASS_ASW_PISTOL,
+	CLASS_ASW_MINING_LASER,
+	CLASS_ASW_MINES,
+	CLASS_ASW_MEDKIT,
+	CLASS_ASW_MEDICAL_SATCHEL,
+	CLASS_ASW_LASER_MINES,
+	CLASS_ASW_HORNET_BARRAGE,
+	CLASS_ASW_HEALGRENADE,
+	CLASS_ASW_GRENADES,
+	CLASS_ASW_GRENADE_LAUNCHER,
+	CLASS_ASW_FREEZE_GRENADES,
+	CLASS_ASW_FLASHLIGHT,
+	CLASS_ASW_FLARES,
+	CLASS_ASW_FLAMER,
+	CLASS_ASW_ELECTRIFIED_ARMOR,
+	CLASS_ASW_CHAINSAW,
+	CLASS_ASW_BUFF_GRENADE,
+	CLASS_ASW_AUTOGUN,
+	CLASS_ASW_ASSAULT_SHOTGUN,
+	CLASS_ASW_AMMO_BAG,
+	CLASS_ASW_AMMO_RIFLE,
+	CLASS_ASW_AMMO_AUTOGUN,
+	CLASS_ASW_AMMO_SHOTGUN,
+	CLASS_ASW_AMMO_ASSAULT_SHOTGUN,
+	CLASS_ASW_AMMO_FLAMER,
+	CLASS_ASW_AMMO_PISTOL,
+	CLASS_ASW_AMMO_MINING_LASER,
+	CLASS_ASW_AMMO_RAILGUN,
+	CLASS_ASW_AMMO_CHAINSAW,
+	CLASS_ASW_AMMO_PDW,
+	CLASS_ASW_RIFLE_GRENADE,
+	CLASS_ASW_GRENADE_VINDICATOR,
+	CLASS_ASW_GRENADE_CLUSER,
+	CLASS_ASW_FLAMER_PROJECTILE,
+	CLASS_ASW_BURNING,
+	CLASS_ASW_GRENADE_PRIFLE,
+	CLASS_ASW_TESLA_GUN,
+	CLASS_ASW_HEAL_GUN,
+	CLASS_ASW_SENTRY_GUN_CASE,
+	CLASS_ASW_SENTRY_CANNON_CASE,
+	CLASS_ASW_SENTRY_FLAMER_CASE,
+	CLASS_ASW_SENTRY_FREEZE_CASE,
+	CLASS_ASW_NORMAL_ARMOR,
+	CLASS_ASW_MORTAR_SHELL,
+	CLASS_ASW_SMART_BOMB,
+	CLASS_ASW_FIST,
+	CLASS_ASW_BLINK,
+	CLASS_ASW_JUMP_JET,
+	CLASS_ASW_AMMO_SATCHEL,
+	CLASS_ASW_TESLA_TRAP_PROJECTILE,
+	CLASS_ASW_LASER_MINE_PROJECTILE,
+	CLASS_ASW_EXPLOSIVE_BARREL,
+	CLASS_ASW_HEALNADE_PROJECTILE,
+	CLASS_ASW_REMOTE_TURRET,
+	CLASS_ASW_FIRE,
+	CLASS_ASW_PHYSICS_PROP,
+	CLASS_ASW_SENTRY_BASE,		// bottom part of a deployed sentry gun
+	CLASS_ASW_DRONE_UBER,		//Ch1ckensCoop: Added classes for statistics reporting.
+	CLASS_ASW_DRONE_JUMPER,
+	CLASS_ASW_PARASITE_DEFANGED,
+
+	LAST_ASW_ENTITY_CLASS,
+}
+
+// In stats v2, we're going to be really really
+// super duper detailed in our statistics recording.
+
+enum	// User data fields
+{
+	// DO NOT REORDER!!!! 
+	// They are in this order because this is the 
+	// order the SQL database has them in. If you 
+	// reorder them you'll break everything.
+	
+	// Alien stats
+	UFIELD_SHAMAN_DMGTAKEN,
+	UFIELD_SHAMAN_DMG,
+	UFIELD_SHAMEN_KILLED,
+	
+	UFIELD_MORTAR_DMGTAKEN,
+	UFIELD_MORTAR_DMG,
+	UFIELD_MORTARS_KILLED,
+	
+	UFIELD_RANGER_DMGTAKEN,
+	UFIELD_RANGER_DMG,
+	UFIELD_RANGERS_KILLED,
+	
+	UFIELD_BOOMER_DMGTAKEN,
+	UFIELD_BOOMER_DMG,
+	UFIELD_BOOMERS_KILLED,
+	
+	UFIELD_QUEEN_DMGTAKEN,
+	UFIELD_QUEEN_DMG,
+	UFIELD_QUEENS_KILLED,
+	
+	UFIELD_SAFEPARA_DMGTAKEN,
+	UFIELD_SAFEPARA_DMG,
+	UFIELD_SAFEPARAS_KILLED,
+	
+	UFIELD_HARVESTER_DMGTAKEN,
+	UFIELD_HARVESTER_DMG,
+	UFIELD_HARVESTERS_KILLED,
+	
+	UFIELD_SHIELDBUG_DMGTAKEN,
+	UFIELD_SHIELDBUG_DMG,
+	UFIELD_SHIELDBUGS_KILLED,
+	
+	UFIELD_PARASITE_DMGTAKEN,	// Includes infestation damage
+	UFIELD_PARASITE_DMG,
+	UFIELD_PARASITES_KILLED,
+	
+	UFIELD_BUZZER_DMGTAKEN,
+	UFIELD_BUZZER_DMG,
+	UFIELD_BUZZERS_KILLED,
+	
+	UFIELD_UBERDRONE_DMGTAKEN,
+	UFIELD_UBERDRONE_DMG,
+	UFIELD_UBERDRONES_KILLED,
+	
+	UFIELD_JUMPDRONE_DMGTAKEN,
+	UFIELD_JUMPDRONE_DMG,
+	UFIELD_JUMPDRONES_KILLED,
+	
+	UFIELD_DRONE_DMGTAKEN,
+	UFIELD_DRONE_DMG,
+	UFIELD_DRONES_KILLED,
+	
+	UFIELD_ENTINDEX,	// Here so we can quickly compare entindexes to
+							// find the correct marine. In the SQL database,
+							// this field is the integer primary key.
+	
+	// Friendly fire stats
+	UFIELD_MARINESKILLED,
+	UFIELD_FRIENDLYFIRE,
+	
+	// Weapon stats
+	UFIELD_TESLATRAP_DEPLOYS,
+	UFIELD_TESLATRAP_KILLS,
+	
+	UFIELD_BOMBSENTRY_KILLS,
+	UFIELD_BOMBSENTRY_DEPLOYS,
+	UFIELD_FLAMESENTRY_KILLS,
+	UFIELD_FLAMESENTRY_DEPLOYS,
+	// Freeze sentry can't kill on it's own
+	UFIELD_FREEZESENTRY_DEPLOYS,
+	UFIELD_SENTRY_KILLS,
+	UFIELD_SENTRY_DEPLOYS,
+	
+	UFIELD_GRENADES_THROWN,
+	UFIELD_SHOTS_FIRED,
+	
+	
+	// Regenerative health stats
+	UFIELD_HEALTH_REGENERATED,
+	
+	
+	UFIELD_STEAMID,		// INDEX!!! of steamID string.
+	UFIELD_NAME,			// INDEX!!! of the player name string.
+	UFIELD_KILLED,		// Were we killed this game?
+	
+	
+	UFIELD_INFESTED_COUNT,		// How many times we've been infested
+
+	UFIELD_RANGER_SHOTSDODGED,	// How many shots have we dodged? (shots hit us but we were airborne)
+	
+	UFIELD_BOOMERS_POPPED,		// How many boomers have we killed before they inflated?
+	
+	UFIELD_SAFEPARA_ATTACKS,	// How many times the marine has been hurt by this safe parasite
+								// (aka don't count kills that are the marine being hurt and killing
+								// the safepara.
+	
+	
+	UFIELD_COUNT,	// Add new fields above this!
+}
+
+enum	// Map data fields
+{
+	MFIELD_NAME,
+	MFIELD_TIME,
+	MFIELD_SUCCESS,
+	
+	MFIELD_COUNT,
+}
+
+new Handle:userDataArray;
+new Handle:mapDataArray;
+
 public Plugin:myinfo = 
 {
 	name = "SwarmStats",
 	author = "IBeMad",
-	description = "Records detailed statistics in Alien Swarm.",
-	version = "0.2",
+	description = "Records detailed statistics for Alien Swarm.",
+	version = "0.9",
 	url = "bit.ly/ch1ckenscoop"
 }
 
 public OnPluginStart()
 {
+	HookEvent("alien_hurt", Event_Alien_Hurt);
 	HookEvent("alien_died", Event_Alien_Died);
 	HookEvent("mission_success", Event_Mission_Success);
-	//HookEvent("marine_died", Event_Marine_Died);
-	//TODO: Deaths = -100 points.
-	//TODO: Log player points separatly then add them to the main file to reduce lag and to be able to report on them later.
+	HookEvent("marine_hurt", Event_Marine_Hurt);	
+	HookEvent("marine_infested", Event_Marine_Infested);
+	HookEvent("marine_died", Event_Marine_Died);
+	HookEvent("safepara_attack", Event_SafePara_Attack);	// TODO: need to add in code
+	HookEvent("marine_rangermiss", Event_MarineDodgedRangerShot);	// TODO: need to add in code
+	HookEvent("marine_regenerated", Event_Marine_Regenerated);
+	HookEvent("marine_spawned", Event_Marine_Spawned);		// TODO: need to add in code
+	HookEvent("sentry_complete", Event_Sentry_Deployed);
+	
+	
+	userDataArray = CreateArray(UFIELD_COUNT, MAX_MARINES);
+	mapDataArray = CreateArray(MFIELD_COUNT, 1);
 }
 
-public Action:Event_Mission_Success(Handle:event, const String:name[], bool:dontBroadcast)
+public OnMapStart()
 {
-	new Handle:players = CreateKeyValues("game");
-	new Handle:maps = CreateKeyValues("Maps");
-	new Handle:skill = FindConVar("asw_skill");
+	ClearArray(userDataArray);
+	ClearArray(mapDataArray);
 	
-	new String:steamid[64];
-	new String:mapname[64];
-	new skill_lvl;
+	ResizeArray(userDataArray, MAX_MARINES);
+	ResizeArray(mapDataArray, 1);
 	
-	FileToKeyValues(players, "addons/sourcemod/SwarmStats/gameinfo.swarmstats");
-	FileToKeyValues(maps, "addons/sourcemod/SwarmStats/maps.swarmstats");
-	GetCurrentMap(mapname, sizeof(mapname));
-	
-	KvJumpToKey(players, "Difficulty");
-	skill_lvl = KvGetNum(players, "asw_skill", 1);
-	KvRewind(players);
-	
-	KvJumpToKey(players, "Players");
-	KvGotoFirstSubKey(players);
-	do
+	for (new i = 0; i < MAX_MARINES; i++)
 	{
-		KvGetSectionName(players, steamid, sizeof(steamid))
-		//PrintToServer("%s", section_name);
-		
-		if (skill_lvl == 1)
+		// Initialize our array
+		for (new iField = 0; iField < UFIELD_COUNT; iField++)
 		{
-			KvJumpToKey(maps, "Easy", true);
-			KvJumpToKey(maps, mapname, true);
-			KvJumpToKey(maps, steamid, true);
-			new oldplays = KvGetNum(maps, "wins");
-			KvSetNum(maps, "wins", oldplays + 1);
-			KvRewind(maps);
+			SetArrayCell(userDataArray, i, 0, iField);
 		}
-		else if (skill_lvl == 2)
-		{
-			KvJumpToKey(maps, "Normal", true);
-			KvJumpToKey(maps, mapname, true);
-			KvJumpToKey(maps, steamid, true);
-			new oldplays = KvGetNum(maps, "wins");
-			KvSetNum(maps, "wins", oldplays + 1);
-			KvRewind(maps);
-		}
-		else if (skill_lvl == 3)
-		{
-			KvJumpToKey(maps, "Hard", true);
-			KvJumpToKey(maps, mapname, true);
-			KvJumpToKey(maps, steamid, true);
-			new oldplays = KvGetNum(maps, "wins");
-			KvSetNum(maps, "wins", oldplays + 1);
-			KvRewind(maps);
-		}
-		else if (skill_lvl == 4)
-		{
-			KvJumpToKey(maps, "Insane", true);
-			KvJumpToKey(maps, mapname, true);
-			KvJumpToKey(maps, steamid, true);
-			new oldplays = KvGetNum(maps, "wins");
-			KvSetNum(maps, "wins", oldplays + 1);
-			KvRewind(maps);
-		}
-		else
-		{
-			KvJumpToKey(maps, "Brutal", true);
-			KvJumpToKey(maps, mapname, true);
-			KvJumpToKey(maps, steamid, true);
-			new oldplays = KvGetNum(maps, "wins");
-			KvSetNum(maps, "wins", oldplays + 1);
-			KvRewind(maps);
-		}
-		
-		//KvJumpToKey(players, "Players", true);
-		//KvJumpToKey(players, steamid, true);
-		
-		
-		//TODO: Order players by score.
-		//new String:pname[64];
-		//KvGetString(players, "name", pname, sizeof(pname));
-		//PrintToChatAll("%s scored %i points this game.", pname, KvGetNum(players, "points"));
-		
-		//KvRewind(players);
-		
-	} while(KvGotoNextKey(players))
+	}
 	
-	KvRewind(maps);
-	KeyValuesToFile(maps, "addons/sourcemod/SwarmStats/maps.swarmstats");
-	
-	
-	
-	
-	CloseHandle(players);
-	CloseHandle(skill);
-	CloseHandle(maps);
+	for (new iField = 0; iField < MFIELD_COUNT; iField++)
+	{
+		SetArrayCell(mapDataArray, 0, 0, iField);
+	}
 }
 
 public OnMapEnd()
 {
-	new Handle:players = CreateKeyValues("game");
-	new Handle:maps = CreateKeyValues("Maps");
-	new Handle:permPlayers = CreateKeyValues("Players");
-	new Handle:skill = FindConVar("asw_skill");
-	
-	new String:steamid[64];
-	new String:mapname[64];
-	new skill_lvl;
-	
-	FileToKeyValues(players, "addons/sourcemod/SwarmStats/gameinfo.swarmstats");
-	FileToKeyValues(maps, "addons/sourcemod/SwarmStats/maps.swarmstats");
-	FileToKeyValues(permPlayers, "addons/sourcemod/SwarmStats/players.swarmstats");
-	GetCurrentMap(mapname, sizeof(mapname));
-	
-	KvJumpToKey(players, "Difficulty");
-	skill_lvl = KvGetNum(players, "asw_skill", 1);
-	KvRewind(players);
-	
-	KvJumpToKey(players, "Players");
-	KvGotoFirstSubKey(players);
-	do
+	PrintToServer(" **** Saving statistics... **** ");
+	new String:error[1];	// I don't really care about errors here
+	new Handle:db = SQL_Connect("swarm_stats", true, error, sizeof(error));
+	if (db == INVALID_HANDLE)
 	{
-		KvGetSectionName(players, steamid, sizeof(steamid))
-		//PrintToServer("%s", section_name);
+		PrintToServer("Error connecting to database!");
+		return;
+	}
 		
-		if (skill_lvl == 1)
-		{
-			KvJumpToKey(maps, "Easy", true);
-			KvJumpToKey(maps, mapname, true);
-			KvJumpToKey(maps, steamid, true);
-			new oldplays = KvGetNum(maps, "Plays");
-			KvSetNum(maps, "plays", oldplays + 1);
-			KvRewind(maps);
-		}
-		else if (skill_lvl == 2)
-		{
-			KvJumpToKey(maps, "Normal", true);
-			KvJumpToKey(maps, mapname, true);
-			KvJumpToKey(maps, steamid, true);
-			new oldplays = KvGetNum(maps, "Plays");
-			KvSetNum(maps, "plays", oldplays + 1);
-			KvRewind(maps);
-		}
-		else if (skill_lvl == 3)
-		{
-			KvJumpToKey(maps, "Hard", true);
-			KvJumpToKey(maps, mapname, true);
-			KvJumpToKey(maps, steamid, true);
-			new oldplays = KvGetNum(maps, "Plays");
-			KvSetNum(maps, "plays", oldplays + 1);
-			KvRewind(maps);
-		}
-		else if (skill_lvl == 4)
-		{
-			KvJumpToKey(maps, "Insane", true);
-			KvJumpToKey(maps, mapname, true);
-			KvJumpToKey(maps, steamid, true);
-			new oldplays = KvGetNum(maps, "Plays");
-			KvSetNum(maps, "plays", oldplays + 1);
-			KvRewind(maps);
-		}
-		else
-		{
-			KvJumpToKey(maps, "Brutal", true);
-			KvJumpToKey(maps, mapname, true);
-			KvJumpToKey(maps, steamid, true);
-			new oldplays = KvGetNum(maps, "Plays");
-			KvSetNum(maps, "plays", oldplays + 1);
-			KvRewind(maps);
-		}
-		
-		KvJumpToKey(permPlayers, steamid, true);
-		new String:pname[64];
-		KvGetString(players, "name", pname, sizeof(pname));
-		
-		KvSetNum(permPlayers, "kills", KvGetNum(permPlayers, "kills") + KvGetNum(players, "kills"));
-		KvSetNum(permPlayers, "points", KvGetNum(permPlayers, "points") + KvGetNum(players, "points"));
-		KvSetString(permPlayers, "name", pname);
-		
-		KvRewind(permPlayers);
-	} while(KvGotoNextKey(players))
 	
-	KvRewind(maps);
-	KeyValuesToFile(maps, "addons/sourcemod/SwarmStats/maps.swarmstats");
-	KeyValuesToFile(permPlayers, "addons/sourcemod/SwarmStats/players.swarmstats");
+	// Record all our data
+	for (new i = 0; i < MAX_MARINES; i++)
+	{
+		if (GetArrayCell(userDataArray, i, UFIELD_ENTINDEX) > 0)
+		{
+			// We have a valid marine
+			new String:steamID[32]; 
+			GetArrayString(userDataArray, GetArrayCell(userDataArray, i, UFIELD_STEAMID), steamID, sizeof(steamID));
+			
+			new String:strQuery[255];
+			Format(strQuery, sizeof(strQuery), "SELECT * FROM Users WHERE UFIELD_STEAMID = '%s'", steamID);
+			new Handle:query = SQL_Query(db, strQuery);
+			if (CheckSQLError(query, db) && SQL_GetRowCount(query) == 0)
+			{
+				// Our marine isn't in our database, add him.
+				Format(strQuery, sizeof(strQuery), "INSERT INTO Users (UFIELD_STEAMID) VALUES ('%s')", steamID);
+				CheckFastSQLError(db, strQuery);
+				// Now we need to get the result so we can record their data properly
+				Format(strQuery, sizeof(strQuery), "SELECT * FROM Users WHERE UFIELD_STEAMID = '%s'", steamID);
+				query = SQL_Query(db, strQuery);
+			}
+			
+			// Record this marine's statistics
+			SQL_FetchRow(query);
+			
+			////////////
+			// Shamen //
+			////////////
+			new dmgtaken = GetArrayCell(userDataArray, i, UFIELD_SHAMAN_DMGTAKEN) + SQL_FetchInt(query, UFIELD_SHAMAN_DMGTAKEN);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_SHAMAN_DMGTAKEN = '%i' WHERE UFIELD_STEAMID = '%s'", dmgtaken, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			new dmggiven = GetArrayCell(userDataArray, i, UFIELD_SHAMAN_DMG) + SQL_FetchInt(query, UFIELD_SHAMAN_DMG);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_SHAMAN_DMG = '%i' WHERE UFIELD_STEAMID = '%s'", dmggiven, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			new kills = GetArrayCell(userDataArray, i, UFIELD_SHAMEN_KILLED) + SQL_FetchInt(query, UFIELD_SHAMEN_KILLED);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_SHAMEN_KILLED = '%i' WHERE UFIELD_STEAMID = '%s'", kills, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			
+			/////////////
+			// Mortars //
+			/////////////
+			dmgtaken = GetArrayCell(userDataArray, i, UFIELD_MORTAR_DMGTAKEN) + SQL_FetchInt(query, UFIELD_MORTAR_DMGTAKEN);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_MORTAR_DMGTAKEN = '%i' WHERE UFIELD_STEAMID = '%s'", dmgtaken, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			dmggiven = GetArrayCell(userDataArray, i, UFIELD_MORTAR_DMG) + SQL_FetchInt(query, UFIELD_MORTAR_DMG);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_MORTAR_DMG = '%i' WHERE UFIELD_STEAMID = '%s'", dmggiven, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			kills = GetArrayCell(userDataArray, i, UFIELD_MORTARS_KILLED) + SQL_FetchInt(query, UFIELD_MORTARS_KILLED);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_MORTARS_KILLED = '%i' WHERE UFIELD_STEAMID = '%s'", kills, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			
+			/////////////
+			// Rangers //
+			/////////////
+			dmgtaken = GetArrayCell(userDataArray, i, UFIELD_RANGER_DMGTAKEN) + SQL_FetchInt(query, UFIELD_RANGER_DMGTAKEN);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_RANGER_DMGTAKEN = '%i' WHERE UFIELD_STEAMID = '%s'", dmgtaken, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			dmggiven = GetArrayCell(userDataArray, i, UFIELD_RANGER_DMG) + SQL_FetchInt(query, UFIELD_RANGER_DMG);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_RANGER_DMG = '%i' WHERE UFIELD_STEAMID = '%s'", dmggiven, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			kills = GetArrayCell(userDataArray, i, UFIELD_RANGERS_KILLED) + SQL_FetchInt(query, UFIELD_RANGERS_KILLED);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_RANGERS_KILLED = '%i' WHERE UFIELD_STEAMID = '%s'", kills, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			
+			/////////////
+			// Boomers //
+			/////////////
+			dmgtaken = GetArrayCell(userDataArray, i, UFIELD_BOOMER_DMGTAKEN) + SQL_FetchInt(query, UFIELD_BOOMER_DMGTAKEN);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_BOOMER_DMGTAKEN = '%i' WHERE UFIELD_STEAMID = '%s'", dmgtaken, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			dmggiven = GetArrayCell(userDataArray, i, UFIELD_BOOMER_DMG) + SQL_FetchInt(query, UFIELD_BOOMER_DMG);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_BOOMER_DMG = '%i' WHERE UFIELD_STEAMID = '%s'", dmggiven, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			kills = GetArrayCell(userDataArray, i, UFIELD_BOOMERS_KILLED) + SQL_FetchInt(query, UFIELD_BOOMERS_KILLED);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_BOOMERS_KILLED = '%i' WHERE UFIELD_STEAMID = '%s'", kills, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			
+			////////////
+			// Queens //
+			////////////
+			dmgtaken = GetArrayCell(userDataArray, i, UFIELD_QUEEN_DMGTAKEN) + SQL_FetchInt(query, UFIELD_QUEEN_DMGTAKEN);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_QUEEN_DMGTAKEN = '%i' WHERE UFIELD_STEAMID = '%s'", dmgtaken, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			dmggiven = GetArrayCell(userDataArray, i, UFIELD_QUEEN_DMG) + SQL_FetchInt(query, UFIELD_QUEEN_DMG);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_QUEEN_DMG = '%i' WHERE UFIELD_STEAMID = '%s'", dmggiven, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			kills = GetArrayCell(userDataArray, i, UFIELD_QUEENS_KILLED) + SQL_FetchInt(query, UFIELD_QUEENS_KILLED);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_QUEENS_KILLED = '%i' WHERE UFIELD_STEAMID = '%s'", kills, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			
+			////////////////////////
+			// Defanged Parasites //
+			////////////////////////
+			dmgtaken = GetArrayCell(userDataArray, i, UFIELD_SAFEPARA_DMGTAKEN) + SQL_FetchInt(query, UFIELD_SAFEPARA_DMGTAKEN);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_SAFEPARA_DMGTAKEN = '%i' WHERE UFIELD_STEAMID = '%s'", dmgtaken, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			dmggiven = GetArrayCell(userDataArray, i, UFIELD_SAFEPARA_DMG) + SQL_FetchInt(query, UFIELD_SAFEPARA_DMG);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_SAFEPARA_DMG = '%i' WHERE UFIELD_STEAMID = '%s'", dmggiven, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			kills = GetArrayCell(userDataArray, i, UFIELD_SAFEPARAS_KILLED) + SQL_FetchInt(query, UFIELD_SAFEPARAS_KILLED);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_SAFEPARAS_KILLED = '%i' WHERE UFIELD_STEAMID = '%s'", kills, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			
+			////////////////
+			// Harvesters //
+			////////////////
+			dmgtaken = GetArrayCell(userDataArray, i, UFIELD_HARVESTER_DMGTAKEN) + SQL_FetchInt(query, UFIELD_HARVESTER_DMGTAKEN);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_HARVESTER_DMGTAKEN = '%i' WHERE UFIELD_STEAMID = '%s'", dmgtaken, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			dmggiven = GetArrayCell(userDataArray, i, UFIELD_HARVESTER_DMG) + SQL_FetchInt(query, UFIELD_HARVESTER_DMG);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_HARVESTER_DMG = '%i' WHERE UFIELD_STEAMID = '%s'", dmggiven, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			kills = GetArrayCell(userDataArray, i, UFIELD_HARVESTERS_KILLED) + SQL_FetchInt(query, UFIELD_HARVESTERS_KILLED);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_HARVESTERS_KILLED = '%i' WHERE UFIELD_STEAMID = '%s'", kills, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			
+			////////////////
+			// Shieldbugs //
+			////////////////
+			dmgtaken = GetArrayCell(userDataArray, i, UFIELD_SHIELDBUG_DMGTAKEN) + SQL_FetchInt(query, UFIELD_SHIELDBUG_DMGTAKEN);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_SHIELDBUG_DMGTAKEN = '%i' WHERE UFIELD_STEAMID = '%s'", dmgtaken, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			dmggiven = GetArrayCell(userDataArray, i, UFIELD_SHIELDBUG_DMG) + SQL_FetchInt(query, UFIELD_SHIELDBUG_DMG);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_SHIELDBUG_DMG = '%i' WHERE UFIELD_STEAMID = '%s'", dmggiven, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			kills = GetArrayCell(userDataArray, i, UFIELD_SHIELDBUGS_KILLED) + SQL_FetchInt(query, UFIELD_SHIELDBUGS_KILLED);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_SHIELDBUGS_KILLED = '%i' WHERE UFIELD_STEAMID = '%s'", kills, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			
+			///////////////
+			// Parasites //
+			///////////////
+			dmgtaken = GetArrayCell(userDataArray, i, UFIELD_PARASITE_DMGTAKEN) + SQL_FetchInt(query, UFIELD_PARASITE_DMGTAKEN);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_PARASITE_DMGTAKEN = '%i' WHERE UFIELD_STEAMID = '%s'", dmgtaken, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			dmggiven = GetArrayCell(userDataArray, i, UFIELD_PARASITE_DMG) + SQL_FetchInt(query, UFIELD_PARASITE_DMG);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_PARASITE_DMG = '%i' WHERE UFIELD_STEAMID = '%s'", dmggiven, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			kills = GetArrayCell(userDataArray, i, UFIELD_PARASITES_KILLED) + SQL_FetchInt(query, UFIELD_PARASITES_KILLED);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_PARASITES_KILLED = '%i' WHERE UFIELD_STEAMID = '%s'", kills, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			
+			/////////////
+			// Buzzers //
+			/////////////
+			dmgtaken = GetArrayCell(userDataArray, i, UFIELD_BUZZER_DMGTAKEN) + SQL_FetchInt(query, UFIELD_BUZZER_DMGTAKEN);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_BUZZER_DMGTAKEN = '%i' WHERE UFIELD_STEAMID = '%s'", dmgtaken, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			dmggiven = GetArrayCell(userDataArray, i, UFIELD_BUZZER_DMG) + SQL_FetchInt(query, UFIELD_BUZZER_DMG);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_BUZZER_DMG = '%i' WHERE UFIELD_STEAMID = '%s'", dmggiven, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			kills = GetArrayCell(userDataArray, i, UFIELD_BUZZERS_KILLED) + SQL_FetchInt(query, UFIELD_BUZZERS_KILLED);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_BUZZERS_KILLED = '%i' WHERE UFIELD_STEAMID = '%s'", kills, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			
+			/////////////////
+			// Uber Drones //
+			/////////////////
+			dmgtaken = GetArrayCell(userDataArray, i, UFIELD_UBERDRONE_DMGTAKEN) + SQL_FetchInt(query, UFIELD_UBERDRONE_DMGTAKEN);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_UBERDRONE_DMGTAKEN = '%i' WHERE UFIELD_STEAMID = '%s'", dmgtaken, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			dmggiven = GetArrayCell(userDataArray, i, UFIELD_UBERDRONE_DMG) + SQL_FetchInt(query, UFIELD_UBERDRONE_DMG);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_UBERDRONE_DMG = '%i' WHERE UFIELD_STEAMID = '%s'", dmggiven, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			kills = GetArrayCell(userDataArray, i, UFIELD_UBERDRONES_KILLED) + SQL_FetchInt(query, UFIELD_UBERDRONES_KILLED);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_UBERDRONES_KILLED = '%i' WHERE UFIELD_STEAMID = '%s'", kills, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			
+			////////////////////
+			// Jumping Drones //
+			////////////////////
+			dmgtaken = GetArrayCell(userDataArray, i, UFIELD_JUMPDRONE_DMGTAKEN) + SQL_FetchInt(query, UFIELD_JUMPDRONE_DMGTAKEN);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_JUMPDRONE_DMGTAKEN = '%i' WHERE UFIELD_STEAMID = '%s'", dmgtaken, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			dmggiven = GetArrayCell(userDataArray, i, UFIELD_JUMPDRONE_DMG) + SQL_FetchInt(query, UFIELD_JUMPDRONE_DMG);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_JUMPDRONE_DMG = '%i' WHERE UFIELD_STEAMID = '%s'", dmggiven, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			kills = GetArrayCell(userDataArray, i, UFIELD_JUMPDRONES_KILLED) + SQL_FetchInt(query, UFIELD_JUMPDRONES_KILLED);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_JUMPDRONES_KILLED = '%i' WHERE UFIELD_STEAMID = '%s'", kills, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			
+			////////////
+			// Drones //
+			////////////
+			dmgtaken = GetArrayCell(userDataArray, i, UFIELD_DRONE_DMGTAKEN) + SQL_FetchInt(query, UFIELD_DRONE_DMGTAKEN);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_DRONE_DMGTAKEN = '%i' WHERE UFIELD_STEAMID = '%s'", dmgtaken, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			dmggiven = GetArrayCell(userDataArray, i, UFIELD_DRONE_DMG) + SQL_FetchInt(query, UFIELD_DRONE_DMG);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_DRONE_DMG = '%i' WHERE UFIELD_STEAMID = '%s'", dmggiven, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			kills = GetArrayCell(userDataArray, i, UFIELD_DRONES_KILLED) + SQL_FetchInt(query, UFIELD_DRONES_KILLED);
+			Format(strQuery, sizeof(strQuery), "UPDATE Users SET UFIELD_DRONES_KILLED = '%i' WHERE UFIELD_STEAMID = '%s'", kills, steamID);
+			CheckFastSQLError(db, strQuery);
+			
+			
+			CloseHandle(query);
+		}
+	}
+	CloseHandle(db);
 	
-	DeleteFile("addons/sourcemod/SwarmStats/gameinfo.swarmstats");
-	CloseHandle(players);
-	CloseHandle(permPlayers);
-	CloseHandle(skill);
-	CloseHandle(maps);
+	PrintToServer(" **** Finished saving statistics. **** ");
 }
 
-public Action:Event_Alien_Died(Handle:event, const String:name[], bool:dontBroadcast)
-{	
-	new String:steamid[50];
-	GetClientAuthString(Swarm_GetClientOfMarine(GetEventInt(event, "marine")), steamid, sizeof(steamid));
-	
-	new Handle:gameskill = FindConVar("asw_skill");
-	new Handle:nowplaying_h = CreateKeyValues("game");
-	FileToKeyValues(nowplaying_h, "addons/sourcemod/SwarmStats/gameinfo.swarmstats");
-	KvJumpToKey(nowplaying_h, "Difficulty", true);
-	KvSetNum(nowplaying_h, "asw_skill", GetConVarInt(gameskill));
-	KvRewind(nowplaying_h);
-	KvJumpToKey(nowplaying_h, "Players", true);
-	KvJumpToKey(nowplaying_h, steamid, true);
-	//KvSetString(nowplaying_h, "player", "playing");
-	KvRewind(nowplaying_h);
-	
-	//new Handle:kv_handle = CreateKeyValues("Players");
-	//FileToKeyValues(kv_handle, "addons/sourcemod/SwarmStats/Players.swarmstats")
-	new String:Sname[100];
-	
-	//KvGotoFirstSubKey(kv_handle);
-	KvJumpToKey(nowplaying_h, "Players", true);
-	KvJumpToKey(nowplaying_h, steamid, true);
-	
-	GetClientName(Swarm_GetClientOfMarine(GetEventInt(event, "marine")), Sname, sizeof(Sname));
-	KvSetString(nowplaying_h, "name", Sname);
-	KvSetNum(nowplaying_h, "client", Swarm_GetClientOfMarine(GetEventInt(event, "marine")));
-	
-	new killsnum = KvGetNum(nowplaying_h, "kills");
-	KvSetNum(nowplaying_h, "kills", (killsnum + 1));
-	
-	new Float:pointsnum = KvGetFloat(nowplaying_h, "points");
-	new weapon_int = GetEventInt(event, "weapon");	
-	new alien_int = GetEventInt(event, "alien");
-	new Float:points_new = 1.0;
-	
-	if (weapon_int == 35)
+CheckSQLError(Handle:query, Handle:db)
+{
+	if (query == INVALID_HANDLE)
 	{
-		points_new = -1.0;
+		new String:error[255]
+		SQL_GetError(db, error, sizeof(error))
+		PrintToServer("Failed to query (error: %s)", error)
+		return false;
 	}
-	else if (weapon_int == 74)
+	return true;
+}
+
+CheckFastSQLError(Handle:db, const String:strQuery[])
+{
+	if (db == INVALID_HANDLE)
 	{
-		points_new = -1.0;
+		PrintToServer("Invalid database handle!");
 	}
-	else if (weapon_int == 75)
+	else if (!SQL_FastQuery(db, strQuery))
 	{
-		points_new = -1.0;
+		new String:error[255];
+		SQL_GetError(db, error, sizeof(error));
+		PrintToServer("Failed to query (error: %s)", error);
+		return false;
 	}
-	else if (weapon_int == 76)
-	{
-		points_new = -1.0;
-	}
-	else
-	{
-		if (alien_int == 55)					//Ranger
-		{
-			points_new = 2.0;
-		}
-		else if (alien_int == 29) 				//Parasites
-		{
-			points_new = 4.0;	
-		}
-		else if (alien_int == 52)				//Parasite Eggs
-		{
-			points_new = 3.0;	
-		}
-		else if (alien_int == 31)				//Harvesters
-		{
-			points_new = 5.0;	
-		}
-		else if (alien_int == 49)				//Goo (aka Biomass)
-		{
-			points_new = 10.0;
-		}
-		else if (alien_int == 42)				//Boomers
-		{
-			points_new = 10.0;
-		}
-		else if (alien_int == 54)				//Mortars
-		{
-			points_new = 7.0;	
-		}
-		else if (alien_int == 28)				//Shieldbug
-		{
-			points_new = 15.0;
-		}
-		else if (alien_int == 45)				//Queen
-		{
-			points_new = 100.0;
-		}
-		else if (alien_int == 137)				//Uber Drones
-		{
-			points_new = 3.0;
-		}
+	return true;
+}
+
+public Event_Mission_Success(Handle:event, const String:name[], bool:dontBroadcast)
+{
 	
+}
+
+public Event_Alien_Hurt(Handle:event, const String:name[], bool:dontBroadcast)
+{		
+	new Classes:class = 		Classes:GetEventInt(event, "alien");
+	new damageTaken = 			GetEventInt(event, "damagetaken");
+	new Classes:weaponClass = 	Classes:GetEventInt(event, "weapon");
+	new marineEntIndex = 		GetEventInt(event, "marine");
 	
-		if (GetConVarInt(gameskill) == 1)
+	CheckMarineAdded(marineEntIndex);
+	
+	Alien_Hurt(damageTaken, marineEntIndex, weaponClass, class);
+}
+
+public Event_Alien_Died(Handle:event, const String:name[], bool:dontBroadcast)
+{		
+	new Classes:class = 		Classes:GetEventInt(event, "alien");
+	new Classes:weaponClass = 	Classes:GetEventInt(event, "weapon");
+	new marineEntIndex = 		GetEventInt(event, "marine");
+	
+	CheckMarineAdded(marineEntIndex);
+		
+	Alien_Killed(marineEntIndex, weaponClass, class);
+}
+
+public Event_Marine_Hurt(Handle:event, const String:name[], bool:dontBroadcast)
+{
+	
+}
+
+public Event_Marine_Infested(Handle:event, const String:name[], bool:dontBroadcast)
+{
+	
+}
+
+public Event_Marine_Died(Handle:event, const String:name[], bool:dontBroadcast)
+{
+	new marineIndex = GetEventInt(event, "marine");
+	for (new i = 0; i < MAX_MARINES; i++)
+	{
+		if (GetArrayCell(userDataArray, i, UFIELD_ENTINDEX) == marineIndex)
 		{
-			points_new = points_new * 0.5;
-		}
-		else if (GetConVarInt(gameskill) == 3)
-		{
-			points_new = points_new * 1.25
-		}
-		else if (GetConVarInt(gameskill) == 4)
-		{
-			points_new = points_new * 1.5;
-		}
-		else if (GetConVarInt(gameskill) == 5)
-		{
-			points_new = points_new * 1.75;
+			// Our marine was killed, save the data.
+			SetArrayCell(userDataArray, i, 1, UFIELD_KILLED);
 		}
 	}
-	KvSetFloat(nowplaying_h, "points", points_new + pointsnum);
+}
+
+public Event_MarineDodgedRangerShot(Handle:event, const String:name[], bool:dontBroadcast)
+{
 	
-	//KvRewind(kv_handle);
-	KvRewind(nowplaying_h);
-	//KeyValuesToFile(kv_handle, "addons/sourcemod/SwarmStats/players.swarmstats");
-	KeyValuesToFile(nowplaying_h, "addons/sourcemod/SwarmStats/gameinfo.swarmstats");
-	//CloseHandle(kv_handle);
-	CloseHandle(gameskill);
-	CloseHandle(nowplaying_h);
+}
+
+public Event_Marine_Spawned(Handle:event, const String:name[], bool:dontBroadcast)
+{
+	
+}
+
+public Event_Marine_Regenerated(Handle:event, const String:name[], bool:dontBroadcast)
+{
+	
+}
+
+public Event_SafePara_Attack(Handle:event, const String:name[], bool:dontBroadcast)
+{
+	
+}
+
+public Event_Sentry_Deployed(Handle:event, const String:name[], bool:dontBroadcast)
+{
+	
+}
+
+CheckMarineAdded(marineEntIndex)
+{
+	if (marineEntIndex != 0)
+	{
+		// TEMPORARY CODE UNTIL MARINE_SPAWNED EVENT IS FULLY COMPLETED
+		new bool:bSuccess = false;
+		new lastEmptySlot = 0;
+
+		// See if we're already in the array
+		for (new i = 0; i < MAX_MARINES; i++)
+		{
+			if (marineEntIndex == GetArrayCell(userDataArray, i, UFIELD_ENTINDEX))
+			{
+				// We're in the array and we found ourselves
+				bSuccess = true;
+			}
+			else if (!(GetArrayCell(userDataArray, i, UFIELD_ENTINDEX) > 0))
+			{
+				// This slot is empty
+				lastEmptySlot = i;
+			}
+		}
+		
+		if (!bSuccess)
+		{
+			// Add ourselves in the last empty slot
+			SetArrayCell(userDataArray, lastEmptySlot, marineEntIndex, UFIELD_ENTINDEX);
+			
+			new String:steamID[32];
+			GetClientAuthString(Swarm_GetClientOfMarine(marineEntIndex), steamID, sizeof(steamID));
+			SetArrayCell(userDataArray, lastEmptySlot, PushArrayString(userDataArray, steamID), UFIELD_STEAMID);
+		}
+		// TEMPORARY CODE END
+	}
+}
+
+////////////////
+// Alien Data //
+////////////////
+Alien_HurtMarine(damageTaken, marineEntIndex, Classes:alienType)
+{
+	new iField = -1;
+	// Figure out which field we need to update
+	if (alienType == CLASS_ASW_DRONE)
+		iField = UFIELD_DRONE_DMGTAKEN;
+	else if (alienType == CLASS_ASW_DRONE_JUMPER)
+		iField = UFIELD_JUMPDRONE_DMGTAKEN;
+	else if (alienType == CLASS_ASW_DRONE_UBER)
+		iField = UFIELD_UBERDRONE_DMGTAKEN;
+	else if (alienType == CLASS_ASW_BUZZER)
+		iField = UFIELD_BUZZER_DMGTAKEN;
+	else if (alienType == CLASS_ASW_PARASITE)
+		iField = UFIELD_PARASITE_DMGTAKEN;
+	else if (alienType == CLASS_ASW_SHIELDBUG)
+		iField = UFIELD_SHIELDBUG_DMGTAKEN;
+	else if (alienType == CLASS_ASW_HARVESTER)
+		iField = UFIELD_HARVESTER_DMGTAKEN;
+	else if (alienType == CLASS_ASW_PARASITE_DEFANGED)
+		iField = UFIELD_SAFEPARA_DMGTAKEN;
+	else if (alienType == CLASS_ASW_QUEEN)
+		iField = UFIELD_QUEEN_DMGTAKEN;
+	else if (alienType == CLASS_ASW_BOOMER)
+		iField = UFIELD_BOOMER_DMGTAKEN;
+	else if (alienType == CLASS_ASW_RANGER)
+		iField = UFIELD_RANGER_DMGTAKEN;
+	else if (alienType == CLASS_ASW_MORTAR_BUG)
+		iField = UFIELD_MORTAR_DMGTAKEN;
+	else if (alienType == CLASS_ASW_SHAMAN)
+		iField = UFIELD_SHAMAN_DMGTAKEN;
+	else if (alienType == CLASS_ASW_GRUB)
+		return;		// Don't count grub kills.
+		
+	if (iField == -1)
+	{
+		PrintToServer("Unknown alien class %i!", alienType);
+		return;
+	}
+	
+	// Store the data in memory
+	for (new i = 0; i < MAX_MARINES; i++)
+	{
+		if (GetArrayCell(userDataArray, i, UFIELD_ENTINDEX) == marineEntIndex)
+		{
+			// A drone hurt us
+			new oldDamage = GetArrayCell(userDataArray, i, UFIELD_DRONE_DMGTAKEN);
+			SetArrayCell(userDataArray, i, oldDamage + damageTaken, UFIELD_DRONE_DMGTAKEN);
+		}
+	}
+}
+
+Alien_Hurt(damageTaken, marineEntIndex, Classes:weapon, Classes:alienType)
+{
+	new iField = -1;
+	// Figure out which field we need to update
+	if (alienType == CLASS_ASW_DRONE)
+		iField = UFIELD_DRONE_DMG;
+	else if (alienType == CLASS_ASW_DRONE_JUMPER)
+		iField = UFIELD_JUMPDRONE_DMG;
+	else if (alienType == CLASS_ASW_DRONE_UBER)
+		iField = UFIELD_UBERDRONE_DMG;
+	else if (alienType == CLASS_ASW_BUZZER)
+		iField = UFIELD_BUZZER_DMG;
+	else if (alienType == CLASS_ASW_PARASITE)
+		iField = UFIELD_PARASITE_DMG;
+	else if (alienType == CLASS_ASW_SHIELDBUG)
+		iField = UFIELD_SHIELDBUG_DMG;
+	else if (alienType == CLASS_ASW_HARVESTER)
+		iField = UFIELD_HARVESTER_DMG;
+	else if (alienType == CLASS_ASW_PARASITE_DEFANGED)
+		iField = UFIELD_SAFEPARA_DMG;
+	else if (alienType == CLASS_ASW_QUEEN)
+		iField = UFIELD_QUEEN_DMG;
+	else if (alienType == CLASS_ASW_BOOMER)
+		iField = UFIELD_BOOMER_DMG;
+	else if (alienType == CLASS_ASW_RANGER)
+		iField = UFIELD_RANGER_DMG;
+	else if (alienType == CLASS_ASW_MORTAR_BUG)
+		iField = UFIELD_MORTAR_DMG;
+	else if (alienType == CLASS_ASW_SHAMAN)
+		iField = UFIELD_SHAMAN_DMG;
+	else if (alienType == CLASS_ASW_GRUB)
+		return;		// Don't count grub kills.
+		
+	if (iField == -1)
+	{
+		PrintToServer("Unknown alien class %i!", alienType);
+		return;
+	}
+	
+	// Store the data in memory
+	for (new i = 0; i < MAX_MARINES; i++)
+	{
+		if (GetArrayCell(userDataArray, i, UFIELD_ENTINDEX) == marineEntIndex)
+		{
+			// We hurt a drone
+			new oldDamage = GetArrayCell(userDataArray, i, iField);
+			SetArrayCell(userDataArray, i, oldDamage + damageTaken, iField);
+		}
+	}
+}
+
+Alien_Killed(marineEntIndex, Classes:weapon, Classes:alienType)
+{
+	new iField = -1;
+	// Figure out which field we need to update
+	if (alienType == CLASS_ASW_DRONE)
+		iField = UFIELD_DRONES_KILLED;
+	else if (alienType == CLASS_ASW_DRONE_JUMPER)
+		iField = UFIELD_JUMPDRONES_KILLED;
+	else if (alienType == CLASS_ASW_DRONE_UBER)
+		iField = UFIELD_UBERDRONES_KILLED;
+	else if (alienType == CLASS_ASW_BUZZER)
+		iField = UFIELD_BUZZERS_KILLED;
+	else if (alienType == CLASS_ASW_PARASITE)
+		iField = UFIELD_PARASITES_KILLED;
+	else if (alienType == CLASS_ASW_SHIELDBUG)
+		iField = UFIELD_SHIELDBUGS_KILLED;
+	else if (alienType == CLASS_ASW_HARVESTER)
+		iField = UFIELD_HARVESTERS_KILLED;
+	else if (alienType == CLASS_ASW_PARASITE_DEFANGED)
+		iField = UFIELD_SAFEPARAS_KILLED;
+	else if (alienType == CLASS_ASW_QUEEN)
+		iField = UFIELD_QUEENS_KILLED;
+	else if (alienType == CLASS_ASW_BOOMER)
+		iField = UFIELD_BOOMERS_KILLED;
+	else if (alienType == CLASS_ASW_RANGER)
+		iField = UFIELD_RANGERS_KILLED;
+	else if (alienType == CLASS_ASW_MORTAR_BUG)
+		iField = UFIELD_MORTARS_KILLED;
+	else if (alienType == CLASS_ASW_SHAMAN)
+		iField = UFIELD_SHAMEN_KILLED;
+	else if (alienType == CLASS_ASW_GRUB)
+		return;		// Don't count grub kills.
+		
+	if (iField == -1)
+	{
+		PrintToServer("Unknown alien class %i!", alienType);
+		return;
+	}
+	
+	// Store the data in memory
+	for (new i = 0; i < MAX_MARINES; i++)
+	{
+		if (GetArrayCell(userDataArray, i, UFIELD_ENTINDEX) == marineEntIndex)
+		{
+			// We killed a drone
+			new oldKills = GetArrayCell(userDataArray, i, iField);
+			SetArrayCell(userDataArray, i, oldKills + 1, iField);
+		}
+	}
 }
