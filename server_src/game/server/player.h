@@ -236,7 +236,6 @@ public:
 	virtual void SetLastUserCommand( const CBotCmd &cmd );
 
 	virtual CBotCmd GetLastUserCommand();
-	
 
 private:
 	CBasePlayer *m_pParent; 

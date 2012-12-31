@@ -30,25 +30,25 @@ public:
 		BETA_SHIELDBUG_INDEX,
 		BETA_HARVESTER_INDEX,
 
-		HIGHEST_INDEX,	//Ch1ckensCoop: If you're going to add anything, add it before this!
+		ALIEN_INDEX_COUNT,	//Ch1ckensCoop: If you're going to add anything, add it before this!
 	};
 	
 	struct AlienInfo
 	{
-		const char *pAlienClassName;
-		int flag;
-		ConVarRef max;
-		ConVarRef min;
-		ConVarRef healthMax;
-		ConVarRef healthMin;
-		ConVarRef betaAlienConVar;
-		bool betaAlienCvarReversed;
-		bool isBeta;
-		ConVarRef alienHealthCvar;
+		const char *m_szAlienClassName;
+		int m_iFlag;
+		ConVar *m_pMaxCvar;
+		ConVar *m_pMinCvar;
+		ConVar *m_pHealthMaxCvar;
+		ConVar *m_pHealthMinCvar;
+		ConVar *m_pBetaAlienCvar;
+		bool m_bBetaAlienCvarReversed;
+		bool m_bBeta;
+		ConVar *m_pAlienHealthCvar;
 		
 		AlienInfo() {}
 
-	} AlienInfoArray[HIGHEST_INDEX];
+	} AlienInfoArray[ALIEN_INDEX_COUNT];
 	
 	virtual bool Init();
 	virtual void LevelInitPostEntity();
@@ -61,8 +61,8 @@ public:
 	virtual void RandomizeHealth(int alienNum);	//Randomize a specific alien type's health.
 	virtual void RandomizeHealth();	//Randomize all alien healths.
 
-	float fl_LastThinkTime;
-	int i_LastAlienClass;
+	float m_flLastThinkTime;
+	int m_iLastAlienClass;
 	
 };
 

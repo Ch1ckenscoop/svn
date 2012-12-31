@@ -72,8 +72,7 @@ public:
 //-----------------------------------------------------------------------------
 class CGlobalEntityList : public CBaseEntityList
 {
-	//Ch1ckensCoop: Useless public thingy?
-//public:
+public:
 private:
 	int m_iHighestEnt; // the topmost used array index
 	int m_iNumEnts;

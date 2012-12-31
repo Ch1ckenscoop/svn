@@ -20,8 +20,7 @@
 // These globals are initialized by mathlib and redirected based on available fpu features
 
 // The following are not declared as macros because they are often used in limiting situations,
-// and sometimes the compiler simply refuses to inline them for some reason	-- 
-//**Ch1ckensCoop: It's because the compiler will not inline functions returning an unwindable object by value when -GX/EHs/EHa is on. FAIL.**
+// and sometimes the compiler simply refuses to inline them for some reason
 FORCEINLINE float FastSqrt( float x )
 {
 	__m128 root = _mm_sqrt_ss( _mm_load_ss( &x ) );

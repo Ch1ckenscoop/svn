@@ -27,7 +27,7 @@
 #define MAX_DATATABLES		1024	// must be a power of 2.
 #define MAX_DATATABLE_PROPS	4096
 
-#define MAX_ARRAY_ELEMENTS	4096		// a network array should have more that 1024 elements
+#define MAX_ARRAY_ELEMENTS	2048		// a network array should have more that 1024 elements
 
 #define HIGH_DEFAULT		-121121.121121f
 

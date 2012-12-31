@@ -11,7 +11,6 @@
 
 #include "cbase.h"
 #include "EntityFlame.h"
-#include "convar.h"
 #include "ai_basenpc.h"
 #ifdef INFESTED_DLL
 #include "asw_fire.h"
@@ -27,8 +26,6 @@
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
-
-ConVar asw_flame_cheap("asw_flame_cheap", "0", FCVAR_NONE, "Use the cheap effect for setting stuff on fire.");
 
 BEGIN_DATADESC( CEntityFlame )
 
@@ -228,9 +225,6 @@ float CEntityFlame::GetRemainingLife( void ) const
 //-----------------------------------------------------------------------------
 void CEntityFlame::FlameThink( void )
 {
-	//Ch1ckensCoop: Allow using the cheap effect.
-	UseCheapEffect(asw_flame_cheap.GetBool());
-
 	// Assure that this function will be ticked again even if we early-out in the if below.
 	SetNextThink( gpGlobals->curtime + FLAME_DAMAGE_INTERVAL );
 

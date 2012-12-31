@@ -1688,7 +1688,27 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 		}
 		m_fMapGenerationProgress = clamp(atof(args[1]), 0.0f, 1.0f);
 		return true;
-	}	
+	}
+	else if ( FStrEq(pcmd, "say /cfx") )
+	{
+		// Toggle CFX for this player.
+		bool bNewValue = ASW_Client_Effects()->ToggleForPlayer(this);
+
+		// Tell the player who sent this command that CFX has been toggled.
+		CRecipientFilter filter;
+		filter.AddRecipient(this);
+
+		char szEnabled[16];
+		if (bNewValue)
+			V_snprintf(szEnabled, sizeof(szEnabled), "enabled");
+		else
+			V_snprintf(szEnabled, sizeof(szEnabled), "disabled");
+
+		char buf[64];
+		V_snprintf(buf, sizeof(buf), "CFX has been %s for you.\n", szEnabled);
+
+		UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, buf);
+	}
 	
 	return BaseClass::ClientCommand( args );
 }

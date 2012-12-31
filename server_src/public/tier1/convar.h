@@ -607,7 +607,6 @@ public:
 	ConVarRef( const char *pName );
 	ConVarRef( const char *pName, bool bIgnoreMissing );
 	ConVarRef( IConVar *pConVar );
-	ConVarRef() {}	//Don't use this! Exists only for structures.
 
 	void Init( const char *pName, bool bIgnoreMissing );
 	bool IsValid() const;

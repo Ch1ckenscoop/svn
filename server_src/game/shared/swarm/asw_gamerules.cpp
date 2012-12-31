@@ -177,6 +177,7 @@ ConVar asw_stim_time_scale("asw_stim_time_scale", "0.35", FCVAR_REPLICATED | FCV
 ConVar asw_time_scale_delay("asw_time_scale_delay", "0.15", FCVAR_REPLICATED | FCVAR_CHEAT, "Delay before timescale changes to give a chance for the client to comply and predict.");
 ConVar asw_ignore_need_two_player_requirement("asw_ignore_need_two_player_requirement", "0", FCVAR_REPLICATED, "If set to 1, ignores the mission setting that states two players are needed to start the mission.");
 ConVar mp_gamemode( "mp_gamemode", "campaign", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY, "Current game mode, acceptable values are campaign and single_mission.", false, 0.0f, false, 0.0f );
+ConVar mm_max_players( "mm_max_players", "4", FCVAR_REPLICATED | FCVAR_CHEAT, "Max players for matchmaking system" );
 ConVar asw_sentry_friendly_fire_scale( "asw_sentry_friendly_fire_scale", "0", FCVAR_REPLICATED, "Damage scale for sentry gun friendly fire"
 #ifdef GAME_DLL
 	,UpdateMatchmakingTagsCallback );
@@ -4279,11 +4280,12 @@ void CAlienSwarm::CreateStandardEntities( void )
 	CBaseEntity *pEnt = 
 #endif
 	CBaseEntity::Create( "asw_gamerules", vec3_origin, vec3_angle );
+	Assert( pEnt );
+
 	//Ch1ckensCoop: Alien pruner
 	CBaseEntity::Create("asw_alien_pruner", vec3_origin, vec3_angle);
 	//Ch1ckensCoop: Health regen
 	CBaseEntity::Create("asw_health_regen", vec3_origin, vec3_angle);
-	Assert( pEnt );
 #endif
 }
 
@@ -6624,11 +6626,6 @@ void CheatsChangeCallback( IConVar *pConVar, const char *pOldString, float flOld
 
 void CAlienSwarm::LevelInitPostEntity()
 {
-	//Ch1ckensCoop: Reset the client effects manager
-	if (ASW_Client_Effects())
-		ASW_Client_Effects()->ResetPlayers();
-
-
 	// check if we're the intro/outro map
 	char mapName[255];
 #ifdef CLIENT_DLL

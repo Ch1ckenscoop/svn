@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="9.00"
+	Version="8.00"
 	Name="Server (Swarm)"
 	ProjectGUID="{A26C0361-6B09-9E3D-5194-C9CB89243710}"
-	RootNamespace="Server (Swarm)"
-	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -21,11 +19,10 @@
 			IntermediateDirectory=".\Debug_swarm"
 			ConfigurationType="2"
 			CharacterSet="2"
-			WholeProgramOptimization="0"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="if EXIST &quot;..\..\..\game\swarm\bin\.\$(TargetFileName)&quot; for /f &quot;delims=&quot; %%A in (&apos;attrib &quot;..\..\..\game\swarm\bin\.\$(TargetFileName)&quot;&apos;) do set valveTmpIsReadOnly=&quot;%%A&quot;&#x0D;&#x0A;set valveTmpIsReadOnlyLetter=%valveTmpIsReadOnly:~6,1%&#x0D;&#x0A;if &quot;%valveTmpIsReadOnlyLetter%&quot;==&quot;R&quot; del /q &quot;$(TargetDir)&quot;$(TargetFileName)&#x0D;&#x0A;if exist ..\..\devtools\bin\vpccrccheck.exe ..\..\devtools\bin\vpccrccheck.exe -crc2 test_swarm.vcproj&#x0D;&#x0A;if ERRORLEVEL 1 exit 1&#x0D;&#x0A;"
+				CommandLine="if EXIST &quot;F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.\$(TargetFileName)&quot; for /f &quot;delims=&quot; %%A in (&apos;attrib &quot;F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.\$(TargetFileName)&quot;&apos;) do set valveTmpIsReadOnly=&quot;%%A&quot;&#x0D;&#x0A;set valveTmpIsReadOnlyLetter=%valveTmpIsReadOnly:~6,1%&#x0D;&#x0A;if &quot;%valveTmpIsReadOnlyLetter%&quot;==&quot;R&quot; del /q &quot;$(TargetDir)&quot;$(TargetFileName)&#x0D;&#x0A;if exist ..\..\devtools\bin\vpccrccheck.exe ..\..\devtools\bin\vpccrccheck.exe -crc2 test_swarm.vcproj&#x0D;&#x0A;if ERRORLEVEL 1 exit 1&#x0D;&#x0A;"
 				ExcludedFromBuild="false"
 			/>
 			<Tool
@@ -44,12 +41,11 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="..\..\common;..\..\public;..\..\public\tier0;..\..\public\tier1;.\;..\..\game\shared;..\..\utils\common;..\..\game\server\NextBot;$(IntDir);.\hl2;..\..\game\shared\hl2;.\swarm;..\..\game\shared\swarm;"
 				PreprocessorDefinitions="WIN32;_WIN32;_DEBUG;DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;DLLNAME=server;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;COMPILER_MSVC32;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;COMPILER_MSVC;MEMOVERRIDE_MODULE=server;_DLL_EXT=.dll;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;DLLNAME=server;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;GAME_DLL;VECTOR;VERSION_SAFE_STEAM_API_INTERFACES;PROTECTED_THINGS_ENABLE;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;sprintf=use_Q_snprintf_instead_of_sprintf;strncpy=use_Q_strncpy_instead;_snprintf=use_Q_snprintf_instead;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;INFESTED_DLL;SWARM_DLL;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll"
-				StringPooling="false"
+				StringPooling="true"
 				MinimalRebuild="true"
-				ExceptionHandling="2"
+				ExceptionHandling="0"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="1"
 				BufferSecurityCheck="false"
@@ -87,22 +83,19 @@
 				Name="VCLinkerTool"
 				UseUnicodeResponseFiles="false"
 				AdditionalDependencies=" winmm.lib"
-				ShowProgress="1"
+				ShowProgress="0"
 				OutputFile="$(OutDir)\server.dll"
 				LinkIncremental="2"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib\common\.;..\..\lib\public\."
 				GenerateManifest="false"
-				IgnoreDefaultLibraryNames="libc;libcd;libcmtd"
+				IgnoreDefaultLibraryNames="libc;libcd;libcmt"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(IntDir)/$(TargetName).pdb"
 				GenerateMapFile="true"
 				MapFileName="$(IntDir)/$(TargetName).map"
 				SubSystem="2"
-				LargeAddressAware="2"
 				BaseAddress=" "
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 				ErrorReporting="1"
 			/>
@@ -129,9 +122,12 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
-				Description="Publishing to ..\..\..\game\swarm\bin\."
-				CommandLine="if exist &quot;F:\Steam\steamapps\common\alien swarm\swarm\bin\.&quot; goto ValveStart&#x0D;&#x0A;mkdir &quot;F:\Steam\steamapps\common\alien swarm\swarm\bin\.&quot;&#x0D;&#x0A;if not exist &quot;F:\Steam\steamapps\common\alien swarm\swarm\bin\.&quot; goto MattsNetbook&#x0D;&#x0A;:ValveStart&#x0D;&#x0A;copy &quot;$(TargetDir)&quot;$(TargetFileName) &quot;F:\Steam\steamapps\common\alien swarm\swarm\bin\.\$(TargetFileName)&quot;&#x0D;&#x0A;if ERRORLEVEL 1 goto BuildEventFailed&#x0D;&#x0A;if exist &quot;$(TargetDir)&quot;$(TargetName).map copy &quot;$(TargetDir)&quot;$(TargetName).map &quot;F:\Steam\steamapps\common\alien swarm\swarm\bin\.\$(TargetName).map&quot;&#x0D;&#x0A;copy &quot;$(TargetDir)&quot;$(TargetName).pdb &quot;F:\Steam\steamapps\common\alien swarm\swarm\bin\.\$(TargetName).pdb&quot;&#x0D;&#x0A;if ERRORLEVEL 1 goto BuildEventFailed&#x0D;&#x0A;goto BuildEventOK&#x0D;&#x0A;:BuildEventFailed&#x0D;&#x0A;echo *** ERROR! PostBuildStep FAILED for $(ProjectName)! EXE or DLL is probably running. ***&#x0D;&#x0A;del /q &quot;$(TargetDir)&quot;$(TargetFileName)&#x0D;&#x0A;exit 1&#x0D;&#x0A;:BuildEventOK&#x0D;&#x0A;echo Success! Starting Alien Swarm...&#x0D;&#x0A;exit 0&#x0D;&#x0A;:MattsNetbook&#x0D;&#x0A;echo No F: drive detected. Exiting...&#x0D;&#x0A;exit 0&#x0D;&#x0A;"
+				Description="Publishing to F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\."
+				CommandLine="if exist &quot;F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.&quot; goto ValveStart&#x0D;&#x0A;mkdir &quot;F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.&quot;&#x0D;&#x0A;:ValveStart&#x0D;&#x0A;copy &quot;$(TargetDir)&quot;$(TargetFileName) &quot;F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.\$(TargetFileName)&quot;&#x0D;&#x0A;if ERRORLEVEL 1 goto BuildEventFailed&#x0D;&#x0A;if exist &quot;$(TargetDir)&quot;$(TargetName).map copy &quot;$(TargetDir)&quot;$(TargetName).map &quot;F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.\$(TargetName).map&quot;&#x0D;&#x0A;copy &quot;$(TargetDir)&quot;$(TargetName).pdb &quot;F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.\$(TargetName).pdb&quot;&#x0D;&#x0A;if ERRORLEVEL 1 goto BuildEventFailed&#x0D;&#x0A;goto BuildEventOK&#x0D;&#x0A;:BuildEventFailed&#x0D;&#x0A;echo *** ERROR! PostBuildStep FAILED for $(ProjectName)! EXE or DLL is probably running. ***&#x0D;&#x0A;del /q &quot;$(TargetDir)&quot;$(TargetFileName)&#x0D;&#x0A;exit 1&#x0D;&#x0A;:BuildEventOK&#x0D;&#x0A;"
 				ExcludedFromBuild="false"
 			/>
 		</Configuration>
@@ -140,272 +136,11 @@
 			OutputDirectory=".\Release_swarm"
 			IntermediateDirectory=".\Release_swarm"
 			ConfigurationType="2"
-			UseOfMFC="0"
 			CharacterSet="2"
-			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="if EXIST &quot;..\..\..\game\swarm\bin\.\$(TargetFileName)&quot; for /f &quot;delims=&quot; %%A in (&apos;attrib &quot;..\..\..\game\swarm\bin\.\$(TargetFileName)&quot;&apos;) do set valveTmpIsReadOnly=&quot;%%A&quot;&#x0D;&#x0A;set valveTmpIsReadOnlyLetter=%valveTmpIsReadOnly:~6,1%&#x0D;&#x0A;if &quot;%valveTmpIsReadOnlyLetter%&quot;==&quot;R&quot; del /q &quot;$(TargetDir)&quot;$(TargetFileName)&#x0D;&#x0A;if exist ..\..\devtools\bin\vpccrccheck.exe ..\..\devtools\bin\vpccrccheck.exe -crc2 test_swarm.vcproj&#x0D;&#x0A;if ERRORLEVEL 1 exit 1&#x0D;&#x0A;"
-				ExcludedFromBuild="false"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP /G7 /arch:SSE /OPT:ICF /OPT:NOWIN98 /LTCG"
-				Optimization="2"
-				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="true"
-				FavorSizeOrSpeed="1"
-				OmitFramePointers="true"
-				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="..\..\common;..\..\public;..\..\public\tier0;..\..\public\tier1;.\;..\..\game\shared;..\..\utils\common;..\..\game\server\NextBot;$(IntDir);.\hl2;..\..\game\shared\hl2;.\swarm;..\..\game\shared\swarm;"
-				PreprocessorDefinitions="WIN32;_WIN32;NDEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;DLLNAME=server;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;COMPILER_MSVC32;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;COMPILER_MSVC;MEMOVERRIDE_MODULE=server;_DLL_EXT=.dll;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;DLLNAME=server;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;GAME_DLL;VECTOR;VERSION_SAFE_STEAM_API_INTERFACES;PROTECTED_THINGS_ENABLE;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;sprintf=use_Q_snprintf_instead_of_sprintf;strncpy=use_Q_strncpy_instead;_snprintf=use_Q_snprintf_instead;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;INFESTED_DLL;SWARM_DLL;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll"
-				StringPooling="true"
-				ExceptionHandling="0"
-				RuntimeLibrary="0"
-				BufferSecurityCheck="false"
-				EnableFunctionLevelLinking="true"
-				EnableEnhancedInstructionSet="2"
-				FloatingPointModel="2"
-				ForceConformanceInForLoopScope="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="cbase.h"
-				AssemblerListingLocation="$(IntDir)/"
-				ObjectFile="$(IntDir)/"
-				ProgramDataBaseFileName="$(IntDir)/"
-				GenerateXMLDocumentationFiles="false"
-				BrowseInformation="0"
-				BrowseInformationFile="$(IntDir)/"
-				WarningLevel="4"
-				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="3"
-				CompileAs="2"
-				ErrorReporting="1"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-				ExcludedFromBuild="false"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				UseUnicodeResponseFiles="false"
-				AdditionalOptions="/FORCE:MULTIPLE"
-				AdditionalDependencies=" winmm.lib"
-				ShowProgress="1"
-				OutputFile="$(OutDir)\server.dll"
-				LinkIncremental="2"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\lib\common\.;..\..\lib\public\."
-				GenerateManifest="false"
-				IgnoreDefaultLibraryNames="libc;libcd;libcmtd"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(IntDir)/$(TargetName).pdb"
-				GenerateMapFile="true"
-				MapFileName="$(IntDir)/$(TargetName).map"
-				SubSystem="2"
-				LargeAddressAware="2"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				OptimizeForWindows98="1"
-				LinkTimeCodeGeneration="1"
-				SetChecksum="true"
-				BaseAddress=" "
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				TargetMachine="1"
-				ErrorReporting="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				SuppressStartupBanner="true"
-				OutputFile="$(OutDir)/server.bsc"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Publishing to \game\swarm\bin\."
-				CommandLine="if exist &quot;..\..\..\server\swarm\bin\.&quot; goto ValveStart&#x0D;&#x0A;mkdir &quot;..\..\..\server\swarm\bin\.&quot;&#x0D;&#x0A;:ValveStart&#x0D;&#x0A;copy &quot;$(TargetDir)&quot;$(TargetFileName) &quot;..\..\..\server\swarm\bin\.\$(TargetFileName)&quot;&#x0D;&#x0A;copy &quot;$(TargetDir)&quot;$(TargetFileName) &quot;F:\Steam\steamapps\common\alien swarm\swarm\bin\.\$(TargetFileName)&quot;&#x0D;&#x0A;if ERRORLEVEL 1 goto BuildEventFailed&#x0D;&#x0A;goto BuildEventOK&#x0D;&#x0A;:BuildEventFailed&#x0D;&#x0A;echo *** ERROR! PostBuildStep FAILED for $(ProjectName)! EXE or DLL is probably running. ***&#x0D;&#x0A;del /q &quot;$(TargetDir)&quot;$(TargetFileName)&#x0D;&#x0A;exit 1&#x0D;&#x0A;:BuildEventOK&#x0D;&#x0A;"
-				ExcludedFromBuild="false"
-			/>
-		</Configuration>
-		<Configuration
-			Name="FullOpt Test|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
-			UseOfMFC="0"
-			CharacterSet="2"
-			WholeProgramOptimization="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-				CommandLine="if EXIST &quot;..\..\..\game\swarm\bin\.\$(TargetFileName)&quot; for /f &quot;delims=&quot; %%A in (&apos;attrib &quot;..\..\..\game\swarm\bin\.\$(TargetFileName)&quot;&apos;) do set valveTmpIsReadOnly=&quot;%%A&quot;&#x0D;&#x0A;set valveTmpIsReadOnlyLetter=%valveTmpIsReadOnly:~6,1%&#x0D;&#x0A;if &quot;%valveTmpIsReadOnlyLetter%&quot;==&quot;R&quot; del /q &quot;$(TargetDir)&quot;$(TargetFileName)&#x0D;&#x0A;if exist ..\..\devtools\bin\vpccrccheck.exe ..\..\devtools\bin\vpccrccheck.exe -crc2 test_swarm.vcproj&#x0D;&#x0A;if ERRORLEVEL 1 exit 1&#x0D;&#x0A;"
-				ExcludedFromBuild="false"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalOptions="/MP /G7 /arch:SSE /OPT:ICF /OPT:NOWIN98 /LTCG"
-				Optimization="2"
-				InlineFunctionExpansion="2"
-				EnableIntrinsicFunctions="true"
-				FavorSizeOrSpeed="1"
-				OmitFramePointers="true"
-				WholeProgramOptimization="true"
-				AdditionalIncludeDirectories="..\..\common;..\..\public;..\..\public\tier0;..\..\public\tier1;.\;..\..\game\shared;..\..\utils\common;..\..\game\server\NextBot;$(IntDir);.\hl2;..\..\game\shared\hl2;.\swarm;..\..\game\shared\swarm;"
-				PreprocessorDefinitions="WIN32;_WIN32;NDEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;DLLNAME=server;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;COMPILER_MSVC32;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;COMPILER_MSVC;MEMOVERRIDE_MODULE=server;_DLL_EXT=.dll;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;DLLNAME=server;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;GAME_DLL;VECTOR;VERSION_SAFE_STEAM_API_INTERFACES;PROTECTED_THINGS_ENABLE;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;sprintf=use_Q_snprintf_instead_of_sprintf;strncpy=use_Q_strncpy_instead;_snprintf=use_Q_snprintf_instead;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;INFESTED_DLL;SWARM_DLL;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll"
-				StringPooling="true"
-				ExceptionHandling="0"
-				RuntimeLibrary="0"
-				BufferSecurityCheck="false"
-				EnableFunctionLevelLinking="true"
-				EnableEnhancedInstructionSet="2"
-				FloatingPointModel="2"
-				ForceConformanceInForLoopScope="true"
-				RuntimeTypeInfo="true"
-				UsePrecompiledHeader="2"
-				PrecompiledHeaderThrough="cbase.h"
-				AssemblerListingLocation="$(IntDir)/"
-				ObjectFile="$(IntDir)/"
-				ProgramDataBaseFileName="$(IntDir)/"
-				GenerateXMLDocumentationFiles="false"
-				BrowseInformation="0"
-				BrowseInformationFile="$(IntDir)/"
-				WarningLevel="4"
-				Detect64BitPortabilityProblems="false"
-				DebugInformationFormat="3"
-				CompileAs="2"
-				ErrorReporting="1"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="NDEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
-				Culture="1033"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-				ExcludedFromBuild="false"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				UseUnicodeResponseFiles="false"
-				AdditionalOptions="/FORCE:MULTIPLE"
-				AdditionalDependencies=" winmm.lib"
-				ShowProgress="1"
-				OutputFile="$(OutDir)\server.dll"
-				LinkIncremental="2"
-				SuppressStartupBanner="true"
-				AdditionalLibraryDirectories="..\..\lib\common\.;..\..\lib\public\."
-				GenerateManifest="false"
-				IgnoreDefaultLibraryNames="libc;libcd;libcmtd"
-				GenerateDebugInformation="true"
-				ProgramDatabaseFile="$(IntDir)/$(TargetName).pdb"
-				GenerateMapFile="true"
-				MapFileName="$(IntDir)/$(TargetName).map"
-				SubSystem="2"
-				LargeAddressAware="2"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				OptimizeForWindows98="1"
-				LinkTimeCodeGeneration="1"
-				SetChecksum="true"
-				BaseAddress=" "
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
-				TargetMachine="1"
-				ErrorReporting="1"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-				SuppressStartupBanner="true"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-				SuppressStartupBanner="true"
-				OutputFile="$(OutDir)/server.bsc"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-				Description="Publishing to \game\swarm\bin\."
-				CommandLine="if exist &quot;..\..\..\server\swarm\bin\.&quot; goto ValveStart&#x0D;&#x0A;mkdir &quot;..\..\..\server\swarm\bin\.&quot;&#x0D;&#x0A;:ValveStart&#x0D;&#x0A;copy &quot;$(TargetDir)&quot;$(TargetFileName) &quot;F:\Steam\steamapps\common\alien swarm\swarm\bin\.\$(TargetFileName)&quot;&#x0D;&#x0A;if ERRORLEVEL 1 goto BuildEventFailed&#x0D;&#x0A;goto BuildEventOK&#x0D;&#x0A;:BuildEventFailed&#x0D;&#x0A;echo *** ERROR! PostBuildStep FAILED for $(ProjectName)! EXE or DLL is probably running. ***&#x0D;&#x0A;del /q &quot;$(TargetDir)&quot;$(TargetFileName)&#x0D;&#x0A;exit 1&#x0D;&#x0A;:BuildEventOK&#x0D;&#x0A;"
-				ExcludedFromBuild="false"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Debug_noexceptions|Win32"
-			OutputDirectory="$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
-			CharacterSet="2"
-			WholeProgramOptimization="0"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-				CommandLine="if EXIST &quot;..\..\..\game\swarm\bin\.\$(TargetFileName)&quot; for /f &quot;delims=&quot; %%A in (&apos;attrib &quot;..\..\..\game\swarm\bin\.\$(TargetFileName)&quot;&apos;) do set valveTmpIsReadOnly=&quot;%%A&quot;&#x0D;&#x0A;set valveTmpIsReadOnlyLetter=%valveTmpIsReadOnly:~6,1%&#x0D;&#x0A;if &quot;%valveTmpIsReadOnlyLetter%&quot;==&quot;R&quot; del /q &quot;$(TargetDir)&quot;$(TargetFileName)&#x0D;&#x0A;if exist ..\..\devtools\bin\vpccrccheck.exe ..\..\devtools\bin\vpccrccheck.exe -crc2 test_swarm.vcproj&#x0D;&#x0A;if ERRORLEVEL 1 exit 1&#x0D;&#x0A;"
+				CommandLine="if EXIST &quot;F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.\$(TargetFileName)&quot; for /f &quot;delims=&quot; %%A in (&apos;attrib &quot;F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.\$(TargetFileName)&quot;&apos;) do set valveTmpIsReadOnly=&quot;%%A&quot;&#x0D;&#x0A;set valveTmpIsReadOnlyLetter=%valveTmpIsReadOnly:~6,1%&#x0D;&#x0A;if &quot;%valveTmpIsReadOnlyLetter%&quot;==&quot;R&quot; del /q &quot;$(TargetDir)&quot;$(TargetFileName)&#x0D;&#x0A;if exist ..\..\devtools\bin\vpccrccheck.exe ..\..\devtools\bin\vpccrccheck.exe -crc2 test_swarm.vcproj&#x0D;&#x0A;if ERRORLEVEL 1 exit 1&#x0D;&#x0A;"
 				ExcludedFromBuild="false"
 			/>
 			<Tool
@@ -423,17 +158,17 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
-				Optimization="0"
-				InlineFunctionExpansion="0"
-				WholeProgramOptimization="false"
+				Optimization="2"
+				InlineFunctionExpansion="2"
+				EnableIntrinsicFunctions="true"
+				FavorSizeOrSpeed="1"
 				AdditionalIncludeDirectories="..\..\common;..\..\public;..\..\public\tier0;..\..\public\tier1;.\;..\..\game\shared;..\..\utils\common;..\..\game\server\NextBot;$(IntDir);.\hl2;..\..\game\shared\hl2;.\swarm;..\..\game\shared\swarm;"
-				PreprocessorDefinitions="WIN32;_WIN32;_DEBUG;DEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;DLLNAME=server;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;COMPILER_MSVC32;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;COMPILER_MSVC;MEMOVERRIDE_MODULE=server;_DLL_EXT=.dll;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;DLLNAME=server;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;GAME_DLL;VECTOR;VERSION_SAFE_STEAM_API_INTERFACES;PROTECTED_THINGS_ENABLE;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;sprintf=use_Q_snprintf_instead_of_sprintf;strncpy=use_Q_strncpy_instead;_snprintf=use_Q_snprintf_instead;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;INFESTED_DLL;SWARM_DLL;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll"
-				StringPooling="false"
-				MinimalRebuild="true"
+				PreprocessorDefinitions="WIN32;_WIN32;NDEBUG;_WINDOWS;_USRDLL;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;DLLNAME=server;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;COMPILER_MSVC32;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;COMPILER_MSVC;MEMOVERRIDE_MODULE=server;_DLL_EXT=.dll;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;DLLNAME=server;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;GAME_DLL;VECTOR;VERSION_SAFE_STEAM_API_INTERFACES;PROTECTED_THINGS_ENABLE;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;sprintf=use_Q_snprintf_instead_of_sprintf;strncpy=use_Q_strncpy_instead;_snprintf=use_Q_snprintf_instead;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll;INFESTED_DLL;SWARM_DLL;VPCGAME=swarm;VPCGAMECAPS=SWARM;_DLL_EXT=.dll"
+				StringPooling="true"
 				ExceptionHandling="0"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="1"
+				RuntimeLibrary="0"
 				BufferSecurityCheck="false"
+				EnableFunctionLevelLinking="true"
 				EnableEnhancedInstructionSet="2"
 				FloatingPointModel="2"
 				ForceConformanceInForLoopScope="true"
@@ -447,9 +182,8 @@
 				BrowseInformation="0"
 				BrowseInformationFile="$(IntDir)/"
 				WarningLevel="4"
-				SuppressStartupBanner="false"
 				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 				CompileAs="2"
 				ErrorReporting="1"
 			/>
@@ -458,7 +192,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
-				PreprocessorDefinitions="_DEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
+				PreprocessorDefinitions="NDEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE"
 				Culture="1033"
 			/>
 			<Tool
@@ -469,9 +203,9 @@
 				Name="VCLinkerTool"
 				UseUnicodeResponseFiles="false"
 				AdditionalDependencies=" winmm.lib"
-				ShowProgress="1"
+				ShowProgress="0"
 				OutputFile="$(OutDir)\server.dll"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				SuppressStartupBanner="true"
 				AdditionalLibraryDirectories="..\..\lib\common\.;..\..\lib\public\."
 				GenerateManifest="false"
@@ -481,11 +215,9 @@
 				GenerateMapFile="true"
 				MapFileName="$(IntDir)/$(TargetName).map"
 				SubSystem="2"
-				LargeAddressAware="2"
-				OptimizeForWindows98="1"
+				OptimizeReferences="2"
+				EnableCOMDATFolding="2"
 				BaseAddress=" "
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 				ErrorReporting="1"
 			/>
@@ -512,9 +244,12 @@
 				Name="VCAppVerifierTool"
 			/>
 			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
 				Name="VCPostBuildEventTool"
-				Description="Publishing to ..\..\..\game\swarm\bin\."
-				CommandLine="if exist &quot;F:\Steam\steamapps\common\alien swarm\swarm\bin\.&quot; goto ValveStart&#x0D;&#x0A;mkdir &quot;F:\Steam\steamapps\common\alien swarm\swarm\bin\.&quot;&#x0D;&#x0A;:ValveStart&#x0D;&#x0A;copy &quot;$(TargetDir)&quot;$(TargetFileName) &quot;F:\Steam\steamapps\common\alien swarm\swarm\bin\.\$(TargetFileName)&quot;&#x0D;&#x0A;if ERRORLEVEL 1 goto BuildEventFailed&#x0D;&#x0A;if exist &quot;$(TargetDir)&quot;$(TargetName).map copy &quot;$(TargetDir)&quot;$(TargetName).map &quot;F:\Steam\steamapps\common\alien swarm\swarm\bin\.\$(TargetName).map&quot;&#x0D;&#x0A;copy &quot;$(TargetDir)&quot;$(TargetName).pdb &quot;F:\Steam\steamapps\common\alien swarm\swarm\bin\.\$(TargetName).pdb&quot;&#x0D;&#x0A;if ERRORLEVEL 1 goto BuildEventFailed&#x0D;&#x0A;goto BuildEventOK&#x0D;&#x0A;:BuildEventFailed&#x0D;&#x0A;echo *** ERROR! PostBuildStep FAILED for $(ProjectName)! EXE or DLL is probably running. ***&#x0D;&#x0A;del /q &quot;$(TargetDir)&quot;$(TargetFileName)&#x0D;&#x0A;exit 1&#x0D;&#x0A;&#x0D;&#x0A;:BuildEventOK&#x0D;&#x0A;echo Success! Starting Alien Swarm...&#x0D;&#x0A;"
+				Description="Publishing to F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\."
+				CommandLine="if exist &quot;F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.&quot; goto ValveStart&#x0D;&#x0A;mkdir &quot;F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.&quot;&#x0D;&#x0A;:ValveStart&#x0D;&#x0A;copy &quot;$(TargetDir)&quot;$(TargetFileName) &quot;F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.\$(TargetFileName)&quot;&#x0D;&#x0A;if ERRORLEVEL 1 goto BuildEventFailed&#x0D;&#x0A;if exist &quot;$(TargetDir)&quot;$(TargetName).map copy &quot;$(TargetDir)&quot;$(TargetName).map &quot;F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.\$(TargetName).map&quot;&#x0D;&#x0A;copy &quot;$(TargetDir)&quot;$(TargetName).pdb &quot;F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.\$(TargetName).pdb&quot;&#x0D;&#x0A;if ERRORLEVEL 1 goto BuildEventFailed&#x0D;&#x0A;goto BuildEventOK&#x0D;&#x0A;:BuildEventFailed&#x0D;&#x0A;echo *** ERROR! PostBuildStep FAILED for $(ProjectName)! EXE or DLL is probably running. ***&#x0D;&#x0A;del /q &quot;$(TargetDir)&quot;$(TargetFileName)&#x0D;&#x0A;exit 1&#x0D;&#x0A;:BuildEventOK&#x0D;&#x0A;"
 				ExcludedFromBuild="false"
 			/>
 		</Configuration>
@@ -1408,22 +1143,6 @@
 						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\coerciblevariant_t.cpp"
@@ -1450,22 +1169,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1506,22 +1209,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1580,22 +1267,6 @@
 						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\shared\debugoverlay_shared.cpp"
@@ -1636,22 +1307,6 @@
 						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\public\dt_utlvector_common.cpp"
@@ -1672,22 +1327,6 @@
 						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\public\dt_utlvector_send.cpp"
@@ -1702,22 +1341,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1746,22 +1369,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -1922,10 +1529,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\env_instructor_hint.h"
-				>
-			</File>
-			<File
 				RelativePath=".\env_particlescript.cpp"
 				>
 			</File>
@@ -2066,22 +1669,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2268,22 +1855,6 @@
 						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\gameinterface.cpp"
@@ -2334,22 +1905,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2464,22 +2019,6 @@
 						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\hierarchy.cpp"
@@ -2568,22 +2107,6 @@
 						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\init_factory.h"
@@ -2606,22 +2129,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2674,22 +2181,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -2772,22 +2263,6 @@
 						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\mapentities.cpp"
@@ -2832,29 +2307,9 @@
 						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\message_entity.cpp"
-				>
-			</File>
-			<File
-				RelativePath=".\message_entity.h"
 				>
 			</File>
 			<File
@@ -2942,22 +2397,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3352,22 +2791,6 @@
 						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\recipientfilter.cpp"
@@ -3390,22 +2813,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3446,22 +2853,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3532,22 +2923,6 @@
 						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\scratchpad_gamedll_helpers.cpp"
@@ -3566,22 +2941,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3630,22 +2989,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3704,22 +3047,6 @@
 						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\shared\sheetsimulator.h"
@@ -3738,22 +3065,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -3904,22 +3215,6 @@
 						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath="..\..\public\stringregistry.h"
@@ -3938,22 +3233,6 @@
 				</FileConfiguration>
 				<FileConfiguration
 					Name="Release|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
 					>
 					<Tool
 						Name="VCCLCompilerTool"
@@ -4124,22 +3403,6 @@
 						UsePrecompiledHeader="0"
 					/>
 				</FileConfiguration>
-				<FileConfiguration
-					Name="FullOpt Test|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Debug_noexceptions|Win32"
-					>
-					<Tool
-						Name="VCCLCompilerTool"
-						UsePrecompiledHeader="0"
-					/>
-				</FileConfiguration>
 			</File>
 			<File
 				RelativePath=".\vgui_gamedll_int.cpp"
@@ -4257,22 +3520,6 @@
 					</FileConfiguration>
 					<FileConfiguration
 						Name="Release|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="FullOpt Test|Win32"
-						>
-						<Tool
-							Name="VCCLCompilerTool"
-							UsePrecompiledHeader="1"
-						/>
-					</FileConfiguration>
-					<FileConfiguration
-						Name="Debug_noexceptions|Win32"
 						>
 						<Tool
 							Name="VCCLCompilerTool"
@@ -4913,14 +4160,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ASW_Client_Effects.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ASW_Client_Effects.h"
-					>
-				</File>
-				<File
 					RelativePath=".\swarm\asw_clientside_dummies.cpp"
 					>
 				</File>
@@ -5241,14 +4480,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\ASW_Health_Regen.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ASW_Health_Regen.h"
-					>
-				</File>
-				<File
 					RelativePath=".\swarm\asw_holdout_spawner.cpp"
 					>
 				</File>
@@ -5262,14 +4493,6 @@
 				</File>
 				<File
 					RelativePath=".\swarm\asw_holoscan.h"
-					>
-				</File>
-				<File
-					RelativePath=".\ASW_Horde_Mode.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ASW_Horde_Mode.h"
 					>
 				</File>
 				<File
@@ -5605,14 +4828,6 @@
 					>
 				</File>
 				<File
-					RelativePath=".\asw_prune_aliens.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\asw_prune_aliens.h"
-					>
-				</File>
-				<File
 					RelativePath=".\swarm\asw_queen.cpp"
 					>
 				</File>
@@ -5650,14 +4865,6 @@
 				</File>
 				<File
 					RelativePath=".\swarm\asw_ranger.h"
-					>
-				</File>
-				<File
-					RelativePath=".\ASW_Respawn_Marine.cpp"
-					>
-				</File>
-				<File
-					RelativePath=".\ASW_Respawn_Marine.h"
 					>
 				</File>
 				<File
@@ -7851,6 +7058,4 @@
 			</File>
 		</Filter>
 	</Files>
-	<Globals>
-	</Globals>
 </VisualStudioProject>

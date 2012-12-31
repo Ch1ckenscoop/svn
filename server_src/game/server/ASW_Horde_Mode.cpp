@@ -136,7 +136,7 @@ CASW_Horde_Mode::CASW_Horde_Mode()
 
 CASW_Horde_Mode::~CASW_Horde_Mode()
 {
-	
+
 }
 
 void CASW_Horde_Mode::LevelInitPostEntity()
@@ -148,11 +148,11 @@ bool CASW_Horde_Mode::Init()
 {
 	//BaseClass::Spawn();
 
-	i_LastAlienClass = 1;
+	m_iLastAlienClass = DRONE_INDEX;
 
 	InitAlienData();
 	UpdateHordeMode();
-	fl_LastThinkTime = gpGlobals->curtime;
+	m_flLastThinkTime = gpGlobals->curtime;
 
 	return true;
 }
@@ -180,10 +180,10 @@ void CASW_Horde_Mode::FrameUpdatePostEntityThink()
 	asw_horde_override.SetValue(1);
 
 	float thinkRate = asw_hordemode_update_mode.GetFloat();
-	if (thinkRate > 0 && fl_LastThinkTime <= gpGlobals->curtime)	//Check if we're actually supposed to be updating on a timed basis.
+	if (thinkRate > 0 && m_flLastThinkTime <= gpGlobals->curtime)	//Check if we're actually supposed to be updating on a timed basis.
 	{
 		UpdateHordeMode();
-		fl_LastThinkTime = gpGlobals->curtime + thinkRate;
+		m_flLastThinkTime = gpGlobals->curtime + thinkRate;
 	}
 }
 
@@ -193,56 +193,57 @@ void CASW_Horde_Mode::UpdateHordeMode()
 		Msg("Updating hordemode!\n");
 
 	//Ch1ckensCoop: Turn off beta if it was on for the previous alien.
-	if (AlienInfoArray[i_LastAlienClass].isBeta)
+	if (AlienInfoArray[m_iLastAlienClass].m_bBeta)
 	{
-		if (!AlienInfoArray[i_LastAlienClass].betaAlienConVar.GetLinkedConVar())
-			Warning("Bad beta convar for alien class flag %i!\n", i_LastAlienClass);
-		if (!AlienInfoArray[i_LastAlienClass].betaAlienCvarReversed)
-			AlienInfoArray[i_LastAlienClass].betaAlienConVar.SetValue(1);
+		if (!AlienInfoArray[m_iLastAlienClass].m_pBetaAlienCvar)
+			Warning("Bad beta convar for alien class %s!\n", AlienInfoArray[m_iLastAlienClass].m_szAlienClassName);
+
+		if (!AlienInfoArray[m_iLastAlienClass].m_bBetaAlienCvarReversed)
+			AlienInfoArray[m_iLastAlienClass].m_pBetaAlienCvar->SetValue(1);
 		else
-			AlienInfoArray[i_LastAlienClass].betaAlienConVar.SetValue(0);
-		
+			AlienInfoArray[m_iLastAlienClass].m_pBetaAlienCvar->SetValue(0);
+
 		if (asw_hordemode_debug.GetBool())
-			Msg("Disabled beta spawning for %s.\n", AlienInfoArray[i_LastAlienClass].pAlienClassName);
+			Msg("Disabled beta spawning for %s.\n", AlienInfoArray[m_iLastAlienClass].m_szAlienClassName);
 	}
-	
+
 	//Ch1ckensCoop: Select the next random alien
 	int alienIndex = GetRandomValidAlien();
 
 	if (asw_hordemode_debug.GetBool())
 		Msg("Alien index is %i.\n", alienIndex);
 
-	const char *alienClassName = AlienInfoArray[alienIndex].pAlienClassName;
+	const char *alienClassName = AlienInfoArray[alienIndex].m_szAlienClassName;
 	//ConVarRef alienHealthMax = AlienInfoArray[alienIndex].healthMax;
 	//ConVarRef alienHealthMin = AlienInfoArray[alienIndex].healthMin;
-	ConVarRef alienMax = AlienInfoArray[alienIndex].max;
-	ConVarRef alienMin = AlienInfoArray[alienIndex].min;
-	ConVarRef alienHealthCvar = AlienInfoArray[alienIndex].alienHealthCvar;
-	ConVarRef alienBetaCvar = AlienInfoArray[alienIndex].betaAlienConVar;
-	bool alienBetaCvarReversed = AlienInfoArray[alienIndex].betaAlienCvarReversed;
-	bool alienIsBeta = AlienInfoArray[alienIndex].isBeta;
+	ConVar *alienMax = AlienInfoArray[alienIndex].m_pMaxCvar;
+	ConVar *alienMin = AlienInfoArray[alienIndex].m_pMinCvar;
+	ConVar *alienHealthCvar = AlienInfoArray[alienIndex].m_pAlienHealthCvar;
+	ConVar *alienBetaCvar = AlienInfoArray[alienIndex].m_pBetaAlienCvar;
+	bool alienBetaCvarReversed = AlienInfoArray[alienIndex].m_bBetaAlienCvarReversed;
+	bool alienIsBeta = AlienInfoArray[alienIndex].m_bBeta;
 
 
-	asw_horde_size_max.SetValue(alienMax.GetInt());
-	asw_horde_size_min.SetValue(alienMin.GetInt());
+	asw_horde_size_max.SetValue(alienMax->GetInt());
+	asw_horde_size_min.SetValue(alienMin->GetInt());
 
 	int mode = asw_hordemode_mode.GetInt();
 	if (mode == 0 || mode == 1)
 		RandomizeHealth();
 
-	if (alienIsBeta && alienBetaCvar.GetLinkedConVar())
+	if (alienIsBeta && alienBetaCvar)
 	{
 		if (!alienBetaCvarReversed)
-			alienBetaCvar.SetValue(0);
+			alienBetaCvar->SetValue(0);
 		else
-			alienBetaCvar.SetValue(1);
+			alienBetaCvar->SetValue(1);
 	}
-	else if (!alienIsBeta && alienBetaCvar.GetLinkedConVar())
+	else if (!alienIsBeta && alienBetaCvar)
 	{
 		if (!alienBetaCvarReversed)
-			alienBetaCvar.SetValue(1);
+			alienBetaCvar->SetValue(1);
 		else
-			alienBetaCvar.SetValue(0);
+			alienBetaCvar->SetValue(0);
 	}
 
 	//Finally, set the classname and we're ready to go!
@@ -255,8 +256,8 @@ void CASW_Horde_Mode::UpdateHordeMode()
 		else
 			boolText = "false";
 
-		engine->Con_NPrintf( 19, "Hordemode set alien class to %s, health to %i, isBeta = %s.\n", alienClassName, alienHealthCvar.GetInt(), boolText);
-		Msg("Hordemode set alien class to %s, health to %i, isBeta = %s.\n", alienClassName, alienHealthCvar.GetInt(), boolText);		
+		engine->Con_NPrintf( 19, "Hordemode set alien class to %s, health to %i, isBeta = %s.\n", alienClassName, alienHealthCvar->GetInt(), boolText);
+		Msg("Hordemode set alien class to %s, health to %i, isBeta = %s.\n", alienClassName, alienHealthCvar->GetInt(), boolText);		
 	}
 }
 
@@ -267,193 +268,206 @@ int CASW_Horde_Mode::GetRandomValidAlien()
 	int alienMax = 0;
 	do 
 	{
-		alienNum = RandomInt(0, HIGHEST_INDEX - 1);
-		
+		alienNum = RandomInt(0, ALIEN_INDEX_COUNT - 1);
+
 		if (asw_hordemode_debug.GetInt() == 2)
 			Msg("Hordemode: alienNum = %i\n", alienNum);
 
-		alienMax = AlienInfoArray[alienNum].max.GetInt();
+		alienMax = AlienInfoArray[alienNum].m_pMaxCvar->GetInt();
 	}
-	while ((allowedAliens & AlienInfoArray[alienNum].flag) == 0 || (alienMax == 0));
-	i_LastAlienClass = alienNum;
+	while ((allowedAliens & AlienInfoArray[alienNum].m_iFlag) == 0 || (alienMax == 0));
+	m_iLastAlienClass = alienNum;
 	return alienNum;
 }
 
 void CASW_Horde_Mode::RandomizeHealth(int alienNum)
 {
-	if (!(AlienInfoArray[alienNum].pAlienClassName == "asw_queen" && AlienInfoArray[alienNum].max.GetInt() == 0))
-		AlienInfoArray[alienNum].alienHealthCvar.SetValue(RandomInt(AlienInfoArray[alienNum].healthMin.GetInt(), AlienInfoArray[alienNum].healthMax.GetInt()));
+	if (!(FStrEq(AlienInfoArray[alienNum].m_szAlienClassName, "asw_queen") && AlienInfoArray[alienNum].m_pMaxCvar->GetInt() == 0))
+		AlienInfoArray[alienNum].m_pAlienHealthCvar->SetValue(RandomInt(AlienInfoArray[alienNum].m_pHealthMinCvar->GetInt(), AlienInfoArray[alienNum].m_pHealthMaxCvar->GetInt()));
 }
 
 void CASW_Horde_Mode::RandomizeHealth()
 {
-	for (int i = 0; i < HIGHEST_INDEX; i++)
+	for (int i = 0; i < ALIEN_INDEX_COUNT; i++)
 	{
-		AlienInfoArray[i].alienHealthCvar.SetValue(RandomInt(AlienInfoArray[i].healthMin.GetInt(), AlienInfoArray[i].healthMax.GetInt()));
+		// Is one or more of our convars null?
+		if (!AlienInfoArray[i].m_pAlienHealthCvar ||
+			!AlienInfoArray[i].m_pHealthMinCvar ||
+			!AlienInfoArray[i].m_pHealthMaxCvar)
+		{
+			Msg("Alien %s has one or more null cvars!\n", AlienInfoArray[i].m_szAlienClassName);
+		}
+
+		AlienInfoArray[i].m_pAlienHealthCvar->SetValue(RandomInt(AlienInfoArray[i].m_pHealthMinCvar->GetInt(), AlienInfoArray[i].m_pHealthMaxCvar->GetInt()));
 	}
 }
 
 void CASW_Horde_Mode::InitAlienData()
 {
-	//Alien Classnames
-	AlienInfoArray[DRONE_INDEX].pAlienClassName = "asw_drone";
-	AlienInfoArray[BUZZER_INDEX].pAlienClassName = "asw_buzzer";
-	AlienInfoArray[PARASITE_INDEX].pAlienClassName = "asw_parasite";
-	AlienInfoArray[SHIELDBUG_INDEX].pAlienClassName = "asw_shieldbug";
-	AlienInfoArray[JUMPER_INDEX].pAlienClassName = "asw_drone_jumper";
-	AlienInfoArray[HARVESTER_INDEX].pAlienClassName = "asw_harvester";
-	AlienInfoArray[PARASITE_DEFANGED_INDEX].pAlienClassName = "asw_parasite_defanged";
-	AlienInfoArray[QUEEN_INDEX].pAlienClassName = "asw_queen";
-	AlienInfoArray[BOOMER_INDEX].pAlienClassName = "asw_boomer";
-	AlienInfoArray[RANGER_INDEX].pAlienClassName = "asw_ranger";
-	AlienInfoArray[MORTAR_INDEX].pAlienClassName = "asw_mortarbug";
-	AlienInfoArray[SHAMAN_INDEX].pAlienClassName = "asw_shaman";
-	AlienInfoArray[UBER_INDEX].pAlienClassName = "asw_drone_uber";
-	AlienInfoArray[BETA_DRONE_INDEX].pAlienClassName = "asw_drone";
-	AlienInfoArray[BETA_SHIELDBUG_INDEX].pAlienClassName = "asw_shieldbug";
-	AlienInfoArray[BETA_HARVESTER_INDEX].pAlienClassName = "asw_harvester";
-
-	//Alien Flags
-	AlienInfoArray[DRONE_INDEX].flag = 1;
-	AlienInfoArray[BUZZER_INDEX].flag = 2;
-	AlienInfoArray[PARASITE_INDEX].flag = 4;
-	AlienInfoArray[SHIELDBUG_INDEX].flag = 8;
-	AlienInfoArray[JUMPER_INDEX].flag = 16;
-	AlienInfoArray[HARVESTER_INDEX].flag = 32;
-	AlienInfoArray[PARASITE_DEFANGED_INDEX].flag = 64;
-	AlienInfoArray[QUEEN_INDEX].flag = 128;
-	AlienInfoArray[BOOMER_INDEX].flag = 256;
-	AlienInfoArray[RANGER_INDEX].flag = 512;
-	AlienInfoArray[MORTAR_INDEX].flag = 1024;
-	AlienInfoArray[SHAMAN_INDEX].flag = 2048;
-	AlienInfoArray[UBER_INDEX].flag = 4096;
-	AlienInfoArray[BETA_DRONE_INDEX].flag = 8192;
-	AlienInfoArray[BETA_SHIELDBUG_INDEX].flag = 16384;
-	AlienInfoArray[BETA_HARVESTER_INDEX].flag = 32768;
-
-	//Beta Alien Flags
-	AlienInfoArray[DRONE_INDEX].betaAlienConVar = ConVarRef("asw_new_drone");
-
-	AlienInfoArray[SHIELDBUG_INDEX].betaAlienConVar = ConVarRef("asw_old_shieldbug");
-	AlienInfoArray[SHIELDBUG_INDEX].betaAlienCvarReversed = true;
-
-	AlienInfoArray[HARVESTER_INDEX].betaAlienConVar = ConVarRef("asw_harvester_new");
-	
+	// Alien Classnames
+	AlienInfoArray[DRONE_INDEX].m_szAlienClassName = "asw_drone";
+	AlienInfoArray[BUZZER_INDEX].m_szAlienClassName = "asw_buzzer";
+	AlienInfoArray[PARASITE_INDEX].m_szAlienClassName = "asw_parasite";
+	AlienInfoArray[SHIELDBUG_INDEX].m_szAlienClassName = "asw_shieldbug";
+	AlienInfoArray[JUMPER_INDEX].m_szAlienClassName = "asw_drone_jumper";
+	AlienInfoArray[HARVESTER_INDEX].m_szAlienClassName = "asw_harvester";
+	AlienInfoArray[PARASITE_DEFANGED_INDEX].m_szAlienClassName = "asw_parasite_defanged";
+	AlienInfoArray[QUEEN_INDEX].m_szAlienClassName = "asw_queen";
+	AlienInfoArray[BOOMER_INDEX].m_szAlienClassName = "asw_boomer";
+	AlienInfoArray[RANGER_INDEX].m_szAlienClassName = "asw_ranger";
+	AlienInfoArray[MORTAR_INDEX].m_szAlienClassName = "asw_mortarbug";
+	AlienInfoArray[SHAMAN_INDEX].m_szAlienClassName = "asw_shaman";
+	AlienInfoArray[UBER_INDEX].m_szAlienClassName = "asw_drone_uber";
+	AlienInfoArray[BETA_DRONE_INDEX].m_szAlienClassName = "asw_drone";
+	AlienInfoArray[BETA_SHIELDBUG_INDEX].m_szAlienClassName = "asw_shieldbug";
+	AlienInfoArray[BETA_HARVESTER_INDEX].m_szAlienClassName = "asw_harvester";
 
 
-	AlienInfoArray[BETA_DRONE_INDEX].betaAlienConVar = ConVarRef("asw_new_drone");
-	AlienInfoArray[BETA_DRONE_INDEX].isBeta = true;
-
-	AlienInfoArray[BETA_SHIELDBUG_INDEX].betaAlienConVar = ConVarRef("asw_old_shieldbug");
-	AlienInfoArray[BETA_SHIELDBUG_INDEX].betaAlienCvarReversed = true;
-	AlienInfoArray[BETA_SHIELDBUG_INDEX].isBeta = true;
-
-	AlienInfoArray[BETA_HARVESTER_INDEX].betaAlienConVar = ConVarRef("asw_harvester_new");
-	AlienInfoArray[BETA_HARVESTER_INDEX].isBeta = true;
-
-	//Non beta alien flags
-	AlienInfoArray[DRONE_INDEX].isBeta = false;
-	AlienInfoArray[BUZZER_INDEX].isBeta = false;
-	AlienInfoArray[PARASITE_INDEX].isBeta = false;
-	AlienInfoArray[SHIELDBUG_INDEX].isBeta = false;
-	AlienInfoArray[JUMPER_INDEX].isBeta = false;
-	AlienInfoArray[HARVESTER_INDEX].isBeta = false;
-	AlienInfoArray[PARASITE_DEFANGED_INDEX].isBeta = false;
-	AlienInfoArray[QUEEN_INDEX].isBeta = false;
-	AlienInfoArray[BOOMER_INDEX].isBeta = false;
-	AlienInfoArray[RANGER_INDEX].isBeta = false;
-	AlienInfoArray[MORTAR_INDEX].isBeta = false;
-	AlienInfoArray[SHAMAN_INDEX].isBeta = false;
-	AlienInfoArray[UBER_INDEX].isBeta = false;
+	// Alien Flags
+	AlienInfoArray[DRONE_INDEX].m_iFlag = 1;
+	AlienInfoArray[BUZZER_INDEX].m_iFlag = 2;
+	AlienInfoArray[PARASITE_INDEX].m_iFlag = 4;
+	AlienInfoArray[SHIELDBUG_INDEX].m_iFlag = 8;
+	AlienInfoArray[JUMPER_INDEX].m_iFlag = 16;
+	AlienInfoArray[HARVESTER_INDEX].m_iFlag = 32;
+	AlienInfoArray[PARASITE_DEFANGED_INDEX].m_iFlag = 64;
+	AlienInfoArray[QUEEN_INDEX].m_iFlag = 128;
+	AlienInfoArray[BOOMER_INDEX].m_iFlag = 256;
+	AlienInfoArray[RANGER_INDEX].m_iFlag = 512;
+	AlienInfoArray[MORTAR_INDEX].m_iFlag = 1024;
+	AlienInfoArray[SHAMAN_INDEX].m_iFlag = 2048;
+	AlienInfoArray[UBER_INDEX].m_iFlag = 4096;
+	AlienInfoArray[BETA_DRONE_INDEX].m_iFlag = 8192;
+	AlienInfoArray[BETA_SHIELDBUG_INDEX].m_iFlag = 16384;
+	AlienInfoArray[BETA_HARVESTER_INDEX].m_iFlag = 32768;
 
 
-	//Alien Maximum Healths
-	AlienInfoArray[DRONE_INDEX].healthMax = ConVarRef("asw_hordemode_drone_health_max");
-	AlienInfoArray[BUZZER_INDEX].healthMax = ConVarRef("asw_hordemode_buzzer_health_max");
-	AlienInfoArray[PARASITE_INDEX].healthMax = ConVarRef("asw_hordemode_parasite_health_max");
-	AlienInfoArray[SHIELDBUG_INDEX].healthMax = ConVarRef("asw_hordemode_shieldbug_health_max");
-	AlienInfoArray[JUMPER_INDEX].healthMax = ConVarRef("asw_hordemode_drone_jumper_health_max");
-	AlienInfoArray[HARVESTER_INDEX].healthMax = ConVarRef("asw_hordemode_harvester_health_max");
-	AlienInfoArray[PARASITE_DEFANGED_INDEX].healthMax = ConVarRef("asw_hordemode_parasite_safe_health_max");
-	AlienInfoArray[QUEEN_INDEX].healthMax = ConVarRef("asw_hordemode_queen_health_max");
-	AlienInfoArray[BOOMER_INDEX].healthMax = ConVarRef("asw_hordemode_boomer_health_max");
-	AlienInfoArray[RANGER_INDEX].healthMax = ConVarRef("asw_hordemode_ranger_health_max");
-	AlienInfoArray[MORTAR_INDEX].healthMax = ConVarRef("asw_hordemode_mortar_health_max");
-	AlienInfoArray[SHAMAN_INDEX].healthMax = ConVarRef("asw_hordemode_shaman_health_max");
-	AlienInfoArray[UBER_INDEX].healthMax = ConVarRef("asw_hordemode_drone_uber_health_max");
-	AlienInfoArray[BETA_DRONE_INDEX].healthMax = ConVarRef("asw_hordemode_drone_beta_health_max");
-	AlienInfoArray[BETA_SHIELDBUG_INDEX].healthMax = ConVarRef("asw_hordemode_shieldbug_beta_health_max");
-	AlienInfoArray[BETA_HARVESTER_INDEX].healthMax = ConVarRef("asw_hordemode_harvester_beta_health_max");
+	// Beta Alien Flags
+	AlienInfoArray[DRONE_INDEX].m_pBetaAlienCvar = g_pCVar->FindVar("asw_new_drone");
 
-	//Alien Minimum Healths
-	AlienInfoArray[DRONE_INDEX].healthMin = ConVarRef("asw_hordemode_drone_health_min");
-	AlienInfoArray[BUZZER_INDEX].healthMin = ConVarRef("asw_hordemode_buzzer_health_min");
-	AlienInfoArray[PARASITE_INDEX].healthMin = ConVarRef("asw_hordemode_parasite_health_min");
-	AlienInfoArray[SHIELDBUG_INDEX].healthMin = ConVarRef("asw_hordemode_shieldbug_health_min");
-	AlienInfoArray[JUMPER_INDEX].healthMin = ConVarRef("asw_hordemode_drone_jumper_health_min");
-	AlienInfoArray[HARVESTER_INDEX].healthMin = ConVarRef("asw_hordemode_harvester_health_min");
-	AlienInfoArray[PARASITE_DEFANGED_INDEX].healthMin = ConVarRef("asw_hordemode_parasite_safe_health_min");
-	AlienInfoArray[QUEEN_INDEX].healthMin = ConVarRef("asw_hordemode_queen_health_min");
-	AlienInfoArray[BOOMER_INDEX].healthMin = ConVarRef("asw_hordemode_boomer_health_min");
-	AlienInfoArray[RANGER_INDEX].healthMin = ConVarRef("asw_hordemode_ranger_health_min");
-	AlienInfoArray[MORTAR_INDEX].healthMin = ConVarRef("asw_hordemode_mortar_health_min");
-	AlienInfoArray[SHAMAN_INDEX].healthMin = ConVarRef("asw_hordemode_shaman_health_min");
-	AlienInfoArray[UBER_INDEX].healthMin = ConVarRef("asw_hordemode_drone_uber_health_min");
-	AlienInfoArray[BETA_DRONE_INDEX].healthMin = ConVarRef("asw_hordemode_drone_beta_health_max");
-	AlienInfoArray[BETA_SHIELDBUG_INDEX].healthMin = ConVarRef("asw_hordemode_shieldbug_beta_health_min");
-	AlienInfoArray[BETA_HARVESTER_INDEX].healthMin = ConVarRef("asw_hordemode_harvester_beta_health_min");
+	AlienInfoArray[SHIELDBUG_INDEX].m_pBetaAlienCvar = g_pCVar->FindVar("asw_old_shieldbug");
+	AlienInfoArray[SHIELDBUG_INDEX].m_bBetaAlienCvarReversed = true;
 
-	//Alien Maximums
-	AlienInfoArray[DRONE_INDEX].max = ConVarRef("asw_hordemode_drone_max");
-	AlienInfoArray[BUZZER_INDEX].max = ConVarRef("asw_hordemode_buzzer_max");
-	AlienInfoArray[PARASITE_INDEX].max = ConVarRef("asw_hordemode_parasite_max");
-	AlienInfoArray[SHIELDBUG_INDEX].max = ConVarRef("asw_hordemode_shieldbug_max");
-	AlienInfoArray[JUMPER_INDEX].max = ConVarRef("asw_hordemode_drone_jumper_max");
-	AlienInfoArray[HARVESTER_INDEX].max = ConVarRef("asw_hordemode_harvester_max");
-	AlienInfoArray[PARASITE_DEFANGED_INDEX].max = ConVarRef("asw_hordemode_parasite_safe_max");
-	AlienInfoArray[QUEEN_INDEX].max = ConVarRef("asw_hordemode_queen_max");
-	AlienInfoArray[BOOMER_INDEX].max = ConVarRef("asw_hordemode_boomer_max");
-	AlienInfoArray[RANGER_INDEX].max = ConVarRef("asw_hordemode_ranger_max");
-	AlienInfoArray[MORTAR_INDEX].max = ConVarRef("asw_hordemode_mortar_max");
-	AlienInfoArray[SHAMAN_INDEX].max = ConVarRef("asw_hordemode_shaman_max");
-	AlienInfoArray[UBER_INDEX].max = ConVarRef("asw_hordemode_drone_uber_max");
-	AlienInfoArray[BETA_DRONE_INDEX].max = ConVarRef("asw_hordemode_drone_beta_max");
-	AlienInfoArray[BETA_SHIELDBUG_INDEX].max = ConVarRef("asw_hordemode_shieldbug_beta_max");
-	AlienInfoArray[BETA_HARVESTER_INDEX].max = ConVarRef("asw_hordemode_harvester_beta_max");
+	AlienInfoArray[HARVESTER_INDEX].m_pBetaAlienCvar = g_pCVar->FindVar("asw_harvester_new");
 
-	//Alien Minimums
-	AlienInfoArray[DRONE_INDEX].min = ConVarRef("asw_hordemode_drone_min");
-	AlienInfoArray[BUZZER_INDEX].min = ConVarRef("asw_hordemode_buzzer_min");
-	AlienInfoArray[PARASITE_INDEX].min = ConVarRef("asw_hordemode_parasite_min");
-	AlienInfoArray[SHIELDBUG_INDEX].min = ConVarRef("asw_hordemode_shieldbug_min");
-	AlienInfoArray[JUMPER_INDEX].min = ConVarRef("asw_hordemode_drone_jumper_min");
-	AlienInfoArray[HARVESTER_INDEX].min = ConVarRef("asw_hordemode_harvester_min");
-	AlienInfoArray[PARASITE_DEFANGED_INDEX].min = ConVarRef("asw_hordemode_parasite_safe_min");
-	AlienInfoArray[QUEEN_INDEX].min = ConVarRef("asw_hordemode_queen_min");
-	AlienInfoArray[BOOMER_INDEX].min = ConVarRef("asw_hordemode_boomer_min");
-	AlienInfoArray[RANGER_INDEX].min = ConVarRef("asw_hordemode_ranger_min");
-	AlienInfoArray[MORTAR_INDEX].min = ConVarRef("asw_hordemode_mortar_min");
-	AlienInfoArray[SHAMAN_INDEX].min = ConVarRef("asw_hordemode_shaman_min");
-	AlienInfoArray[UBER_INDEX].min = ConVarRef("asw_hordemode_drone_uber_min");
-	AlienInfoArray[BETA_DRONE_INDEX].min = ConVarRef("asw_hordemode_drone_beta_min");
-	AlienInfoArray[BETA_SHIELDBUG_INDEX].min = ConVarRef("asw_hordemode_shieldbug_beta_min");
-	AlienInfoArray[BETA_HARVESTER_INDEX].min = ConVarRef("asw_hordemode_harvester_beta_min");
+	AlienInfoArray[BETA_DRONE_INDEX].m_pBetaAlienCvar = g_pCVar->FindVar("asw_new_drone");
+	AlienInfoArray[BETA_DRONE_INDEX].m_bBeta = true;
 
-	//Alien Health Cvar ConVarRefs
-	AlienInfoArray[DRONE_INDEX].alienHealthCvar = ConVarRef("asw_drone_health");
-	AlienInfoArray[BUZZER_INDEX].alienHealthCvar = ConVarRef("sk_asw_buzzer_health");
-	AlienInfoArray[PARASITE_INDEX].alienHealthCvar = ConVarRef("asw_parasite_health");
-	AlienInfoArray[SHIELDBUG_INDEX].alienHealthCvar = ConVarRef("asw_shieldbug_health");
-	AlienInfoArray[JUMPER_INDEX].alienHealthCvar = ConVarRef("asw_drone_jumper_health");
-	AlienInfoArray[HARVESTER_INDEX].alienHealthCvar = ConVarRef("asw_harvester_health");
-	AlienInfoArray[PARASITE_DEFANGED_INDEX].alienHealthCvar = ConVarRef("asw_parasite_defanged_health");
-	AlienInfoArray[QUEEN_INDEX].alienHealthCvar = ConVarRef("asw_queen_override_health");
-	AlienInfoArray[BOOMER_INDEX].alienHealthCvar = ConVarRef("asw_boomer_health");
-	AlienInfoArray[RANGER_INDEX].alienHealthCvar = ConVarRef("asw_ranger_health");
-	AlienInfoArray[MORTAR_INDEX].alienHealthCvar = ConVarRef("asw_mortarbug_health");
-	AlienInfoArray[SHAMAN_INDEX].alienHealthCvar = ConVarRef("asw_shaman_health");
-	AlienInfoArray[UBER_INDEX].alienHealthCvar = ConVarRef("asw_drone_uber_health");
-	AlienInfoArray[BETA_DRONE_INDEX].alienHealthCvar = ConVarRef("asw_drone_health");
-	AlienInfoArray[BETA_SHIELDBUG_INDEX].alienHealthCvar = ConVarRef("asw_shieldbug_health");
-	AlienInfoArray[BETA_HARVESTER_INDEX].alienHealthCvar = ConVarRef("asw_harvester_health");
+	AlienInfoArray[BETA_SHIELDBUG_INDEX].m_pBetaAlienCvar = g_pCVar->FindVar("asw_old_shieldbug");
+	AlienInfoArray[BETA_SHIELDBUG_INDEX].m_bBetaAlienCvarReversed = true;
+	AlienInfoArray[BETA_SHIELDBUG_INDEX].m_bBeta = true;
+
+	AlienInfoArray[BETA_HARVESTER_INDEX].m_pBetaAlienCvar = g_pCVar->FindVar("asw_harvester_new");
+	AlienInfoArray[BETA_HARVESTER_INDEX].m_bBeta = true;
+
+
+	// Non beta alien flags
+	AlienInfoArray[DRONE_INDEX].m_bBeta = false;
+	AlienInfoArray[BUZZER_INDEX].m_bBeta = false;
+	AlienInfoArray[PARASITE_INDEX].m_bBeta = false;
+	AlienInfoArray[SHIELDBUG_INDEX].m_bBeta = false;
+	AlienInfoArray[JUMPER_INDEX].m_bBeta = false;
+	AlienInfoArray[HARVESTER_INDEX].m_bBeta = false;
+	AlienInfoArray[PARASITE_DEFANGED_INDEX].m_bBeta = false;
+	AlienInfoArray[QUEEN_INDEX].m_bBeta = false;
+	AlienInfoArray[BOOMER_INDEX].m_bBeta = false;
+	AlienInfoArray[RANGER_INDEX].m_bBeta = false;
+	AlienInfoArray[MORTAR_INDEX].m_bBeta = false;
+	AlienInfoArray[SHAMAN_INDEX].m_bBeta = false;
+	AlienInfoArray[UBER_INDEX].m_bBeta = false;
+
+
+	// Alien Maximum Healths
+	AlienInfoArray[DRONE_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_drone_health_max");
+	AlienInfoArray[BUZZER_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_buzzer_health_max");
+	AlienInfoArray[PARASITE_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_parasite_health_max");
+	AlienInfoArray[SHIELDBUG_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_shieldbug_health_max");
+	AlienInfoArray[JUMPER_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_drone_jumper_health_max");
+	AlienInfoArray[HARVESTER_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_harvester_health_max");
+	AlienInfoArray[PARASITE_DEFANGED_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_parasite_safe_health_max");
+	AlienInfoArray[QUEEN_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_queen_health_max");
+	AlienInfoArray[BOOMER_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_boomer_health_max");
+	AlienInfoArray[RANGER_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_ranger_health_max");
+	AlienInfoArray[MORTAR_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_mortar_health_max");
+	AlienInfoArray[SHAMAN_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_shaman_health_max");
+	AlienInfoArray[UBER_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_drone_uber_health_max");
+	AlienInfoArray[BETA_DRONE_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_drone_beta_health_max");
+	AlienInfoArray[BETA_SHIELDBUG_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_shieldbug_beta_health_max");
+	AlienInfoArray[BETA_HARVESTER_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_harvester_beta_health_max");
+
+
+	// Alien Minimum Healths
+	AlienInfoArray[DRONE_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_drone_health_min");
+	AlienInfoArray[BUZZER_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_buzzer_health_min");
+	AlienInfoArray[PARASITE_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_parasite_health_min");
+	AlienInfoArray[SHIELDBUG_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_shieldbug_health_min");
+	AlienInfoArray[JUMPER_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_drone_jumper_health_min");
+	AlienInfoArray[HARVESTER_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_harvester_health_min");
+	AlienInfoArray[PARASITE_DEFANGED_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_parasite_safe_health_min");
+	AlienInfoArray[QUEEN_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_queen_health_min");
+	AlienInfoArray[BOOMER_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_boomer_health_min");
+	AlienInfoArray[RANGER_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_ranger_health_min");
+	AlienInfoArray[MORTAR_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_mortar_health_min");
+	AlienInfoArray[SHAMAN_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_shaman_health_min");
+	AlienInfoArray[UBER_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_drone_uber_health_min");
+	AlienInfoArray[BETA_DRONE_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_drone_beta_health_max");
+	AlienInfoArray[BETA_SHIELDBUG_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_shieldbug_beta_health_min");
+	AlienInfoArray[BETA_HARVESTER_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_harvester_beta_health_min");
+
+
+	// Alien Maximums
+	AlienInfoArray[DRONE_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_drone_max");
+	AlienInfoArray[BUZZER_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_buzzer_max");
+	AlienInfoArray[PARASITE_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_parasite_max");
+	AlienInfoArray[SHIELDBUG_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_shieldbug_max");
+	AlienInfoArray[JUMPER_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_drone_jumper_max");
+	AlienInfoArray[HARVESTER_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_harvester_max");
+	AlienInfoArray[PARASITE_DEFANGED_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_parasite_safe_max");
+	AlienInfoArray[QUEEN_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_queen_max");
+	AlienInfoArray[BOOMER_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_boomer_max");
+	AlienInfoArray[RANGER_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_ranger_max");
+	AlienInfoArray[MORTAR_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_mortar_max");
+	AlienInfoArray[SHAMAN_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_shaman_max");
+	AlienInfoArray[UBER_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_drone_uber_max");
+	AlienInfoArray[BETA_DRONE_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_drone_beta_max");
+	AlienInfoArray[BETA_SHIELDBUG_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_shieldbug_beta_max");
+	AlienInfoArray[BETA_HARVESTER_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_harvester_beta_max");
+
+
+	// Alien Minimums
+	AlienInfoArray[DRONE_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_drone_min");
+	AlienInfoArray[BUZZER_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_buzzer_min");
+	AlienInfoArray[PARASITE_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_parasite_min");
+	AlienInfoArray[SHIELDBUG_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_shieldbug_min");
+	AlienInfoArray[JUMPER_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_drone_jumper_min");
+	AlienInfoArray[HARVESTER_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_harvester_min");
+	AlienInfoArray[PARASITE_DEFANGED_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_parasite_safe_min");
+	AlienInfoArray[QUEEN_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_queen_min");
+	AlienInfoArray[BOOMER_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_boomer_min");
+	AlienInfoArray[RANGER_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_ranger_min");
+	AlienInfoArray[MORTAR_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_mortar_min");
+	AlienInfoArray[SHAMAN_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_shaman_min");
+	AlienInfoArray[UBER_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_drone_uber_min");
+	AlienInfoArray[BETA_DRONE_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_drone_beta_min");
+	AlienInfoArray[BETA_SHIELDBUG_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_shieldbug_beta_min");
+	AlienInfoArray[BETA_HARVESTER_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_harvester_beta_min");
+
+
+	// Alien Health Cvar ConVarRefs
+	AlienInfoArray[DRONE_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("asw_drone_health");
+	AlienInfoArray[BUZZER_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("sk_asw_buzzer_health");
+	AlienInfoArray[PARASITE_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("asw_parasite_health");
+	AlienInfoArray[SHIELDBUG_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("asw_shieldbug_health");
+	AlienInfoArray[JUMPER_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("asw_drone_jumper_health");
+	AlienInfoArray[HARVESTER_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("asw_harvester_health");
+	AlienInfoArray[PARASITE_DEFANGED_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("asw_parasite_defanged_health");
+	AlienInfoArray[QUEEN_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("asw_queen_override_health");
+	AlienInfoArray[BOOMER_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("asw_boomer_health");
+	AlienInfoArray[RANGER_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("asw_ranger_health");
+	AlienInfoArray[MORTAR_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("asw_mortarbug_health");
+	AlienInfoArray[SHAMAN_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("asw_shaman_health");
+	AlienInfoArray[UBER_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("asw_drone_uber_health");
+	AlienInfoArray[BETA_DRONE_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("asw_drone_health");
+	AlienInfoArray[BETA_SHIELDBUG_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("asw_shieldbug_health");
+	AlienInfoArray[BETA_HARVESTER_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("asw_harvester_health");
 }

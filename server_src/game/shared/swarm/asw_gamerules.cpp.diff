@@ -1,9 +1,0 @@
-2846a2847,2850
-> ConVar asw_ammo_satchel_bonus( "asw_ammo_satchel_bonus", "0", FCVAR_NONE, "Additional Ammo Satchels" );
-> 
-2902a2907,2911
-> 	
-> 	if ( !stricmp(szWeaponClass, "asw_weapon_ammo_satchel" ) ) {
-> 		iPrimaryAmmo += asw_ammo_satchel_bonus.GetInt();
-> 	}
-> 	

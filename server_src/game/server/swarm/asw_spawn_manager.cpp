@@ -226,7 +226,6 @@ void CASW_Spawn_Manager::Update()
 			if (asw_horde_enforce_range.GetBool())		//Ch1ckensCoop: Make sure aliens are off screen. ALWAYS.
 			{
 						float flDistance = 0.0f;
-						CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(UTIL_ASW_NearestMarine( m_vecHordePosition, flDistance ));
 
 						if ( flDistance < asw_horde_max_distance.GetFloat() && flDistance > asw_horde_min_distance.GetFloat() )
 							iSpawned = SpawnAlienBatch( asw_horde_class.GetString(), iToSpawn, m_vecHordePosition, m_angHordeAngle );

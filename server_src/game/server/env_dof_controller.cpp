@@ -11,8 +11,6 @@
 #include "env_dof_controller.h"
 #include "ai_utils.h"
 
-//Ch1ckensCoop: Fix'd.
-
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
@@ -168,16 +166,9 @@ void CEnvDOFController::UpdateParamBlend( void )
 	if ( m_hFocusTarget )
 	{
 		CBasePlayer *pPlayer = AI_GetSinglePlayer();
-		Vector absOrigin = m_hFocusTarget->GetAbsOrigin();
-		//Vector plrOrigin = pPlayer->GetAbsOrigin();
-		CBaseEntity *pMarine = gEntList.FindEntityByClassname(NULL, "asw_marine");
-		if (pMarine)
-		{
-			Vector plrOrigin = pMarine->GetAbsOrigin();
-			float flDistToFocus = ( m_hFocusTarget->GetAbsOrigin() - plrOrigin ).Length();
-			m_flFarFocusDepth.GetForModify() = flDistToFocus + m_flFocusTargetRange;
-			m_flFarBlurDepth.GetForModify() = m_flFarFocusDepth + BLUR_DEPTH;
-		}
+		float flDistToFocus = ( m_hFocusTarget->GetAbsOrigin() - pPlayer->GetAbsOrigin() ).Length();
+		m_flFarFocusDepth.GetForModify() = flDistToFocus + m_flFocusTargetRange;
+		m_flFarBlurDepth.GetForModify() = m_flFarFocusDepth + BLUR_DEPTH;
 	}
 
 	SetThink( &CEnvDOFController::UpdateParamBlend );

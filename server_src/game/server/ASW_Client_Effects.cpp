@@ -13,42 +13,26 @@ ConVar asw_cfx_lce_multi("asw_cfx_lce_multi", "1.0", FCVAR_CHEAT, "Controls loca
 ConVar asw_cfx_lce_max("asw_cfx_lce_max", "1.0", FCVAR_CHEAT, "Maximum intensity of local contrast enhancement.");
 ConVar asw_cfx_lce_deadzone("asw_cfx_lce_deadzone", "0.2", FCVAR_CHEAT, "'Dead zone' where we don't worry about a client's cvar being off by this much.");
 ConVar asw_cfx_lce_hurt("asw_cfx_lce_hurt", "35", FCVAR_CHEAT, "Threshold of marine health at which LCE effects start to show.");
+ConVar asw_cfx_lce_forceupdate("asw_cfx_lce_forceupdate", "1.0", FCVAR_CHEAT, "After this amount of time, force an update of the client's cvar whether it needs it or not.");
 
-//Some defines so we don't have to type out the full convar name everywhere
+// Some defines so we don't have to type out full convar names everywhere.
 
-#define MARINE_HURT asw_cfx_lce_hurt.GetFloat()	//Any health below this is defined as "hurt".
-#define FORCE_UPDATE_TIME 1.0f	//After this amount of time, update cvars anyway.
+#define MARINE_HURT asw_cfx_lce_hurt.GetFloat()	// Any health below this is defined as "hurt".
 
-#define LCE	// Local Contrast Enhancement
+#define LCE_MAX	asw_cfx_lce_max.GetFloat()						// Maximum intensity LCE can reach.
+#define LCE_MULTI asw_cfx_lce_multi.GetFloat()					// Multiplier for LCE intensity.
 
-#define LCE_MAX	asw_cfx_lce_max.GetFloat()						//Maximum intensity LCE can reach.
-#define LCE_MULTI asw_cfx_lce_multi.GetFloat()					//Multiplier for LCE intensity.
-
-#define LCE_DEADZONE asw_cfx_lce_deadzone.GetFloat()			//"Dead zone" where we won't worry about a client's cvar being off by this much, so we don't spam them with clientcommands.
-
-#define LCE_ONOFF "mat_local_contrast_enable"					//Enables or disables LCE.
-#define LCE_VIGNETTE "mat_local_contrast_scale_override"		//Controls LCE in a vignette'd area (see below). Sort of a stressful, "tunnel vision" effect.
-#define LCE_VSTART "mat_local_contrast_vignette_start_override"	//Vignette start.
-#define LCE_VEND "mat_local_contrast_vignette_end_override"		//Vignette end.
+#define LCE_ONOFF "mat_local_contrast_enable"					// Enables or disables LCE.
+#define LCE_VIGNETTE "mat_local_contrast_scale_override"		// Controls LCE in a vignette'd area (see below). Sort of a stressful, "tunnel vision" effect.
+#define LCE_VSTART "mat_local_contrast_vignette_start_override"	// Vignette start.
+#define LCE_VEND "mat_local_contrast_vignette_end_override"		// Vignette end.
 
 CASW_Client_Effects g_C_ASW_Effects;
 CASW_Client_Effects* ASW_Client_Effects() { return &g_C_ASW_Effects; }
 
-CASW_Client_Effects::CASW_Client_Effects(void)
+CASW_Client_Effects::CASW_Client_Effects(void) : CAutoGameSystemPerFrame("ASW Client Effects")
 {
-	for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
-	{/*
-	 PlayerInfoArray[i].LCE_isEnabled = true;
-	 PlayerInfoArray[i].LCE_vEnd = 0.5f;
-	 PlayerInfoArray[i].LCE_vStart = 1.0f;
-	 PlayerInfoArray[i].LCE_vStrength = 0.0f;
-	 PlayerInfoArray[i].cfx_LastForceUpdate = gpGlobals->curtime;*/
-
-		PlayerInfoArray[i].LCE_isEnabled.m_bValue = true;
-		PlayerInfoArray[i].playerWantsDisabled = true;
-	}
-	
-	i_DebugThinks = 0;
+	ResetPlayers();
 }
 
 CASW_Client_Effects::~CASW_Client_Effects(void)
@@ -60,12 +44,28 @@ void CASW_Client_Effects::ResetPlayers()
 {
 	for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
 	{
-		PlayerInfoArray[i].pMarine = NULL;
-		PlayerInfoArray[i].pPlayer = NULL;
-
-		PlayerInfoArray[i].LCE_isEnabled.m_bValue = true;
-		PlayerInfoArray[i].playerWantsDisabled = true;
+		ResetPlayer(i);
 	}
+}
+
+void CASW_Client_Effects::ResetPlayer(int iPlayerIndex)
+{
+	Assert(iPlayerIndex >= 0);
+	Assert(iPlayerIndex < ASW_PLAYERINFO_SIZE);
+
+	m_PlayerInfoArray[iPlayerIndex].m_hPlayer = NULL;
+	m_PlayerInfoArray[iPlayerIndex].m_hMarine = NULL;
+
+	m_PlayerInfoArray[iPlayerIndex].m_bEnabled = false;
+	m_PlayerInfoArray[iPlayerIndex].m_flStrength = 0.0f;
+	m_PlayerInfoArray[iPlayerIndex].m_flStart = 0.0f;
+	m_PlayerInfoArray[iPlayerIndex].m_flEnd = 0.0f;
+}
+
+void CASW_Client_Effects::LevelShutdownPreEntity()
+{
+	// Clear out all our players.
+	ResetPlayers();
 }
 
 bool CASW_Client_Effects::PlayerAdd(CASW_Player *pPlayer)
@@ -75,20 +75,18 @@ bool CASW_Client_Effects::PlayerAdd(CASW_Player *pPlayer)
 
 	for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
 	{
-		if (PlayerInfoArray[i].pPlayer == NULL)
+		if (m_PlayerInfoArray[i].m_hPlayer == NULL)
 		{
-			PlayerInfoArray[i].pPlayer = pPlayer;
+			m_PlayerInfoArray[i].m_hPlayer = pPlayer;
 
-			if (pPlayer->GetSpectatingMarine())
-				PlayerInfoArray[i].pMarine = pPlayer->GetSpectatingMarine();
 
 			if (pPlayer->GetMarine())
 			{
 				if (pPlayer->GetMarine()->GetHealth() >= 1)
-					PlayerInfoArray[i].pMarine = pPlayer->GetMarine();
+					m_PlayerInfoArray[i].m_hMarine = pPlayer->GetMarine();
 			}
-
-
+			else if (pPlayer->GetSpectatingMarine())
+				m_PlayerInfoArray[i].m_hMarine = pPlayer->GetSpectatingMarine();
 
 			if (asw_cfx_debug.GetBool())
 			{
@@ -96,7 +94,7 @@ bool CASW_Client_Effects::PlayerAdd(CASW_Player *pPlayer)
 
 				for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
 				{
-					CASW_Player *pPlayer2 = PlayerInfoArray[i].pPlayer;
+					CASW_Player *pPlayer2 = m_PlayerInfoArray[i].m_hPlayer;
 					if (pPlayer2)
 					{
 						Msg(" :: %s\n", pPlayer2->GetPlayerName());
@@ -122,48 +120,14 @@ void CASW_Client_Effects::PlayerRemove(CASW_Player *pPlayer)
 
 	for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
 	{
-		if (PlayerInfoArray[i].pPlayer == pPlayer)
+		if (m_PlayerInfoArray[i].m_hPlayer == pPlayer)
 		{
 			if (asw_cfx_debug.GetBool())
 				Msg("Removing player '%s' from CFX array.\n", pPlayer->GetPlayerName());
-			PlayerInfoArray[i].pMarine = NULL;
-			PlayerInfoArray[i].pPlayer = NULL;
+
+			ResetPlayer(i);
 		}
 	}
-}
-
-bool CASW_Client_Effects::ShouldUpdateCvar(CFX_Float OldValue, float NewValue, EffectType_t EffectType)
-{
-	if (EffectType == EFFECT_LCE)
-	{
-		float delta = OldValue.m_flValue - NewValue;
-		float deadZone = LCE_DEADZONE;
-		float forceUpdateTime = FORCE_UPDATE_TIME;
-
-		delta = fabs(delta);	//Get the absolute value.
-
-		if (delta > deadZone)
-			return true;
-		
-		//If we haven't updated in a while, update anyway.
-		if (OldValue.m_flLastUpdate + forceUpdateTime < gpGlobals->curtime)
-			return true;
-	}
-	return false;
-}
-
-bool CASW_Client_Effects::ShouldUpdateCvar(CFX_Bool OldValue, bool NewValue)
-{
-	float forceUpdateTime = FORCE_UPDATE_TIME;
-	bool bOldValue = OldValue.m_bValue;
-
-	if (NewValue != bOldValue)
-		return true;
-
-	//If we haven't updated in a while, update anyway.
-	if (OldValue.m_flLastUpdate + forceUpdateTime < gpGlobals->curtime)
-		return true;
-	return false;
 }
 
 bool CASW_Client_Effects::SendClientCommand(edict_t *pPlayerEdict, const char *Command, float Value)
@@ -190,7 +154,6 @@ bool CASW_Client_Effects::SendClientCommand(edict_t *pPlayerEdict, const char *C
 
 	char buffer[128];
 	char szValue[8];
-
 	Q_snprintf(szValue, sizeof(szValue), " %i", Value);
 
 	strcpy(buffer, Command);
@@ -207,9 +170,9 @@ void CASW_Client_Effects::PlayerSwitched(CASW_Player *pPlayer, CASW_Marine *pMar
 
 	for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
 	{
-		if (PlayerInfoArray[i].pPlayer == pPlayer)
+		if (m_PlayerInfoArray[i].m_hPlayer == pPlayer)
 		{
-			PlayerInfoArray[i].pMarine = pMarine_new;
+			m_PlayerInfoArray[i].m_hMarine = pMarine_new;
 		}
 	}
 }
@@ -219,82 +182,69 @@ void CASW_Client_Effects::FrameUpdatePostEntityThink()
 	if (!asw_cfx_enable.GetBool())	//Don't think if not enabled
 		return;
 
-	// only think when we're in-game
+	// Only think when we're in-game.
 	if ( !ASWGameRules() || ASWGameRules()->GetGameState() != ASW_GS_INGAME )
 		return;
 
 	for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
 	{
-		CASW_Marine *pMarine = PlayerInfoArray[i].pMarine;
-		CASW_Player *pPlayer = PlayerInfoArray[i].pPlayer;
-		//bool isEnabled = PlayerInfoArray[i].LCE_isEnabled.m_bValue;
-
-#ifdef LCE
+		CASW_Marine *pMarine = m_PlayerInfoArray[i].m_hMarine;
+		CASW_Player *pPlayer = m_PlayerInfoArray[i].m_hPlayer;
 
 		if (pMarine && pPlayer && pPlayer->IsConnected())
 		{
 			edict_t *pPlayerEdict = pPlayer->edict();
-			CFX_Float vStrength_old = PlayerInfoArray[i].LCE_vStrength;
-			CFX_Float vStart_old = PlayerInfoArray[i].LCE_vStart;
-			CFX_Float vEnd_old = PlayerInfoArray[i].LCE_vEnd;
-			CFX_Bool vEnabled = PlayerInfoArray[i].LCE_isEnabled;
+			CFX_Value<float> flStrength_old = m_PlayerInfoArray[i].m_flStrength;
+			CFX_Value<float> flStart_old = m_PlayerInfoArray[i].m_flStart;
+			CFX_Value<float> flEnd_old = m_PlayerInfoArray[i].m_flEnd;
+			CFX_Value<bool> bEnabled = m_PlayerInfoArray[i].m_bEnabled;
 
-			float vStart_new = 0.5f;	//Static for now.
-			float vEnd_new = 1.0f;
-			
-			float vStrength_max = LCE_MAX;
-			float vStrength_new = 0.0f;
+			float flStart_new = 0.5f;	// Static for now.
+			float flEnd_new = 1.0f;
 
-			bool vEnabled_new = PlayerInfoArray[i].playerWantsDisabled;
-	
-			vStrength_new += IsMarineHurt(pMarine);
-			vStrength_new += GetMarineIntensity(pMarine);
-			vStrength_new *= LCE_MULTI;
-			
-			if (vStrength_new > vStrength_max)
-				vStrength_new = vStrength_max;	//Make sure we can't get to insanely high intensity values.
+			float flStrength_max = LCE_MAX;
+			float flStrength_new = 0.0f;
 
-			if (ShouldUpdateCvar(vStrength_old, vStrength_new, EFFECT_LCE))
+			flStrength_new += IsMarineHurt(pMarine);
+			flStrength_new += GetMarineIntensity(pMarine);
+			flStrength_new *= LCE_MULTI;
+
+			// Make sure we can't get to insanely high intensity values.
+			if (flStrength_new > flStrength_max)
+				flStrength_new = flStrength_max;
+
+			if (ShouldUpdateCvar(flStrength_old, flStrength_new, EFFECT_LCE))
 			{
-				if (!SendClientCommand(pPlayerEdict, LCE_VIGNETTE, vStrength_new) && asw_cfx_debug.GetBool())
+				if (!SendClientCommand(pPlayerEdict, LCE_VIGNETTE, flStrength_new) && asw_cfx_debug.GetBool())
 					Msg("Unable to send command %s!\n", LCE_VIGNETTE);
 
-				PlayerInfoArray[i].LCE_vStrength.m_flValue = vStrength_new;
-				PlayerInfoArray[i].LCE_vStrength.m_flLastUpdate = gpGlobals->curtime;
+				m_PlayerInfoArray[i].m_flStrength = flStrength_new;
 			}
 
-			if (ShouldUpdateCvar(vStart_old, vStart_new, EFFECT_LCE))
+			if (ShouldUpdateCvar(flStart_old, flStart_new, EFFECT_LCE))
 			{
-				if (!SendClientCommand(pPlayerEdict, LCE_VSTART, vStart_new) && asw_cfx_debug.GetBool())
+				if (!SendClientCommand(pPlayerEdict, LCE_VSTART, flStart_new) && asw_cfx_debug.GetBool())
 					Msg("Unable to send command %s!\n", LCE_VSTART);
 
-				PlayerInfoArray[i].LCE_vStart.m_flValue = vStart_new;
-				PlayerInfoArray[i].LCE_vStart.m_flLastUpdate = gpGlobals->curtime;
+				m_PlayerInfoArray[i].m_flStart = flStart_new;
 			}
 
-			if (ShouldUpdateCvar(vEnd_old, vEnd_new, EFFECT_LCE))
+			if (ShouldUpdateCvar(flEnd_old, flEnd_new, EFFECT_LCE))
 			{
-				if (!SendClientCommand(pPlayerEdict, LCE_VEND, vEnd_new) && asw_cfx_debug.GetBool())
+				if (!SendClientCommand(pPlayerEdict, LCE_VEND, flEnd_new) && asw_cfx_debug.GetBool())
 					Msg("Unable to send command %s!\n", LCE_VEND);
 
-				PlayerInfoArray[i].LCE_vEnd.m_flValue = vEnd_new;
-				PlayerInfoArray[i].LCE_vEnd.m_flLastUpdate = gpGlobals->curtime;
+				m_PlayerInfoArray[i].m_flEnd = flEnd_new;
 			}
 
-			if (ShouldUpdateCvar(vEnabled, vEnabled_new))
+			// Basically just send the value if it's been too long.
+			if (ShouldUpdateCvar(bEnabled, bEnabled.m_Value, EFFECT_LCE))
 			{
-				if (!SendClientCommand(pPlayerEdict, LCE_ONOFF, vEnabled_new) && asw_cfx_debug.GetBool())
+				if (!SendClientCommand(pPlayerEdict, LCE_ONOFF, bEnabled.m_Value) && asw_cfx_debug.GetBool())
 					Msg("Unable to send command %s!\n", LCE_ONOFF);
-
-				PlayerInfoArray[i].LCE_isEnabled.m_bValue = vEnabled_new;
-				PlayerInfoArray[i].LCE_isEnabled.m_flLastUpdate = gpGlobals->curtime;
 			}
 		}
-#endif	// LCE
 	}
-	i_DebugThinks++;
-	if (asw_cfx_debug.GetInt() == 2)
-		Msg("ThinkNum: %i\n", i_DebugThinks);
 }
 
 float CASW_Client_Effects::IsMarineHurt(CASW_Marine *pMarine)
@@ -303,19 +253,19 @@ float CASW_Client_Effects::IsMarineHurt(CASW_Marine *pMarine)
 		return 0.0f;
 
 	int curHealth = pMarine->GetHealth();
-	
+
 	if (curHealth < 1)
 		return 1.0f;
 
 	float hurtAmount = 0;
-	
+
 	//First we're going to divide their current health by our "hurt" value.
 	hurtAmount = curHealth / MARINE_HURT;
 
 	//If marine isn't hurt, return 0.0f.
 	if (hurtAmount >= 1.0f)
 		return 0.0f;
-	
+
 	return 1.0f - hurtAmount;	//Return how hurt the marine is.
 }
 
@@ -330,44 +280,65 @@ float CASW_Client_Effects::GetMarineIntensity(CASW_Marine *pMarine)
 		return 0.0f;
 
 	CASW_Intensity *pIntensity = pMR->GetIntensity();
-	
+
 	if (pIntensity)
 	{
 		return pIntensity->GetCurrent();
 	}
-	
+
 	return 0.0f;
 }
 
-void CASW_Client_Effects::ToggleForPlayer(CASW_Player *pPlayer, bool bEnabled)
+void CASW_Client_Effects::EnableForPlayer(CASW_Player *pPlayer, bool bEnabled)
 {
 	if (!pPlayer)
 		return;
 
 	for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
 	{
-		if (PlayerInfoArray[i].pPlayer == pPlayer)
+		if (m_PlayerInfoArray[i].m_hPlayer == pPlayer)
 		{
 			if (asw_cfx_debug.GetBool())
-				Msg("Disabled cfx by request for player '%s'.\n", pPlayer->GetPlayerName());
+				Msg("Set cfx for player '%s' to %i.\n", pPlayer->GetPlayerName(), bEnabled);
 
-			PlayerInfoArray[i].playerWantsDisabled = bEnabled;
+			m_PlayerInfoArray[i].m_bEnabled = bEnabled;
 		}
 	}
 }
 
-void DisableEffects_f( const CCommand &args )
+bool CASW_Client_Effects::ToggleForPlayer(CASW_Player *pPlayer)
+{
+	if (!pPlayer)
+		return false;
+
+	for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
+	{
+		if (m_PlayerInfoArray[i].m_hPlayer == pPlayer)
+		{
+			m_PlayerInfoArray[i].m_bEnabled = !m_PlayerInfoArray[i].m_bEnabled.m_Value;
+
+			if (asw_cfx_debug.GetBool())
+				Msg("Toggled cfx for player '%s' to '%i'.\n", pPlayer->GetPlayerName(), m_PlayerInfoArray[i].m_bEnabled);
+
+			return m_PlayerInfoArray[i].m_bEnabled.m_Value;
+		}
+	}
+
+	return false;
+}
+
+void ToggleEffects_f( const CCommand &args )
 {
 	if (args.ArgC() == 3)
 	{
 		int plrIndex = atoi(args.Arg(1));
-		bool Enabled = static_cast<bool>( atoi(args.Arg(2)) );
+		bool Enabled = (atoi(args.Arg(2)) == 0 ? false : true);
 		if (ASW_Client_Effects())
-			ASW_Client_Effects()->ToggleForPlayer(ToASW_Player(UTIL_PlayerByIndex(plrIndex)), Enabled);
+			ASW_Client_Effects()->EnableForPlayer(ToASW_Player(UTIL_PlayerByIndex(plrIndex)), Enabled);
 	}
 	else
 	{
 		Msg("Incorrect syntax! 'cfx_toggle <player index> <1/0>\n");
 	}
 }
-ConCommand cfx_toggle("cfx_toggle", DisableEffects_f, "Disables CFX for a client index. Used by sourcemod.");
+ConCommand cfx_toggle("cfx_toggle", ToggleEffects_f, "Disables CFX for a client index. Used by sourcemod.");

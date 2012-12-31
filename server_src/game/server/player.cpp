@@ -2986,7 +2986,6 @@ void CBasePlayer::AddPoints( int score, bool bAllowNegativeScore )
 
 	m_iFrags += score;
 	pl.frags = m_iFrags;
-	Msg("m_iFrags = %i\n", m_iFrags);
 }
 
 void CBasePlayer::AddPointsToTeam( int score, bool bAllowNegativeScore )

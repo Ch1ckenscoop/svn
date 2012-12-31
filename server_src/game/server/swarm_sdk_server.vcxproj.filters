@@ -2,40 +2,43 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="VPC Scripts">
-      <UniqueIdentifier>{7f51b368-7733-4685-a9aa-d54b9dbd2858}</UniqueIdentifier>
+      <UniqueIdentifier>{7f813592-28f2-4d07-a3de-61a865e6c326}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files">
-      <UniqueIdentifier>{13d957a9-864e-437a-b8a5-0abf3c406492}</UniqueIdentifier>
+      <UniqueIdentifier>{fcfb3e32-763c-4077-9b47-34febaa9fe56}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Precompiled Header">
-      <UniqueIdentifier>{02585d6e-5aa6-4be1-9db7-41ea4e4586eb}</UniqueIdentifier>
+      <UniqueIdentifier>{96cf9fa9-6e63-4b76-ba2b-b6db25245d9f}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\temporary entities">
-      <UniqueIdentifier>{8828a29f-b039-4c57-81a2-a60a4460e9ab}</UniqueIdentifier>
+      <UniqueIdentifier>{4fbdf2f3-ecc7-4703-ab37-fb89148bfd5c}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Nav Mesh">
-      <UniqueIdentifier>{17a4e193-7155-4c27-904c-f78de927a637}</UniqueIdentifier>
+      <UniqueIdentifier>{f47002b3-1904-4b34-9d2c-a1355a97c8ba}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\From HL2">
-      <UniqueIdentifier>{22d481d2-1da5-4706-9e46-7e625008594a}</UniqueIdentifier>
+      <UniqueIdentifier>{20702e32-0f11-49e2-8401-fad786a41e58}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Swarm">
-      <UniqueIdentifier>{2429755d-0bda-4ea7-ad90-9f55bf158527}</UniqueIdentifier>
+      <UniqueIdentifier>{0827dc0b-4479-4697-bbee-0b8003267311}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Swarm\Behaviors">
-      <UniqueIdentifier>{d82153ec-661f-4447-9bff-cc21bec61995}</UniqueIdentifier>
+      <UniqueIdentifier>{a9dfef45-3292-4ec9-899f-a098ed381173}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\Swarm\Shared">
-      <UniqueIdentifier>{203bff28-20b1-4864-a947-706865b29849}</UniqueIdentifier>
+      <UniqueIdentifier>{70dd68f7-8874-4688-ada9-2e6d6d594e8d}</UniqueIdentifier>
     </Filter>
     <Filter Include="Link Libraries">
-      <UniqueIdentifier>{ff11bb52-92cd-4360-a317-4fda70113ca0}</UniqueIdentifier>
+      <UniqueIdentifier>{d5002325-cbfb-4724-be74-65b979436f23}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files">
-      <UniqueIdentifier>{3288eb07-f372-4b1b-b008-219c6a42af03}</UniqueIdentifier>
+      <UniqueIdentifier>{b7b46e2f-d9d4-4430-9474-1b94d7a334a2}</UniqueIdentifier>
     </Filter>
     <Filter Include="Tools Framework">
-      <UniqueIdentifier>{921ee887-5489-4f7b-99f7-ed08b05d0b69}</UniqueIdentifier>
+      <UniqueIdentifier>{d015c1cf-833b-4fa1-940c-596644010601}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Swarm\Ch1ckensCoop">
+      <UniqueIdentifier>{eca6da77-4752-4841-9c0b-a2c1244f88af}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -1556,9 +1559,6 @@
     <ClCompile Include="swarm\asw_client_corpse.cpp">
       <Filter>Source Files\Swarm</Filter>
     </ClCompile>
-    <ClCompile Include="ASW_Client_Effects.cpp">
-      <Filter>Source Files\Swarm</Filter>
-    </ClCompile>
     <ClCompile Include="swarm\asw_clientside_dummies.cpp">
       <Filter>Source Files\Swarm</Filter>
     </ClCompile>
@@ -1688,16 +1688,10 @@
     <ClCompile Include="swarm\asw_harvester.cpp">
       <Filter>Source Files\Swarm</Filter>
     </ClCompile>
-    <ClCompile Include="ASW_Health_Regen.cpp">
-      <Filter>Source Files\Swarm</Filter>
-    </ClCompile>
     <ClCompile Include="swarm\asw_holdout_spawner.cpp">
       <Filter>Source Files\Swarm</Filter>
     </ClCompile>
     <ClCompile Include="swarm\asw_holoscan.cpp">
-      <Filter>Source Files\Swarm</Filter>
-    </ClCompile>
-    <ClCompile Include="ASW_Horde_Mode.cpp">
       <Filter>Source Files\Swarm</Filter>
     </ClCompile>
     <ClCompile Include="swarm\asw_intro_control.cpp">
@@ -1829,9 +1823,6 @@
     <ClCompile Include="swarm\asw_prop_physics.cpp">
       <Filter>Source Files\Swarm</Filter>
     </ClCompile>
-    <ClCompile Include="asw_prune_aliens.cpp">
-      <Filter>Source Files\Swarm</Filter>
-    </ClCompile>
     <ClCompile Include="swarm\asw_queen.cpp">
       <Filter>Source Files\Swarm</Filter>
     </ClCompile>
@@ -1845,9 +1836,6 @@
       <Filter>Source Files\Swarm</Filter>
     </ClCompile>
     <ClCompile Include="swarm\asw_ranger.cpp">
-      <Filter>Source Files\Swarm</Filter>
-    </ClCompile>
-    <ClCompile Include="ASW_Respawn_Marine.cpp">
       <Filter>Source Files\Swarm</Filter>
     </ClCompile>
     <ClCompile Include="swarm\asw_rifle_grenade.cpp">
@@ -2318,6 +2306,18 @@
     <ClCompile Include="toolframework_server.cpp">
       <Filter>Tools Framework</Filter>
     </ClCompile>
+    <ClCompile Include="ASW_Client_Effects.cpp">
+      <Filter>Source Files\Swarm\Ch1ckensCoop</Filter>
+    </ClCompile>
+    <ClCompile Include="ASW_Health_Regen.cpp">
+      <Filter>Source Files\Swarm\Ch1ckensCoop</Filter>
+    </ClCompile>
+    <ClCompile Include="ASW_Horde_Mode.cpp">
+      <Filter>Source Files\Swarm\Ch1ckensCoop</Filter>
+    </ClCompile>
+    <ClCompile Include="ASW_Respawn_Marine.cpp">
+      <Filter>Source Files\Swarm\Ch1ckensCoop</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\shared\achievement_saverestore.h">
@@ -2716,9 +2716,6 @@
     <ClInclude Include="env_dof_controller.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="env_instructor_hint.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="env_player_surface_trigger.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -2906,9 +2903,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\public\mathlib\mathlib.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="message_entity.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\public\model_types.h">
@@ -3358,9 +3352,6 @@
     <ClInclude Include="swarm\asw_client_corpse.h">
       <Filter>Source Files\Swarm</Filter>
     </ClInclude>
-    <ClInclude Include="ASW_Client_Effects.h">
-      <Filter>Source Files\Swarm</Filter>
-    </ClInclude>
     <ClInclude Include="swarm\asw_colonist.h">
       <Filter>Source Files\Swarm</Filter>
     </ClInclude>
@@ -3472,16 +3463,10 @@
     <ClInclude Include="swarm\asw_harvester.h">
       <Filter>Source Files\Swarm</Filter>
     </ClInclude>
-    <ClInclude Include="ASW_Health_Regen.h">
-      <Filter>Source Files\Swarm</Filter>
-    </ClInclude>
     <ClInclude Include="swarm\asw_holdout_spawner.h">
       <Filter>Source Files\Swarm</Filter>
     </ClInclude>
     <ClInclude Include="swarm\asw_holoscan.h">
-      <Filter>Source Files\Swarm</Filter>
-    </ClInclude>
-    <ClInclude Include="ASW_Horde_Mode.h">
       <Filter>Source Files\Swarm</Filter>
     </ClInclude>
     <ClInclude Include="swarm\asw_intro_control.h">
@@ -3604,9 +3589,6 @@
     <ClInclude Include="swarm\asw_prop_physics.h">
       <Filter>Source Files\Swarm</Filter>
     </ClInclude>
-    <ClInclude Include="asw_prune_aliens.h">
-      <Filter>Source Files\Swarm</Filter>
-    </ClInclude>
     <ClInclude Include="swarm\asw_queen.h">
       <Filter>Source Files\Swarm</Filter>
     </ClInclude>
@@ -3620,9 +3602,6 @@
       <Filter>Source Files\Swarm</Filter>
     </ClInclude>
     <ClInclude Include="swarm\asw_ranger.h">
-      <Filter>Source Files\Swarm</Filter>
-    </ClInclude>
-    <ClInclude Include="ASW_Respawn_Marine.h">
       <Filter>Source Files\Swarm</Filter>
     </ClInclude>
     <ClInclude Include="swarm\asw_rifle_grenade.h">
@@ -4740,6 +4719,18 @@
     </ClInclude>
     <ClInclude Include="toolframework_server.h">
       <Filter>Tools Framework</Filter>
+    </ClInclude>
+    <ClInclude Include="ASW_Client_Effects.h">
+      <Filter>Source Files\Swarm\Ch1ckensCoop</Filter>
+    </ClInclude>
+    <ClInclude Include="ASW_Health_Regen.h">
+      <Filter>Source Files\Swarm\Ch1ckensCoop</Filter>
+    </ClInclude>
+    <ClInclude Include="ASW_Horde_Mode.h">
+      <Filter>Source Files\Swarm\Ch1ckensCoop</Filter>
+    </ClInclude>
+    <ClInclude Include="ASW_Respawn_Marine.h">
+      <Filter>Source Files\Swarm\Ch1ckensCoop</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

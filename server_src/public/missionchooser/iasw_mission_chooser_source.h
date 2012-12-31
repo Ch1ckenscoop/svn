@@ -25,7 +25,7 @@ struct ASW_Mission_Chooser_Saved_Campaign
 };
 
 #define ASW_MISSIONS_PER_PAGE 8
-#define ASW_CAMPAIGNS_PER_PAGE 5	//Ch1ckensCoop: More per page?
+#define ASW_CAMPAIGNS_PER_PAGE 3
 #define ASW_SAVES_PER_PAGE 8
 
 abstract_class IASW_Mission_Chooser_Source

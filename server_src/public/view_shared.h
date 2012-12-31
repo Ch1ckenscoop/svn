@@ -59,7 +59,7 @@ public:
 		m_bRenderToSubrectOfLargerScreen = false;
 		m_bDoBloomAndToneMapping = true;
 		m_nMotionBlurMode = MOTION_BLUR_GAME;
-		m_bDoDepthOfField = true; //Previously false
+		m_bDoDepthOfField = false;
 		m_bHDRTarget = false;
 		m_bOffCenter = false;
 		m_bCacheFullSceneState = false;
