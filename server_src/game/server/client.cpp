@@ -151,7 +151,7 @@ void Host_Say( edict_t *pEdict, const CCommand &args, bool teamonly )
 
 		// See if the player wants to modify of check the text
 		pPlayer->CheckChatText( p, 127 );	// though the buffer szTemp that p points to is 256, 
-											// chat text is capped to 127 in CheckChatText above
+		// chat text is capped to 127 in CheckChatText above
 
 		// make sure the text has valid content
 		p = CheckChatText( pPlayer, p );
@@ -202,7 +202,7 @@ void Host_Say( edict_t *pEdict, const CCommand &args, bool teamonly )
 
 	Q_strncat( text, p, sizeof( text ), COPY_ALL_CHARACTERS );
 	Q_strncat( text, "\n", sizeof( text ), COPY_ALL_CHARACTERS );
- 
+
 	// loop through all players
 	// Start with the first player.
 	// This may return the world in single player if the client types something between levels or during spawn
@@ -214,7 +214,7 @@ void Host_Say( edict_t *pEdict, const CCommand &args, bool teamonly )
 		client = ToBaseMultiplayerPlayer( UTIL_PlayerByIndex( i ) );
 		if ( !client || !client->edict() )
 			continue;
-		
+
 		if ( client->edict() == pEdict )
 			continue;
 
@@ -262,7 +262,7 @@ void Host_Say( edict_t *pEdict, const CCommand &args, bool teamonly )
 	// echo to server console
 	// Adrian: Only do this if we're running a dedicated server since we already print to console on the client.
 	if ( engine->IsDedicatedServer() )
-		 Msg( "%s", text );
+		Msg( "%s", text );
 
 	Assert( p );
 
@@ -281,7 +281,7 @@ void Host_Say( edict_t *pEdict, const CCommand &args, bool teamonly )
 			playerTeam = team->GetName();
 		}
 	}
-		
+
 	if ( teamonly )
 		UTIL_LogPrintf( "\"%s<%i><%s><%s>\" say_team \"%s\"\n", playerName, userid, networkID, playerTeam, p );
 	else
@@ -340,9 +340,9 @@ PRECACHE_REGISTER_BEGIN( GLOBAL, ClientPrecache )
 	// Game Instructor sounds
 	PRECACHE( GAMESOUND, "Instructor.LessonStart" )
 	PRECACHE( GAMESOUND, "Instructor.ImportantLessonStart" )
-PRECACHE_REGISTER_END()
+	PRECACHE_REGISTER_END()
 
-void ClientPrecache( void )
+	void ClientPrecache( void )
 {
 	ClientGamePrecache();
 
@@ -439,7 +439,7 @@ void ClientPrecache( void )
 CON_COMMAND_F( cast_ray, "Tests collision detection", FCVAR_CHEAT )
 {
 	CBasePlayer *pPlayer = UTIL_GetCommandClient();
-	
+
 	Vector forward;
 	trace_t tr;
 
@@ -461,7 +461,7 @@ CON_COMMAND_F( cast_ray, "Tests collision detection", FCVAR_CHEAT )
 CON_COMMAND_F( cast_hull, "Tests hull collision detection", FCVAR_CHEAT )
 {
 	CBasePlayer *pPlayer = UTIL_GetCommandClient();
-	
+
 	Vector forward;
 	trace_t tr;
 
@@ -513,12 +513,12 @@ CBaseEntity *GetNextCommandEntity( CBasePlayer *pPlayer, const char *name, CBase
 
 		return CBaseEntity::Instance( index );
 	}
-		
+
 	// Loop through all entities matching, starting from the specified previous
 	while ( (ent = gEntList.NextEnt(ent)) != NULL )
 	{
 		if (  (ent->GetEntityName() != NULL_STRING	&& ent->NameMatches(name))	|| 
-			  (ent->m_iClassname != NULL_STRING && ent->ClassMatches(name)) )
+			(ent->m_iClassname != NULL_STRING && ent->ClassMatches(name)) )
 		{
 			return ent;
 		}
@@ -644,9 +644,9 @@ void CPointClientCommand::InputCommand( inputdata_t& inputdata )
 
 BEGIN_DATADESC( CPointClientCommand )
 	DEFINE_INPUTFUNC( FIELD_STRING, "Command", InputCommand ),
-END_DATADESC()
+	END_DATADESC()
 
-LINK_ENTITY_TO_CLASS( point_clientcommand, CPointClientCommand );
+	LINK_ENTITY_TO_CLASS( point_clientcommand, CPointClientCommand );
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -673,9 +673,9 @@ void CPointServerCommand::InputCommand( inputdata_t& inputdata )
 
 BEGIN_DATADESC( CPointServerCommand )
 	DEFINE_INPUTFUNC( FIELD_STRING, "Command", InputCommand ),
-END_DATADESC()
+	END_DATADESC()
 
-LINK_ENTITY_TO_CLASS( point_servercommand, CPointServerCommand );
+	LINK_ENTITY_TO_CLASS( point_servercommand, CPointServerCommand );
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -712,10 +712,10 @@ void CPointBroadcastClientCommand::InputCommand( inputdata_t& inputdata )
 }
 
 BEGIN_DATADESC( CPointBroadcastClientCommand )
-DEFINE_INPUTFUNC( FIELD_STRING, "Command", InputCommand ),
-END_DATADESC()
+	DEFINE_INPUTFUNC( FIELD_STRING, "Command", InputCommand ),
+	END_DATADESC()
 
-LINK_ENTITY_TO_CLASS( point_broadcastclientcommand, CPointBroadcastClientCommand );
+	LINK_ENTITY_TO_CLASS( point_broadcastclientcommand, CPointBroadcastClientCommand );
 
 //------------------------------------------------------------------------------
 // Purpose : Draw a line betwen two points.  White if no world collisions, red if collisions
@@ -867,6 +867,24 @@ CON_COMMAND_F( buddha, "Toggle.  Player takes damage but won't die. (Shows red c
 	}
 }
 
+// Ch1ckenscoop: Allow easy creation of chat "commands".
+static CUtlVector<ChatCommand_t*> *g_ChatCommandList;
+static int g_lolTest;
+ChatCommand::ChatCommand(const char *szName, FnCommandCallback_t commandCallback)
+{
+	ChatCommand_t *newChatCommand = new ChatCommand_t();
+
+	V_strncpy(newChatCommand->m_szName, szName, sizeof(newChatCommand->m_szName));
+	newChatCommand->m_CommandCallback = commandCallback;
+	
+	// Are we the first command to be added?
+	if (!g_ChatCommandList)
+		g_ChatCommandList = new CUtlVector<ChatCommand_t*>();
+
+	// Add it
+	g_ChatCommandList->AddToTail(newChatCommand);
+	g_lolTest = 43;
+}
 
 #define TALK_INTERVAL 0.66 // min time between say commands from a client
 //------------------------------------------------------------------------------
@@ -878,6 +896,19 @@ CON_COMMAND( say, "Display player message" )
 	{
 		if (( pPlayer->LastTimePlayerTalked() + TALK_INTERVAL ) < gpGlobals->curtime) 
 		{
+			// Ch1ckenscoop: Check to see if it's a command
+			if (args.ArgC() > 1)
+			{
+				// Get the command
+				const char *szCommand = args.Arg(1);
+				for (int i = 0; i < g_ChatCommandList->Count(); i++)
+				{
+					ChatCommand_t *currentCommand = g_ChatCommandList->Element(i);
+					if (!V_strcmp(currentCommand->m_szName, szCommand))
+						currentCommand->m_CommandCallback(args);
+				}
+			}
+
 			Host_Say( pPlayer->edict(), args, 0 );
 			pPlayer->NotePlayerTalked();
 		}
@@ -887,7 +918,6 @@ CON_COMMAND( say, "Display player message" )
 		Host_Say( NULL, args, 0 );
 	}
 }
-
 
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
@@ -957,7 +987,7 @@ void CC_Player_TestDispatchEffect( const CCommand &args )
 	CBasePlayer *pPlayer = ToBasePlayer( UTIL_GetCommandClient() );
 	if ( !pPlayer)
 		return;
-	
+
 	if ( args.ArgC() < 2 )
 	{
 		Msg(" Usage: test_dispatcheffect <effect name> <distance away> <flags> <magnitude> <scale>\n " );
@@ -1035,7 +1065,7 @@ static ConCommand test_dispatcheffect("test_dispatcheffect", CC_Player_TestDispa
 void CC_Player_PhysSwap( void )
 {
 	CBasePlayer *pPlayer = ToBasePlayer( UTIL_GetCommandClient() );
-	
+
 	if ( pPlayer )
 	{
 		CBaseCombatWeapon *pWeapon = pPlayer->GetActiveWeapon();
@@ -1068,7 +1098,7 @@ static ConCommand physswap("phys_swap", CC_Player_PhysSwap, "Automatically swaps
 void CC_Player_BugBaitSwap( void )
 {
 	CBasePlayer *pPlayer = ToBasePlayer( UTIL_GetCommandClient() );
-	
+
 	if ( pPlayer )
 	{
 		CBaseCombatWeapon *pWeapon = pPlayer->GetActiveWeapon();
@@ -1196,11 +1226,11 @@ static int FindPassableSpace( CBaseEntity *pEntity, unsigned int mask, const Vec
 bool FindEmptySpace( CBaseEntity *pEntity, unsigned int mask, const Vector &forward, const Vector &right, const Vector &up, Vector *testOrigin )
 {
 	return	FindPassableSpace( pEntity, mask, forward, 1, *testOrigin )	||  // forward
-			FindPassableSpace( pEntity, mask, right, 1, *testOrigin )	||  // right
-			FindPassableSpace( pEntity, mask, right, -1, *testOrigin )	||  // left
-			FindPassableSpace( pEntity, mask, up, 1, *testOrigin )		||  // up
-			FindPassableSpace( pEntity, mask, up, -1, *testOrigin )		||  // down
-			FindPassableSpace( pEntity, mask, forward, -1, *testOrigin ) ;  // back
+		FindPassableSpace( pEntity, mask, right, 1, *testOrigin )	||  // right
+		FindPassableSpace( pEntity, mask, right, -1, *testOrigin )	||  // left
+		FindPassableSpace( pEntity, mask, up, 1, *testOrigin )		||  // up
+		FindPassableSpace( pEntity, mask, up, -1, *testOrigin )		||  // down
+		FindPassableSpace( pEntity, mask, forward, -1, *testOrigin ) ;  // back
 }
 
 
@@ -1715,18 +1745,18 @@ void ClientCommand( CBasePlayer *pPlayer, const CCommand &args )
 
 	if (((pstr = strstr(pcmd, "weapon_")) != NULL)  && (pstr == pcmd))
 	{
-		// Subtype may be specified
-		if ( args.ArgC() == 2 )
-		{
-			pPlayer->SelectItem( pcmd, atoi( args[1] ) );
-		}
-		else
-		{
-			pPlayer->SelectItem(pcmd);
-		}
+	// Subtype may be specified
+	if ( args.ArgC() == 2 )
+	{
+	pPlayer->SelectItem( pcmd, atoi( args[1] ) );
+	}
+	else
+	{
+	pPlayer->SelectItem(pcmd);
+	}
 	}
 	*/
-	
+
 	if ( FStrEq( pCmd, "killtarget" ) )
 	{
 		if ( g_pDeveloper->GetBool() && sv_cheats->GetBool() && UTIL_IsCommandIssuedByServerAdmin() )

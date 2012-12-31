@@ -4282,8 +4282,6 @@ void CAlienSwarm::CreateStandardEntities( void )
 	CBaseEntity::Create( "asw_gamerules", vec3_origin, vec3_angle );
 	Assert( pEnt );
 
-	//Ch1ckensCoop: Alien pruner
-	CBaseEntity::Create("asw_alien_pruner", vec3_origin, vec3_angle);
 	//Ch1ckensCoop: Health regen
 	CBaseEntity::Create("asw_health_regen", vec3_origin, vec3_angle);
 #endif

@@ -3,6 +3,7 @@
 #include "asw_director.h"
 #include "asw_marine_resource.h"
 #include "asw_gamerules.h"
+#include "client.h"
 
 #include "memdbgon.h"
 
@@ -327,18 +328,28 @@ bool CASW_Client_Effects::ToggleForPlayer(CASW_Player *pPlayer)
 	return false;
 }
 
-void ToggleEffects_f( const CCommand &args )
+static void ToggleCommandCallback(const CCommand &args)
 {
-	if (args.ArgC() == 3)
-	{
-		int plrIndex = atoi(args.Arg(1));
-		bool Enabled = (atoi(args.Arg(2)) == 0 ? false : true);
-		if (ASW_Client_Effects())
-			ASW_Client_Effects()->EnableForPlayer(ToASW_Player(UTIL_PlayerByIndex(plrIndex)), Enabled);
-	}
+	CASW_Player *pCommandPlayer = dynamic_cast<CASW_Player*>(UTIL_GetCommandClient());
+	if (!pCommandPlayer)
+		return;
+
+	// Toggle CFX for this player.
+	bool bNewValue = ASW_Client_Effects()->ToggleForPlayer(pCommandPlayer);
+
+	// Tell the player who sent this command that CFX has been toggled.
+	CRecipientFilter filter;
+	filter.AddRecipient(pCommandPlayer);
+
+	char szEnabled[16];
+	if (bNewValue)
+		V_snprintf(szEnabled, sizeof(szEnabled), "enabled");
 	else
-	{
-		Msg("Incorrect syntax! 'cfx_toggle <player index> <1/0>\n");
-	}
+		V_snprintf(szEnabled, sizeof(szEnabled), "disabled");
+
+	char buf[64];
+	V_snprintf(buf, sizeof(buf), "CFX has been %s for you.\n", szEnabled);
+
+	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, buf);
 }
-ConCommand cfx_toggle("cfx_toggle", ToggleEffects_f, "Disables CFX for a client index. Used by sourcemod.");
+ChatCommand cfx_toggle_command("/cfx", ToggleCommandCallback);
