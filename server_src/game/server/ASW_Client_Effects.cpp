@@ -4,6 +4,7 @@
 #include "asw_marine_resource.h"
 #include "asw_gamerules.h"
 #include "client.h"
+#include "HypKeyValues.h"
 
 #include "memdbgon.h"
 
@@ -27,6 +28,8 @@ ConVar asw_cfx_lce_forceupdate("asw_cfx_lce_forceupdate", "1.0", FCVAR_CHEAT, "A
 #define LCE_VIGNETTE "mat_local_contrast_scale_override"		// Controls LCE in a vignette'd area (see below). Sort of a stressful, "tunnel vision" effect.
 #define LCE_VSTART "mat_local_contrast_vignette_start_override"	// Vignette start.
 #define LCE_VEND "mat_local_contrast_vignette_end_override"		// Vignette end.
+
+#define CFX_FILE "cfg/sourcemod/cfx.cfg"
 
 CASW_Client_Effects g_C_ASW_Effects;
 CASW_Client_Effects* ASW_Client_Effects() { return &g_C_ASW_Effects; }
@@ -57,7 +60,7 @@ void CASW_Client_Effects::ResetPlayer(int iPlayerIndex)
 	m_PlayerInfoArray[iPlayerIndex].m_hPlayer = NULL;
 	m_PlayerInfoArray[iPlayerIndex].m_hMarine = NULL;
 
-	m_PlayerInfoArray[iPlayerIndex].m_bEnabled = false;
+	m_PlayerInfoArray[iPlayerIndex].m_bEnabled = true;
 	m_PlayerInfoArray[iPlayerIndex].m_flStrength = 0.0f;
 	m_PlayerInfoArray[iPlayerIndex].m_flStart = 0.0f;
 	m_PlayerInfoArray[iPlayerIndex].m_flEnd = 0.0f;
@@ -88,6 +91,33 @@ bool CASW_Client_Effects::PlayerAdd(CASW_Player *pPlayer)
 			}
 			else if (pPlayer->GetSpectatingMarine())
 				m_PlayerInfoArray[i].m_hMarine = pPlayer->GetSpectatingMarine();
+
+			// Load the player's saved value from our database
+			if (filesystem->FileExists(CFX_FILE))
+			{
+				HypKeyValues rootKV;
+				rootKV.FileToKeyValues(CFX_FILE);
+
+				HypKeyValues *clientFXKey = rootKV.FindKey("Client Effects Settings");
+				Assert(clientFXKey);
+
+				HypKeyValues *playersKey = clientFXKey->FindKey("Players");
+				Assert(playersKey);
+
+				CSteamID steamID;
+				pPlayer->GetSteamID(&steamID);
+				uint64 steamID_64 = steamID.ConvertToUint64();
+
+				char buf[64];
+				V_snprintf(buf, sizeof(buf), "%llu", steamID_64);
+
+				HypKeyValues *playerKey = playersKey->FindKey(buf);
+				if (playerKey)
+				{
+					// We have a saved value for this Steam ID.
+					playerKey->GetBool("cfx enabled", m_PlayerInfoArray[i].m_bEnabled.m_Value, true);
+				}
+			}
 
 			if (asw_cfx_debug.GetBool())
 			{
@@ -123,10 +153,51 @@ void CASW_Client_Effects::PlayerRemove(CASW_Player *pPlayer)
 	{
 		if (m_PlayerInfoArray[i].m_hPlayer == pPlayer)
 		{
+			// Save the client's cfx enabled/disabled state.
+			{
+				HypKeyValues rootKV;
+				if (filesystem->FileExists(CFX_FILE))
+					rootKV.FileToKeyValues(CFX_FILE);
+
+				HypKeyValues *clientFXKey = rootKV.FindKey("Client Effects Settings", true);
+				Assert(clientFXKey);
+
+				HypKeyValues *playersKey = clientFXKey->FindKey("Players", true);
+				Assert(playersKey);
+
+				CSteamID steamID;
+				pPlayer->GetSteamID(&steamID);
+				uint64 steamID_64 = steamID.ConvertToUint64();
+
+				char buf[64];
+				V_snprintf(buf, sizeof(buf), "%llu", steamID_64);
+
+				HypKeyValues *playerKey = playersKey->FindKey(buf, true);
+				Assert(playerKey);
+				playerKey->SetValue("cfx enabled", m_PlayerInfoArray[i].m_bEnabled.m_Value);
+
+				// Save the keyvalues
+				clientFXKey->KeyValuesToFile(CFX_FILE);
+			}
+
+			ResetPlayer(i);
+
 			if (asw_cfx_debug.GetBool())
 				Msg("Removing player '%s' from CFX array.\n", pPlayer->GetPlayerName());
 
-			ResetPlayer(i);
+			for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
+			{
+				CASW_Player *pPlayer2 = m_PlayerInfoArray[i].m_hPlayer;
+				if (pPlayer2)
+				{
+					Msg(" :: %s\n", pPlayer2->GetPlayerName());
+				}
+				else
+				{
+					Msg(" :: No player\n");
+				}
+			}
+
 		}
 	}
 }

@@ -491,6 +491,7 @@ copy ^"$(TargetDir)$(TargetName).pdb^" ^"E:\ch1ckenscoop_server\swarm\bin\$(Targ
     <ClCompile Include="globalstate.cpp" />
     <ClCompile Include="grenadethrown.cpp" />
     <ClCompile Include="guntarget.cpp" />
+    <ClCompile Include="HypKeyValues.cpp" />
     <ClCompile Include="h_ai.cpp" />
     <ClCompile Include="h_export.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -1304,6 +1305,7 @@ copy ^"$(TargetDir)$(TargetName).pdb^" ^"E:\ch1ckenscoop_server\swarm\bin\$(Targ
     <ClInclude Include="hltvdirector.h" />
     <ClInclude Include="..\shared\ichoreoeventcallback.h" />
     <ClInclude Include="..\shared\igamesystem.h" />
+    <ClInclude Include="HypKeyValues.h" />
     <ClInclude Include="info_camera_link.h" />
     <ClInclude Include="inforemarkable.h" />
     <ClInclude Include="init_factory.h" />
