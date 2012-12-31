@@ -15,7 +15,7 @@ ConVar asw_cfx_lce_multi("asw_cfx_lce_multi", "1.0", FCVAR_CHEAT, "Controls loca
 ConVar asw_cfx_lce_max("asw_cfx_lce_max", "1.0", FCVAR_CHEAT, "Maximum intensity of local contrast enhancement.");
 ConVar asw_cfx_lce_deadzone("asw_cfx_lce_deadzone", "0.2", FCVAR_CHEAT, "'Dead zone' where we don't worry about a client's cvar being off by this much.");
 ConVar asw_cfx_lce_hurt("asw_cfx_lce_hurt", "35", FCVAR_CHEAT, "Threshold of marine health at which LCE effects start to show.");
-ConVar asw_cfx_lce_forceupdate("asw_cfx_lce_forceupdate", "1.0", FCVAR_CHEAT, "After this amount of time, force an update of the client's cvar whether it needs it or not.");
+ConVar asw_cfx_lce_forceupdate("asw_cfx_lce_forceupdate", "10.0", FCVAR_CHEAT, "After this number of seconds, force an update of the client's cvar whether it needs it or not.");
 
 // Some defines so we don't have to type out full convar names everywhere.
 
@@ -247,6 +247,69 @@ void CASW_Client_Effects::PlayerSwitched(CASW_Player *pPlayer, CASW_Marine *pMar
 			m_PlayerInfoArray[i].m_hMarine = pMarine_new;
 		}
 	}
+}
+
+bool CASW_Client_Effects::ShouldUpdateCvar(CFX_Value<bool> PreviousValue, bool NewValue, EffectType_t EffectType)
+{
+	// We don't support anything other than LCE at the moment.
+	Assert(EffectType == EFFECT_LCE);
+
+	if (EffectType == EFFECT_LCE)
+	{
+		float forceUpdateTime = asw_cfx_lce_forceupdate.GetFloat();
+
+		if (PreviousValue.m_Value != NewValue)
+			return true;
+
+		//If we haven't updated in a while, update anyway.
+		if (PreviousValue.m_flLastUpdate + forceUpdateTime < gpGlobals->curtime)
+			return true;
+	}
+	return false;
+}
+
+bool CASW_Client_Effects::ShouldUpdateCvar(CFX_Value<int> PreviousValue, int NewValue, EffectType_t EffectType)
+{
+	// We don't support anything other than LCE at the moment.
+	Assert(EffectType == EFFECT_LCE);
+
+	if (EffectType == EFFECT_LCE)
+	{
+		float forceUpdateTime = asw_cfx_lce_forceupdate.GetFloat();
+		float deadzone = asw_cfx_lce_deadzone.GetFloat();
+
+		int delta = abs(PreviousValue.m_Value - NewValue);
+
+		if (delta > deadzone)
+			return true;
+
+		//If we haven't updated in a while, update anyway.
+		if (PreviousValue.m_flLastUpdate + forceUpdateTime < gpGlobals->curtime)
+			return true;
+	}
+	return false;
+}
+
+bool CASW_Client_Effects::ShouldUpdateCvar(CFX_Value<float> PreviousValue, float NewValue, EffectType_t EffectType)
+{
+	// We don't support anything other than LCE at the moment.
+	Assert(EffectType == EFFECT_LCE);
+
+	if (EffectType == EFFECT_LCE)
+	{
+		float forceUpdateTime = asw_cfx_lce_forceupdate.GetFloat();
+		float deadzone = asw_cfx_lce_deadzone.GetFloat();
+
+		float delta = fabs(PreviousValue.m_Value - NewValue);
+
+		if (delta > deadzone)
+			return true;
+
+		//If we haven't updated in a while, update anyway.
+		if (PreviousValue.m_flLastUpdate + forceUpdateTime < gpGlobals->curtime)
+			return true;
+	}
+	return false;
 }
 
 void CASW_Client_Effects::FrameUpdatePostEntityThink()

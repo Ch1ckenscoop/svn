@@ -117,9 +117,9 @@ IMPLEMENT_SERVERCLASS_ST(CASW_Alien, DT_ASW_Alien)
 	SendPropInt( SENDINFO(m_nDeathStyle), CASW_Alien::kDEATHSTYLE_NUM_TRANSMIT_BITS , SPROP_UNSIGNED ),
 	SendPropInt		(SENDINFO(m_iHealth), ASW_ALIEN_HEALTH_BITS ),
 	//SendPropBool(SENDINFO(m_bGibber)),
-END_SEND_TABLE()
+	END_SEND_TABLE()
 
-BEGIN_DATADESC( CASW_Alien )
+	BEGIN_DATADESC( CASW_Alien )
 	DEFINE_KEYFIELD( m_bVisibleWhenAsleep, FIELD_BOOLEAN, "visiblewhenasleep" ),
 	DEFINE_KEYFIELD( m_iMoveCloneName, FIELD_STRING, "MoveClone" ),
 	DEFINE_KEYFIELD( m_bStartBurrowed,		FIELD_BOOLEAN,	"startburrowed" ),
@@ -129,7 +129,7 @@ BEGIN_DATADESC( CASW_Alien )
 	DEFINE_FIELD(m_bIgnoreMarines, FIELD_BOOLEAN),
 	DEFINE_FIELD(m_bFailedMoveTo, FIELD_BOOLEAN),
 	DEFINE_FIELD(m_bElectroStunned, FIELD_BOOLEAN),
-	
+
 	//DEFINE_FIELD(m_bPerformingZigZag, FIELD_BOOLEAN),	// don't store this, let the zig zag be cleared each time	
 	//DEFINE_FIELD(m_bRunAtChasingPathEnds, FIELD_BOOLEAN), // no need to store currently, it's always true form constructor
 	DEFINE_FIELD(m_fNextPainSound, FIELD_FLOAT),
@@ -151,9 +151,9 @@ BEGIN_DATADESC( CASW_Alien )
 	DEFINE_FIELD( m_vecLastPush, FIELD_VECTOR ),
 	DEFINE_FIELD( m_bPushed, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_bHoldoutAlien, FIELD_BOOLEAN ),
-END_DATADESC()
+	END_DATADESC()
 
-IMPLEMENT_AUTO_LIST( IAlienAutoList );
+	IMPLEMENT_AUTO_LIST( IAlienAutoList );
 
 #define ASW_ALIEN_SLEEP_CHECK_INTERVAL 1.0f
 
@@ -378,7 +378,7 @@ void CASW_Alien::Precache()
 
 
 	PrecacheModel( m_pszAlienModelName );
-	
+
 	//pre-cache any models used by particle gib effects
 	int modelIndex = modelinfo->GetModelIndex( m_pszAlienModelName );
 	const model_t *model = modelinfo->GetModel( modelIndex );
@@ -533,7 +533,7 @@ void CASW_Alien::UpdateSleepState(bool bInPVS)
 	else	// alien is awake, check for going back to ZZZ again :)
 	{		
 		bool bHasOrders = (m_AlienOrders != AOT_None);
-					
+
 		// Don't let an NPC sleep if they're running a script!
 		if( !ShouldAlwaysThink() && !bHasOrders && !IsInAScript() && m_NPCState != NPC_STATE_SCRIPT )
 		{			
@@ -616,7 +616,7 @@ void CASW_Alien::NPCInit()
 	SetCollisionBounds( GetHullMins(), GetHullMaxs() );
 
 	CASW_GameStats.Event_AlienSpawned( this );
-	
+
 	m_LagCompensation.Init(this);
 }
 
@@ -628,7 +628,7 @@ void CASW_Alien::CallBehaviorThink()
 		pCurrent->BehaviorThink();
 	}
 }
-ConVar asw_alien_prune_distance("asw_alien_prune_distance", "3000", FCVAR_CHEAT, "Distance from nearest marine at which aliens are removed.");
+ConVar asw_alien_prune_radius("asw_alien_prune_radius", "3000", FCVAR_CHEAT, "Radius from nearest marine at which aliens are removed.");
 ConVar asw_alien_prune("asw_alien_prune", "1", FCVAR_NONE, "Set to 1 to enable alien pruning.");
 void CASW_Alien::NPCThink( void )
 {
@@ -667,20 +667,27 @@ void CASW_Alien::NPCThink( void )
 	//Ch1ckensCoop: Alien pruning
 	if (asw_alien_prune.GetBool() && strcmp(this->GetClassname(), "asw_egg") != 0 && strcmp(this->GetClassname(), "asw_shieldbug") != 0)
 	{
-
-	CBaseEntity* pEntity = NULL;
-	while ((pEntity = gEntList.FindEntityInSphere( pEntity, this->GetAbsOrigin(), asw_alien_prune_distance.GetFloat() )) != NULL)
-	{
-		if(strcmp(pEntity->GetClassname(), "asw_marine") == 0)
+		bool bAlienSafe = false;
+		for (int i = 0; i < ASW_MAX_MARINE_RESOURCES; i++)
 		{
-			SetTagState(ASW_TAG_SAFE);
-			break;
+			CASW_Marine_Resource *pResource = ASWGameResource()->GetMarineResource(i);
+			if (pResource)
+			{
+				CASW_Marine *pMarine = pResource->GetMarineEntity();
+				if (pMarine)
+				{
+					// Check if the marine is close enough to this alien to save it.
+					if (pMarine->GetAbsOrigin().DistTo(GetAbsOrigin()) <= asw_alien_prune_radius.GetFloat())
+					{
+						bAlienSafe = true;
+						break;
+					}
+				}
+			}
 		}
-	}
-	if (GetTagState() != ASW_TAG_SAFE)
-		UTIL_Remove(this);
 
-	SetTagState(ASW_TAG_REMOVE);
+		if (!bAlienSafe)
+			UTIL_Remove(this);
 	}
 
 	m_flLastThinkTime = gpGlobals->curtime;
@@ -692,7 +699,7 @@ bool CASW_Alien::MarineNearby(float radius, bool bCheck3D)
 	CASW_Game_Resource *pGameResource = ASWGameResource();
 	if (!pGameResource)
 		return false;
-	
+
 	for (int i=0;i<pGameResource->GetMaxMarineResources();i++)
 	{
 		CASW_Marine_Resource* pMarineResource = pGameResource->GetMarineResource(i);
@@ -702,7 +709,7 @@ bool CASW_Alien::MarineNearby(float radius, bool bCheck3D)
 		CASW_Marine* pMarine = pMarineResource->GetMarineEntity();
 		if (!pMarine)
 			continue;
-		
+
 		Vector diff = pMarine->GetAbsOrigin() - GetAbsOrigin();
 		float dist = bCheck3D ? diff.Length() : diff.Length2D();
 
@@ -832,7 +839,7 @@ CBaseEntity *CASW_Alien::CheckTraceHullAttack( const Vector &vStart, const Vecto
 	}
 
 	CTakeDamageInfo	dmgInfo( this, this, flDamage, DMG_SLASH );
-	
+
 	CASW_Trace_Filter_Melee traceFilter( this, COLLISION_GROUP_NONE, this, bDamageAnyNPC );
 
 	Ray_t ray;
@@ -842,7 +849,7 @@ CBaseEntity *CASW_Alien::CheckTraceHullAttack( const Vector &vStart, const Vecto
 	enginetrace->TraceRay( ray, MASK_SHOT_HULL, &traceFilter, &tr );
 
 	Vector vecAttackerCenter = WorldSpaceCenter();
-	
+
 	for ( int i = 0; i < traceFilter.m_nNumHits; i++ )
 	{
 		trace_t *tr = &traceFilter.m_HitTraces[i];
@@ -856,7 +863,7 @@ CBaseEntity *CASW_Alien::CheckTraceHullAttack( const Vector &vStart, const Vecto
 		ApplyMultiDamage();
 #endif
 	}
-		
+
 	CBaseEntity *pEntity = traceFilter.m_pHit;
 
 	return pEntity;
@@ -1045,7 +1052,7 @@ int CASW_Alien::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 
 	// Notify gamestats of the damage
 	CASW_GameStats.Event_AlienTookDamage( this, info );
-		
+
 	if ( m_RecentDamage.Count() == ASW_NUM_RECENT_DAMAGE )
 	{
 		m_RecentDamage.RemoveAtHead();
@@ -1156,7 +1163,7 @@ void CASW_Alien::StartTask( const Task_t *pTask )
 	case TASK_ASW_ALIEN_ZIGZAG:
 		m_bPerformingZigZag = false;
 		break;
-	// override the default TASK_GET_PATH_TO_ENEMY to make our alien run at the end of the path
+		// override the default TASK_GET_PATH_TO_ENEMY to make our alien run at the end of the path
 	case TASK_GET_PATH_TO_ENEMY:
 		{
 			if (IsUnreachable(GetEnemy()))
@@ -1172,7 +1179,7 @@ void CASW_Alien::StartTask( const Task_t *pTask )
 				TaskFail(FAIL_NO_ENEMY);
 				return;
 			}
-						
+
 			if ( GetNavigator()->SetGoal( GOALTYPE_ENEMY ) )
 			{
 				if (m_bRunAtChasingPathEnds)
@@ -1259,10 +1266,10 @@ void CASW_Alien::StartTask( const Task_t *pTask )
 				if (pGoalEnt->ClassMatches("path_corner"))
 				{
 					SetGoalEnt(pGoalEnt);
-					
+
 					AI_NavGoal_t goal( GOALTYPE_PATHCORNER, pGoalEnt->GetAbsOrigin(),
-					   bIsFlying ? ACT_FLY : ACT_WALK,
-					   AIN_DEF_TOLERANCE, AIN_YAW_TO_DEST);
+						bIsFlying ? ACT_FLY : ACT_WALK,
+						AIN_DEF_TOLERANCE, AIN_YAW_TO_DEST);
 
 					SetState( NPC_STATE_IDLE );
 					if ( !GetNavigator()->SetGoal( goal ) )
@@ -1282,7 +1289,7 @@ void CASW_Alien::StartTask( const Task_t *pTask )
 					// movement system instead of when they are specified.
 					AI_NavGoal_t goal(pGoalEnt->GetAbsOrigin(), bIsFlying ? ACT_FLY : ACT_WALK, AIN_DEF_TOLERANCE, AIN_YAW_TO_DEST);
 					TranslateNavGoal( pGoalEnt, goal.dest );
-					
+
 					if (!GetNavigator()->SetGoal( goal ))
 					{
 						DevWarning( 2, "Can't Create Route!\n" );
@@ -1467,18 +1474,18 @@ void CASW_Alien::RunTask(const Task_t *pTask)
 				/*
 				if (HasCondition( COND_SEE_ENEMY ) && !m_bLastSeeEnemy)
 				{
-					if ( !GetNavigator()->RefindPathToGoal( false ) )
-					{	
-						TaskFail( FAIL_NO_ROUTE );
-						return;
-					}
+				if ( !GetNavigator()->RefindPathToGoal( false ) )
+				{	
+				TaskFail( FAIL_NO_ROUTE );
+				return;
+				}
 				}
 				m_bLastSeeEnemy = HasCondition( COND_SEE_ENEMY );
 
 				if (GetNavigator()->CurWaypointIsGoal())
 				{
-					m_bPerformingZigZag = false;
-					AddZigZagToPath();
+				m_bPerformingZigZag = false;
+				AddZigZagToPath();
 				}*/
 			}
 			break;
@@ -1498,8 +1505,8 @@ bool CASW_Alien::ShouldUpdateEnemyPos()
 {
 	if (GetTask() && GetTask()->iTask == TASK_ASW_ALIEN_ZIGZAG
 		//&& (GetNavigator()->GetCurWaypointFlags() & bits_WP_TO_DETOUR) )
-		&& m_bPerformingZigZag)
-		return false;
+			&& m_bPerformingZigZag)
+			return false;
 
 	// don't repath if we're heading to a point that shouldn't be simplified
 	if (asw_drone_zig_zagging.GetBool() && GetNavigator()->GetCurWaypointFlags() & bits_WP_DONT_SIMPLIFY)
@@ -1518,7 +1525,7 @@ float CASW_Alien::GetGoalRepathTolerance( CBaseEntity *pGoalEnt, GoalType_t type
 	if (!ShouldUpdateEnemyPos())
 		return 10000.0f;	// allow huge tolerance to prevent repath
 
-	
+
 
 	//return BaseClass::GetGoalRepathTolerance(pGoalEnt, type, curGoal, curTargetPos);
 	float distToGoal = ( GetAbsOrigin() - curTargetPos ).Length() - GetNavigator()->GetArrivalDistance();
@@ -1527,7 +1534,7 @@ float CASW_Alien::GetGoalRepathTolerance( CBaseEntity *pGoalEnt, GoalType_t type
 
 	if (distToGoal <= 100)
 		return GetMotor()->MinStoppingDist(0.0f);
-	
+
 	if (distMoved1Sec > 0.0)
 	{
 		float t = distToGoal / distMoved1Sec;
@@ -1535,10 +1542,10 @@ float CASW_Alien::GetGoalRepathTolerance( CBaseEntity *pGoalEnt, GoalType_t type
 		result = clamp( 120 * t, 0, 120 );
 		// Msg("t %.2f : d %.0f  (%.0f)\n", t, result, distMoved1Sec );
 	}
-		
+
 	if ( !pGoalEnt->IsPlayer() )
 		result *= 1.20;
-		
+
 	return result;
 }
 
@@ -1549,11 +1556,11 @@ void CASW_Alien::AddZigZagToPath(void)
 	{
 		return;
 	}
-	
+
 	// If enemy isn't facing me or occluded, don't add a zigzag
 	//if (HasCondition(COND_ENEMY_OCCLUDED) || !HasCondition ( COND_ENEMY_FACING_ME ))
 	//{
-		//return;
+	//return;
 	//}
 
 	Vector waypointPos = GetNavigator()->GetCurWaypointPos();
@@ -1566,8 +1573,8 @@ void CASW_Alien::AddZigZagToPath(void)
 		// Pick a random distance for the zigzag (less that sqrt(ZIG_ZAG_SIZE)		
 		float fZigZigDistance = random->RandomFloat( 100, 200 ); //30, 60 );
 		int iZigZagSide = random->RandomInt(0,1);
-		
-		
+
+
 		Msg("adding a zig zag of %f units\n", fZigZigDistance);		
 
 		// Get me a vector orthogonal to the direction of motion
@@ -1674,7 +1681,7 @@ void CASW_Alien::SetupPushawayVector()
 	{
 		pOtherAlien = static_cast< CASW_Alien* >( IAlienAutoList::AutoList()[ i ] );
 		if ( pOtherAlien != this && !( Classify() == CLASS_ASW_HARVESTER && pOtherAlien->Classify() != CLASS_ASW_PARASITE )
-				&& !( Classify() == CLASS_ASW_PARASITE && pOtherAlien->Classify() != CLASS_ASW_HARVESTER ) )
+			&& !( Classify() == CLASS_ASW_PARASITE && pOtherAlien->Classify() != CLASS_ASW_HARVESTER ) )
 		{
 			Vector diff = m_vecLastPushAwayOrigin - pOtherAlien->GetAbsOrigin();
 			float dist = diff.Length();
@@ -1775,210 +1782,210 @@ bool CASW_Alien::CanBePushedAway()
 
 AI_BEGIN_CUSTOM_NPC( asw_alien, CASW_Alien )
 	DECLARE_CONDITION( COND_ASW_BEGIN_COMBAT_STUN )
-	DECLARE_CONDITION( COND_ASW_FLINCH )
+DECLARE_CONDITION( COND_ASW_FLINCH )
 
-	DECLARE_TASK( TASK_ASW_ALIEN_ZIGZAG )
-	DECLARE_TASK( TASK_ASW_SPREAD_THEN_HIBERNATE )
-	DECLARE_TASK( TASK_ASW_BUILD_PATH_TO_ORDER )
-	DECLARE_TASK( TASK_ASW_ORDER_RETRY_WAIT )
-	DECLARE_TASK( TASK_ASW_REPORT_BLOCKING_ENT )
-	DECLARE_TASK( TASK_UNBURROW )
-	DECLARE_TASK( TASK_CHECK_FOR_UNBORROW )
-	DECLARE_TASK( TASK_BURROW_WAIT )
-	DECLARE_TASK( TASK_SET_UNBURROW_IDLE_ACTIVITY )
-	DECLARE_TASK( TASK_ASW_WAIT_FOR_ORDER_MOVE )
+DECLARE_TASK( TASK_ASW_ALIEN_ZIGZAG )
+DECLARE_TASK( TASK_ASW_SPREAD_THEN_HIBERNATE )
+DECLARE_TASK( TASK_ASW_BUILD_PATH_TO_ORDER )
+DECLARE_TASK( TASK_ASW_ORDER_RETRY_WAIT )
+DECLARE_TASK( TASK_ASW_REPORT_BLOCKING_ENT )
+DECLARE_TASK( TASK_UNBURROW )
+DECLARE_TASK( TASK_CHECK_FOR_UNBORROW )
+DECLARE_TASK( TASK_BURROW_WAIT )
+DECLARE_TASK( TASK_SET_UNBURROW_IDLE_ACTIVITY )
+DECLARE_TASK( TASK_ASW_WAIT_FOR_ORDER_MOVE )
 
-	DECLARE_ACTIVITY( ACT_MELEE_ATTACK1_HIT )
-	DECLARE_ACTIVITY( ACT_MELEE_ATTACK2_HIT )
-	DECLARE_ACTIVITY( ACT_ALIEN_FLINCH_SMALL )
-	DECLARE_ACTIVITY( ACT_ALIEN_FLINCH_MEDIUM )
-	DECLARE_ACTIVITY( ACT_ALIEN_FLINCH_BIG )
-	DECLARE_ACTIVITY( ACT_ALIEN_FLINCH_GESTURE )
-   	DECLARE_ACTIVITY( ACT_DEATH_FIRE )
-	DECLARE_ACTIVITY( ACT_DEATH_ELEC )
-	DECLARE_ACTIVITY( ACT_DIE_FANCY )
-	DECLARE_ACTIVITY( ACT_BURROW_OUT )
-	DECLARE_ACTIVITY( ACT_BURROW_IDLE )
+DECLARE_ACTIVITY( ACT_MELEE_ATTACK1_HIT )
+DECLARE_ACTIVITY( ACT_MELEE_ATTACK2_HIT )
+DECLARE_ACTIVITY( ACT_ALIEN_FLINCH_SMALL )
+DECLARE_ACTIVITY( ACT_ALIEN_FLINCH_MEDIUM )
+DECLARE_ACTIVITY( ACT_ALIEN_FLINCH_BIG )
+DECLARE_ACTIVITY( ACT_ALIEN_FLINCH_GESTURE )
+DECLARE_ACTIVITY( ACT_DEATH_FIRE )
+DECLARE_ACTIVITY( ACT_DEATH_ELEC )
+DECLARE_ACTIVITY( ACT_DIE_FANCY )
+DECLARE_ACTIVITY( ACT_BURROW_OUT )
+DECLARE_ACTIVITY( ACT_BURROW_IDLE )
 
-	DECLARE_ANIMEVENT( AE_ALIEN_MELEE_HIT )
+DECLARE_ANIMEVENT( AE_ALIEN_MELEE_HIT )
 
-	//=========================================================
-	// > SCHED_ASW_ALIEN_CHASE_ENEMY
-	//=========================================================
-	DEFINE_SCHEDULE
+//=========================================================
+// > SCHED_ASW_ALIEN_CHASE_ENEMY
+//=========================================================
+DEFINE_SCHEDULE
 	(
-		SCHED_ASW_ALIEN_CHASE_ENEMY,
+	SCHED_ASW_ALIEN_CHASE_ENEMY,
 
-		"	Tasks"
-		"		TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_CHASE_ENEMY_FAILED"
-		//"		TASK_SET_TOLERANCE_DISTANCE		24"
-		"		TASK_GET_PATH_TO_ENEMY			300"
-		"		TASK_RUN_PATH					0"
-		//"		TASK_ASW_ALIEN_ZIGZAG			0"
-		"		TASK_WAIT_FOR_MOVEMENT			0"
-		""
-		"	Interrupts"
-		"		COND_NEW_ENEMY"
-		"		COND_ENEMY_DEAD"
-		"		COND_CAN_RANGE_ATTACK1"
-		"		COND_CAN_MELEE_ATTACK1"
-		"		COND_CAN_RANGE_ATTACK2"
-		"		COND_CAN_MELEE_ATTACK2"
-		"		COND_TOO_CLOSE_TO_ATTACK"
-		"		COND_TASK_FAILED"
-		"		COND_HEAR_DANGER"
+	"	Tasks"
+	"		TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_CHASE_ENEMY_FAILED"
+	//"		TASK_SET_TOLERANCE_DISTANCE		24"
+	"		TASK_GET_PATH_TO_ENEMY			300"
+	"		TASK_RUN_PATH					0"
+	//"		TASK_ASW_ALIEN_ZIGZAG			0"
+	"		TASK_WAIT_FOR_MOVEMENT			0"
+	""
+	"	Interrupts"
+	"		COND_NEW_ENEMY"
+	"		COND_ENEMY_DEAD"
+	"		COND_CAN_RANGE_ATTACK1"
+	"		COND_CAN_MELEE_ATTACK1"
+	"		COND_CAN_RANGE_ATTACK2"
+	"		COND_CAN_MELEE_ATTACK2"
+	"		COND_TOO_CLOSE_TO_ATTACK"
+	"		COND_TASK_FAILED"
+	"		COND_HEAR_DANGER"
 	)
 
 	// Same as base melee attack1, minus the TASK_STOP_MOVING
 	DEFINE_SCHEDULE
 	(
-		SCHED_ASW_ALIEN_MELEE_ATTACK1,
+	SCHED_ASW_ALIEN_MELEE_ATTACK1,
 
-		"	Tasks"
+	"	Tasks"
 
-		"		TASK_FACE_ENEMY			0"
-		"		TASK_ANNOUNCE_ATTACK	1"	// 1 = primary attack
-		"		TASK_MELEE_ATTACK1		0"
-		""
-		"	Interrupts"
-		"		COND_NEW_ENEMY"
-		"		COND_ENEMY_DEAD"
-		"		COND_LIGHT_DAMAGE"
-		"		COND_HEAVY_DAMAGE"
-		"		COND_ENEMY_OCCLUDED"
+	"		TASK_FACE_ENEMY			0"
+	"		TASK_ANNOUNCE_ATTACK	1"	// 1 = primary attack
+	"		TASK_MELEE_ATTACK1		0"
+	""
+	"	Interrupts"
+	"		COND_NEW_ENEMY"
+	"		COND_ENEMY_DEAD"
+	"		COND_LIGHT_DAMAGE"
+	"		COND_HEAVY_DAMAGE"
+	"		COND_ENEMY_OCCLUDED"
 	);
-	DEFINE_SCHEDULE
-		(
-		SCHED_ASW_ALIEN_SLOW_MELEE_ATTACK1,
-
-		"	Tasks"
-
-		"		TASK_STOP_MOVING		1"
-		"		TASK_WAIT				0.1"
-		"		TASK_FACE_ENEMY			0"
-		"		TASK_ANNOUNCE_ATTACK	1"	// 1 = primary attack
-		"		TASK_MELEE_ATTACK1		1"
-		""
-		"	Interrupts"
-		"		COND_NEW_ENEMY"
-		"		COND_ENEMY_DEAD"
-		"		COND_LIGHT_DAMAGE"
-		"		COND_HEAVY_DAMAGE"
-		"		COND_ENEMY_OCCLUDED"
-		);
-
-	DEFINE_SCHEDULE
+DEFINE_SCHEDULE
 	(
-		SCHED_ASW_SPREAD_THEN_HIBERNATE,
+	SCHED_ASW_ALIEN_SLOW_MELEE_ATTACK1,
 
-		"	Tasks"
-		"		TASK_STOP_MOVING				0"
-		"		TASK_ASW_SPREAD_THEN_HIBERNATE	0"
-		"		TASK_WALK_PATH					0"
-		"		TASK_WAIT_FOR_MOVEMENT			0"
-		"		TASK_STOP_MOVING				0"
-		"		TASK_SET_SCHEDULE				SCHEDULE:SCHED_IDLE_STAND"
-		"	"
-		"	Interrupts"
-		"		COND_NEW_ENEMY"
-		"		COND_SEE_ENEMY"
-		"		COND_LIGHT_DAMAGE"
-		"		COND_HEAVY_DAMAGE"
+	"	Tasks"
+
+	"		TASK_STOP_MOVING		1"
+	"		TASK_WAIT				0.1"
+	"		TASK_FACE_ENEMY			0"
+	"		TASK_ANNOUNCE_ATTACK	1"	// 1 = primary attack
+	"		TASK_MELEE_ATTACK1		1"
+	""
+	"	Interrupts"
+	"		COND_NEW_ENEMY"
+	"		COND_ENEMY_DEAD"
+	"		COND_LIGHT_DAMAGE"
+	"		COND_HEAVY_DAMAGE"
+	"		COND_ENEMY_OCCLUDED"
+	);
+
+DEFINE_SCHEDULE
+	(
+	SCHED_ASW_SPREAD_THEN_HIBERNATE,
+
+	"	Tasks"
+	"		TASK_STOP_MOVING				0"
+	"		TASK_ASW_SPREAD_THEN_HIBERNATE	0"
+	"		TASK_WALK_PATH					0"
+	"		TASK_WAIT_FOR_MOVEMENT			0"
+	"		TASK_STOP_MOVING				0"
+	"		TASK_SET_SCHEDULE				SCHEDULE:SCHED_IDLE_STAND"
+	"	"
+	"	Interrupts"
+	"		COND_NEW_ENEMY"
+	"		COND_SEE_ENEMY"
+	"		COND_LIGHT_DAMAGE"
+	"		COND_HEAVY_DAMAGE"
 	)
 
 	DEFINE_SCHEDULE
 	(
-		SCHED_ASW_ORDER_MOVE,
+	SCHED_ASW_ORDER_MOVE,
 
-		"	Tasks"
-		"		TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_ASW_RETRY_ORDERS"
-		"		TASK_ASW_BUILD_PATH_TO_ORDER	0"
-		"		TASK_RUN_PATH			0"
-		"		TASK_ASW_WAIT_FOR_ORDER_MOVE	0"		// 0 is spread if fail to build path
-		//"		TASK_WAIT_PVS			0"
-		""
-		"	Interrupts"
-		"		COND_NEW_ENEMY"
-		"		COND_SEE_ENEMY"	// in deference to scripted schedule where the enemy was slammed, thus no COND_NEW_ENEMY
-		"		COND_LIGHT_DAMAGE"
-		"		COND_HEAVY_DAMAGE"
-		"		COND_SMELL"
-		"		COND_PROVOKED"
-		"		COND_HEAR_COMBAT"
-		"		COND_HEAR_BULLET_IMPACT"
+	"	Tasks"
+	"		TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_ASW_RETRY_ORDERS"
+	"		TASK_ASW_BUILD_PATH_TO_ORDER	0"
+	"		TASK_RUN_PATH			0"
+	"		TASK_ASW_WAIT_FOR_ORDER_MOVE	0"		// 0 is spread if fail to build path
+	//"		TASK_WAIT_PVS			0"
+	""
+	"	Interrupts"
+	"		COND_NEW_ENEMY"
+	"		COND_SEE_ENEMY"	// in deference to scripted schedule where the enemy was slammed, thus no COND_NEW_ENEMY
+	"		COND_LIGHT_DAMAGE"
+	"		COND_HEAVY_DAMAGE"
+	"		COND_SMELL"
+	"		COND_PROVOKED"
+	"		COND_HEAR_COMBAT"
+	"		COND_HEAR_BULLET_IMPACT"
 	)
 
 	DEFINE_SCHEDULE
 	(
-		SCHED_ASW_RETRY_ORDERS,
+	SCHED_ASW_RETRY_ORDERS,
 
-		"	Tasks"
-		//"		TASK_ASW_REPORT_BLOCKING_ENT	0"
-		"		TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_ASW_SPREAD_THEN_HIBERNATE"
-		"		TASK_ASW_ORDER_RETRY_WAIT		1"	// this will fail the schedule if we've retried too many times
-		"		TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_ASW_RETRY_ORDERS"
-		"		TASK_ASW_BUILD_PATH_TO_ORDER	1"		// 1 is no spread if fail to build path
-		"		TASK_WALK_PATH			9999"
-		"		TASK_WAIT_FOR_MOVEMENT	0"		// 0 is spread if fail to build path
-		"		TASK_WAIT_PVS			0"
-		""
-		"	Interrupts"
-		"		COND_NEW_ENEMY"
-		"		COND_SEE_ENEMY"	// in deference to scripted schedule where the enemy was slammed, thus no COND_NEW_ENEMY
-		"		COND_LIGHT_DAMAGE"
-		"		COND_HEAVY_DAMAGE"
-		"		COND_SMELL"
-		"		COND_PROVOKED"
-		"		COND_HEAR_COMBAT"
-		"		COND_HEAR_BULLET_IMPACT"
+	"	Tasks"
+	//"		TASK_ASW_REPORT_BLOCKING_ENT	0"
+	"		TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_ASW_SPREAD_THEN_HIBERNATE"
+	"		TASK_ASW_ORDER_RETRY_WAIT		1"	// this will fail the schedule if we've retried too many times
+	"		TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_ASW_RETRY_ORDERS"
+	"		TASK_ASW_BUILD_PATH_TO_ORDER	1"		// 1 is no spread if fail to build path
+	"		TASK_WALK_PATH			9999"
+	"		TASK_WAIT_FOR_MOVEMENT	0"		// 0 is spread if fail to build path
+	"		TASK_WAIT_PVS			0"
+	""
+	"	Interrupts"
+	"		COND_NEW_ENEMY"
+	"		COND_SEE_ENEMY"	// in deference to scripted schedule where the enemy was slammed, thus no COND_NEW_ENEMY
+	"		COND_LIGHT_DAMAGE"
+	"		COND_HEAVY_DAMAGE"
+	"		COND_SMELL"
+	"		COND_PROVOKED"
+	"		COND_HEAR_COMBAT"
+	"		COND_HEAR_BULLET_IMPACT"
 	)
 	DEFINE_SCHEDULE
 	(
-		SCHED_BURROW_WAIT,		
-		"	Tasks"		
-		"		TASK_SET_UNBURROW_IDLE_ACTIVITY	0"
-		"		TASK_SET_FAIL_SCHEDULE				SCHEDULE:SCHED_BURROW_WAIT"
-		"		TASK_BURROW_WAIT			1"
-		"		TASK_SET_SCHEDULE					SCHEDULE:SCHED_WAIT_FOR_CLEAR_UNBORROW"
-		""
-		"	Interrupts"
-		"		COND_TASK_FAILED"
-	)
-
-	DEFINE_SCHEDULE
-	(
-		SCHED_WAIT_FOR_CLEAR_UNBORROW,
-
-		"	Tasks"
-		"		TASK_SET_FAIL_SCHEDULE				SCHEDULE:SCHED_BURROW_WAIT"
-		"		TASK_CHECK_FOR_UNBORROW		1"
-		"		TASK_SET_SCHEDULE					SCHEDULE:SCHED_BURROW_OUT"
-		""
-		"	Interrupts"
-		"		COND_TASK_FAILED"
+	SCHED_BURROW_WAIT,		
+	"	Tasks"		
+	"		TASK_SET_UNBURROW_IDLE_ACTIVITY	0"
+	"		TASK_SET_FAIL_SCHEDULE				SCHEDULE:SCHED_BURROW_WAIT"
+	"		TASK_BURROW_WAIT			1"
+	"		TASK_SET_SCHEDULE					SCHEDULE:SCHED_WAIT_FOR_CLEAR_UNBORROW"
+	""
+	"	Interrupts"
+	"		COND_TASK_FAILED"
 	)
 
 	DEFINE_SCHEDULE
 	(
-		SCHED_BURROW_OUT,
+	SCHED_WAIT_FOR_CLEAR_UNBORROW,
 
-		"	Tasks"
-		"		TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_BURROW_WAIT"
-		"		TASK_UNBURROW			0"
-		""
-		"	Interrupts"
-		"		COND_TASK_FAILED"
+	"	Tasks"
+	"		TASK_SET_FAIL_SCHEDULE				SCHEDULE:SCHED_BURROW_WAIT"
+	"		TASK_CHECK_FOR_UNBORROW		1"
+	"		TASK_SET_SCHEDULE					SCHEDULE:SCHED_BURROW_OUT"
+	""
+	"	Interrupts"
+	"		COND_TASK_FAILED"
 	)
 
-AI_END_CUSTOM_NPC()
+	DEFINE_SCHEDULE
+	(
+	SCHED_BURROW_OUT,
+
+	"	Tasks"
+	"		TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_BURROW_WAIT"
+	"		TASK_UNBURROW			0"
+	""
+	"	Interrupts"
+	"		COND_TASK_FAILED"
+	)
+
+	AI_END_CUSTOM_NPC()
 
 
 
-// Behaviour stuff to support act busy
-bool CASW_Alien::CreateBehaviors()
+	// Behaviour stuff to support act busy
+	bool CASW_Alien::CreateBehaviors()
 {
 	AddBehavior( &m_ActBusyBehavior );
-	
+
 	return BaseClass::CreateBehaviors();
 }
 
@@ -2088,7 +2095,7 @@ Vector CASW_Alien::CalcDeathForceVector( const CTakeDamageInfo &info )
 			forceVector.x = random->RandomFloat( -1.0f, 1.0f );
 			forceVector.y = random->RandomFloat( -1.0f, 1.0f );
 			forceVector.z = 0.0;
-			
+
 			if ( asw_debug_alien_damage.GetBool() )
 			{
 				Msg( "Death force post = %f flDesiredForceScale=%f flMassScale=%f\n", (forceVector * flDesiredForceScale * flMassScale).Length(), flDesiredForceScale, flMassScale );
@@ -2145,7 +2152,7 @@ bool CASW_Alien::CanBecomeRagdoll( void )
 	MDLCACHE_CRITICAL_SECTION();
 
 	int ragdollSequence = SelectWeightedSequence( ACT_DIERAGDOLL );
-	
+
 	if ( m_nDeathStyle == kDIE_FANCY && !m_bTimeToRagdoll ) 
 		return false;
 
@@ -2268,8 +2275,8 @@ void CASW_Alien::Event_Killed( const CTakeDamageInfo &info )
 		const unsigned int nDamageTypesThatCauseHurling = DMG_BLAST | DMG_BLAST_SURFACE;
 		SetCollisionGroup(ASW_COLLISION_GROUP_PASSABLE);	// don't block marines by dead bodies
 		if ( (info.GetDamageType()	&  nDamageTypesThatCauseHurling)							&&
-			  gpGlobals->curtime	>  sm_flLastHurlTime + asw_drone_hurl_interval.GetFloat()	&&
-			  random->RandomFloat()	<= asw_drone_hurl_chance.GetFloat() )
+			gpGlobals->curtime	>  sm_flLastHurlTime + asw_drone_hurl_interval.GetFloat()	&&
+			random->RandomFloat()	<= asw_drone_hurl_chance.GetFloat() )
 		{
 			m_nDeathStyle = kDIE_HURL;
 			sm_flLastHurlTime = gpGlobals->curtime;
@@ -2284,7 +2291,7 @@ void CASW_Alien::Event_Killed( const CTakeDamageInfo &info )
 			}
 		}
 	}
-	
+
 	DropMoney( info );
 	if ( ASWGameRules() )
 		ASWGameRules()->DropPowerup( this, info, GetClassname() );
@@ -2502,12 +2509,12 @@ bool CASW_Alien::Knockback(Vector vecForce)
 	trace_t tr;
 	UTIL_TraceEntity( this, GetAbsOrigin(), end, MASK_NPCSOLID, &tr );
 	if (tr.allsolid)
-		return false;
+	return false;
 
 	if( tr.fraction > 0 )
 	{	
-		SetAbsOrigin(tr.endpos);
-		return true;
+	SetAbsOrigin(tr.endpos);
+	return true;
 	}
 	return false;*/
 	Vector newVel = GetAbsVelocity();
@@ -2566,13 +2573,13 @@ void CASW_Alien::UpdateEfficiency( bool bInPVS )
 	bool bFramerateOk = ( gpGlobals->frametime < ai_frametime_limit.GetFloat() );
 
 	if ( IsForceGatherConditionsSet() || 
-		 gpGlobals->curtime - GetLastAttackTime() < .2 ||
-		 gpGlobals->curtime - m_flLastDamageTime < .2 ||
-		 ( GetState() < NPC_STATE_IDLE || GetState() > NPC_STATE_SCRIPT ) ||
-		 ( ( bInPVS || bInVisibilityPVS ) && 
-		   ( ( GetTask() && !TaskIsRunning() ) ||
-			 GetTaskInterrupt() > 0 ||
-			 m_bInChoreo ) ) )
+		gpGlobals->curtime - GetLastAttackTime() < .2 ||
+		gpGlobals->curtime - m_flLastDamageTime < .2 ||
+		( GetState() < NPC_STATE_IDLE || GetState() > NPC_STATE_SCRIPT ) ||
+		( ( bInPVS || bInVisibilityPVS ) && 
+		( ( GetTask() && !TaskIsRunning() ) ||
+		GetTaskInterrupt() > 0 ||
+		m_bInChoreo ) ) )
 	{
 		SetEfficiency( ( bFramerateOk ) ? AIE_NORMAL : AIE_EFFICIENT );
 		return;

@@ -27,7 +27,7 @@ private:
 		void operator=(const T &rhs)
 		{
 			m_Value = rhs;
-			
+
 			if (gpGlobals)	// This gets called before a lot of systems are initialized.
 				m_flLastUpdate = gpGlobals->curtime;
 			else
@@ -61,31 +61,9 @@ private:
 
 	void OnSpawnedHorde(int num);
 
-	template<class T> bool ShouldUpdateCvar(CFX_Value<T> PreviousValue, T NewValue, EffectType_t EffectType)
-	{		
-		extern ConVar asw_cfx_lce_deadzone;
-		extern ConVar asw_cfx_lce_forceupdate;
-
-		// We don't support anything other than LCE at the moment.
-		Assert(EffectType == EFFECT_LCE);
-
-		if (EffectType == EFFECT_LCE)
-		{
-			float delta = fabs((float)PreviousValue.m_Value - NewValue);
-			float deadZone = asw_cfx_lce_deadzone.GetFloat();
-			float forceUpdateTime = asw_cfx_lce_forceupdate.GetFloat();
-
-			delta = fabs(delta);	//Get the absolute value.
-
-			if (delta > deadZone)
-				return true;
-
-			//If we haven't updated in a while, update anyway.
-			if (PreviousValue.m_flLastUpdate + forceUpdateTime < gpGlobals->curtime)
-				return true;
-		}
-		return false;
-	}
+	bool ShouldUpdateCvar(CFX_Value<bool> PreviousValue, bool NewValue, EffectType_t EffectType);
+	bool ShouldUpdateCvar(CFX_Value<int> PreviousValue, int NewValue, EffectType_t EffectType);
+	bool ShouldUpdateCvar(CFX_Value<float> PreviousValue, float NewValue, EffectType_t EffectType);
 
 	float IsMarineHurt(CASW_Marine *pMarine);
 	float GetMarineIntensity(CASW_Marine *pMarine);
