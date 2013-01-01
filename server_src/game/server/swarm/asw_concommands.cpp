@@ -201,7 +201,7 @@ ConCommand MarineInvuln( "asw_MarineInvuln", asw_MarineInvulnf, "Makes your mari
 void ASW_DropTest_f()
 {
 	CASW_Player *pPlayer = ToASW_Player(UTIL_GetCommandClient());;
-	
+
 	if (pPlayer && pPlayer->GetMarine())
 	{
 		CASW_Marine *pMarine = pPlayer->GetMarine();
@@ -223,7 +223,7 @@ void ASW_DropTest_f()
 		}
 		if (current == -1)
 			return;
-		
+
 		pMarine->DropWeapon(current);
 
 		IGameEvent * event = gameeventmanager->CreateEvent( "player_dropped_weapon" );
@@ -246,7 +246,7 @@ ConCommand ASW_AllowBriefing( "ASW_AllowBriefing", ASW_AllowBriefing_f, "Let's y
 void ASW_PhysicsShove_f()
 {
 	CASW_Player *pPlayer = ToASW_Player(UTIL_GetCommandClient());
-	
+
 	if (pPlayer && pPlayer->GetMarine())
 	{
 		if (pPlayer->GetMarine()->GetFlags() & FL_FROZEN)	// don't allow this if the marine is frozen
@@ -271,7 +271,7 @@ ConCommand ASW_PermaStimStop( "ASW_PermaStimStop", ASW_PermaStim_Stop_f, "Free l
 void asw_stop_burning_f()
 {
 	CASW_Player *pPlayer = ToASW_Player(UTIL_GetCommandClient());
-	
+
 	if (pPlayer && pPlayer->GetMarine())
 	{
 		CASW_Marine *pMarine = pPlayer->GetMarine();
@@ -317,7 +317,7 @@ ConCommand asw_spawn_alien( "asw_spawn_alien", asw_spawn_alien_f, "Make the name
 void asw_test_turret_f()
 {
 	CASW_Player *pPlayer = ToASW_Player(UTIL_GetCommandClient());
-	
+
 	if (pPlayer && pPlayer->GetMarine())
 	{
 		CASW_Marine *pMarine = pPlayer->GetMarine();
@@ -346,34 +346,34 @@ ConCommand asw_test_turret( "asw_test_turret", asw_test_turret_f, "Test remote t
 /*
 void asw_test_marine_glow_f(const CCommand &args)
 {
-	CASW_Player *pPlayer = ToASW_Player(UTIL_GetCommandClient());
-	if ( args.ArgC() < 10 )
-	{
-		Msg( "Usage: asw_test_marine_glow [scale] [brightness] [r] [g] [b] [a] [r] [g] [b]\n" );
-	}
-	
-	if (pPlayer && pPlayer->GetMarine())
-	{
-		CASW_Marine *pMarine = pPlayer->GetMarine();
-		static CSprite* pSprite = NULL;
-		if (pSprite==NULL)
-		{
-			pSprite = CSprite::SpriteCreate( "swarm/sprites/light_glow03_no_z.vmt", pMarine->GetLocalOrigin(), false );
-			pSprite->SetAttachment( pMarine, pMarine->LookupAttachment( "head" ) );
-		}
+CASW_Player *pPlayer = ToASW_Player(UTIL_GetCommandClient());
+if ( args.ArgC() < 10 )
+{
+Msg( "Usage: asw_test_marine_glow [scale] [brightness] [r] [g] [b] [a] [r] [g] [b]\n" );
+}
+
+if (pPlayer && pPlayer->GetMarine())
+{
+CASW_Marine *pMarine = pPlayer->GetMarine();
+static CSprite* pSprite = NULL;
+if (pSprite==NULL)
+{
+pSprite = CSprite::SpriteCreate( "swarm/sprites/light_glow03_no_z.vmt", pMarine->GetLocalOrigin(), false );
+pSprite->SetAttachment( pMarine, pMarine->LookupAttachment( "head" ) );
+}
 
 
-		if (!pSprite)
-			return;
+if (!pSprite)
+return;
 
-		
-		pSprite->SetTransparency( kRenderTransAdd, atof(args[3]), atof(args[4]), atof(args[5]), atof(args[5]), kRenderFxNoDissipation );  // 128 0 0 128 kRenderTransAdd kRenderWorldGlow
-		pSprite->SetBrightness( atof(args[2]), 0.1f );	// 164
-		pSprite->SetScale( atof(args[1]), 0.1f );		// 0.1
-		pSprite->SetColor( atof(args[7]), atof(args[8]), atof(args[9]) );		// 128 0 0
-		pSprite->SetAsTemporary();
-	}	
-	Msg("Failed to find a marine\n");
+
+pSprite->SetTransparency( kRenderTransAdd, atof(args[3]), atof(args[4]), atof(args[5]), atof(args[5]), kRenderFxNoDissipation );  // 128 0 0 128 kRenderTransAdd kRenderWorldGlow
+pSprite->SetBrightness( atof(args[2]), 0.1f );	// 164
+pSprite->SetScale( atof(args[1]), 0.1f );		// 0.1
+pSprite->SetColor( atof(args[7]), atof(args[8]), atof(args[9]) );		// 128 0 0
+pSprite->SetAsTemporary();
+}	
+Msg("Failed to find a marine\n");
 }
 ConCommand asw_test_marine_glow( "asw_test_marine_glow", asw_test_marine_glow_f, "Usage: asw_test_marine_glow [scale] [brightness] [trans r] [trans g] [trans b] [trans a] [r] [g] [b]", FCVAR_CHEAT );
 */
@@ -458,14 +458,14 @@ void asw_drone_cycle_f()
 		if (pAI)
 		{
 			Msg("[%d:%s] Cycle=%f", pAI->entindex(),
-							pAI->GetClassname(),
-							pAI->GetCycle());
+				pAI->GetClassname(),
+				pAI->GetCycle());
 			int iLayers = pAI->GetNumAnimOverlays();
 			for (int i=0;i<iLayers;i++)
 			{
 				Msg("  L%d: Cycle=%f Weight=%f\n", i, pAI->GetLayerCycle(i), pAI->GetLayerWeight(i));
 			}
-				
+
 		}
 	}
 }
@@ -474,7 +474,7 @@ ConCommand asw_drone_cycle( "asw_drone_cycle", asw_drone_cycle_f, "Lists drones 
 void asw_suicide_f()
 {
 	CASW_Player *pPlayer = ToASW_Player(UTIL_GetCommandClient());
-		
+
 	if (pPlayer && pPlayer->GetMarine() && pPlayer->GetMarine()->GetHealth() > 0)
 	{
 		pPlayer->GetMarine()->Suicide();
@@ -485,7 +485,7 @@ ConCommand asw_suicide( "asw_suicide", asw_suicide_f, "Kills your current marine
 void asw_hide_marine_f()
 {
 	CASW_Player *pPlayer = ToASW_Player(UTIL_GetCommandClient());
-		
+
 	if (pPlayer && pPlayer->GetMarine())
 	{
 		if (pPlayer->GetMarine()->IsEffectActive(EF_NODRAW))
@@ -515,7 +515,7 @@ void asw_ragdoll_marine_f()
 		pMarine->SetKnockedOut(!pMarine->m_bKnockedOut);
 
 		return;
-		
+
 		if (pMarine->IsEffectActive(EF_NODRAW) && s_pRagdoll)
 		{
 			//Calcs the diff between ragdoll worldspace center and victim worldspace center, moves the victim by this diff.
@@ -557,7 +557,7 @@ void asw_ragdoll_marine_f()
 void asw_ragdoll_blend_test_f()
 {
 	CASW_Player *pPlayer = ToASW_Player(UTIL_GetCommandClient());
-		
+
 	if (pPlayer)
 	{
 		CBaseEntity* pEntity = NULL;
@@ -659,7 +659,7 @@ void asw_check_campaign_f(void)
 	CASW_Game_Resource *pGameResource = ASWGameResource();
 	if (!pGameResource)
 		return;
-	
+
 	Msg("IsInCampaignMap = %d\n", pGameResource->IsCampaignGame());
 }
 
@@ -669,7 +669,7 @@ void asw_mission_complete_f()
 {
 	if (!ASWGameRules())
 		return;
-	
+
 	ASWGameRules()->CheatCompleteMission();
 }
 static ConCommand asw_mission_complete("asw_mission_complete", asw_mission_complete_f, "Cheat to complete the current mission", FCVAR_CHEAT);
@@ -705,7 +705,7 @@ void asw_marine_spectate_f(const CCommand &args)
 		Msg("No live marine in that slot\n");
 		return;
 	}
-		
+
 	pPlayer->SetSpectatingMarine(pMarine);
 }
 static ConCommand asw_marine_spectate("asw_marine_spectate", asw_marine_spectate_f, "Usage: asw_marine_spectate [marine_num]", FCVAR_CHEAT);
@@ -751,7 +751,7 @@ void asw_marine_skill_f(const CCommand &args)
 			}
 		}
 	}
-	
+
 	if ( !pProfile )
 		return;
 
@@ -802,7 +802,7 @@ void asw_test_marinenearby_f(const CCommand &args)
 		return;
 	if (!pPlayer || !pPlayer->GetMarine())
 		return;
-	
+
 	if ( args.ArgC() < 4 )
 	{
 		Msg("Usage: asw_test_marinenearby [0|1] [grid step] [grid count]\n");
@@ -869,9 +869,9 @@ void asw_report_difficulty_f()
 	CSoundParameters params;
 	if ( CBaseEntity::GetParametersForSound( "crash.selection", params, NULL ) )
 	{
-	
+
 		EmitSound_t ep( params );
-			
+
 		ep.m_flVolume = 1.0f;
 		ep.m_nChannel = CHAN_AUTO;
 		ep.m_pOrigin = &pPlayer->GetAbsOrigin();
@@ -936,7 +936,7 @@ static ConCommand asw_medal_info("asw_medal_info", asw_medal_info_f, "Give medal
 void asw_build_speech_durations_f()
 {
 	CASW_Player *pPlayer = ToASW_Player(UTIL_GetCommandClient());	
-	
+
 	if (!pPlayer || !MarineProfileList() || !pPlayer->GetMarine())
 		return;
 	Msg("Saving speech durations...");
@@ -948,7 +948,7 @@ static ConCommand asw_build_speech_durations("asw_build_speech_durations", asw_b
 void asw_network_id_f()
 {
 	CASW_Player *pPlayer = ToASW_Player(UTIL_GetCommandClient());	
-	
+
 	if (!pPlayer)
 		return;
 
@@ -1031,7 +1031,7 @@ void asw_drop_ammo_f(const CCommand &args)
 	CASW_Player *pPlayer = ToASW_Player(UTIL_GetCommandClient());
 	if (!pPlayer)
 		return;
-	
+
 	CASW_Marine *pMarine = pPlayer->GetMarine();
 	if (!pMarine)
 		return;
@@ -1064,7 +1064,7 @@ void asw_conversation_f(const CCommand &args)
 	CASW_Player *pPlayer = ToASW_Player(UTIL_GetCommandClient());
 	if (!pPlayer)
 		return;
-	
+
 	CASW_Marine *pMarine = pPlayer->GetMarine();
 	if (!pMarine)
 		return;
@@ -1082,8 +1082,8 @@ static ConCommand asw_conversation("asw_conversation", asw_conversation_f, "Trig
 /*
 void asw_show_game_stats_f(void)
 {
-	if (ASWGameStats())
-		ASWGameStats()->DebugContents();
+if (ASWGameStats())
+ASWGameStats()->DebugContents();
 }
 
 static ConCommand asw_show_game_stats("asw_show_game_stats", asw_show_game_stats_f, "Outputs contents of the asi_gamestats.dat file for debugging", FCVAR_CHEAT);
@@ -1094,7 +1094,7 @@ void asw_debug_spectator_server_f(void)
 	CASW_Player *pPlayer = ToASW_Player(UTIL_GetCommandClient());
 	if (!pPlayer)
 		return;
-	
+
 	Msg("Server: m_bRequestedSpectator=%d\n", pPlayer->m_bRequestedSpectator);
 }
 
@@ -1117,7 +1117,7 @@ void CC_asw_teleport( const CCommand &args )
 		pPlayer->EyeVectors( &vPlayerForward, NULL, NULL );
 
 		UTIL_TraceLine( pPlayer->GetAbsOrigin(), pPlayer->GetAbsOrigin() + vPlayerForward * 10000.0f, MASK_SOLID, pPlayer, COLLISION_GROUP_NONE, &tr );
-		
+
 		if ( tr.DidHit() )
 		{
 			vTargetPos = tr.endpos;
@@ -1568,7 +1568,7 @@ static ConCommand asw_spawn_buzzer("asw_spawn_buzzer", SpawnBuzzerAboveMe, "Refi
 void ASW_DropExtra_f()
 {
 	CASW_Player *pPlayer = ToASW_Player(UTIL_GetCommandClient());;
-	
+
 	if (pPlayer && pPlayer->GetMarine())
 	{
 		CASW_Marine *pMarine = pPlayer->GetMarine();
@@ -1576,7 +1576,7 @@ void ASW_DropExtra_f()
 			return;
 		if (pPlayer->GetFlags() & FL_FROZEN)
 			return;
-		
+
 		CBaseCombatWeapon *pWeapon = pMarine->GetWeapon(2);
 		if (!pWeapon)
 			return;
@@ -1596,7 +1596,7 @@ ConCommand ASW_DropExtra( "ASW_DropExtra", ASW_DropExtra_f, "Makes your marine d
 void ASW_GetGroundEntity_f()
 {
 	CASW_Player *pPlayer = ToASW_Player(UTIL_GetCommandClient());;
-	
+
 	if (pPlayer && pPlayer->GetMarine())
 	{
 		CASW_Marine *pMarine = pPlayer->GetMarine();
@@ -1606,3 +1606,104 @@ void ASW_GetGroundEntity_f()
 	}
 }
 ConCommand ASW_GetGroundEntity("asw_getgroundentity", ASW_GetGroundEntity_f, "Prints the marine's current ground entity.", FCVAR_NONE);
+
+#define HAS_FLAG(flag) ( ((flag) & flags ) > 0 ? true : false )
+void ASW_PrintCCoopCvars_f()
+{
+	ICvar::Iterator *pIterator = new ICvar::Iterator(g_pCVar);
+	pIterator->SetFirst();
+
+	while (pIterator->IsValid())
+	{
+		ConCommandBase *pBase = pIterator->Get();
+		int flags = pBase->GetFlags();
+
+		// Only show Ch1ckensCoop cvars.
+		if (HAS_FLAG(FCVAR_CCOOP))
+		{
+			// Print name
+			if (pBase->IsCommand())
+				Msg("\"%s\"", pBase->GetName());
+			else
+			{
+				// Print name and value if it's a cvar
+				ConVar *pVar = dynamic_cast<ConVar*>(pBase);
+				if (pVar)
+					Msg("\"%s\" : \"%s\" : ", pBase->GetName(), pVar->GetString());
+			}
+
+			// Print help text
+			Msg("\"%s\"\n", pBase->GetHelpText());
+
+			// Print flags
+			if (HAS_FLAG(FCVAR_UNREGISTERED))
+				Msg("	FCVAR_UNREGISTERED\n");
+			if (HAS_FLAG(FCVAR_DEVELOPMENTONLY))
+				Msg("	FCVAR_DEVELOPMENTONLY\n");
+			if (HAS_FLAG(FCVAR_GAMEDLL))
+				Msg("	FCVAR_GAMEDLL\n");
+			if (HAS_FLAG(FCVAR_CLIENTDLL))
+				Msg("	FCVAR_CLIENTDLL\n");
+#ifdef DEBUG
+			if (HAS_FLAG(FCVAR_HIDDEN))
+				Msg("	FCVAR_HIDDEN\n");
+#endif
+			if (HAS_FLAG(FCVAR_PROTECTED))
+				Msg("	FCVAR_PROTECTED\n");
+			if (HAS_FLAG(FCVAR_SPONLY))
+				Msg("	FCVAR_SPONLY\n");
+			if (HAS_FLAG(FCVAR_ARCHIVE))
+				Msg("	FCVAR_ARCHIVE\n");
+			if (HAS_FLAG(FCVAR_NOTIFY))
+				Msg("	FCVAR_NOTIFY\n");
+			if (HAS_FLAG(FCVAR_USERINFO))
+				Msg("	FCVAR_USERINFO\n");
+			if (HAS_FLAG(FCVAR_PRINTABLEONLY))
+				Msg("	FCVAR_PRINTABLEONLY\n");
+			if (HAS_FLAG(FCVAR_UNLOGGED))
+				Msg("	FCVAR_UNLOGGED\n");
+			if (HAS_FLAG(FCVAR_NEVER_AS_STRING))
+				Msg("	FCVAR_NEVER_AS_STRING\n");
+			if (HAS_FLAG(FCVAR_REPLICATED))
+				Msg("	FCVAR_REPLICATED\n");
+			if (HAS_FLAG(FCVAR_CHEAT))
+				Msg("	FCVAR_CHEAT\n");
+			if (HAS_FLAG(FCVAR_SS))
+				Msg("	FCVAR_SS\n");
+			if (HAS_FLAG(FCVAR_DEMO))
+				Msg("	FCVAR_DEMO\n");
+			if (HAS_FLAG(FCVAR_DONTRECORD))
+				Msg("	FCVAR_DONTRECORD\n");
+			if (HAS_FLAG(FCVAR_SS_ADDED))
+				Msg("	FCVAR_SS_ADDED\n");
+			if (HAS_FLAG(FCVAR_RELEASE))
+				Msg("	FCVAR_RELEASE\n");
+			if (HAS_FLAG(FCVAR_RELOAD_MATERIALS))
+				Msg("	FCVAR_RELOAD_MATERIALS\n");
+			if (HAS_FLAG(FCVAR_RELOAD_TEXTURES))
+				Msg("	FCVAR_RELOAD_TEXTURES\n");
+			if (HAS_FLAG(FCVAR_NOT_CONNECTED))
+				Msg("	FCVAR_NOT_CONNECTED\n");
+			if (HAS_FLAG(FCVAR_MATERIAL_SYSTEM_THREAD))
+				Msg("	FCVAR_MATERIAL_SYSTEM_THREAD\n");
+			if (HAS_FLAG(FCVAR_ARCHIVE_XBOX))
+				Msg("	FCVAR_ARCHIVE_XBOX\n");
+			if (HAS_FLAG(FCVAR_SERVER_CAN_EXECUTE))
+				Msg("	FCVAR_SERVER_CAN_EXECUTE\n");
+			if (HAS_FLAG(FCVAR_SERVER_CANNOT_QUERY))
+				Msg("	FCVAR_SERVER_CANNOT_QUERY\n");
+			if (HAS_FLAG(FCVAR_CLIENTCMD_CAN_EXECUTE))
+				Msg("	FCVAR_CLIENTCMD_CAN_EXECUTE\n");
+			if (HAS_FLAG(FCVAR_ACCESSIBLE_FROM_THREADS))
+				Msg("	FCVAR_ACCESSIBLE_FROM_THREADS\n");
+			if (HAS_FLAG(FCVAR_CCOOP))
+				Msg("	FCVAR_CCOOP\n");
+
+			// Another newline
+			Msg("\n");
+		}
+
+		pIterator->Next();
+	}
+}
+ConCommand ASW_PrintCCoopCvars("cc_cvarlist", ASW_PrintCCoopCvars_f, "Lists Ch1ckensCoop cvars.");

@@ -26,7 +26,7 @@ extern ConVar asw_debug_spawners;
 extern ConVar asw_drone_health;
 ConVar asw_spawning_enabled( "asw_spawning_enabled", "1", FCVAR_CHEAT, "If set to 0, asw_spawners won't spawn aliens" );
 
-ConVar asw_spawner_impossimode("asw_spawner_impossimode", "0", FCVAR_CHEAT, "Makes ALL spawners infinite >:D Could crash stuff!");	//Ch1ckensCoop: TROLOLOLOLOL
+ConVar asw_spawner_impossimode("asw_spawner_impossimode", "0", FCVAR_CHEAT | FCVAR_CCOOP, "Makes ALL spawners infinite >:D Could crash stuff!");	//Ch1ckensCoop: TROLOLOLOLOL
 
 //Ch1ckenscoop: Reduce console spam by default
 ConVar asw_carnage_debug("asw_carnage_debug", "0", FCVAR_NONE | FCVAR_DEVELOPMENTONLY, "Print debug messages on each spawner that asw_carnage tries to change.", true, 0.0f, true, 1.0f);

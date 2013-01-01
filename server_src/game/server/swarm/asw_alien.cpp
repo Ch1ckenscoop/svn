@@ -628,8 +628,8 @@ void CASW_Alien::CallBehaviorThink()
 		pCurrent->BehaviorThink();
 	}
 }
-ConVar asw_alien_prune_radius("asw_alien_prune_radius", "3000", FCVAR_CHEAT, "Radius from nearest marine at which aliens are removed.");
-ConVar asw_alien_prune("asw_alien_prune", "1", FCVAR_NONE, "Set to 1 to enable alien pruning.");
+ConVar asw_alien_prune_radius("asw_alien_prune_radius", "3000", FCVAR_CHEAT | FCVAR_CCOOP, "Radius from nearest marine at which aliens are removed.");
+ConVar asw_alien_prune("asw_alien_prune", "1", FCVAR_CCOOP, "Set to 1 to enable alien pruning.");
 void CASW_Alien::NPCThink( void )
 {
 	BaseClass::NPCThink();

@@ -143,9 +143,9 @@ extern ConVar old_radius_damage;
 	ConVar sv_timeout_when_fully_connected( "sv_timeout_when_fully_connected", "30", FCVAR_NONE, "Once fully connected, player will be kicked if he doesn't send a network message within this interval." );
 	ConVar mm_swarm_state( "mm_swarm_state", "ingame", FCVAR_DEVELOPMENTONLY );
 
-	ConVar asw_map_configs("asw_map_configs", "1", FCVAR_NONE, "On mapchange: exec asw_mapconfigs/<bspname> and asw_mapconfigs/custom/<bspname>.");
-	ConVar asw_full_treatment_tradeoff("asw_full_treatment_tradeoff", "1", FCVAR_NONE, "Remove some useless entities in exchange for more aliens on syntek_hospital.");
-	ConVar asw_remove_prop_ragdolls("asw_remove_prop_ragdolls", "1", FCVAR_NONE, "Remove laggy prop_ragdolls from levels.");
+	ConVar asw_map_configs("asw_map_configs", "1", FCVAR_CCOOP, "On mapchange: exec asw_mapconfigs/<bspname> and asw_mapconfigs/custom/<bspname>.");
+	ConVar asw_full_treatment_tradeoff("asw_full_treatment_tradeoff", "1", FCVAR_CCOOP, "Remove some useless entities in exchange for more aliens on syntek_hospital.");
+	ConVar asw_remove_prop_ragdolls("asw_remove_prop_ragdolls", "1", FCVAR_CCOOP, "Remove laggy prop_ragdolls from levels.");
 
 	static void UpdateMatchmakingTagsCallback( IConVar *pConVar, const char *pOldValue, float flOldValue )
 	{
