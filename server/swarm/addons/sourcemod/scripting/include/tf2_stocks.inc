@@ -78,6 +78,7 @@
 #define TF_DEATHFLAG_DEADRINGER         (1 << 5)
 #define TF_DEATHFLAG_INTERRUPTED        (1 << 6)
 #define TF_DEATHFLAG_GIBBED             (1 << 7)
+#define TF_DEATHFLAG_PURGATORY          (1 << 8)
 
 // Custom kill identifiers for the customkill property on the player_death event
 enum {
@@ -95,8 +96,8 @@ enum {
 	TF_CUSTOM_PENETRATE_ALL_PLAYERS,
 	TF_CUSTOM_TAUNT_FENCING,
 	TF_CUSTOM_PENETRATE_HEADSHOT,
-	TF_CUSTOM_TELEFRAG,
 	TF_CUSTOM_TAUNT_ARROW_STAB,
+	TF_CUSTOM_TELEFRAG,
 	TF_CUSTOM_BURNING_ARROW,
 	TF_CUSTOM_FLYINGBURN,
 	TF_CUSTOM_PUMPKIN_BOMB,
@@ -122,7 +123,21 @@ enum {
 	TF_CUSTOM_FISH_KILL,
 	TF_CUSTOM_TRIGGER_HURT,
 	TF_CUSTOM_DECAPITATION_BOSS,
-	TF_CUSTOM_STICKBOMB_EXPLOSION
+	TF_CUSTOM_STICKBOMB_EXPLOSION,
+	TF_CUSTOM_AEGIS_ROUND,
+	TF_CUSTOM_FLARE_EXPLOSION,
+	TF_CUSTOM_BOOTS_STOMP,
+	TF_CUSTOM_PLASMA,
+	TF_CUSTOM_PLASMA_CHARGED,
+	TF_CUSTOM_PLASMA_GIB,
+	TF_CUSTOM_PRACTICE_STICKY,
+	TF_CUSTOM_EYEBALL_ROCKET,
+	TF_CUSTOM_HEADSHOT_DECAPITATION,
+	TF_CUSTOM_TAUNT_ARMAGEDDON,
+	TF_CUSTOM_FLARE_PELLET,
+	TF_CUSTOM_CLEAVER,
+	TF_CUSTOM_CLEAVER_CRIT,
+	TF_CUSTOM_SAPPER_RECORDER_DEATH,
 };
 
 // Weapon codes as used in some events, such as player_death
@@ -202,7 +217,21 @@ enum {
 	TF_WEAPON_HANDGUN_SCOUT_PRIMARY,
 	TF_WEAPON_BAT_FISH,
 	TF_WEAPON_CROSSBOW,
-	TF_WEAPON_STICKBOMB
+	TF_WEAPON_STICKBOMB,
+	TF_WEAPON_HANDGUN_SCOUT_SEC,
+	TF_WEAPON_SODA_POPPER,
+	TF_WEAPON_SNIPERRIFLE_DECAP,
+	TF_WEAPON_RAYGUN,
+	TF_WEAPON_PARTICLE_CANNON,
+	TF_WEAPON_MECHANICAL_ARM,
+	TF_WEAPON_DRG_POMSON,
+	TF_WEAPON_BAT_GIFTWRAP,
+	TF_WEAPON_GRENADE_ORNAMENT,
+	TF_WEAPON_RAYGUN_REVENGE,
+	TF_WEAPON_PEP_BRAWLER_BLASTER,
+	TF_WEAPON_CLEAVER,
+	TF_WEAPON_GRENADE_CLEAVER,
+	TF_WEAPON_ROCKETPACK,
 };
 
 // TF2 Weapon Slots for GetPlayerWeaponSlot
@@ -291,15 +320,15 @@ stock TFClassType:TF2_GetPlayerClass(client)
  * @param client		Player's index.
  * @param class			TFClassType class symbol.
  * @param weapons		This paramater is ignored.
- * @param persistant	If true changes the players desired class so the change stays after death.
+ * @param persistent	If true changes the players desired class so the change stays after death.
  * @noreturn
  * @error				Invalid client index.
  */
-stock TF2_SetPlayerClass(client, TFClassType:class, bool:weapons=true, bool:persistant=true)
+stock TF2_SetPlayerClass(client, TFClassType:class, bool:weapons=true, bool:persistent=true)
 {
 	SetEntProp(client, Prop_Send, "m_iClass", _:class);
 	
-	if (persistant)
+	if (persistent)
 	{
 		SetEntProp(client, Prop_Send, "m_iDesiredPlayerClass", _:class);
 	}
@@ -412,9 +441,44 @@ stock TF2_RemoveAllWeapons(client)
  * @param client		Player's index.
  * @return				Player's condition bits
  */
+#pragma deprecated Use TF2_IsPlayerInCondition instead.
 stock TF2_GetPlayerConditionFlags(client)
 {
 	return GetEntProp(client, Prop_Send, "m_nPlayerCond")|GetEntProp(client, Prop_Send, "_condition_bits");
+}
+
+/**
+ * Check whether or not a condition is set on a player
+ *
+ * @param client		Player's index.
+ * @return				True if set, false otherwise
+ */
+stock bool:TF2_IsPlayerInCondition(client, TFCond:cond)
+{
+	// Conditions are stored across two netprops now, one for each 32-bit segment.
+	if (_:cond < 32)
+	{
+		new bit = 1 << _:cond;
+		if ((GetEntProp(client, Prop_Send, "m_nPlayerCond") & bit) == bit)
+		{
+			return true;
+		}
+		
+		if ((GetEntProp(client, Prop_Send, "_condition_bits") & bit) == bit)
+		{
+			return true;
+		}
+	}
+	else
+	{
+		new bit = (1 << (_:cond - 32));
+		if ((GetEntProp(client, Prop_Send, "m_nPlayerCondEx") & bit) == bit)
+		{
+			return true;
+		}
+	}
+	
+	return false;
 }
 
 /**

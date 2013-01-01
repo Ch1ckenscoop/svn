@@ -216,6 +216,8 @@
 			"game"					"eye"
 			"game"					"nucleardawn"
 			"game"					"hl2ctf"
+			"game"					"ag2"
+			"game"					"nmrih"
 		}
 		
 		"Keys"

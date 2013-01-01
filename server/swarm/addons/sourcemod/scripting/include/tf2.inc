@@ -86,7 +86,8 @@ enum TFCond
 	TFCond_CloakFlicker = 9,
 	TFCond_Teleporting,
 	TFCond_Kritzkrieged,
-	TFCond_Unknown2,
+	TFCond_Unknown2, //12
+	TFCond_TmpDamageBonus = 12,
 	TFCond_DeadRingered,
 	TFCond_Bonked,
 	TFCond_Dazed,
@@ -104,14 +105,31 @@ enum TFCond
 	TFCond_Milked,
 	TFCond_MegaHeal,
 	TFCond_RegenBuffed,
-	TFCond_MarkedForDeath
+	TFCond_MarkedForDeath,
+	TFCond_NoHealingDamageBuff,
+	TFCond_SpeedBuffAlly,
+	TFCond_HalloweenCritCandy,
+	
+	TFCond_CritHype = 36,
+	TFCond_CritOnFirstBlood,
+	TFCond_CritOnWin,
+	TFCond_CritOnFlagCapture,
+	TFCond_CritOnKill,
+	TFCond_RestrictToMelee,
+	
+	TFCond_CritMmmph = 44,
+	TFCond_DefenseBuffMmmph,
 };
 
 enum TFHoliday
 {
-	TFHoliday_None = 1,
+	TFHoliday_Birthday = 1,
 	TFHoliday_Halloween,
-	TFHoliday_Birthday
+	TFHoliday_Christmas,
+	TFHoliday_MeetThePyro,
+	TFHoliday_MannVsMachine,
+	TFHoliday_FullMoon,
+	TFHoliday_HalloweenOrFullMoon,
 };
 
 enum TFObjectType
@@ -267,14 +285,21 @@ native TFClassType:TF2_GetClass(const String:classname[]);
 forward Action:TF2_CalcIsAttackCritical(client, weapon, String:weaponname[], &bool:result);
 
 /**
- * Called when the game checks to see if the current day is one of its tracked holidays
- *
- * @note Change the value of holiday and return Plugin_Changed to override.
- *       Return Plugin_Continue for no change.
- *
- * @param holiday		Current Holiday
+ * @deprecated		No longer called. Use TF2_OnIsHolidayActive.
  */
+#pragma deprecated No longer called. Use TF2_OnIsHolidayActive.
 forward Action:TF2_OnGetHoliday(&TFHoliday:holiday);
+
+/**
+ * Called at various times when the game checks to see if the given holiday is active.
+ * Return Plugin_Continue to let the original calculation or return a higher
+ * action to override the decision with the value of 'result'
+ *
+ * @param holiday		Holiday being checked.
+ * @param result		Buffer param for the result of the decision.
+ * @return				Plugin_Continue for original calculation, higher value to use 'result'.
+ */
+forward Action:TF2_OnIsHolidayActive(TFHoliday:holiday, &bool:result);
 
 /**
  * Returns whether or not a client (Player) is in a duel.
@@ -287,19 +312,14 @@ native bool:TF2_IsPlayerInDuel(client);
 /**
  * Called after a condition is added to a player
  *
- * @note Actual duration can differ based on various events ingame.
- *
  * @param client		Index of the client to which the conditon is being added.
  * @param condition     Condition that is being added.
- * @param duration      Initial duration of the condition or -1 for infinite.
  * @noreturn
  */
-forward TF2_OnConditionAdded(client, TFCond:condition, Float:duration);
+forward TF2_OnConditionAdded(client, TFCond:condition);
 
 /**
  * Called after a condition is removed from a player
- *
- * @note This will never be called for the removal of TFCond_Taunting.
  *
  * @param client		Index of the client to which the condition is being removed.
  * @param condition		Condition that is being removed.

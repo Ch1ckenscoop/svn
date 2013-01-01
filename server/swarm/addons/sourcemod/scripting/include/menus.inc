@@ -404,6 +404,16 @@ native bool:GetMenuExitBackButton(Handle:menu);
  */
 native SetMenuExitBackButton(Handle:menu, bool:button);
 
+/**
+ * Sets whether or not the menu has a "no vote" button in slot 1.
+ * By default, menus do not have a no vote button.
+ *
+ * @param menu				Menu Handle.
+ * @param button			True to enable the button, false to remove it.
+ * @return 					True if allowed; false on failure.
+ * @error					Invalid Handle.
+ */
+native bool:SetMenuNoVoteButton(Handle:menu, bool:button);
 
 /**
  * Cancels a menu from displaying on all clients.  While the
@@ -489,7 +499,7 @@ native bool:VoteMenu(Handle:menu, clients[], numClients, time, flags=0);
  *							in progress.
  * @error					Invalid Handle.
  */
-stock VoteMenuToAll(Handle:menu, time, flags=0)
+stock bool:VoteMenuToAll(Handle:menu, time, flags=0)
 {
 	new total;
 	decl players[MaxClients];

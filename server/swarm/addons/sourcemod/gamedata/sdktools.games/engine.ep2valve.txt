@@ -18,9 +18,8 @@
 		{
 			"game"		"dod"
 			"game"		"tf"
-			"game"		"cstrike"
-			"game"		"garrysmod"
 			"game"		"hl2mp"
+			"game"		"cstrike"
 		}
 
 		"Offsets"
@@ -28,7 +27,7 @@
 			/* Offset into CBaseTempEntity constructor */
 			"s_pTempEntities"
 			{
-				"windows"	"17"
+				"windows"	"19"
 			}
 			"GetTEName"
 			{
@@ -55,7 +54,7 @@
 			"CBaseTempEntity"
 			{
 				"library"	"server"
-				"windows"	"\x8B\xC1\x8B\x4C\x24\x04\xC7\x00\x2A\x2A\x2A\x2A\x89\x48\x04\x8B\x15\x2A\x2A\x2A\x2A\x89\x50\x08\xA3\x2A\x2A\x2A\x2A\xC2\x04\x00"
+				"windows"	"\x55\x8B\xEC\x8B\xC1\x8B\x4D\x2A\xC7\x00\x2A\x2A\x2A\x2A\x89\x48"
 			}
 			"s_pTempEntities"
 			{
@@ -65,7 +64,7 @@
 			}
 		}
 	}
-
+	
 	/* CGlobalEntityList */
 	"#default"
 	{
@@ -73,8 +72,9 @@
 		{
 			"game"		"dod"
 			"game"		"tf"
-			"game"		"cstrike"
 			"game"		"hl2mp"
+			"game"		"garrysmod"
+			"game"		"cstrike"
 		}
 		
 		"Signatures"
@@ -83,7 +83,7 @@
 			"FindEntityByClassname"
 			{
 				"library"	"server"
-				"windows"	"\x53\x55\x56\x8B\xF1\x8B\x4C\x24\x10\x85\xC9\x57\x74\x19\x8B\x01\x8B\x50\x08\xFF\xD2\x8B\x00\x25\xFF\x0F\x00\x00\x83\xC0\x01\xC1\xE0\x04\x8B\x3C\x30\xEB\x06\x8B\xBE\x2A\x2A\x2A\x2A\x85\xFF\x74\x39\x8B\x5C\x24\x18\x8B\x2D\x2A\x2A\x2A\x2A\xEB\x03"
+				"windows"	"\x55\x8B\xEC\x53\x56\x8B\xF1\x8B\x4D\x2A\x57\x85\xC9\x74\x2A\x8B\x01\x8B\x50\x2A\xFF\xD2\x8B\x00\x25\xFF\x0F\x00\x00\x40\x03\xC0\x8B\x3C\xC6\xEB\x2A\x8B"
 				"linux"		"@_ZN17CGlobalEntityList21FindEntityByClassnameEP11CBaseEntityPKc"
 				"mac"		"@_ZN17CGlobalEntityList21FindEntityByClassnameEP11CBaseEntityPKc"
 			}
@@ -138,17 +138,22 @@
 	/* IServer interface pointer */
 	"#default"
 	{
+		"#supported"
+		{
+			"game"		"dod"
+			"game"		"tf"
+			"game"		"hl2mp"
+			"game"		"garrysmod"
+			"game"		"cstrike"
+		}
+		
 		"Keys"
 		{
-			/* Signature for the beginning of IVEngineServer::CreateFakeClient.
-			 *
-			 * The engine binary is not actually scanned in order to look for
-			 * this. SourceHook is used to used to determine the address of the
-			 * function and this signature is used to verify that it contains
-			 * the expected code. A pointer to sv (IServer interface) is used
-			 * here.
+			/* Signature for the beginning of IVEngineServer::CreateFakeClientEx.
+			 * (Must be unique!)
 			 */
-			"CreateFakeClient_Windows"	"\x8B\x44\x24\x2A\x50\xB9\x2A\x2A\x2A\x2A\xE8"
+			
+			"CreateFakeClient_Windows"	"\x55\x8B\xEC\x8B\x2A\x2A\x50\xB9\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A\x85\xC0\x75"
 		}
 		
 		"Offsets"
@@ -156,7 +161,7 @@
 			/* Offset into IVEngineServer::CreateFakeClient */
 			"sv"
 			{
-				"windows"	"6"
+				"windows"	"8"
 			}
 		}
 
@@ -175,6 +180,14 @@
 	/* EntityFactoryDictionary function */
 	"#default"
 	{
+		"#supported"
+		{
+			"game"		"tf"
+			"game"		"dod"
+			"game"		"hl2mp"
+			"game"		"cstrike"
+		}
+		
 		"Signatures"
 		{
 			"EntityFactory"
@@ -194,15 +207,15 @@
 		{
 			"game"		"dod"
 			"game"		"tf"
-			"game"		"cstrike"
 			"game"		"hl2mp"
+			"game"		"cstrike"
 		}
 		"Signatures"
 		{
 			"FireOutput"
 			{
 				"library"	"server"
-				"windows"	"\x81\xEC\x2A\x2A\x00\x00\x53\x55\x56\x8B\x71\x14\x85\xF6"
+				"windows"	"\x55\x8B\xEC\x81\x2A\x2A\x2A\x2A\x2A\x53\x56\x8B\x2A\x2A\x57\x89"
 				"linux"		"@_ZN17CBaseEntityOutput10FireOutputE9variant_tP11CBaseEntityS2_f"
 				"mac"		"@_ZN17CBaseEntityOutput10FireOutputE9variant_tP11CBaseEntityS2_f"
 			}
@@ -212,6 +225,15 @@
 	/* SetUserInfo data */
 	"#default"
 	{
+		"#supported"
+		{
+			"game"		"dod"
+			"game"		"tf"
+			"game"		"garrysmod"
+			"game"		"hl2mp"
+			"game"		"cstrike"
+		}
+		
 		"Offsets"
 		{
 			/**
@@ -222,9 +244,9 @@
 			 */
 			"SetUserCvar"
 			{
-				"windows"	"17"
-				"linux"		"57"
-				"mac"		"57"
+				"windows"	"18"
+				"linux"		"58"
+				"mac"		"58"
 			}
 			/**
 			 * Offset into CBaseClient - Used by CBaseServer::UpdateUserSettings to determine when changes have been made.

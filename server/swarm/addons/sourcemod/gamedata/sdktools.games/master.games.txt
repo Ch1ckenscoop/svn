@@ -205,4 +205,12 @@
 	{
 		"game"		"hl2ctf"
 	}
+	"game.ag2.txt"
+	{
+		"game"		"ag2"
+	}
+	"game.nmrih.txt"
+	{
+		"game"		"nmrih"
+	}
 }

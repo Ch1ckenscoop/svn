@@ -75,8 +75,9 @@ public OnPluginStart()
 	g_Cvar_TimeleftInterval = CreateConVar("sm_timeleft_interval", "0.0", "Display timeleft every x seconds. Default 0.", 0, true, 0.0, true, 1800.0);
 	g_Cvar_FriendlyFire = FindConVar("mp_friendlyfire");
 	
-	RegConsoleCmd("say", Command_Say);
-	RegConsoleCmd("say_team", Command_Say);
+	AddCommandListener(Command_Say, "say");
+	AddCommandListener(Command_Say, "say2");
+	AddCommandListener(Command_Say, "say_team");
 	
 	RegConsoleCmd("timeleft", Command_Timeleft);
 	RegConsoleCmd("nextmap", Command_Nextmap);
@@ -96,7 +97,15 @@ public OnPluginStart()
    		HookEvent("game_start", Event_GameStart);
    	}
 	
-	HookEvent("round_end", Event_RoundEnd);
+	if (strcmp(folder, "nucleardawn") == 0)
+	{
+		HookEvent("round_win", Event_RoundEnd);
+	}
+	else
+	{
+		HookEvent("round_end", Event_RoundEnd);
+	}
+	
 	HookEventEx("teamplay_win_panel", Event_TeamPlayWinPanel);
 	HookEventEx("teamplay_restart_round", Event_TFRestartRound);
 	HookEventEx("arena_win_panel", Event_TeamPlayWinPanel);
@@ -221,9 +230,9 @@ public Action:Command_Motd(client, args)
 	return Plugin_Handled;
 }
 
-public Action:Command_Say(client, args)
+public Action:Command_Say(client, const String:command[], argc)
 {
-	decl String:text[192], String:command[64];
+	decl String:text[192];
 	new startidx = 0;
 	if (GetCmdArgString(text, sizeof(text)) < 1)
 	{
@@ -261,23 +270,23 @@ public Action:Command_Say(client, args)
 	{
 		if (g_Cvar_FriendlyFire != INVALID_HANDLE)
 		{
-			decl String:message[64];
+			decl String:phrase[24];
 			if (GetConVarBool(g_Cvar_FriendlyFire))
 			{
-				Format(message, sizeof(message), "%T", "Friendly Fire On", client);
+				strcopy(phrase, sizeof(phrase), "Friendly Fire On");
 			}
 			else
 			{
-				Format(message, sizeof(message), "%T", "Friendly Fire Off", client);
+				strcopy(phrase, sizeof(phrase), "Friendly Fire Off");
 			}
 		
 			if(GetConVarInt(g_Cvar_TriggerShow))
 			{
-				PrintToChatAll("[SM] %s", message);
+				PrintToChatAll("[SM] %t", phrase);
 			}
 			else
 			{
-				PrintToChat(client,"[SM] %s", message);		
+				PrintToChat(client,"[SM] %t", phrase);
 			}
 		}
 	}

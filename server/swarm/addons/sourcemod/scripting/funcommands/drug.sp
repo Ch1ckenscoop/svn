@@ -43,14 +43,12 @@ KillDrug(client)
 {
 	KillDrugTimer(client);
 	
-	new Float:pos[3];
-	GetClientAbsOrigin(client, pos);
 	new Float:angs[3];
 	GetClientEyeAngles(client, angs);
 	
 	angs[2] = 0.0;
 	
-	TeleportEntity(client, pos, angs, NULL_VECTOR);	
+	TeleportEntity(client, NULL_VECTOR, angs, NULL_VECTOR);	
 	
 	new clients[2];
 	clients[0] = client;	
@@ -144,15 +142,12 @@ public Action:Timer_Drug(Handle:timer, any:client)
 		return Plugin_Handled;
 	}
 	
-	new Float:pos[3];
-	GetClientAbsOrigin(client, pos);
-	
 	new Float:angs[3];
 	GetClientEyeAngles(client, angs);
 	
 	angs[2] = g_DrugAngles[GetRandomInt(0,100) % 20];
 	
-	TeleportEntity(client, pos, angs, NULL_VECTOR);
+	TeleportEntity(client, NULL_VECTOR, angs, NULL_VECTOR);
 	
 	new clients[2];
 	clients[0] = client;	
@@ -264,7 +259,7 @@ public Action:Command_Drug(client, args)
 	{
 		decl String:arg2[2];
 		GetCmdArg(2, arg2, sizeof(arg2));
-		if (arg2[0])
+		if (StringToInt(arg2))
 		{
 			toggle = 1;
 		}

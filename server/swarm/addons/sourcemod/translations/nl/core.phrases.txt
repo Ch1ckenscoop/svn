@@ -57,7 +57,7 @@
 
 	"Voted For"
 	{
-		"nl"		"heeft gestemd op {2}"
+		"nl"		"{1} heeft gestemd op {2}"
 	}
 
 	"Vote Count"
