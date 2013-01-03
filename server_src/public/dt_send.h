@@ -17,6 +17,7 @@
 #include "tier0/dbg.h"
 #include "const.h"
 #include "bitvec.h"
+#include "sendprop_priorities.h"
 
 
 // ------------------------------------------------------------------------ //
@@ -166,8 +167,8 @@ class CSendTablePrecalc;
 #define DATATABLE_PROXY_INDEX_NOPROXY	255
 #define DATATABLE_PROXY_INDEX_INVALID	254
 
-#define SENDPROP_DEFAULT_PRIORITY ((byte)128)
-#define SENDPROP_CHANGES_OFTEN_PRIORITY ((byte)64)
+// #define SENDPROP_DEFAULT_PRIORITY ((byte)128)
+// #define SENDPROP_CHANGES_OFTEN_PRIORITY ((byte)64)
 
 class SendProp
 {
