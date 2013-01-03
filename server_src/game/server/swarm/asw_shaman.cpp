@@ -79,7 +79,6 @@ void CASW_Shaman::Precache( void )
 {
 	BaseClass::Precache();
 
-	//Ch1ckensCoop: fix "late precache"
 	PrecacheModel(m_pszAlienModelName);
 
 	PrecacheScriptSound( "Shaman.Pain" );

@@ -208,7 +208,7 @@ void CASW_Spawn_Manager::FindEscapeTriggers()
 					}
 				}
 			}
-			
+
 		}
 	}
 	Msg("Spawn manager found %d escape triggers\n", m_EscapeTriggers.Count() );
@@ -225,15 +225,18 @@ void CASW_Spawn_Manager::Update()
 			int iSpawned = 0;
 			if (asw_horde_enforce_range.GetBool())		//Ch1ckensCoop: Make sure aliens are off screen. ALWAYS.
 			{
-						float flDistance = 0.0f;
+				float flDistance = 0.0f;
+				UTIL_ASW_NearestMarine( m_vecHordePosition, flDistance );
 
-						if ( flDistance < asw_horde_max_distance.GetFloat() && flDistance > asw_horde_min_distance.GetFloat() )
-							iSpawned = SpawnAlienBatch( asw_horde_class.GetString(), iToSpawn, m_vecHordePosition, m_angHordeAngle );
-						else
-						{
-							if (asw_director_debug.GetBool())
-								Warning("Marine too far/close from spawn point!\n");
-						}
+				if ( flDistance < asw_horde_max_distance.GetFloat() && flDistance > asw_horde_min_distance.GetFloat() )
+					iSpawned = SpawnAlienBatch( asw_horde_class.GetString(), iToSpawn, m_vecHordePosition, m_angHordeAngle );
+				else
+				{
+					if (asw_director_debug.GetBool())
+					{
+						Warning("Marine too far/close from spawn point - Attempted to spawn horde at distance %0.2f!\n", flDistance);
+					}
+				}
 			}
 			else
 			{
@@ -344,7 +347,7 @@ bool CASW_Spawn_Manager::SpawnAlientAtRandomNode()
 			DeleteRoute( pRoute );
 			continue;
 		}
-		
+
 		Vector vecSpawnPos = pNode->GetPosition( CANDIDATE_ALIEN_HULL ) + Vector( 0, 0, 32 );
 		if ( ValidSpawnPoint( vecSpawnPos, vecMins, vecMaxs, true ) )
 		{
@@ -452,7 +455,7 @@ void CASW_Spawn_Manager::UpdateCandidateNodes()
 	}
 	if ( vecSouthMarine == vec3_origin || vecNorthMarine == vec3_origin )		// no live marines
 		return;
-	
+
 	int iNumNodes = GetNetwork()->NumNodes();
 	m_northCandidateNodes.Purge();
 	m_southCandidateNodes.Purge();
@@ -463,7 +466,7 @@ void CASW_Spawn_Manager::UpdateCandidateNodes()
 			continue;
 
 		Vector vecPos = pNode->GetPosition( CANDIDATE_ALIEN_HULL );
-		
+
 		// find the nearest marine to this node
 		float flDistance = 0;
 		CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(UTIL_ASW_NearestMarine( vecPos, flDistance ));
@@ -511,7 +514,7 @@ bool CASW_Spawn_Manager::FindHordePosition()
 	// this place should:
 	//   - be far enough away from the marines so the whole horde can spawn before the marines get there
 	//   - should have a clear path to the marines
-	
+
 	UpdateCandidateNodes();
 
 	// decide if the horde is going to come from behind or in front
@@ -575,7 +578,7 @@ bool CASW_Spawn_Manager::FindHordePosition()
 			DeleteRoute( pRoute );
 			continue;
 		}
-		
+
 		m_vecHordePosition = pNode->GetPosition( CANDIDATE_ALIEN_HULL ) + Vector( 0, 0, 32 );
 
 		// spawn facing the nearest marine
@@ -777,7 +780,7 @@ CBaseEntity* CASW_Spawn_Manager::SpawnAlienAt(const char* szAlienClass, const Ve
 bool CASW_Spawn_Manager::ValidSpawnPoint( const Vector &vecPosition, const Vector &vecMins, const Vector &vecMaxs, bool bCheckGround, float flMarineNearDistance )
 {
 	// check if we can fit there
-	
+
 	Vector vecBuffer = Vector(asw_horde_buffer.GetFloat(), asw_horde_buffer.GetFloat(), 0);
 
 	trace_t tr;
@@ -859,7 +862,7 @@ bool CASW_Spawn_Manager::SpawnRandomShieldbug()
 			pNode = g_pBigAINet->GetNode( RandomInt( 0, iNumNodes ) );
 			nTries++;
 		}
-		
+
 		if ( pNode )
 		{
 			CASW_Open_Area *pArea = FindNearbyOpenArea( pNode->GetOrigin(), HULL_MEDIUMBIG );
@@ -1112,12 +1115,12 @@ CASW_Open_Area* CASW_Spawn_Manager::FindNearbyOpenArea( const Vector &vecSearchO
 	// highlight and measure bounds
 	Vector vecAreaMins = Vector( FLT_MAX, FLT_MAX, FLT_MAX );
 	Vector vecAreaMaxs = Vector( -FLT_MAX, -FLT_MAX, -FLT_MAX );
-	
+
 	for ( int i = 0; i < pArea->m_aAreaNodes.Count(); i++ )
 	{
 		vecAreaMins = VectorMin( vecAreaMins, pArea->m_aAreaNodes[i]->GetOrigin() );
 		vecAreaMaxs = VectorMax( vecAreaMaxs, pArea->m_aAreaNodes[i]->GetOrigin() );
-		
+
 		if ( asw_director_debug.GetBool() )
 		{
 			if ( i == 0 )
@@ -1175,10 +1178,10 @@ void asw_alien_batch_f( const CCommand& args )
 		UTIL_TraceLine( vecSrc + Vector(0, 0, 12),
 			vecSrc - Vector( 0, 0, 512 ) ,MASK_SOLID, 
 			pMarine, COLLISION_GROUP_NONE, &tr );
-		
+
 		ASWSpawnManager()->SpawnAlienBatch( "asw_parasite", 25, tr.endpos, vec3_angle );
 	}
-	
+
 	CBaseEntity::SetAllowPrecache( allowPrecache );
 }
 static ConCommand asw_alien_batch("asw_alien_batch", asw_alien_batch_f, "Creates a batch of aliens at the cursor", FCVAR_GAMEDLL | FCVAR_CHEAT);

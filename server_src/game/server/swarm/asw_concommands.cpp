@@ -1706,4 +1706,4 @@ void ASW_PrintCCoopCvars_f()
 		pIterator->Next();
 	}
 }
-ConCommand ASW_PrintCCoopCvars("cc_cvarlist", ASW_PrintCCoopCvars_f, "Lists Ch1ckensCoop cvars.");
+ConCommand ASW_PrintCCoopCvars("cc_cvarlist", ASW_PrintCCoopCvars_f, "Lists Ch1ckensCoop cvars.", FCVAR_CCOOP);
