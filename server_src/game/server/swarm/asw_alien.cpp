@@ -668,6 +668,7 @@ void CASW_Alien::NPCThink( void )
 	if (asw_alien_prune.GetBool() && strcmp(this->GetClassname(), "asw_egg") != 0 && strcmp(this->GetClassname(), "asw_shieldbug") != 0)
 	{
 		bool bAlienSafe = false;
+		bool bMarinesAlive = false;
 		for (int i = 0; i < ASW_MAX_MARINE_RESOURCES; i++)
 		{
 			CASW_Marine_Resource *pResource = ASWGameResource()->GetMarineResource(i);
@@ -676,6 +677,8 @@ void CASW_Alien::NPCThink( void )
 				CASW_Marine *pMarine = pResource->GetMarineEntity();
 				if (pMarine)
 				{
+					bMarinesAlive = true;
+
 					// Check if the marine is close enough to this alien to save it.
 					if (pMarine->GetAbsOrigin().DistTo(GetAbsOrigin()) <= asw_alien_prune_radius.GetFloat())
 					{
@@ -686,7 +689,8 @@ void CASW_Alien::NPCThink( void )
 			}
 		}
 
-		if (!bAlienSafe)
+		// Make sure we have at least one marine actually alive before we remove aliens.
+		if (!bAlienSafe && bMarinesAlive)
 			UTIL_Remove(this);
 	}
 
