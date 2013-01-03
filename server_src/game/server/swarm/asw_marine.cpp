@@ -144,21 +144,21 @@ IMPLEMENT_SERVERCLASS_ST(CASW_Marine, DT_ASW_Marine)
 	SendPropExclude( "DT_BaseEntity", "m_vecOrigin" ),
 	// send a hi-res origin to the local player for use in prediction
 	//SendPropVector	(SENDINFO(m_vecOrigin), -1,  SPROP_NOSCALE|SPROP_CHANGES_OFTEN, 0.0f, HIGH_DEFAULT, SendProxy_Origin ),
-	SendPropVectorXY(SENDINFO(m_vecOrigin),               -1, SPROP_NOSCALE | SPROP_CHANGES_OFTEN, 0.0f, HIGH_DEFAULT, SendProxy_OriginXY, SENDPROP_LOCALPLAYER_ORIGINXY_PRIORITY ),
-	SendPropFloat   (SENDINFO_VECTORELEM(m_vecOrigin, 2), -1, SPROP_NOSCALE | SPROP_CHANGES_OFTEN, 0.0f, HIGH_DEFAULT, SendProxy_OriginZ, SENDPROP_LOCALPLAYER_ORIGINZ_PRIORITY ),	// , SENDPROP_LOCALPLAYER_ORIGINZ_PRIORITY
+	SendPropVectorXY(SENDINFO(m_vecOrigin),               -1, SPROP_NOSCALE | SPROP_CHANGES_OFTEN, 0.0f, HIGH_DEFAULT, SendProxy_OriginXY ),
+	SendPropFloat   (SENDINFO_VECTORELEM(m_vecOrigin, 2), -1, SPROP_NOSCALE | SPROP_CHANGES_OFTEN, 0.0f, HIGH_DEFAULT, SendProxy_OriginZ ),	// , SENDPROP_LOCALPLAYER_ORIGINZ_PRIORITY
 	
-	SendPropFloat		( SENDINFO_VECTORELEM(m_vecVelocity, 0), 32, SPROP_NOSCALE|SPROP_CHANGES_OFTEN, SENDPROP_PLAYER_VELOCITY_XY_PRIORITY),
-	SendPropFloat		( SENDINFO_VECTORELEM(m_vecVelocity, 1), 32, SPROP_NOSCALE|SPROP_CHANGES_OFTEN, SENDPROP_PLAYER_VELOCITY_XY_PRIORITY ),
-	SendPropFloat		( SENDINFO_VECTORELEM(m_vecVelocity, 2), 32, SPROP_NOSCALE|SPROP_CHANGES_OFTEN, SENDPROP_PLAYER_VELOCITY_XY_PRIORITY ),
+	SendPropFloat		( SENDINFO_VECTORELEM(m_vecVelocity, 0), 32, SPROP_NOSCALE|SPROP_CHANGES_OFTEN ),
+	SendPropFloat		( SENDINFO_VECTORELEM(m_vecVelocity, 1), 32, SPROP_NOSCALE|SPROP_CHANGES_OFTEN ),
+	SendPropFloat		( SENDINFO_VECTORELEM(m_vecVelocity, 2), 32, SPROP_NOSCALE|SPROP_CHANGES_OFTEN ),
 
 #if PREDICTION_ERROR_CHECK_LEVEL > 1 
 	SendPropAngle( SENDINFO_VECTORELEM(m_angRotation, 0), 13, SPROP_NOSCALE|SPROP_CHANGES_OFTEN, CBaseEntity::SendProxy_AnglesX ),
 	SendPropAngle( SENDINFO_VECTORELEM(m_angRotation, 1), 13, SPROP_NOSCALE|SPROP_CHANGES_OFTEN, CBaseEntity::SendProxy_AnglesY ),
 	SendPropAngle( SENDINFO_VECTORELEM(m_angRotation, 2), 13, SPROP_NOSCALE|SPROP_CHANGES_OFTEN, CBaseEntity::SendProxy_AnglesZ ),
 #else
-	SendPropAngle( SENDINFO_VECTORELEM(m_angRotation, 0), 13, SPROP_CHANGES_OFTEN, CBaseEntity::SendProxy_AnglesX, SENDPROP_LOCALPLAYER_ANGLES_PRIORITY ),
-	SendPropAngle( SENDINFO_VECTORELEM(m_angRotation, 1), 13, SPROP_CHANGES_OFTEN, CBaseEntity::SendProxy_AnglesY, SENDPROP_LOCALPLAYER_ANGLES_PRIORITY ),
-	SendPropAngle( SENDINFO_VECTORELEM(m_angRotation, 2), 13, SPROP_CHANGES_OFTEN, CBaseEntity::SendProxy_AnglesZ, SENDPROP_LOCALPLAYER_ANGLES_PRIORITY ),
+	SendPropAngle( SENDINFO_VECTORELEM(m_angRotation, 0), 13, SPROP_CHANGES_OFTEN, CBaseEntity::SendProxy_AnglesX ),
+	SendPropAngle( SENDINFO_VECTORELEM(m_angRotation, 1), 13, SPROP_CHANGES_OFTEN, CBaseEntity::SendProxy_AnglesY ),
+	SendPropAngle( SENDINFO_VECTORELEM(m_angRotation, 2), 13, SPROP_CHANGES_OFTEN, CBaseEntity::SendProxy_AnglesZ ),
 #endif
 
 	SendPropFloat		( SENDINFO(m_fAIPitch), 0, SPROP_NOSCALE),
@@ -572,6 +572,11 @@ CASW_Marine::~CASW_Marine()
 		GetMarineResource()->SetMarineEntity(NULL);
 	m_PlayerAnimState->Release();
 	delete m_MarineSpeech;
+
+	//Ch1ckensCoop: Remove this marine from our client effects array.
+	//Ch1ckensCoop: EDIT: Nope, we're keeping track of players now instead of marines.
+	//if (ASW_Client_Effects())
+	//	ASW_Client_Effects()->MarineRemove(this);
 }
 
 // create our custom senses class
