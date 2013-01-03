@@ -32,10 +32,20 @@ void CServerGameClients::GetPlayerLimits( int& minplayers, int& maxplayers, int 
 
 void CServerGameDLL::LevelInit_ParseAllEntities( const char *pMapEntities )
 {
-	// precache even if not in the level, for onslaught mode
-	UTIL_PrecacheOther( "asw_shieldbug" );
+	// Ch1ckensCoop: This is stupid. Just precache all the aliens.
+	UTIL_PrecacheOther( "asw_drone" );
+	UTIL_PrecacheOther( "asw_buzzer" );
 	UTIL_PrecacheOther( "asw_parasite" );
+	UTIL_PrecacheOther( "asw_shieldbug" );
+	UTIL_PrecacheOther( "asw_drone_jumper" );
+	UTIL_PrecacheOther( "asw_harvester" );
+	UTIL_PrecacheOther( "asw_parasite_defanged" );
+	UTIL_PrecacheOther( "asw_queen" );
+	UTIL_PrecacheOther( "asw_boomer" );
+	UTIL_PrecacheOther( "asw_ranger" );
+	UTIL_PrecacheOther( "asw_mortarbug" );
 	UTIL_PrecacheOther( "asw_shaman" );
+	UTIL_PrecacheOther( "asw_drone_uber" );
 }
 
 bool g_bOfflineGame = false;

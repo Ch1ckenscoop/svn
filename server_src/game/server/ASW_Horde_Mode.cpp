@@ -151,7 +151,7 @@ bool CASW_Horde_Mode::Init()
 	m_iLastAlienClass = DRONE_INDEX;
 
 	InitAlienData();
-	UpdateHordeMode();
+	//UpdateHordeMode();
 	m_flLastThinkTime = gpGlobals->curtime;
 
 	return true;

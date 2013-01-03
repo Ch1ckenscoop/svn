@@ -98,7 +98,6 @@ private:
 	bool m_bSpawningAliens;
 	bool m_bReachedIntensityPeak;
 	CountdownTimer m_SustainTimer;
-	float m_fTimeBetweenAliens;
 	CountdownTimer m_AlienSpawnTimer;
 
 	// marines are about to escape, throw everything at them

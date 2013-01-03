@@ -30,6 +30,7 @@ CASW_Spawn_Manager* ASWSpawnManager() { return &g_Spawn_Manager; }
 #define MARINE_NEAR_DISTANCE 740.0f
 
 extern ConVar asw_director_debug;
+extern ConVar asw_wanderer_max;
 ConVar asw_horde_min_distance("asw_horde_min_distance", "800", FCVAR_CHEAT, "Minimum distance away from the marines the horde can spawn" );
 ConVar asw_horde_max_distance("asw_horde_max_distance", "1500", FCVAR_CHEAT, "Maximum distance away from the marines the horde can spawn" );
 ConVar asw_max_alien_batch("asw_max_alien_batch", "10", FCVAR_CHEAT, "Max number of aliens spawned in a horde batch" );
@@ -275,7 +276,8 @@ void CASW_Spawn_Manager::Update()
 
 	if ( asw_director_debug.GetBool() )
 	{
-		engine->Con_NPrintf( 14, "SM: Batch interval: %f pos = %f %f %f\n", m_batchInterval.HasStarted() ? m_batchInterval.GetRemainingTime() : -1, VectorExpand( m_vecHordePosition ) );		
+		engine->Con_NPrintf( 14, "Spawn Manager: Batch interval: %f pos = %f %f %f", m_batchInterval.HasStarted() ? m_batchInterval.GetRemainingTime() : -1, VectorExpand( m_vecHordePosition ) );		
+		engine->Con_NPrintf( 17, "Wanderers to spawn: %i", m_iAliensToSpawn);
 	}
 
 	if ( m_iAliensToSpawn > 0 )
@@ -287,8 +289,9 @@ void CASW_Spawn_Manager::Update()
 
 void CASW_Spawn_Manager::AddAlien()
 {
-	// don't stock up more than 10 wanderers at once
-	if ( m_iAliensToSpawn > 10 )
+	// don't stock up more than X wanderers at once if we
+	// can't find an available AI node to spawn them at.
+	if ( m_iAliensToSpawn > asw_wanderer_max.GetInt() )
 		return;
 
 	m_iAliensToSpawn++;
@@ -355,12 +358,12 @@ bool CASW_Spawn_Manager::SpawnAlientAtRandomNode()
 			{
 				if ( asw_director_debug.GetBool() )
 				{
-					NDebugOverlay::Cross3D( vecSpawnPos, 25.0f, 255, 255, 255, true, 20.0f );
+					NDebugOverlay::Cross3D( vecSpawnPos, 25.0f, 128, 128, 255, true, 20.0f );
 					float flDist;
 					CASW_Marine *pMarine = UTIL_ASW_NearestMarine( vecSpawnPos, flDist );
 					if ( pMarine )
 					{
-						NDebugOverlay::Line( pMarine->GetAbsOrigin(), vecSpawnPos, 64, 64, 64, true, 60.0f );
+						NDebugOverlay::Line( pMarine->GetAbsOrigin(), vecSpawnPos, 128, 128, 255, true, 60.0f );
 					}
 				}
 				DeleteRoute( pRoute );
@@ -395,7 +398,7 @@ bool CASW_Spawn_Manager::AddHorde( int iHordeSize )
 		{
 			if ( asw_director_debug.GetBool() )
 			{
-				NDebugOverlay::Cross3D( m_vecHordePosition, 50.0f, 255, 128, 0, true, 60.0f );
+				NDebugOverlay::Cross3D( m_vecHordePosition, 32.0f, 255, 128, 0, true, 30.0f );
 				float flDist;
 				CASW_Marine *pMarine = UTIL_ASW_NearestMarine( m_vecHordePosition, flDist );
 				if ( pMarine )

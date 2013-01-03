@@ -99,6 +99,10 @@ void CASW_Harvester::Precache( void )
 
 	UTIL_PrecacheOther( "asw_parasite_defanged" );
 
+	// Ch1ckensCoop: Precache both new and old models
+	PrecacheModel( SWARM_NEW_HARVESTER_MODEL );
+	PrecacheModel( SWARM_HARVESTER_MODEL );
+
 	BaseClass::Precache();
 }
 

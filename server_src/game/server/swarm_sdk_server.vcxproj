@@ -19,6 +19,7 @@
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <PlatformToolset>v110</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -129,7 +130,9 @@ if ERRORLEVEL 1 exit 1
     <PostBuildEvent>
       <Message>Publishing to F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.</Message>
       <Command>copy ^"$(TargetDir)$(TargetName).dll^" ^"E:\ch1ckenscoop_server\swarm\bin\$(TargetName).dll^""
-copy ^"$(TargetDir)$(TargetName).pdb^" ^"E:\ch1ckenscoop_server\swarm\bin\$(TargetName).pdb^""</Command>
+copy ^"$(TargetDir)$(TargetName).pdb^" ^"E:\ch1ckenscoop_server\swarm\bin\$(TargetName).pdb^""
+"$(SolutionDir)steamDirectory.bat" "copy ^"$(TargetDir)\$(TargetName).dll^" ^"!steamDirectory!\steamapps\common\alien swarm\swarm\bin\$(TargetName).dll^""
+"$(SolutionDir)steamDirectory.bat" "copy ^"$(TargetDir)\$(TargetName).pdb^" ^"!steamDirectory!\steamapps\common\alien swarm\swarm\bin\$(TargetName).pdb^""</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -211,7 +214,9 @@ if ERRORLEVEL 1 exit 1
     <PostBuildEvent>
       <Message>Publishing to F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.</Message>
       <Command>copy ^"$(TargetDir)$(TargetName).dll^" ^"E:\ch1ckenscoop_server\swarm\bin\$(TargetName).dll^""
-copy ^"$(TargetDir)$(TargetName).pdb^" ^"E:\ch1ckenscoop_server\swarm\bin\$(TargetName).pdb^""</Command>
+copy ^"$(TargetDir)$(TargetName).pdb^" ^"E:\ch1ckenscoop_server\swarm\bin\$(TargetName).pdb^""
+"$(SolutionDir)steamDirectory.bat" "copy ^"$(TargetDir)\$(TargetName).dll^" ^"!steamDirectory!\steamapps\common\alien swarm\swarm\bin\$(TargetName).dll^""
+"$(SolutionDir)steamDirectory.bat" "copy ^"$(TargetDir)\$(TargetName).pdb^" ^"!steamDirectory!\steamapps\common\alien swarm\swarm\bin\$(TargetName).pdb^""</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

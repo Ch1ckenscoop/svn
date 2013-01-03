@@ -24,7 +24,13 @@ extern ConVar asw_intensity_far_range;
 extern ConVar asw_spawning_enabled;
 
 extern ConVar asw_horde_override;
+
 extern ConVar asw_wanderer_override;
+ConVar asw_wanderer_max("asw_wanderer_max", "10", FCVAR_CCOOP | FCVAR_CHEAT, "Maximum number of wanderers to queue up if we can't find an available AI node to spawn them at.");
+ConVar asw_wanderer_awake_limit("asw_wanderer_awake_limit", "20", FCVAR_CCOOP | FCVAR_CHEAT, "Less than this amount of awake aliens permits spawning of wanderers.");
+ConVar asw_wanderer_interval_min("asw_wanderer_interval_min", "5", FCVAR_CHEAT | FCVAR_CCOOP, "Director: Min time between alien spawns when first entering spawning state");
+ConVar asw_wanderer_interval_max("asw_wanderer_interval_max", "7", FCVAR_CHEAT | FCVAR_CCOOP, "Director: Max time between alien spawns when first entering spawning state");
+
 ConVar asw_horde_interval_min("asw_horde_interval_min", "10", FCVAR_CHEAT, "Min time between hordes" );
 ConVar asw_horde_interval_max("asw_horde_interval_max", "20", FCVAR_CHEAT, "Min time between hordes" );
 ConVar asw_horde_size_min("asw_horde_size_min", "9", FCVAR_CHEAT, "Min horde size" );
@@ -34,30 +40,24 @@ ConVar asw_director_relaxed_min_time("asw_director_relaxed_min_time", "25", FCVA
 ConVar asw_director_relaxed_max_time("asw_director_relaxed_max_time", "40", FCVAR_CHEAT, "Max time that director stops spawning aliens");
 ConVar asw_director_peak_min_time("asw_director_peak_min_time", "1", FCVAR_CHEAT, "Min time that director keeps spawning aliens when marine intensity has peaked");
 ConVar asw_director_peak_max_time("asw_director_peak_max_time", "3", FCVAR_CHEAT, "Max time that director keeps spawning aliens when marine intensity has peaked");
-ConVar asw_interval_min("asw_interval_min", "1.0f", FCVAR_CHEAT, "Director: Alien spawn interval will never go lower than this");
-ConVar asw_interval_initial_min("asw_interval_initial_min", "5", FCVAR_CHEAT, "Director: Min time between alien spawns when first entering spawning state");
-ConVar asw_interval_initial_max("asw_interval_initial_max", "7", FCVAR_CHEAT, "Director: Max time between alien spawns when first entering spawning state");
-ConVar asw_interval_change_min("asw_interval_change_min", "0.9", FCVAR_CHEAT, "Director: Min scale applied to alien spawn interval each spawn");
-ConVar asw_interval_change_max("asw_interval_change_max", "0.95", FCVAR_CHEAT, "Director: Max scale applied to alien spawn interval each spawn");
 
 CASW_Director g_ASWDirector;
 CASW_Director* ASWDirector() { return &g_ASWDirector; }
 
 CASW_Director::CASW_Director( void ) : CAutoGameSystemPerFrame( "CASW_Director" )
 {
-	
+
 }
 
 CASW_Director::~CASW_Director()
 {
-	
+
 }
 
 bool CASW_Director::Init()
 {
 	m_bSpawningAliens = false;
 	m_bReachedIntensityPeak = false;
-	m_fTimeBetweenAliens = 0;
 	m_AlienSpawnTimer.Invalidate();
 	m_SustainTimer.Invalidate();
 	m_HordeTimer.Invalidate();
@@ -65,7 +65,7 @@ bool CASW_Director::Init()
 	m_bInitialWait = true;
 
 	m_bFiredEscapeRoom = false;
-	
+
 	m_bHordeInProgress = false;
 	m_bFinale = false;
 
@@ -374,7 +374,6 @@ void CASW_Director::UpdateSpawningState()
 			m_bSpawningAliens = true;
 			m_bReachedIntensityPeak = false;
 			m_SustainTimer.Invalidate();
-			m_fTimeBetweenAliens = 0;
 			m_AlienSpawnTimer.Invalidate();
 		}
 	}
@@ -421,30 +420,20 @@ void CASW_Director::UpdateWanderers()
 		return;
 	}
 
+	if ( asw_director_debug.GetBool() )
+		engine->Con_NPrintf( 9, "Next wanderer spawn in %0.2f", m_AlienSpawnTimer.GetRemainingTime() );
+
 	// spawn an alien every so often
 	if ( !m_AlienSpawnTimer.HasStarted() || m_AlienSpawnTimer.IsElapsed() )
 	{
-		if ( m_fTimeBetweenAliens == 0 )
-		{
-			// initial time between alien spawns
-			m_fTimeBetweenAliens = RandomFloat( asw_interval_initial_min.GetFloat(), asw_interval_initial_max.GetFloat() );
-		}
-		else
-		{
-			// reduce the time by some random amount each interval
-			m_fTimeBetweenAliens = MAX( asw_interval_min.GetFloat(),
-										m_fTimeBetweenAliens * RandomFloat( asw_interval_change_min.GetFloat(), asw_interval_change_max.GetFloat() ) );
-		}
-		if ( asw_director_debug.GetInt() > 0 )
-		{
-			engine->Con_NPrintf( 9, "Regular spawn interval = %f", m_fTimeBetweenAliens );
-		}
+		// Random time between wanderer spawns
+		float flNextSpawn = RandomFloat( asw_wanderer_interval_min.GetFloat(), asw_wanderer_interval_max.GetFloat() );
 
-		m_AlienSpawnTimer.Start( m_fTimeBetweenAliens );
+		m_AlienSpawnTimer.Start( flNextSpawn );
 
 		if ( ASWSpawnManager() )
 		{
-			if ( ASWSpawnManager()->GetAwakeDrones() < 20 )
+			if ( ASWSpawnManager()->GetAwakeDrones() < asw_wanderer_max.GetInt() )
 			{
 				ASWSpawnManager()->AddAlien();
 			}
@@ -537,12 +526,12 @@ void CASW_Director::OnMissionStarted()
 		int nParasites = 1;
 		switch( ASWGameRules()->GetSkillLevel() )
 		{
-			case 1: nParasites = RandomInt( 4, 6 ); break;
-			default:
-			case 2: nParasites = RandomInt( 4, 6 ); break;
-			case 3: nParasites = RandomInt( 5, 7 ); break;
-			case 4: nParasites = RandomInt( 5, 9 ); break;
-			case 5: nParasites = RandomInt( 5, 10 ); break;
+		case 1: nParasites = RandomInt( 4, 6 ); break;
+		default:
+		case 2: nParasites = RandomInt( 4, 6 ); break;
+		case 3: nParasites = RandomInt( 5, 7 ); break;
+		case 4: nParasites = RandomInt( 5, 9 ); break;
+		case 5: nParasites = RandomInt( 5, 10 ); break;
 		}
 		while ( nParasites > 0 )
 		{

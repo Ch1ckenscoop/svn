@@ -88,8 +88,8 @@ private:
 	CountdownTimer m_batchInterval;
 	Vector m_vecHordePosition;
 	QAngle m_angHordeAngle;
-	int m_iHordeToSpawn;
-	int m_iAliensToSpawn;
+	int m_iHordeToSpawn;	// Horde left to spawn
+	int m_iAliensToSpawn;	// Wanderers left to spawn
 
 	int m_nAwakeAliens;
 	int m_nAwakeDrones;
