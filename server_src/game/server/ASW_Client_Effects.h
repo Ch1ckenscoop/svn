@@ -24,18 +24,23 @@ private:
 	template <class T> class CFX_Value
 	{
 	public:
-		void operator=(const T &rhs)
+		void Reset(T defaultValue, const char *szCvarName)
 		{
-			m_Value = rhs;
+			m_Value = defaultValue;
+			m_LastSentValue = defaultValue;
 
-			if (gpGlobals)	// This gets called before a lot of systems are initialized.
-				m_flLastUpdate = gpGlobals->curtime;
-			else
-				m_flLastUpdate = -1;
+			m_flLastSent = 0.0f;
+
+			m_szCvarName[0] = '\0';
+			V_strncpy(m_szCvarName, szCvarName, sizeof(m_szCvarName));
 		}
 
-		T m_Value;
-		float m_flLastUpdate;
+		T m_Value;				// The server's value.
+		T m_LastSentValue;		// The client's value.
+
+		float m_flLastSent;		// Last client update time.
+		
+		char m_szCvarName[256];	// The string cvar name.
 	};
 
 	struct PlayerInfo
@@ -61,18 +66,18 @@ private:
 
 	void OnSpawnedHorde(int num);
 
-	bool ShouldUpdateCvar(CFX_Value<bool> PreviousValue, bool NewValue, EffectType_t EffectType);
-	bool ShouldUpdateCvar(CFX_Value<int> PreviousValue, int NewValue, EffectType_t EffectType);
-	bool ShouldUpdateCvar(CFX_Value<float> PreviousValue, float NewValue, EffectType_t EffectType);
+	bool ShouldUpdateCvar(CFX_Value<bool> Cvar, EffectType_t EffectType) const;
+	bool ShouldUpdateCvar(CFX_Value<int> Cvar, EffectType_t EffectType) const;
+	bool ShouldUpdateCvar(CFX_Value<float> Cvar, EffectType_t EffectType) const;
 
-	float IsMarineHurt(CASW_Marine *pMarine);
-	float GetMarineIntensity(CASW_Marine *pMarine);
+	float IsMarineHurt(CASW_Marine *pMarine) const;
+	float GetMarineIntensity(CASW_Marine *pMarine) const;
 
 	void ResetPlayers();
 	void ResetPlayer(int playerIndex);
 
-	bool SendClientCommand(edict_t *pPlayerEdict, const char *Command, float Value);
-	bool SendClientCommand(edict_t *pPlayerEdict, const char *Command, bool Value);
+	bool SendClientCommand(edict_t *pPlayerEdict, CFX_Value<bool> &Cvar);
+	bool SendClientCommand(edict_t *pPlayerEdict, CFX_Value<float> &Cvar);
 };
 
 CASW_Client_Effects* ASW_Client_Effects();
