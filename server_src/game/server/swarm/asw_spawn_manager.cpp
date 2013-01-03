@@ -17,8 +17,8 @@
 #include "datacache/imdlcache.h"
 #include "ai_link.h"
 #include "asw_alien.h"
-//Ch1ckensCoop: Inlude entitylist.h
 #include "entitylist.h"
+#include "asw_gamerules.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -45,6 +45,7 @@ CASW_Spawn_Manager::CASW_Spawn_Manager()
 {
 	m_nAwakeAliens = 0;
 	m_nAwakeDrones = 0;
+	m_bFreshHorde = 0;
 }
 
 CASW_Spawn_Manager::~CASW_Spawn_Manager()
@@ -384,8 +385,6 @@ bool CASW_Spawn_Manager::SpawnAlientAtRandomNode()
 
 bool CASW_Spawn_Manager::AddHorde( int iHordeSize )
 {
-	m_iHordeToSpawn = iHordeSize;
-
 	if ( m_vecHordePosition == vec3_origin )
 	{
 		if ( !FindHordePosition() )
@@ -396,6 +395,7 @@ bool CASW_Spawn_Manager::AddHorde( int iHordeSize )
 		}
 		else
 		{
+
 			if ( asw_director_debug.GetBool() )
 			{
 				NDebugOverlay::Cross3D( m_vecHordePosition, 32.0f, 255, 128, 0, true, 30.0f );
@@ -408,6 +408,10 @@ bool CASW_Spawn_Manager::AddHorde( int iHordeSize )
 			}
 		}
 	}
+
+	m_iHordeToSpawn = iHordeSize;
+	m_bFreshHorde = true;
+
 	return true;
 }
 
@@ -730,6 +734,14 @@ int CASW_Spawn_Manager::SpawnAlienBatch( const char* szAlienClass, int iNumAlien
 					iSpawned++;
 			}
 		}
+	}
+
+	// Ch1ckensCoop: If this was our first alien spawned since
+	// a new horde was added, play the "horde incoming" sound.
+	if ( ASWGameRules() && m_bFreshHorde && iSpawned > 0 )
+	{
+		ASWGameRules()->BroadcastSound( "Spawner.Horde" );
+		m_bFreshHorde = false;
 	}
 
 	return iSpawned;

@@ -94,6 +94,8 @@ private:
 	int m_nAwakeAliens;
 	int m_nAwakeDrones;
 
+	bool m_bFreshHorde;		// Has a horde just been added but not spawned yet?
+
 	// maintaining a list of possible nodes to spawn aliens from
 	CUtlVector<int> m_northCandidateNodes;
 	CUtlVector<int> m_southCandidateNodes;

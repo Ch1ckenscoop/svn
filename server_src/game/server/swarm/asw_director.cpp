@@ -298,11 +298,6 @@ void CASW_Director::UpdateHorde()
 					Msg("Created horde of size %d\n", iNumAliens);
 				}
 				m_bHordeInProgress = true;
-
-				if ( ASWGameRules() )
-				{
-					ASWGameRules()->BroadcastSound( "Spawner.Horde" );
-				}
 				m_HordeTimer.Invalidate();
 			}
 			else
