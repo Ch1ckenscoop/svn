@@ -1,4 +1,5 @@
 "AddonList"
 {
 	"cold_catwalks.vpk"		"1"
+	"extermination.vpk"		"1"
 }
