@@ -28,7 +28,7 @@ enum EResult
 	k_EResultOK	= 1,							// success
 	k_EResultFail = 2,							// generic failure 
 	k_EResultNoConnection = 3,					// no/failed network connection
-//	k_EResultNoConnectionRetry = 4,				// OBSOLETE - removed
+	//	k_EResultNoConnectionRetry = 4,				// OBSOLETE - removed
 	k_EResultInvalidPassword = 5,				// password/ticket is invalid
 	k_EResultLoggedInElsewhere = 6,				// same user logged in elsewhere
 	k_EResultInvalidProtocolVer = 7,			// protocol version is incorrect
@@ -275,7 +275,7 @@ enum EMarketingMessageFlags
 
 	//aggregate flags
 	k_EMarketingMessageFlagsPlatformRestrictions = 
-		k_EMarketingMessageFlagsPlatformWindows | k_EMarketingMessageFlagsPlatformMac,
+	k_EMarketingMessageFlagsPlatformWindows | k_EMarketingMessageFlagsPlatformMac,
 };
 
 
@@ -581,7 +581,40 @@ public:
 	const char * Render() const;				// renders this steam ID to string
 	static const char * Render( uint64 ulSteamID );	// static method to render a uint64 representation of a steam ID to a string
 
-	void SetFromString( const char *pchSteamID, EUniverse eDefaultUniverse );
+	void SetFromString( const char *pchSteamID, EUniverse eDefaultUniverse )
+	{
+		if(!pchSteamID)
+			return;
+
+		int iServer = 0;
+		int iAuthID = 0;
+
+		char szAuthID[64];
+		V_strncpy(szAuthID, pchSteamID, 63);
+
+		char *szTmp = strtok(szAuthID, ":");
+		while(szTmp = strtok(NULL, ":"))
+		{
+			char *szTmp2 = strtok(NULL, ":");
+			if(szTmp2)
+			{
+				iServer = atoi(szTmp);
+				iAuthID = atoi(szTmp2);
+			}
+		}
+
+		if(iAuthID == 0)
+			return;
+
+		__int64 i64friendID = (__int64)iAuthID * 2;
+
+		//Friend ID's with even numbers are the 0 auth server.
+		//Friend ID's with odd numbers are the 1 auth server.
+		i64friendID += 76561197960265728 + iServer; 
+
+		SetFromUint64(i64friendID);
+	}
+
 	bool SetFromSteam2String( const char *pchSteam2ID, EUniverse eUniverse );
 
 	inline bool operator==( const CSteamID &val ) const { return m_steamid.m_unAll64Bits == val.m_steamid.m_unAll64Bits; } 
@@ -619,7 +652,7 @@ inline bool CSteamID::IsValid() const
 {
 	if ( m_steamid.m_comp.m_EAccountType <= k_EAccountTypeInvalid || m_steamid.m_comp.m_EAccountType >= k_EAccountTypeMax )
 		return false;
-	
+
 	if ( m_steamid.m_comp.m_EUniverse <= k_EUniverseInvalid || m_steamid.m_comp.m_EUniverse >= k_EUniverseMax )
 		return false;
 
@@ -806,7 +839,7 @@ public:
 	{
 		return ( m_gameID.m_nType == k_EGameIDTypeApp );
 	}
-		
+
 	uint32 ModID() const
 	{
 		return m_gameID.m_nModID;

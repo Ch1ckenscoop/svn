@@ -18,6 +18,8 @@
 #include "datacache/imdlcache.h"
 #include "asw_spawn_manager.h"
 #include "fmtstr.h"
+#include "client.h"
+#include "asw_sourcemod_interface.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -1707,3 +1709,83 @@ void ASW_PrintCCoopCvars_f()
 	}
 }
 ConCommand ASW_PrintCCoopCvars("cc_cvarlist", ASW_PrintCCoopCvars_f, "Lists Ch1ckensCoop cvars.", FCVAR_CCOOP);
+
+void ASW_SetLeader_t( const CCommand &command )
+{
+	CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(UTIL_GetCommandClient());
+
+	CRecipientFilter filter;
+	filter.AddRecipient(pPlayer);
+
+	// Is this player an administrator?
+	CSteamID requesterSteamID;
+	if (!pPlayer->GetSteamID(&requesterSteamID))
+	{
+		UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "Unable to get your Steam ID!");
+		return;
+	}
+
+	int iAdminIndex = Sourcemod()->GetAdminIndex(requesterSteamID);
+	if (iAdminIndex < 0)
+	{
+		UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "You are not an admin!");
+		return;
+	}
+
+	if (!Sourcemod()->AdminHasPowers(iAdminIndex, CASW_Sourcemod_Interface::ADMIN_POWER_KICK))
+	{
+		UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "You do not have the kick privilege, which is required for /setleader.");
+		return;
+	}
+
+	if (command.ArgC() > 1)
+	{
+		// User specified a player
+		char szSpecifiedName[64];
+		V_strncpy(szSpecifiedName, command.Arg(1), sizeof(szSpecifiedName));
+		V_strnlwr(szSpecifiedName, sizeof(szSpecifiedName));
+		
+		int iFoundIndex = -1;
+		for (int i = 0; i < gpGlobals->maxClients; i++)
+		{
+			CASW_Player *pTargetPlayer = dynamic_cast<CASW_Player*>(UTIL_PlayerByIndex(i));
+
+			if (!pTargetPlayer)
+				continue;
+
+			char szTargetPlayerName[64];
+			V_strncpy(szTargetPlayerName, pTargetPlayer->GetPlayerName(), sizeof(szTargetPlayerName));
+			V_strnlwr(szTargetPlayerName, sizeof(szTargetPlayerName));
+
+			if (V_strstr(szTargetPlayerName, szSpecifiedName))
+			{
+				if (iFoundIndex != -1)
+				{
+					char buf[64];
+					V_snprintf(buf, sizeof(buf), "\"%s\" targets multiple players. Please be more specific.", szSpecifiedName);
+					UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, buf);
+					return;
+				}
+				else
+					iFoundIndex = i;
+			}
+		}
+
+		if (iFoundIndex == -1)
+		{
+			char buf[64];
+			V_snprintf(buf, sizeof(buf), "Unable to find a player with \"%s\" in their name.", szSpecifiedName);
+			UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, buf);
+			return;
+		}
+
+		// Set the leader
+		ASWGameResource()->SetLeader(dynamic_cast<CASW_Player*>(UTIL_PlayerByIndex(iFoundIndex)));
+	}
+	else
+	{
+		// Just set the command requester as lobby leader
+		ASWGameResource()->SetLeader(pPlayer);
+	}
+}
+ChatCommand ASW_SetLeader("/setleader", ASW_SetLeader_t);

@@ -115,9 +115,11 @@ public:
 
 	// Returns the specified key in the current scope.
 	HypKeyValues *GetKey(int keyIndex);
+	int KeyCount() { return m_children.Count(); }
 
 	// Returns the specified value in the current scope.
 	HypKeyValue *GetValue(int valueIndex);
+	int ValueCount() { return m_subKeyValues.Count(); }
 
 	HKVExistsType ExistsInCurrentScope(const char *keyName);
 	

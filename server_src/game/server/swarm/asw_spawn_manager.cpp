@@ -657,7 +657,7 @@ int CASW_Spawn_Manager::SpawnAlienBatch( const char* szAlienClass, int iNumAlien
 	if (gEntList.NumberOfEdicts() > 1800)
 	{
 		if (asw_director_debug.GetBool())
-			Msg("Current edicts is over 1800; prevented director from spawning aliens.");
+			Msg("Current edicts is over 1800; prevented director from spawning aliens.\n");
 		return 0;
 	}
 

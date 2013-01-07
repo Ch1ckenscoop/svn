@@ -1689,9 +1689,6 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 		m_fMapGenerationProgress = clamp(atof(args[1]), 0.0f, 1.0f);
 		return true;
 	}
-	else if ( FStrEq(pcmd, "cl_toggle_cfx") )
-	{
-	}
 	
 	return BaseClass::ClientCommand( args );
 }

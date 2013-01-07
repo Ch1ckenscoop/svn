@@ -110,18 +110,18 @@ void SendProxy_CropMarineFlagsToPlayerFlagBitsLength( const SendProp *pProp, con
 
 	//if (pEntity)
 	//{
-		//if (( data & mask ) & FL_ONGROUND)
-		//{
-			//Msg("  [S] Transmitting FL_ONGROUND (flags=%d)\n", pEntity->GetFlags());
-		//}
-		//else
-		//{
-			//Msg("  [S] Not Transmitting FL_ONGROUND (flags=%d)\n", pEntity->GetFlags());
-		//}
+	//if (( data & mask ) & FL_ONGROUND)
+	//{
+	//Msg("  [S] Transmitting FL_ONGROUND (flags=%d)\n", pEntity->GetFlags());
 	//}
 	//else
 	//{
-		//Msg(" WARNING updated flags without an ent\n");
+	//Msg("  [S] Not Transmitting FL_ONGROUND (flags=%d)\n", pEntity->GetFlags());
+	//}
+	//}
+	//else
+	//{
+	//Msg(" WARNING updated flags without an ent\n");
 	//}
 }
 
@@ -135,7 +135,7 @@ IMPLEMENT_SERVERCLASS_ST(CASW_Marine, DT_ASW_Marine)
 	SendPropExclude( "DT_BaseAnimating", "m_nNewSequenceParity" ),
 	SendPropExclude( "DT_BaseAnimating", "m_nResetEventsParity" ),
 	SendPropExclude( "DT_BaseCombatCharacter", "bcc_localdata" ),
-		
+
 	// asw_playeranimstate and clientside animation takes care of these on the client
 	SendPropExclude( "DT_ServerAnimationData" , "m_flCycle" ),	
 	SendPropExclude( "DT_AnimTimeMustBeFirst" , "m_flAnimTime" ),
@@ -146,7 +146,7 @@ IMPLEMENT_SERVERCLASS_ST(CASW_Marine, DT_ASW_Marine)
 	//SendPropVector	(SENDINFO(m_vecOrigin), -1,  SPROP_NOSCALE|SPROP_CHANGES_OFTEN, 0.0f, HIGH_DEFAULT, SendProxy_Origin ),
 	SendPropVectorXY(SENDINFO(m_vecOrigin),               -1, SPROP_NOSCALE | SPROP_CHANGES_OFTEN, 0.0f, HIGH_DEFAULT, SendProxy_OriginXY ),
 	SendPropFloat   (SENDINFO_VECTORELEM(m_vecOrigin, 2), -1, SPROP_NOSCALE | SPROP_CHANGES_OFTEN, 0.0f, HIGH_DEFAULT, SendProxy_OriginZ ),	// , SENDPROP_LOCALPLAYER_ORIGINZ_PRIORITY
-	
+
 	SendPropFloat		( SENDINFO_VECTORELEM(m_vecVelocity, 0), 32, SPROP_NOSCALE|SPROP_CHANGES_OFTEN ),
 	SendPropFloat		( SENDINFO_VECTORELEM(m_vecVelocity, 1), 32, SPROP_NOSCALE|SPROP_CHANGES_OFTEN ),
 	SendPropFloat		( SENDINFO_VECTORELEM(m_vecVelocity, 2), 32, SPROP_NOSCALE|SPROP_CHANGES_OFTEN ),
@@ -175,10 +175,10 @@ IMPLEMENT_SERVERCLASS_ST(CASW_Marine, DT_ASW_Marine)
 	SendPropBool	(SENDINFO(m_bPreventMovement)),
 	SendPropBool	(SENDINFO(m_bWalking) ),
 	SendPropFloat	(SENDINFO(m_fFFGuardTime), 0, SPROP_NOSCALE ),
-	
+
 	SendPropEHandle( SENDINFO ( m_hUsingEntity ) ),
 	SendPropEHandle( SENDINFO ( m_hCurrentHack ) ),
-	
+
 	SendPropVector( SENDINFO ( m_vecFacingPointFromServer ), 0, SPROP_NOSCALE ),
 	SendPropEHandle		( SENDINFO( m_hGroundEntity ), SPROP_CHANGES_OFTEN ),
 
@@ -188,7 +188,7 @@ IMPLEMENT_SERVERCLASS_ST(CASW_Marine, DT_ASW_Marine)
 	SendPropTime( SENDINFO(m_fNextMeleeTime) ),	
 	SendPropTime( SENDINFO( m_flNextAttack ) ),
 	SendPropInt		( SENDINFO( m_iMeleeAttackID ), 7, SPROP_UNSIGNED ),
-	
+
 	SendPropBool	(SENDINFO(m_bOnFire)),
 
 	// emotes
@@ -234,13 +234,13 @@ IMPLEMENT_SERVERCLASS_ST(CASW_Marine, DT_ASW_Marine)
 	SendPropFloat	( SENDINFO( m_flPreventLaserSightTime ) ),
 	SendPropBool	( SENDINFO( m_bAICrouch ) ),
 	SendPropInt		( SENDINFO( m_iJumpJetting )),
-	
-END_SEND_TABLE()
 
-//---------------------------------------------------------
-// Save/Restore
-//---------------------------------------------------------
-BEGIN_DATADESC( CASW_Marine )
+	END_SEND_TABLE()
+
+	//---------------------------------------------------------
+	// Save/Restore
+	//---------------------------------------------------------
+	BEGIN_DATADESC( CASW_Marine )
 	DEFINE_FIELD( m_bSlowHeal, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_iSlowHealAmount, FIELD_INTEGER ),
 	DEFINE_FIELD( m_vecFacingPointFromServer, FIELD_VECTOR ),
@@ -344,9 +344,9 @@ BEGIN_DATADESC( CASW_Marine )
 	DEFINE_FIELD( m_iPowerupType, FIELD_INTEGER ),
 	DEFINE_FIELD( m_flPowerupExpireTime, FIELD_FLOAT ),
 	DEFINE_FIELD( m_bPowerupExpires, FIELD_BOOLEAN ),
-END_DATADESC()
+	END_DATADESC()
 
-extern ConVar weapon_showproficiency;
+	extern ConVar weapon_showproficiency;
 extern ConVar asw_leadership_radius;
 extern ConVar asw_buzzer_poison_duration;
 extern ConVar asw_debug_marine_chatter;
@@ -403,10 +403,10 @@ float CASW_Marine::s_fNextIdleChatterTime = 0;
 void CASW_Marine::DoAnimationEvent( PlayerAnimEvent_t event )
 {
 	if (gpGlobals->maxClients > 1 && 
-				(event == PLAYERANIMEVENT_RELOAD || event == PLAYERANIMEVENT_JUMP || event == PLAYERANIMEVENT_WEAPON_SWITCH
-				|| event == PLAYERANIMEVENT_HEAL || event == PLAYERANIMEVENT_KICK || event == PLAYERANIMEVENT_THROW_GRENADE
-				|| event == PLAYERANIMEVENT_BAYONET || event == PLAYERANIMEVENT_PICKUP
-				|| ( event >= PLAYERANIMEVENT_MELEE && event <= PLAYERANIMEVENT_MELEE_LAST ) ) )
+		(event == PLAYERANIMEVENT_RELOAD || event == PLAYERANIMEVENT_JUMP || event == PLAYERANIMEVENT_WEAPON_SWITCH
+		|| event == PLAYERANIMEVENT_HEAL || event == PLAYERANIMEVENT_KICK || event == PLAYERANIMEVENT_THROW_GRENADE
+		|| event == PLAYERANIMEVENT_BAYONET || event == PLAYERANIMEVENT_PICKUP
+		|| ( event >= PLAYERANIMEVENT_MELEE && event <= PLAYERANIMEVENT_MELEE_LAST ) ) )
 	{
 		TE_MarineAnimEventExceptCommander( this, event );	// Send to any clients other than my commander who can see this guy.
 	}
@@ -656,10 +656,10 @@ void CASW_Marine::Spawn( void )
 	SetHealth( 100 );
 
 	NPCInit();
-		 
+
 	SetInhabited(false);
 	m_Commander = NULL;
-	
+
 	m_ASWOrders = ASW_ORDER_FOLLOW;
 	m_bWasFollowing = true;
 	m_flFieldOfView = ASW_HOLD_POSITION_FOV_DOT;
@@ -696,7 +696,7 @@ void CASW_Marine::Precache()
 	SelectModel();
 
 	BaseClass::Precache();
-	
+
 	PrecacheSpeech();
 	PrecacheModel("models/swarm/shouldercone/shouldercone.mdl");
 	PrecacheModel("models/swarm/shouldercone/lasersight.mdl");	
@@ -789,7 +789,7 @@ void CASW_Marine::PhysicsSimulate( void )
 			return;
 		}
 	}
-	
+
 	BaseClass::PhysicsSimulate();
 
 	CASW_Weapon *pWeapon = GetActiveASWWeapon();
@@ -894,7 +894,7 @@ void CASW_Marine::InhabitedBy(CASW_Player *player)
 		m_vecSmoothedVelocity.z = GetAbsVelocity().z;
 	}
 	SetInhabited(true);
-	
+
 
 	// stop the AI firing
 	m_bWantsToFire = m_bWantsToFire2 = false;
@@ -1017,7 +1017,7 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	{
 		return 0;
 	}
-	
+
 	//Ch1ckensCoop: Players won't take damage from friendly fire or ranger fire while in the air.
 	if (info.GetAttacker() && GetGroundEntity() == NULL && asw_marine_ff_immune.GetInt() > 0)
 	{
@@ -1065,7 +1065,7 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		if ( asw_debug_marine_damage.GetBool() )
 			Msg( "  Scaled AI taking damage from explosive barrel down to %f\n", newInfo.GetDamage() );
 	}
-	
+
 	// don't allow FF from melee attacks
 	bool bFriendlyFire = newInfo.GetAttacker() && newInfo.GetAttacker()->Classify() == CLASS_ASW_MARINE;
 	if ( bFriendlyFire )
@@ -1107,7 +1107,7 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 						Msg(" FF damage (%f) reduced to %f from FF absorption (%f)\n", newInfo.GetDamage(), flNewDamage, GetFFAbsorptionScale());
 					}
 				}
-				
+
 				GetMarineSpeech()->QueueChatter( CHATTER_FRIENDLY_FIRE, gpGlobals->curtime + 0.4f, gpGlobals->curtime + 1.0f );
 
 				m_fLastFriendlyFireTime = gpGlobals->curtime;
@@ -1123,7 +1123,7 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		{
 			if (newInfo.GetDamage() > GetHealth())
 				bKillProtection = true;
-			
+
 			if (asw_death_protection_debug.GetBool())
 				Msg("Blocked damage type %i. Marine health is %i.", newInfo.GetDamageType(), GetHealth());
 		}
@@ -1159,7 +1159,7 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		if (fNewDamage <= 0)
 			return 0;
 		newInfo.SetDamage(fNewDamage);
-		
+
 		iLeadershipResCount++;
 
 		if (asw_debug_marine_damage.GetBool())
@@ -1291,7 +1291,7 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 
 	if ( ASWDirector() )
 		ASWDirector()->MarineTookDamage( this, newInfo, bFriendlyFire );
-	
+
 	if (m_iHealth <= 0)
 	{
 		CASW_Door *pDoor = dynamic_cast<CASW_Door*>(newInfo.GetInflictor());
@@ -1446,7 +1446,7 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 			}
 		}
 	}	
-	
+
 	if (result > 0)
 	{		
 		// update our stats
@@ -1491,7 +1491,7 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		}
 		if (asw_debug_marine_damage.GetBool())
 			Msg("marine took damage %f (total taken %f, ff taken %f)\n",
-					newInfo.GetDamage(), pMR->m_fDamageTaken, m_fFriendlyFireDamage);
+			newInfo.GetDamage(), pMR->m_fDamageTaken, m_fFriendlyFireDamage);
 
 		// if we take fire damage, catch on fire
 		float fPainInterval = 0.7f;
@@ -1595,9 +1595,9 @@ bool CASW_Marine::IsAlienNear()
 	CBaseEntity* pEntity = NULL;
 	while ((pEntity = gEntList.FindEntityByClassname( pEntity, "asw_drone" )) != NULL)
 	{
-		CASW_Drone* drone = dynamic_cast<CASW_Drone*>(pEntity);
-		if ( drone && drone->GetAbsOrigin().DistTo(GetAbsOrigin()) < 1220.0f)
-			return true;
+	CASW_Drone* drone = dynamic_cast<CASW_Drone*>(pEntity);
+	if ( drone && drone->GetAbsOrigin().DistTo(GetAbsOrigin()) < 1220.0f)
+	return true;
 	}*/
 	int count = AimTarget_ListCount();
 	if ( count )
@@ -1661,14 +1661,14 @@ void CASW_Marine::HurtAlien(CBaseEntity *pAlien, const CTakeDamageInfo &info)
 			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWeapon, flIgniteChance, mod_ignite );
 			if ( RandomFloat() < flIgniteChance )
 			{
-				pNPC->ASW_Ignite(5.0f, 0, info.GetAttacker());
+			pNPC->ASW_Ignite(5.0f, 0, info.GetAttacker());
 			}
 
 			float flElectroChance = 0;
 			CALL_ATTRIB_HOOK_FLOAT_ON_OTHER( pWeapon, flElectroChance, mod_electro_stun );
 			if ( RandomFloat() < flElectroChance )
 			{
-				pNPC->ElectroStun( 5.0f );
+			pNPC->ElectroStun( 5.0f );
 			}
 			*/
 		}
@@ -1687,8 +1687,8 @@ void CASW_Marine::HurtAlien(CBaseEntity *pAlien, const CTakeDamageInfo &info)
 	// don't do any hurt alien affects against the little grubs or eggs
 	if (pAlien && 
 		(pAlien->Classify() == CLASS_ASW_GRUB ||
-			pAlien->Classify()== CLASS_ASW_ALIEN_GOO ||
-			pAlien->Classify() == CLASS_ASW_EGG ))
+		pAlien->Classify()== CLASS_ASW_ALIEN_GOO ||
+		pAlien->Classify() == CLASS_ASW_EGG ))
 		return;
 
 	bool bMadFiring = false;
@@ -1739,7 +1739,7 @@ void CASW_Marine::HurtAlien(CBaseEntity *pAlien, const CTakeDamageInfo &info)
 	}
 	else
 		GetMarineSpeech()->Chatter(CHATTER_FIRING_AT_ALIEN);
-	
+
 	if (info.GetDamageType() & DMG_CLUB && GetMarineResource())
 	{
 		GetMarineResource()->m_iAliensKicked++;
@@ -1754,10 +1754,10 @@ void CASW_Marine::HurtAlien(CBaseEntity *pAlien, const CTakeDamageInfo &info)
 // don't send angles when this marine is inhabited
 void SendProxy_Angles( const SendProp *pProp, const void *pStruct, const void *pData, DVariant *pOut, int iElement, int objectID )
 {
-	if (IsInhabited())
-		return NULL;
+if (IsInhabited())
+return NULL;
 
-	return BaseClass::SendProxy_Angles(pProp, pStruct, pData, pOut, iElement, objectID);
+return BaseClass::SendProxy_Angles(pProp, pStruct, pData, pOut, iElement, objectID);
 }
 */
 
@@ -1779,9 +1779,9 @@ void CASW_Marine::InhabitedPhysicsSimulate()
 void CASW_Marine::PostThink()
 {
 	//Msg("[S] Marine Postthink, sl=%d amount=%d tick=%f\n",
-		//m_bSlowHeal, m_iSlowHealAmount, m_fNextSlowHealTick);
+	//m_bSlowHeal, m_iSlowHealAmount, m_fNextSlowHealTick);
 	BaseClass::PostThink();
-	
+
 	DispatchAnimEvents( this );		
 
 	// is this correct here? should happen during/before think, not after?
@@ -1791,7 +1791,7 @@ void CASW_Marine::PostThink()
 	{
 		StudioFrameAdvance();
 	}
-		
+
 	ASWThinkEffects();
 
 	if ( NeedToUpdateSquad() )
@@ -1813,7 +1813,7 @@ void CASW_Marine::PostThink()
 			//IPhysicsShadowController *pController = VPhysicsGetObject()->GetShadowController();
 			//float teleport_dist = pController ? VPhysicsGetObject()->GetTeleportDistance() : 0;
 			//if (pController)
-				//VPhysicsGetObject()->SetTeleportDistance(0.1f);	// make sure the shadow teleports to its new position
+			//VPhysicsGetObject()->SetTeleportDistance(0.1f);	// make sure the shadow teleports to its new position
 			// move the marine's vphys shadow to our current position
 			VPhysicsGetObject()->SetPosition( GetAbsOrigin(), vec3_angle, true );
 			//VPhysicsGetObject()->UpdateShadow( GetAbsOrigin(), vec3_angle, false, gpGlobals->frametime );
@@ -1821,7 +1821,7 @@ void CASW_Marine::PostThink()
 			// clear its velocity, so the marine doesn't wake up phys objects - doesn't work :/
 			VPhysicsGetObject()->SetVelocityInstantaneous( &vec3_origin, &vec3_origin );
 			//if (pController)
-				//VPhysicsGetObject()->SetTeleportDistance(teleport_dist);	
+			//VPhysicsGetObject()->SetTeleportDistance(teleport_dist);	
 		}
 		else	// no vphysics shadow enabled if we're not stuck
 		{
@@ -1873,7 +1873,7 @@ void CASW_Marine::ASWThinkEffects()
 			// check slow heal isn't over out cap
 			if (m_bSlowHeal)
 			{
-					//m_iSlowHealAmount = GetMaxHealth() - GetHealth();
+				//m_iSlowHealAmount = GetMaxHealth() - GetHealth();
 				if ( GetHealth() >= GetMaxHealth() && !IsInfested() )		// clear all slow healing once we're at max health
 				{
 					ASWFailAdvice()->OnMarineOverhealed( m_iSlowHealAmount );
@@ -2077,7 +2077,7 @@ void CASW_Marine::ASWThinkEffects()
 	bool bMoving = IsInhabited() ? GetAbsVelocity() != vec3_origin : GetSmoothedVelocity().Length()>1.0f;
 	if (bMoving || (GetMarineResource() && GetMarineResource()->IsFiring())
 		|| m_hUsingEntity.Get())
-	
+
 	{
 		m_fLastStillTime = gpGlobals->curtime;
 	}
@@ -2087,9 +2087,9 @@ void CASW_Marine::ASWThinkEffects()
 		{			
 			if (asw_debug_marine_chatter.GetBool())
 				Msg("%s trying to idle chatter (cur=%f snextidle=%f idlechatdelay=%f(%f)\n", 
-					GetMarineProfile()->m_ShortName,
-					gpGlobals->curtime, s_fNextIdleChatterTime, m_fIdleChatterDelay, m_fLastStillTime + m_fIdleChatterDelay
-					);
+				GetMarineProfile()->m_ShortName,
+				gpGlobals->curtime, s_fNextIdleChatterTime, m_fIdleChatterDelay, m_fLastStillTime + m_fIdleChatterDelay
+				);
 			if (gpGlobals->curtime > s_fNextIdleChatterTime && GetMarineSpeech()->AllowCalmConversations(-1))	// check no-one else idle chatted recently
 			{
 				if (asw_debug_marine_chatter.GetBool())
@@ -2139,7 +2139,7 @@ void CASW_Marine::ASWThinkEffects()
 
 				if (bDidIdle)
 					s_fNextIdleChatterTime = gpGlobals->curtime + random->RandomInt(15, 25);
-					//s_fNextIdleChatterTime = gpGlobals->curtime + random->RandomInt(30, 60);
+				//s_fNextIdleChatterTime = gpGlobals->curtime + random->RandomInt(30, 60);
 				//m_fIdleChatterDelay = random->RandomInt(10, 20);
 				m_fIdleChatterDelay = random->RandomInt(25, 40);
 			}
@@ -2151,7 +2151,7 @@ void CASW_Marine::ASWThinkEffects()
 				m_fIdleChatterDelay = random->RandomInt(20, 35);
 			}
 			m_fLastStillTime = gpGlobals->curtime;
-			
+
 		}	
 	}
 	GetMarineSpeech()->Update();
@@ -2206,15 +2206,15 @@ void CASW_Marine::ASWThinkEffects()
 /*
 void CASW_Marine::Activate( void )
 {
-	BaseClass::Activate();
+BaseClass::Activate();
 
-	// Find all drones 
-	CBaseEntity *pObject = NULL;
-	while ( ( pObject = gEntList.FindEntityByClassname( pObject, "asw_drone" ) ) != NULL )
-	{
-		// Tell the AI sensing list that we want to consider this
-		g_AI_SensedObjectsManager.AddEntity( pObject );		
-	}
+// Find all drones 
+CBaseEntity *pObject = NULL;
+while ( ( pObject = gEntList.FindEntityByClassname( pObject, "asw_drone" ) ) != NULL )
+{
+// Tell the AI sensing list that we want to consider this
+g_AI_SensedObjectsManager.AddEntity( pObject );		
+}
 }
 */
 
@@ -2294,8 +2294,8 @@ int CASW_Marine::GiveAmmo( int iCount, int iAmmoIndex, bool bSuppressSound)
 
 	//if ( !g_pGameRules->CanHaveAmmo( this, iAmmoIndex ) )
 	//{
-		// game rules say I can't have any more of this ammo type.
-		//return 0;
+	// game rules say I can't have any more of this ammo type.
+	//return 0;
 	//}
 
 	if ( iAmmoIndex < 0 || iAmmoIndex >= MAX_AMMO_SLOTS )
@@ -2324,8 +2324,8 @@ int CASW_Marine::GiveAmmoToAmmoBag( int iCount, int iAmmoIndex, bool bSuppressSo
 
 	//if ( !g_pGameRules->CanHaveAmmo( this, iAmmoIndex ) )
 	//{
-		// game rules say I can't have any more of this ammo type.
-//		return 0;
+	// game rules say I can't have any more of this ammo type.
+	//		return 0;
 	//}
 
 	if ( iAmmoIndex < 0 || iAmmoIndex >= MAX_AMMO_SLOTS )
@@ -2464,7 +2464,7 @@ void CASW_Marine::Weapon_Equip_Post( CBaseCombatWeapon *pWeapon)
 
 	WeaponProficiency_t proficiency;
 	proficiency = CalcWeaponProficiency( pWeapon );
-	
+
 	if( weapon_showproficiency.GetBool() != 0 )
 	{
 		Msg("%s equipped with %s, proficiency is %s\n", GetClassname(), pWeapon->GetClassname(), GetWeaponProficiencyName( proficiency ) );
@@ -2685,7 +2685,7 @@ bool CASW_Marine::DropWeapon(int iWeaponIndex, bool bNoSwap)
 bool CASW_Marine::DropWeapon(CASW_Weapon* pWeapon, bool bNoSwap, const Vector *pvecTarget /* = NULL */, const Vector *pVelocity /* = NULL */ )
 {
 	RemoveWeaponPowerup( pWeapon );
-	
+
 	// dropping the weapon entity itself
 
 	// set clips in the dropped weapon
@@ -2872,7 +2872,7 @@ bool CASW_Marine::DropWeapon(CASW_Weapon* pWeapon, bool bNoSwap, const Vector *p
 	}
 
 	GetMarineResource()->UpdateWeaponIndices();
-		
+
 	return true;
 }
 
@@ -2925,7 +2925,7 @@ void CASW_Marine::AddSlowHeal( int iHealAmount, float flHealRateScale, CASW_Mari
 			m_fFriendlyFireDamage -= iHealAmount;
 			if (m_fFriendlyFireDamage < 0)
 				m_fFriendlyFireDamage = 0;
-				
+
 			//Msg(" So new medic medal healed is %d and new m_fFriendlyFireDamage is %f\n", iMedicMedalHealed, m_fFriendlyFireDamage);
 		}
 		if (iMedicMedalHealed > 0 && pMedic != this && pMedic && pMedic->GetMarineResource())
@@ -2941,9 +2941,9 @@ void CASW_Marine::AddSlowHeal( int iHealAmount, float flHealRateScale, CASW_Mari
 			CEntityFlame *pFireChild = dynamic_cast<CEntityFlame *>( GetEffectEntity() );
 			if ( pFireChild )
 			{
-				SetEffectEntity( NULL );
-				UTIL_Remove( pFireChild );				
-				Extinguish();
+			SetEffectEntity( NULL );
+			UTIL_Remove( pFireChild );				
+			Extinguish();
 			}
 			*/
 		}
@@ -2971,7 +2971,7 @@ bool CASW_Marine::StartUsing( CBaseEntity* pEntity )
 
 		if ( !pUsable->RequirementsMet( this ) )
 			return false;
-		
+
 		pUsable->MarineStartedUsing( this );
 		m_hUsingEntity = pEntity;
 		return true;
@@ -3011,7 +3011,7 @@ void CASW_Marine::MeleeBleed(CTakeDamageInfo* info)
 	{
 		vecDir = RandomVector(-1, 1);
 	}
-	
+
 
 	//UTIL_ASW_BloodDrips( GetAbsOrigin()+Vector(0,0,60)+vecDir*3, vecDir, BloodColor(), 5 );
 	Vector vecInflictorPos = info->GetDamagePosition();
@@ -3175,7 +3175,7 @@ bool  CASW_Marine::Event_Gibbed( const CTakeDamageInfo &info )
 			vecSpawnPos.x += sinf( fCircleDegree ) * RandomFloat( 3.0f, 20.0f );
 			vecSpawnPos.y += cosf( fCircleDegree ) * RandomFloat( 3.0f, 20.0f );
 			vecSpawnPos.z += RandomFloat( 20.0f, 40.0f );
-			
+
 			while ( bBlocked && k < 6 )
 			{
 				if ( k > 0 )
@@ -3183,7 +3183,7 @@ bool  CASW_Marine::Event_Gibbed( const CTakeDamageInfo &info )
 					// Scooch it up
 					vecSpawnPos.z += NAI_Hull::Maxs( HULL_TINY ).z - NAI_Hull::Mins( HULL_TINY ).z;
 				}
-						
+
 				// check if there's room at this position
 				trace_t tr;
 				UTIL_TraceHull( vecSpawnPos, vecSpawnPos + Vector( 0.0f, 0.0f, 1.0f ), 
@@ -3583,50 +3583,50 @@ void CASW_Marine::DoEmote(int iEmote)
 
 	switch (iEmote)
 	{
-		case 0:
+	case 0:
 		{
 			GetMarineSpeech()->Chatter(CHATTER_MEDIC);
 			bEmoteMedic = true;
 			break;
 		}
-		case 1:
+	case 1:
 		{
 			GetMarineSpeech()->Chatter(CHATTER_NEED_AMMO);
 			bEmoteAmmo = true;
 			break;
 		}
-		case 2:
+	case 2:
 		{
 			bEmoteSmile = true;
 			break;
 		}
-		case 3:
+	case 3:
 		{
 			GetMarineSpeech()->Chatter(CHATTER_HOLD_POSITION);
 			DoAnimationEvent(PLAYERANIMEVENT_HALT);
 			bEmoteStop = true;
 			break;
 		}
-		case 4:
+	case 4:
 		{
 			GetMarineSpeech()->Chatter(CHATTER_FOLLOW_ME);
 			DoAnimationEvent(PLAYERANIMEVENT_GO);
 			bEmoteGo = true;
 			break;
 		}
-		case 5:
+	case 5:
 		{
 			GetMarineSpeech()->Chatter(CHATTER_WATCH_OUT);
 			bEmoteExclaim = true;
 			break;
 		}
-		case 7:
+	case 7:
 		{
 			GetMarineSpeech()->Chatter(CHATTER_QUESTION);
 			bEmoteQuestion = true;
 			break;
 		}
-		default:
+	default:
 		{
 			bEmoteAnimeSmile = true;
 			break;
@@ -3701,7 +3701,7 @@ void CASW_Marine::StopDriving(IASW_Vehicle* pVehicle)
 	m_bIsInVehicle = false;
 	m_hASWVehicle = NULL;
 
-	
+
 
 	RemoveEffects( EF_NODRAW );
 	SetCollisionGroup( COLLISION_GROUP_PLAYER );
@@ -3783,13 +3783,13 @@ void CASW_Marine::Suicide()
 	if (IsInfested())
 	{
 		CTakeDamageInfo info(this, this, Vector(0,0,0), GetAbsOrigin(), 100,
-					DMG_INFEST);
+			DMG_INFEST);
 		TakeDamage(info);
 	}
 	else
 	{
 		CTakeDamageInfo info(this, this, Vector(0,0,0), GetAbsOrigin(), 100,
-					DMG_NEVERGIB);
+			DMG_NEVERGIB);
 		TakeDamage(info);
 	}
 
@@ -3826,7 +3826,7 @@ bool CASW_Marine::BecomeRagdollOnClient( const Vector &force )
 		// Transfer our name to the new ragdoll
 		pRagdoll->SetName( GetEntityName() );
 		//pRagdoll->SetCollisionGroup( COLLISION_GROUP_DEBRIS );
-		
+
 		// Get rid of our old body
 		//UTIL_Remove(this);
 		RemoveDeferred();
@@ -3863,7 +3863,7 @@ void CASW_Marine::SetModelFromProfile()
 		m_nSkin = pProfile->m_SkinNum;
 		//set the backpack bodygroup
 		SetBodygroup ( 1, m_nSkin );
-		
+
 		//Msg("%s Setting skin number to %d\n", pProfile->m_ShortName, m_nSkin);
 	}
 	else
@@ -3933,132 +3933,132 @@ void CASW_Marine::SetKnockedOut(bool bKnockedOut)
 /*
 void CASW_Marine::DoKickEffect()
 {
-	//Msg("CASW_Marine::DoKickEffect\n");
-	bool bHasBayonet = false;
-		// bayonet disabled at this time
-		//GetActiveASWWeapon() && GetActiveASWWeapon()->SupportsBayonet() &&
-			//(MarineSkills()->GetSkillBasedValueByMarine(this, ASW_MARINE_SKILL_EDGED) > 0);
-	//CBaseEntity *pHurt = 	
-	float flForce = MarineSkills()->GetSkillBasedValueByMarine(this, ASW_MARINE_SKILL_MELEE, ASW_MARINE_SUBSKILL_MELEE_FORCE);
-	// add a bit of randomness
+//Msg("CASW_Marine::DoKickEffect\n");
+bool bHasBayonet = false;
+// bayonet disabled at this time
+//GetActiveASWWeapon() && GetActiveASWWeapon()->SupportsBayonet() &&
+//(MarineSkills()->GetSkillBasedValueByMarine(this, ASW_MARINE_SKILL_EDGED) > 0);
+//CBaseEntity *pHurt = 	
+float flForce = MarineSkills()->GetSkillBasedValueByMarine(this, ASW_MARINE_SKILL_MELEE, ASW_MARINE_SUBSKILL_MELEE_FORCE);
+// add a bit of randomness
 //	flForce *= random->RandomFloat(0.8f, 1.2f);	
-	int iDamage = 1;
-	if (bHasBayonet)
-	{
-		// bayonet disabled at this time
-		//int iDamage = MarineSkills()->GetSkillBasedValueByMarine(this, ASW_MARINE_SKILL_EDGED);
-	}
-	else
-	{
-		iDamage = MarineSkills()->GetSkillBasedValueByMarine(this, ASW_MARINE_SKILL_MELEE, ASW_MARINE_SUBSKILL_MELEE_DMG);		
-	}	
+int iDamage = 1;
+if (bHasBayonet)
+{
+// bayonet disabled at this time
+//int iDamage = MarineSkills()->GetSkillBasedValueByMarine(this, ASW_MARINE_SKILL_EDGED);
+}
+else
+{
+iDamage = MarineSkills()->GetSkillBasedValueByMarine(this, ASW_MARINE_SKILL_MELEE, ASW_MARINE_SUBSKILL_MELEE_DMG);		
+}	
 
-	const CBaseEntity * ent = NULL;
-	if ( g_pGameRules->IsMultiplayer() )
-	{
-		// temp remove suppress host
-		ent = te->GetSuppressHost();
-		te->SetSuppressHost( NULL );
-	}
-	
-	CheckTraceHullAttack( asw_marine_melee_distance.GetFloat(), -Vector(16,16,32), Vector(16,16,32), iDamage, DMG_CLUB, flForce, true );
+const CBaseEntity * ent = NULL;
+if ( g_pGameRules->IsMultiplayer() )
+{
+// temp remove suppress host
+ent = te->GetSuppressHost();
+te->SetSuppressHost( NULL );
+}
 
-	if ( g_pGameRules->IsMultiplayer() )
-	{
-		te->SetSuppressHost( (CBaseEntity *) ent );
-	}
+CheckTraceHullAttack( asw_marine_melee_distance.GetFloat(), -Vector(16,16,32), Vector(16,16,32), iDamage, DMG_CLUB, flForce, true );
+
+if ( g_pGameRules->IsMultiplayer() )
+{
+te->SetSuppressHost( (CBaseEntity *) ent );
+}
 }
 
 CBaseEntity *CASW_Marine::CheckTraceHullAttack( float flDist, const Vector &mins, const Vector &maxs, int iDamage, int iDmgType, float forceScale, bool bDamageAnyNPC )
 {
-	// If only a length is given assume we want to trace in our facing direction
-	Vector forward;
-	AngleVectors( GetAbsAngles(), &forward );
-	Vector vStart = GetAbsOrigin();
+// If only a length is given assume we want to trace in our facing direction
+Vector forward;
+AngleVectors( GetAbsAngles(), &forward );
+Vector vStart = GetAbsOrigin();
 
-	// The ideal place to start the trace is in the center of the attacker's bounding box.
-	// however, we need to make sure there's enough clearance. Some of the smaller monsters aren't 
-	// as big as the hull we try to trace with. (SJB)
-	float flVerticalOffset = WorldAlignSize().z * 0.5;
+// The ideal place to start the trace is in the center of the attacker's bounding box.
+// however, we need to make sure there's enough clearance. Some of the smaller monsters aren't 
+// as big as the hull we try to trace with. (SJB)
+float flVerticalOffset = WorldAlignSize().z * 0.5;
 
-	if( flVerticalOffset < maxs.z )
-	{
-		// There isn't enough room to trace this hull, it's going to drag the ground.
-		// so make the vertical offset just enough to clear the ground.
-		flVerticalOffset = maxs.z + 1.0;
-	}
+if( flVerticalOffset < maxs.z )
+{
+// There isn't enough room to trace this hull, it's going to drag the ground.
+// so make the vertical offset just enough to clear the ground.
+flVerticalOffset = maxs.z + 1.0;
+}
 
-	vStart.z += flVerticalOffset;
-	Vector vEnd = vStart + (forward * flDist );
+vStart.z += flVerticalOffset;
+Vector vEnd = vStart + (forward * flDist );
 
-	// asw - make melee attacks trace below us too, so it's possible hard to hit things just below you on a slope
-	Vector low_mins = mins;
-	low_mins.z -= 30;
-	return CheckTraceHullAttack( vStart, vEnd, low_mins, maxs, iDamage, iDmgType, forceScale, bDamageAnyNPC );
+// asw - make melee attacks trace below us too, so it's possible hard to hit things just below you on a slope
+Vector low_mins = mins;
+low_mins.z -= 30;
+return CheckTraceHullAttack( vStart, vEnd, low_mins, maxs, iDamage, iDmgType, forceScale, bDamageAnyNPC );
 }
 
 // asw note: same as CBaseCombatCharacter version, but we use our custom melee trace filter so the victim can bleed and we can kick our own grenades
 CBaseEntity *CASW_Marine::CheckTraceHullAttack( const Vector &vStart, const Vector &vEnd, const Vector &mins, const Vector &maxs, int iDamage, int iDmgType, float flForceScale, bool bDamageAnyNPC )
 {
-	// Handy debuging tool to visualize HullAttack trace
-	if ( ai_show_hull_attacks.GetBool() )
-	{
-		float length	 = (vEnd - vStart ).Length();
-		Vector direction = (vEnd - vStart );
-		VectorNormalize( direction );
-		Vector hullMaxs = maxs;
-		hullMaxs.x = length + hullMaxs.x;
-		NDebugOverlay::BoxDirection(vStart, mins, hullMaxs, direction, 100,255,255,20,1.0);
-		NDebugOverlay::BoxDirection(vStart, mins, maxs, direction, 255,0,0,20,1.0);
-	}
+// Handy debuging tool to visualize HullAttack trace
+if ( ai_show_hull_attacks.GetBool() )
+{
+float length	 = (vEnd - vStart ).Length();
+Vector direction = (vEnd - vStart );
+VectorNormalize( direction );
+Vector hullMaxs = maxs;
+hullMaxs.x = length + hullMaxs.x;
+NDebugOverlay::BoxDirection(vStart, mins, hullMaxs, direction, 100,255,255,20,1.0);
+NDebugOverlay::BoxDirection(vStart, mins, maxs, direction, 255,0,0,20,1.0);
+}
 
-	CTakeDamageInfo	dmgInfo( this, this, iDamage, iDmgType );
-	
-	CASW_Trace_Filter_Melee traceFilter( this, COLLISION_GROUP_NONE, &dmgInfo, flForceScale, bDamageAnyNPC );
+CTakeDamageInfo	dmgInfo( this, this, iDamage, iDmgType );
 
-	Ray_t ray;
-	ray.Init( vStart, vEnd, mins, maxs );
+CASW_Trace_Filter_Melee traceFilter( this, COLLISION_GROUP_NONE, &dmgInfo, flForceScale, bDamageAnyNPC );
 
-	trace_t tr;
-	enginetrace->TraceRay( ray, MASK_SHOT_HULL, &traceFilter, &tr );
+Ray_t ray;
+ray.Init( vStart, vEnd, mins, maxs );
 
-	CBaseEntity *pEntity = traceFilter.m_pHit;
+trace_t tr;
+enginetrace->TraceRay( ray, MASK_SHOT_HULL, &traceFilter, &tr );
 
-	// do an impact effect for kicking some things
-	if (traceFilter.m_hBestHit.Get())
-	{
-		trace_t tr;
-		UTIL_TraceLine(WorldSpaceCenter(), traceFilter.m_hBestHit->WorldSpaceCenter(),	// check center to center
-				MASK_SOLID, this, COLLISION_GROUP_NONE, &tr);
-		if (tr.DidHit())
-		{
-			CASW_Door *pDoor = dynamic_cast<CASW_Door*>(tr.m_pEnt);		// doors make their own bash sounds, so skip an impact trace vs them
-			if (!pDoor && !traceFilter.m_hBestHit->IsNPC())	
-				UTIL_ImpactTrace( &tr, iDmgType );
-		}
-	}
-	else	// didn't hit anything, just do a general trace
-	{
-		Vector forward, right, up, v;
-		v = GetAbsOrigin();
-		QAngle ang = GetAbsAngles();
-		AngleVectors( ang, &forward, &right, &up );
-		v = v + up * 45;
-		Vector vecKickSrc = v
-						- forward * 1
-						+ right * 1;
-		trace_t tr;
-		UTIL_TraceLine(vecKickSrc, vecKickSrc + forward * 50,
-			MASK_SOLID, this, COLLISION_GROUP_NONE, &tr);
-		if (tr.DidHit())
-		{
-			CASW_Door *pDoor = dynamic_cast<CASW_Door*>(tr.m_pEnt);		// doors make their own bash sounds, so skip an impact trace vs them
-			if (!pDoor && !tr.m_pEnt->IsNPC())	
-				UTIL_ImpactTrace( &tr, iDmgType );
-		}
-	}
+CBaseEntity *pEntity = traceFilter.m_pHit;
 
-	return pEntity;
+// do an impact effect for kicking some things
+if (traceFilter.m_hBestHit.Get())
+{
+trace_t tr;
+UTIL_TraceLine(WorldSpaceCenter(), traceFilter.m_hBestHit->WorldSpaceCenter(),	// check center to center
+MASK_SOLID, this, COLLISION_GROUP_NONE, &tr);
+if (tr.DidHit())
+{
+CASW_Door *pDoor = dynamic_cast<CASW_Door*>(tr.m_pEnt);		// doors make their own bash sounds, so skip an impact trace vs them
+if (!pDoor && !traceFilter.m_hBestHit->IsNPC())	
+UTIL_ImpactTrace( &tr, iDmgType );
+}
+}
+else	// didn't hit anything, just do a general trace
+{
+Vector forward, right, up, v;
+v = GetAbsOrigin();
+QAngle ang = GetAbsAngles();
+AngleVectors( ang, &forward, &right, &up );
+v = v + up * 45;
+Vector vecKickSrc = v
+- forward * 1
++ right * 1;
+trace_t tr;
+UTIL_TraceLine(vecKickSrc, vecKickSrc + forward * 50,
+MASK_SOLID, this, COLLISION_GROUP_NONE, &tr);
+if (tr.DidHit())
+{
+CASW_Door *pDoor = dynamic_cast<CASW_Door*>(tr.m_pEnt);		// doors make their own bash sounds, so skip an impact trace vs them
+if (!pDoor && !tr.m_pEnt->IsNPC())	
+UTIL_ImpactTrace( &tr, iDmgType );
+}
+}
+
+return pEntity;
 }*/
 
 // marines always move efficiently`
@@ -4122,7 +4122,7 @@ void CASW_Marine::Scan()
 	// Draw a sweeping beam
 	scanAngle = GetAbsAngles();
 	scanAngle.y += (GROUNDTURRET_VIEWCONE / 2.0f) * sin( gpGlobals->curtime * 3.0f );
-	
+
 	AngleVectors( scanAngle, &forward, NULL, NULL );
 	ProjectBeam( vecEye, forward, 1, 30, 0.3 );
 }
@@ -4136,7 +4136,7 @@ void CASW_Marine::ProjectBeam( const Vector &vecStart, const Vector &vecDir, int
 
 	trace_t tr;
 	AI_TraceLine( vecStart, vecStart + vecDir * 768.0f, MASK_SHOT, this, COLLISION_GROUP_NONE, &tr );
-	
+
 	pBeam->SetStartPos( tr.endpos );
 	pBeam->SetEndPos( tr.startpos );
 	pBeam->SetWidth( width );
@@ -4316,7 +4316,7 @@ float CASW_Marine::GetReceivedDamageScale( CBaseEntity *pAttacker )
 			}
 		}
 	}
-	
+
 	return flScale * BaseClass::GetReceivedDamageScale(pAttacker);
 }
 
@@ -4326,7 +4326,7 @@ void CASW_Marine::ActivateFriendlyFireGuard(CASW_Marine *pVictim)
 	//	todo: make wepaons check this time isn't 0, to prevent firing
 	m_fFFGuardTime = gpGlobals->curtime + asw_marine_ff_guard_time.GetFloat();
 	// todo: play a sound warning the player of FF
-	
+
 }
 
 int CASW_Marine::GetAlienMeleeFlinch()
@@ -4429,7 +4429,7 @@ void CASW_Marine::CheckAndRequestAmmo()
 
 		bool bWeaponHasAmmo = ( pWeapon->Clip1() > 0 || GetAmmoCount ( pWeapon->GetPrimaryAmmoType() ) > 0 );
 		bool bWeaponLowOnAmmo = ( pWeapon->Clip1() == 0 && GetAmmoCount ( pWeapon->GetPrimaryAmmoType() ) <= 1) ||
-								( GetAmmoCount ( pWeapon->GetPrimaryAmmoType() ) == 0 );
+			( GetAmmoCount ( pWeapon->GetPrimaryAmmoType() ) == 0 );
 		bool bActiveWeapon = ( GetActiveASWWeapon() == pWeapon );
 
 		if ( bWeaponHasAmmo )
@@ -4580,11 +4580,14 @@ void CASW_Marine::PhysicsLandedOnGround( float fFallSpeed )
 				//Msg("Marine fell with speed %f modded to %f damage is %f\n", fFallVel, fFallVelMod, flFallDamage);
 				if ( flFallDamage > 0 )
 				{
-					TakeDamage( CTakeDamageInfo( GetContainingEntity(INDEXENT(0)), GetContainingEntity(INDEXENT(0)), flFallDamage, DMG_FALL ) ); 
-					CRecipientFilter filter;
-					filter.AddRecipientsByPAS( GetAbsOrigin() );
-
-					CBaseEntity::EmitSound( filter, entindex(), "Player.FallDamage" );
+					if ( asw_marine_fall_damage.GetBool() )
+					{
+						TakeDamage( CTakeDamageInfo( GetContainingEntity(INDEXENT(0)), GetContainingEntity(INDEXENT(0)), flFallDamage, DMG_FALL ) ); 
+						
+						CRecipientFilter filter;
+						filter.AddRecipientsByPAS( GetAbsOrigin() );
+						CBaseEntity::EmitSound( filter, entindex(), "Player.FallDamage" );
+					}
 				}
 				bAlive = GetHealth() > 0;
 #endif
@@ -4644,7 +4647,7 @@ void CASW_Marine::Stumble( CBaseEntity *pSource, const Vector &vecStumbleDir, bo
 
 	//vecStumbleDir.z = 0;
 	//vecStumbleDir.NormalizeInPlace();
-	
+
 	QAngle staggerAngles;
 	VectorAngles( vecStumbleDir, staggerAngles );
 	float yawDelta = AngleNormalize( GetAbsAngles()[YAW] - staggerAngles[YAW] );
@@ -4685,7 +4688,7 @@ void CASW_Marine::Knockdown( CBaseEntity *pSource, const Vector &vecImpulse, boo
 		m_iForcedActionRequest = FORCED_ACTION_KNOCKDOWN_BACKWARD;
 
 	ApplyAbsVelocityImpulse( vecImpulse );
-	
+
 	m_flKnockdownYaw = UTIL_VecToYaw( vecKnockdownDir );
 
 	SetNextStumbleTime( gpGlobals->curtime + asw_knockdown_interval.GetFloat() );
@@ -4788,7 +4791,7 @@ float CASW_Marine::GetOverallMovementDirection()
 
 		NDebugOverlay::Line( WorldSpaceCenter(), vecSmoothedPosition, 255, 0, 0, false, 1.0f );
 	}
-	
+
 	return UTIL_VecToYaw( ( GetAbsOrigin() - vecSmoothedPosition ).Normalized() );
 }
 

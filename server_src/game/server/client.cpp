@@ -904,8 +904,20 @@ CON_COMMAND( say, "Display player message" )
 				for (int i = 0; i < g_ChatCommandList->Count(); i++)
 				{
 					ChatCommand_t *currentCommand = g_ChatCommandList->Element(i);
-					if (!V_strcmp(currentCommand->m_szName, szCommand))
-						currentCommand->m_CommandCallback(args);
+					if ( !V_strncmp(currentCommand->m_szName, szCommand, V_strlen(currentCommand->m_szName)) )
+					{
+						// Trim off the "say " in the command arguments
+						CCommand newArgs;
+
+						// COMMAND_MAX_LENGTH = 512, but is private for some stupid reason.
+						char buf[512];
+						buf[0] = '\0';
+						V_strncpy(buf, args.Arg(1), sizeof(buf));
+
+						newArgs.Tokenize(buf);
+
+						currentCommand->m_CommandCallback(newArgs);
+					}
 				}
 			}
 

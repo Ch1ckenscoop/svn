@@ -2321,6 +2321,9 @@
     <ClCompile Include="HypKeyValues.cpp">
       <Filter>Source Files\Swarm\Ch1ckensCoop</Filter>
     </ClCompile>
+    <ClCompile Include="ASW_Sourcemod_Interface.cpp">
+      <Filter>Source Files\Swarm\Ch1ckensCoop</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\shared\achievement_saverestore.h">
@@ -4736,6 +4739,9 @@
       <Filter>Source Files\Swarm\Ch1ckensCoop</Filter>
     </ClInclude>
     <ClInclude Include="HypKeyValues.h">
+      <Filter>Source Files\Swarm\Ch1ckensCoop</Filter>
+    </ClInclude>
+    <ClInclude Include="ASW_Sourcemod_Interface.h">
       <Filter>Source Files\Swarm\Ch1ckensCoop</Filter>
     </ClInclude>
   </ItemGroup>

@@ -311,6 +311,7 @@ copy ^"$(TargetDir)$(TargetName).pdb^" ^"E:\ch1ckenscoop_server\swarm\bin\$(Targ
     <ClCompile Include="ASW_Health_Regen.cpp" />
     <ClCompile Include="ASW_Horde_Mode.cpp" />
     <ClCompile Include="ASW_Respawn_Marine.cpp" />
+    <ClCompile Include="ASW_Sourcemod_Interface.cpp" />
     <ClCompile Include="base_transmit_proxy.cpp" />
     <ClCompile Include="..\shared\baseachievement.cpp" />
     <ClCompile Include="baseanimating.cpp" />
@@ -1214,6 +1215,7 @@ copy ^"$(TargetDir)$(TargetName).pdb^" ^"E:\ch1ckenscoop_server\swarm\bin\$(Targ
     <ClInclude Include="ASW_Health_Regen.h" />
     <ClInclude Include="ASW_Horde_Mode.h" />
     <ClInclude Include="ASW_Respawn_Marine.h" />
+    <ClInclude Include="ASW_Sourcemod_Interface.h" />
     <ClInclude Include="baseanimating.h" />
     <ClInclude Include="BaseAnimatingOverlay.h" />
     <ClInclude Include="basecombatcharacter.h" />
