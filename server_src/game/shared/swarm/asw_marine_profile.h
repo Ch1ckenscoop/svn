@@ -247,8 +247,10 @@ public:
 
 class CASW_Marine_ProfileList
 {
-public:
+private:
 	CASW_Marine_ProfileList();
+public:
+	static CASW_Marine_ProfileList *GetProfileList();
 	virtual ~CASW_Marine_ProfileList();
 
 	void PrecacheSpeech(CBaseEntity* pEnt);

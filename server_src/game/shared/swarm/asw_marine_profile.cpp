@@ -531,6 +531,11 @@ CASW_Marine_ProfileList::~CASW_Marine_ProfileList()
 
 CASW_Marine_ProfileList* MarineProfileList()
 {
+	return CASW_Marine_ProfileList::GetProfileList();
+}
+
+CASW_Marine_ProfileList *CASW_Marine_ProfileList::GetProfileList()
+{
 	if (g_pMarineProfileList == NULL)
 	{
 		g_pMarineProfileList = new CASW_Marine_ProfileList();

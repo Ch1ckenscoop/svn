@@ -955,7 +955,7 @@ void CAlienSwarm::ReserveMarines()
 		if ( !pGameResource->IsRosterSelected( i ) && GetCampaignSave()->m_LastPrimaryMarines[i] )
 		{
 			pGameResource->SetRosterSelected( i, 2 );
-			Msg("==== Reserving marine %s for %s ====\n", CASW_Marine_ProfileList().GetProfile(i)->m_ShortName, STRING(GetCampaignSave()->m_LastCommanders[i]));
+			Msg("==== Reserving marine %s for %s ====\n", MarineProfileList()->GetProfile(i)->m_ShortName, STRING(GetCampaignSave()->m_LastCommanders[i]));
 		}
 	}
 
