@@ -329,7 +329,7 @@ void CASW_Alien::Spawn()
 	if ( m_bStartBurrowed )
 	{		
 		AddEffects( EF_NODRAW );
-		AddEffects( EF_NOSHADOW );
+		//AddEffects( EF_NOSHADOW );
 		AddFlag( FL_NOTARGET );
 		m_spawnflags |= SF_NPC_GAG;
 

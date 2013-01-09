@@ -10,7 +10,7 @@ public:
 	CASW_Horde_Mode();
 	~CASW_Horde_Mode();
 	
-	enum HordeModeAliens
+	enum HordeModeAlien
 	{
 		DRONE_INDEX,
 		BUZZER_INDEX,
@@ -45,24 +45,27 @@ public:
 		bool m_bBetaAlienCvarReversed;
 		bool m_bBeta;
 		ConVar *m_pAlienHealthCvar;
-		
-		AlienInfo() {}
+	};
 
-	} AlienInfoArray[ALIEN_INDEX_COUNT];
+	const AlienInfo *GetAlienInfo(int index);
 	
 	virtual bool Init();
 	virtual void LevelInitPostEntity();
 	virtual void FrameUpdatePostEntityThink();
 
 	virtual void HordeFinishedSpawning();
+
+private:
+	float m_flLastThinkTime;
+	int m_iLastAlienClass;
+
+	AlienInfo m_AlienInfoArray[ALIEN_INDEX_COUNT];
+
 	virtual int GetRandomValidAlien();
 	virtual void InitAlienData();
 	virtual void UpdateHordeMode();
 	virtual void RandomizeHealth(int alienNum);	//Randomize a specific alien type's health.
 	virtual void RandomizeHealth();	//Randomize all alien healths.
-
-	float m_flLastThinkTime;
-	int m_iLastAlienClass;
 	
 };
 
