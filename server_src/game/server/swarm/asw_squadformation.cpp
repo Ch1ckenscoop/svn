@@ -554,7 +554,10 @@ bool CASW_SquadFormation::SanityCheck() const
 // way to go
 unsigned int CASW_SquadFormation::Find( CASW_Marine *pMarine ) const
 {
-	Assert( pMarine != Leader() );
+	// Ch1ckensCoop: This can get triggered if the leader has a hiccup 
+	// in his connection, thus disconnecting and reconnecting the "leader"
+	// of the squad.
+	//Assert( pMarine != Leader() );
 	for ( int i = 0 ; i < MAX_SQUAD_SIZE ; ++i )
 	{
 		if ( m_hSquad[i] == pMarine )
