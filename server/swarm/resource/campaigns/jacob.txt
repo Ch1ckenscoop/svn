@@ -142,10 +142,24 @@ GAME
 		"LocationY"	"270"
 		"DifficultyModifier" "2"
 		"ThreatString" "6"
-		"Links"		"ASI-Jac6-SewerJunction"
+		"Links"		"ASI-Jac6-SewerJunction ASI-Jac1-Landingbay_Pract"
 		"LocationDescription" "Timor Station"
 		"ShortBriefing" "The economic heart of the colony, this mining operation was fueled by cheap labour from back home.  Geological reports show instability in the rock structure and signs of Swarm infestation."
 		"AlwaysVisible"	"1"
 		"NeedsMoreThanOneMarine" "1"
 	}
-}
+    "MISSION"
+	{
+		"MissionName"	"Offline Practice"		// name used on the map screen, etc.
+		"MapName"	"ASI-Jac1-Landingbay_Pract"		// name of the map file
+		"LocationX"	"275"			// location of the dot on the map
+		"LocationY"	"856"			// (from 0 to 1023, on the above texture)
+		"DifficultyModifier" "-2"
+		"ThreatString" "1"    // Threat level string to help players decide where to go next
+		"Links"		"ASI-Jac7-TimorStation"	// map names of neighbours
+		"LocationDescription" "Offline Practice"
+		"ShortBriefing"  "Squad will deploy at the colony's standard Category 5 Landing Bay.  Building security has been breached, so stay alert for hostiles."
+		"AlwaysVisible"	"1"
+		"NeedsMoreThanOneMarine" "1"
+	}
+	}
