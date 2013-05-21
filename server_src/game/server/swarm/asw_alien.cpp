@@ -665,25 +665,36 @@ void CASW_Alien::NPCThink( void )
 	UpdateThawRate();
 
 	//Ch1ckensCoop: Alien pruning
-	if (asw_alien_prune.GetBool() && strcmp(this->GetClassname(), "asw_egg") != 0 && strcmp(this->GetClassname(), "asw_shieldbug") != 0)
+	if (asw_alien_prune.GetBool() && Classify() != CLASS_ASW_EGG && Classify() != CLASS_ASW_SHIELDBUG)
 	{
 		bool bAlienSafe = false;
 		bool bMarinesAlive = false;
-		for (int i = 0; i < ASW_MAX_MARINE_RESOURCES; i++)
-		{
-			CASW_Marine_Resource *pResource = ASWGameResource()->GetMarineResource(i);
-			if (pResource)
-			{
-				CASW_Marine *pMarine = pResource->GetMarineEntity();
-				if (pMarine)
-				{
-					bMarinesAlive = true;
 
-					// Check if the marine is close enough to this alien to save it.
-					if (pMarine->GetAbsOrigin().DistTo(GetAbsOrigin()) <= asw_alien_prune_radius.GetFloat())
+		if (Classify() == CLASS_ASW_PARASITE)
+		{
+			CASW_Parasite* parasite = dynamic_cast<CASW_Parasite*>(this);
+			if (parasite && parasite->m_bDoEggIdle)	// Parasite is waiting in an egg
+				bAlienSafe = true;
+		}
+
+		if (!bAlienSafe)
+		{
+			for (int i = 0; i < ASW_MAX_MARINE_RESOURCES; i++)
+			{
+				CASW_Marine_Resource *pResource = ASWGameResource()->GetMarineResource(i);
+				if (pResource)
+				{
+					CASW_Marine *pMarine = pResource->GetMarineEntity();
+					if (pMarine)
 					{
-						bAlienSafe = true;
-						break;
+						bMarinesAlive = true;
+
+						// Check if the marine is close enough to this alien to save it.
+						if (pMarine->GetAbsOrigin().DistTo(GetAbsOrigin()) <= asw_alien_prune_radius.GetFloat())
+						{
+							bAlienSafe = true;
+							break;
+						}
 					}
 				}
 			}

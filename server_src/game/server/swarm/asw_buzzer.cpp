@@ -80,6 +80,12 @@
 
 ConVar asw_buzzer_color("asw_buzzer_color", "255 255 255", FCVAR_NONE, "Sets the color of buzzers.");
 
+ConVar asw_buzzer_color2("asw_buzzer_color2", "255 255 255", FCVAR_NONE, "Sets the color of buzzers.");
+ConVar asw_buzzer_color2_percent("asw_buzzer_color2_percent", "255 255 255", FCVAR_NONE, "Sets the color of buzzers.");
+
+ConVar asw_buzzer_color3("asw_buzzer_color3", "255 255 255", FCVAR_NONE, "Sets the color of buzzers.");
+ConVar asw_buzzer_color3_percent("asw_buzzer_color3_percent", "255 255 255", FCVAR_NONE, "Sets the color of buzzers.");
+
 ConVar	sk_asw_buzzer_health( "sk_asw_buzzer_health","30", FCVAR_CHEAT, "Health of the buzzer");
 ConVar	sk_asw_buzzer_melee_dmg( "sk_asw_buzzer_melee_dmg","15", FCVAR_CHEAT, "Damage caused by buzzer");
 ConVar	sk_asw_buzzer_melee_interval( "sk_asw_buzzer_melee_interval", "1.5", FCVAR_CHEAT, "Min time between causing damage to marines");
@@ -2176,6 +2182,15 @@ void CASW_Buzzer::Spawn(void)
 	SetNoiseMod( ASW_BUZZER_NOISEMOD_HIDE, ASW_BUZZER_NOISEMOD_HIDE, ASW_BUZZER_NOISEMOD_HIDE );
 
 	SetRenderColor(asw_buzzer_color.GetColor().r(), asw_buzzer_color.GetColor().g(), asw_buzzer_color.GetColor().b());
+
+	//Ch1ckenscoop, allow buzzer colors
+	float randomColor = RandomFloat (0, 1);
+	if (randomColor <= asw_buzzer_color2_percent.GetFloat())
+		SetRenderColor(asw_buzzer_color2.GetColor(). r(), asw_buzzer_color2.GetColor() .g(), asw_buzzer_color2.GetColor() .b());
+	else if (randomColor <= (asw_buzzer_color2_percent.GetFloat() + asw_buzzer_color3_percent.GetFloat()))
+			SetRenderColor(asw_buzzer_color3.GetColor().r(), asw_buzzer_color3.GetColor().g(), asw_buzzer_color3.GetColor().b());
+	else
+		SetRenderColor(asw_buzzer_color.GetColor(). r(), asw_buzzer_color.GetColor() .g(), asw_buzzer_color.GetColor() .b());
 
 	// Start out with full power! 
 	m_fEnginePowerScale = GetMaxEnginePower();

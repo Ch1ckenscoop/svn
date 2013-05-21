@@ -40,23 +40,23 @@
     <_ProjectFileVersion>11.0.51106.1</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>.\Debug_swarm\</OutDir>
+    <OutDir>C:\Users\Jeremy\Desktop\Ch1ckenScoop [Fast Ranking]\alien swarm fast ranking\swarm\bin\</OutDir>
     <IntDir>.\Debug_swarm\</IntDir>
     <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
     <PreLinkEventUseInBuild>true</PreLinkEventUseInBuild>
     <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
-    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
     <TargetName>server</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>.\Release_swarm\</OutDir>
+    <OutDir>C:\Users\Jeremy\Desktop\Ch1ckenScoop [Fast Ranking]\alien swarm fast ranking\swarm\bin\</OutDir>
     <IntDir>.\Release_swarm\</IntDir>
     <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
     <PreLinkEventUseInBuild>true</PreLinkEventUseInBuild>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
-    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
     <TargetName>server</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -210,9 +210,10 @@ if ERRORLEVEL 1 exit 1
       <OutputFile>$(OutDir)server.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Message>Publishing to F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.</Message>
-      <Command>copy ^"$(TargetDir)$(TargetName).dll^" ^"E:\ch1ckenscoop_server\swarm\bin\$(TargetName).dll^""
-copy ^"$(TargetDir)$(TargetName).pdb^" ^"E:\ch1ckenscoop_server\swarm\bin\$(TargetName).pdb^""</Command>
+      <Message>
+      </Message>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

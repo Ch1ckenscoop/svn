@@ -37,6 +37,17 @@ ConVar asw_ranger_spit_speed("asw_ranger_spit_speed", "425", FCVAR_CHEAT, "Sets 
 //ConVar asw_ranger_damage_splash("asw_ranger_damage_splash", "0.0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "Sets the spash damage of the ranger spit.");	//Ch1ckensCoop: TODO: splash damage?
 
 ConVar asw_ranger_color("asw_ranger_color", "255 255 255", FCVAR_NONE, "Sets the color of rangers.");
+
+ConVar asw_ranger_color2("asw_ranger_color2", "255 255 255", FCVAR_NONE, "Sets the color2 of rangers.");
+ConVar asw_ranger_color2_percent("asw_ranger_color2_percent", "255 255 255", FCVAR_NONE, "Sets the percentage of colors for rangers");
+
+ConVar asw_ranger_color3("asw_ranger_color3", "255 255 255", FCVAR_NONE, "Sets the color2 of rangers.");
+ConVar asw_ranger_color3_percent("asw_ranger_color3_percent", "255 255 255", FCVAR_NONE, "Sets the percentage of colors for rangers");
+
+ConVar asw_ranger_scalemod("asw_ranger_scalemod", "0.0", FCVAR_NONE, "Sets the scale of mod shieldbugs.");
+ConVar asw_ranger_scalemod_percent("asw_ranger_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of mod shieldbugs you want to scale");
+
+
 extern ConVar asw_debug_alien_damage;
 
 extern int AE_MORTARBUG_LAUNCH;		// actual launch of the projectile
@@ -93,6 +104,20 @@ void CASW_Ranger::Spawn( void )
 	
 	SetRenderColor(asw_ranger_color.GetColor().r(), asw_ranger_color.GetColor().g(), asw_ranger_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
 
+	//Ch1ckenscoop, allow rangers color.
+	float randomColor = RandomFloat (0, 1);
+	if (randomColor <= asw_ranger_color2_percent.GetFloat())
+		SetRenderColor(asw_ranger_color2.GetColor(). r(), asw_ranger_color2.GetColor() .g(), asw_ranger_color2.GetColor() .b());
+	else if (randomColor <= (asw_ranger_color2_percent.GetFloat() + asw_ranger_color3_percent.GetFloat()))
+			SetRenderColor(asw_ranger_color3.GetColor().r(), asw_ranger_color3.GetColor().g(), asw_ranger_color3.GetColor().b());
+	else
+		SetRenderColor(asw_ranger_color.GetColor(). r(), asw_ranger_color.GetColor() .g(), asw_ranger_color.GetColor() .b());
+
+
+	//Ch1ckenscoop, allow ranger scalemod.
+		float DroneScale = RandomFloat(0, 1);
+		if (DroneScale <= asw_ranger_scalemod_percent.GetFloat())
+			SetModelScale(asw_ranger_scalemod.GetFloat());
 	//
 	// Firing patterns
 	// 

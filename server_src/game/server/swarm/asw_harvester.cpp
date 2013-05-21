@@ -42,6 +42,14 @@ ConVar asw_harvester_spawn_height( "asw_harvester_spawn_height", "16", FCVAR_CHE
 ConVar asw_harvester_spawn_interval( "asw_harvester_spawn_interval", "1.0", FCVAR_CHEAT, "Time between spawning a harvesite and starting to spawn another" );
 
 ConVar asw_harvester_color("asw_harvester_color", "255 255 255", FCVAR_NONE, "Sets the color of harvesters.");
+ConVar asw_harvester_color2("asw_harvester_color2", "255 255 255", FCVAR_NONE, "Sets the color of harvesters.");
+ConVar asw_harvester_color2_percent("asw_harvester_color2_percent", "0.0", FCVAR_NONE, "Sets the color of harvesters.");
+
+ConVar asw_harvester_color3("asw_harvester_color3", "255 255 255", FCVAR_NONE, "Sets the color of harvesters.");
+ConVar asw_harvester_color3_percent("asw_harvester_color3_percent", "0.0", FCVAR_NONE, "Sets the color of harvesters.");
+
+ConVar asw_harvester_scalemod("asw_harvester_scalemod", "0.0", FCVAR_NONE, "Sets the scale of mod harvesters.");
+ConVar asw_harvester_scalemod_percent("asw_harvester_scalemod_percent", "0.0", FCVAR_NONE, "Sets the scale of mod harvesters.");
 
 //Ch1ckensCoop: Allow setting harvester health
 ConVar asw_harvester_health("asw_harvester_health", "200", FCVAR_CHEAT, "Sets health of harvesters.");
@@ -86,6 +94,20 @@ void CASW_Harvester::Spawn( void )
 	m_bNeverRagdoll = true;
 
 	SetRenderColor(asw_harvester_color.GetColor().r(), asw_harvester_color.GetColor().g(), asw_harvester_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
+
+	//Ch1ckenscoop, allow harvester colors
+	float randomColor = RandomFloat (0, 1);
+	if (randomColor <= asw_harvester_color2_percent.GetFloat())
+		SetRenderColor(asw_harvester_color2.GetColor(). r(), asw_harvester_color2.GetColor() .g(), asw_harvester_color2.GetColor() .b());
+	else if (randomColor <= (asw_harvester_color2_percent.GetFloat() + asw_harvester_color3_percent.GetFloat()))
+			SetRenderColor(asw_harvester_color3.GetColor().r(), asw_harvester_color3.GetColor().g(), asw_harvester_color3.GetColor().b());
+	else
+		SetRenderColor(asw_harvester_color.GetColor(). r(), asw_harvester_color.GetColor() .g(), asw_harvester_color.GetColor() .b());
+
+	//Ch1ckenscoop, allow harvesters scalemod.
+		float DroneScale = RandomFloat(0, 1);
+		if (DroneScale <= asw_harvester_scalemod_percent.GetFloat())
+			SetModelScale(asw_harvester_scalemod.GetFloat());
 }
 
 void CASW_Harvester::Precache( void )

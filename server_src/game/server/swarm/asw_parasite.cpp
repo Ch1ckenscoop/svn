@@ -36,8 +36,27 @@ ConVar asw_parasite_inside("asw_parasite_inside", "0", FCVAR_NONE, "If set, para
 ConVar asw_parasite_health("asw_parasite_health", "25", FCVAR_CHEAT, "Base health of parasites.");
 ConVar asw_parasite_defanged_health("asw_parasite_defanged_health", "10", FCVAR_CHEAT, "Base health of defanged parasites.");
 
-ConVar asw_parasite_color("asw_parasite_color", "255 255 255", FCVAR_NONE, "Sets the color of parasites.");
-ConVar asw_parasite_safe_color("asw_parasite_safe_color", "255 255 255", FCVAR_NONE, "Sets the color of defanged parasites.");
+ConVar asw_parasite_color("asw_parasite_color", "255 255 255", FCVAR_CCOOP, "Sets the color of parasites.");
+ConVar asw_parasite_safe_color("asw_parasite_safe_color", "255 255 255", FCVAR_CCOOP, "Sets the color of defanged parasites.");
+
+ConVar asw_parasite_color2("asw_parasite_color2", "255 255 255", FCVAR_CCOOP, "Sets the color of parasites.");
+ConVar asw_parasite_color2_percent("asw_parasite_color2_percent", "255 255 255", FCVAR_CCOOP, "Sets the color of parasites.");
+
+ConVar asw_parasite_color3("asw_parasite_color3", "255 255 255", FCVAR_CCOOP, "Sets the color of parasites.");
+ConVar asw_parasite_color3_percent("asw_parasite_color3_percent", "255 255 255", FCVAR_CCOOP, "Sets the color of parasites.");
+
+ConVar asw_parasite_scalemod("asw_parasite_scalemod", "0.0", FCVAR_CCOOP, "Sets the scale of mod harvesters.");
+ConVar asw_parasite_scalemod_percent("asw_parasite_scalemod_percent", "0.0", FCVAR_CCOOP, "Sets the scale of mod harvesters.");
+
+ConVar asw_parasite_safe_color2("asw_parasite_safe_color2", "255 255 255", FCVAR_CCOOP, "Sets the color of defanged parasites.");
+ConVar asw_parasite_safe_color2_percent("asw_parasite_safe_color2_percent", "255 255 255", FCVAR_CCOOP, "Sets the color of defanged parasites.");
+
+ConVar asw_parasite_safe_color3("asw_parasite_safe_color3", "255 255 255", FCVAR_CCOOP, "Sets the color of defanged parasites.");
+ConVar asw_parasite_safe_color3_percent("asw_parasite_safe_color3_percent", "255 255 255", FCVAR_CCOOP, "Sets the color of defanged parasites.");
+
+ConVar asw_parasite_safe_scalemod("asw_parasite_safe_scalemod", "0.0", FCVAR_CCOOP, "Sets the scale of mod harvesters.");
+ConVar asw_parasite_safe_scalemod_percent("asw_parasite__safe_scalemod_percent", "0.0", FCVAR_CCOOP, "Sets the scale of mod harvesters.");
+
 
 extern ConVar asw_debug_alien_damage;
 extern ConVar asw_god;
@@ -69,9 +88,9 @@ IMPLEMENT_SERVERCLASS_ST( CASW_Parasite, DT_ASW_Parasite )
 	SendPropBool(SENDINFO(m_bStartIdleSound)),
 	SendPropBool(SENDINFO(m_bDoEggIdle)),
 	SendPropBool(SENDINFO(m_bInfesting)),
-END_SEND_TABLE()
+	END_SEND_TABLE()
 
-BEGIN_DATADESC( CASW_Parasite )
+	BEGIN_DATADESC( CASW_Parasite )
 	DEFINE_FIELD( m_bCommittedToJump, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_bMidJump, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_vecCommittedJumpPos, FIELD_POSITION_VECTOR ),
@@ -88,9 +107,9 @@ BEGIN_DATADESC( CASW_Parasite )
 	DEFINE_THINKFUNC( InfestThink ),
 	DEFINE_ENTITYFUNC( LeapTouch ),
 	DEFINE_ENTITYFUNC( NormalTouch ),
-END_DATADESC()
+	END_DATADESC()
 
-enum
+	enum
 {
 	SCHED_PARASITE_RANGE_ATTACK1 = LAST_ASW_ALIEN_SHARED_SCHEDULE,
 	SCHED_PARASITE_JUMP_FROM_EGG = LAST_ASW_ALIEN_SHARED_SCHEDULE+1,
@@ -120,8 +139,21 @@ void CASW_Parasite::Spawn( void )
 		m_iHealth	= ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_parasite_defanged_health.GetInt());
 		SetBodygroup( 0, 1 );
 		m_fSuicideTime = gpGlobals->curtime + 60;
-		SetRenderColor(asw_parasite_safe_color.GetColor().r(), asw_parasite_safe_color.GetColor().g(), asw_parasite_safe_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
 		m_ClassType = (Class_T)CLASS_ASW_PARASITE_DEFANGED;
+
+		//Ch1ckenscoop, parasite-safe color.
+		float randomColor = RandomFloat (0, 1);
+		if (randomColor <= asw_parasite_safe_color2_percent.GetFloat())
+			SetRenderColor(asw_parasite_safe_color2.GetColor(). r(), asw_parasite_safe_color2.GetColor() .g(), asw_parasite_safe_color2.GetColor() .b());
+		else if (randomColor <= (asw_parasite_safe_color2_percent.GetFloat() + asw_parasite_safe_color3_percent.GetFloat()))
+			SetRenderColor(asw_parasite_safe_color3.GetColor().r(), asw_parasite_safe_color3.GetColor().g(), asw_parasite_safe_color3.GetColor().b());
+		else
+			SetRenderColor(asw_parasite_safe_color.GetColor(). r(), asw_parasite_safe_color.GetColor() .g(), asw_parasite_safe_color.GetColor() .b());
+
+		//Ch1ckenscoop, allow parasite safe scalemod.
+		float DroneScale = RandomFloat(0, 1);
+		if (DroneScale <= asw_parasite_safe_scalemod_percent.GetFloat())
+			SetModelScale(asw_parasite_safe_scalemod.GetFloat());
 	}
 	else
 	{
@@ -129,8 +161,21 @@ void CASW_Parasite::Spawn( void )
 		m_iHealth	= ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_parasite_health.GetInt());
 		SetBodygroup( 0, 0 );
 		m_fSuicideTime = 0;
-		SetRenderColor(asw_parasite_color.GetColor().r(), asw_parasite_color.GetColor().g(), asw_parasite_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
 		m_ClassType = (Class_T)CLASS_ASW_PARASITE;
+
+		//Ch1ckenscoop, parasite color.
+		float randomColor = RandomFloat (0, 1);
+		if (randomColor <= asw_parasite_color2_percent.GetFloat())
+			SetRenderColor(asw_parasite_color2.GetColor(). r(), asw_parasite_color2.GetColor() .g(), asw_parasite_color2.GetColor() .b());
+		else if (randomColor <= (asw_parasite_color2_percent.GetFloat() + asw_parasite_color3_percent.GetFloat()))
+			SetRenderColor(asw_parasite_color3.GetColor().r(), asw_parasite_color3.GetColor().g(), asw_parasite_color3.GetColor().b());
+		else
+			SetRenderColor(asw_parasite_color.GetColor(). r(), asw_parasite_color.GetColor() .g(), asw_parasite_color.GetColor() .b());
+
+		//Ch1ckenscoop, allow parasite scalemod.
+		float DroneScale = RandomFloat(0, 1);
+		if (DroneScale <= asw_parasite_scalemod_percent.GetFloat())
+			SetModelScale(asw_parasite_scalemod.GetFloat());
 	}
 
 	SetMoveType( MOVETYPE_STEP );
@@ -143,7 +188,7 @@ void CASW_Parasite::Spawn( void )
 	CapabilitiesAdd( bits_CAP_MOVE_GROUND | bits_CAP_INNATE_RANGE_ATTACK1 );
 
 	m_bInfesting = false;
-	
+
 }
 
 void CASW_Parasite::Event_Killed( const CTakeDamageInfo &info )
@@ -178,7 +223,7 @@ CASW_Parasite::~CASW_Parasite()
 
 void CASW_Parasite::Precache( void )
 {	
-	
+
 	PrecacheModel( SWARM_PARASITE_MODEL );
 
 	PrecacheScriptSound("ASW_Parasite.Death");
@@ -219,11 +264,11 @@ float CASW_Parasite::MaxYawSpeed( void )
 	case ACT_IDLE:		
 		return 64.0f;
 		break;
-	
+
 	case ACT_WALK:
 		return 64.0f;
 		break;
-	
+
 	default:
 	case ACT_RUN:
 		return 64.0f;
@@ -285,7 +330,7 @@ void CASW_Parasite::IdleSound()
 void CASW_Parasite::PrescheduleThink( void )
 {
 	BaseClass::PrescheduleThink();
-	
+
 	if (( m_NPCState == NPC_STATE_COMBAT ) && ( random->RandomFloat( 0, 5 ) < 0.1 ))
 	{
 		IdleSound();
@@ -377,7 +422,7 @@ void CASW_Parasite::HandleAnimEvent( animevent_t *pEvent )
 			return;
 
 		CBaseEntity *pEnemy = GetEnemy();
-			
+
 		if ( pEnemy )
 		{
 			if ( m_bCommittedToJump )
@@ -391,7 +436,7 @@ void CASW_Parasite::HandleAnimEvent( animevent_t *pEvent )
 			}
 
 			m_bCommittedToJump = false;
-			
+
 		}
 		else
 		{
@@ -430,11 +475,11 @@ bool CASW_Parasite::CorpseGib( const CTakeDamageInfo &info )
 {
 
 	CEffectData	data;
-	
+
 	data.m_vOrigin = WorldSpaceCenter();
 	data.m_vNormal = data.m_vOrigin - info.GetDamagePosition();
 	VectorNormalize( data.m_vNormal );
-	
+
 	data.m_flScale = RemapVal( m_iHealth, 0, -500, 1, 3 );
 	data.m_flScale = clamp( data.m_flScale, 1, 3 );
 	data.m_fFlags = IsOnFire() ? ASW_GIBFLAG_ON_FIRE : 0;
@@ -541,7 +586,7 @@ void CASW_Parasite::JumpAttack( bool bRandomJump, const Vector &vecPos, bool bTh
 		// so if you make the additional height too high, the crab can land on top of the
 		// enemy's head.  If we want to jump high, we'll need to move vecPos to the surface/outside
 		// of the enemy's box.
-		
+
 		float additionalHeight = 0;
 		if ( height < 32 )
 		{
@@ -710,7 +755,7 @@ void CASW_Parasite::InfestThink( void )
 
 	if ( !GetModelPtr() )
 		return;
-	
+
 	StudioFrameAdvance();
 
 	DispatchAnimEvents( this );
@@ -740,7 +785,7 @@ void CASW_Parasite::InfestMarine(CASW_Marine* pMarine)
 		Vector diff = pMarine->GetAbsOrigin() - GetAbsOrigin();
 		float angle = UTIL_VecToYaw(diff);
 		angle -= pMarine->GetAbsAngles()[YAW];	// get the diff between our angle from the marine and the marine's facing;
-		
+
 		current = GetAbsAngles();
 
 		Vector vAttachmentPos;
@@ -748,7 +793,7 @@ void CASW_Parasite::InfestMarine(CASW_Marine* pMarine)
 
 		// Make sure it's near the chest attachement before parenting
 		Teleport( &vAttachmentPos, &vec3_angle, &vec3_origin );
-		
+
 		SetParent( pMarine, attachment );
 
 		float flRaise = RandomFloat( 15.0f, 18.0f );
@@ -774,7 +819,7 @@ void CASW_Parasite::InfestMarine(CASW_Marine* pMarine)
 				ResetSequence(iInfestAttack);
 			}
 		}
-		
+
 		//AddFlag( FL_NOTARGET );	//Ch1ckensCoop: Allow targeting parasties that are infesting.
 		SetThink( &CASW_Parasite::InfestThink );
 		SetTouch( NULL );
@@ -806,13 +851,13 @@ void CASW_Parasite::InfestColonist(CASW_Colonist* pColonist)
 		Vector diff = pColonist->GetAbsOrigin() - GetAbsOrigin();
 		float angle = UTIL_VecToYaw(diff);
 		angle -= pColonist->GetAbsAngles()[YAW];	// get the diff between our angle from the marine and the marine's facing;
-		
+
 		current = GetAbsAngles();
-		
+
 		SetParent( pColonist, attachment );
-				Vector vecPosition;
+		Vector vecPosition;
 		float fRaise = random->RandomFloat(0,20);
-		
+
 		SetLocalOrigin( Vector( -fRaise * 0.2f, 0, fRaise ) );
 		SetLocalAngles( QAngle( 0, angle + asw_infest_angle.GetFloat(), 0 ) );
 		// play our infesting anim
@@ -893,7 +938,7 @@ void CASW_Parasite::LeapTouch( CBaseEntity *pOther )
 				//ClearSchedule( "About to gib self" );
 				// gib us
 				CTakeDamageInfo info(NULL, NULL, Vector(0,0,0), GetAbsOrigin(), GetHealth() * 2,
-						DMG_ACID);
+					DMG_ACID);
 				TakeDamage(info);
 				SetSchedule( SCHED_DIE );
 				return;
@@ -906,11 +951,11 @@ void CASW_Parasite::LeapTouch( CBaseEntity *pOther )
 		// Don't hit if back on ground
 		//if ( !( GetFlags() & FL_ONGROUND ) && m_bDefanged)	// if we're defanged, don't infest, just do some combat damage
 		//{
-	 		
+
 		//}
 		//else
 		//{
-			//ImpactSound();
+		//ImpactSound();
 		//}
 	}
 	else if( !(GetFlags() & FL_ONGROUND) )
@@ -997,62 +1042,62 @@ void CASW_Parasite::StartTask(const Task_t *pTask)
 		/*
 		case TASK_STOP_MOVING:
 		{
-			if (m_bDoEggIdle)
-			{
-				SetIdealActivity( (Activity) ACT_ASW_EGG_IDLE );
-				TaskComplete();
-				return;
-			}
-			if ( ( GetNavigator()->IsGoalSet() && GetNavigator()->IsGoalActive() ) || GetNavType() == NAV_JUMP )
-			{
-				DbgNavMsg( this, "Start TASK_STOP_MOVING\n" );
-				if ( pTask->flTaskData == 1 )
-				{
-					DbgNavMsg( this, "Initiating stopping path\n" );
-					GetNavigator()->StopMoving( false );
-				}
-				else
-				{
-					GetNavigator()->ClearGoal();
-				}
+		if (m_bDoEggIdle)
+		{
+		SetIdealActivity( (Activity) ACT_ASW_EGG_IDLE );
+		TaskComplete();
+		return;
+		}
+		if ( ( GetNavigator()->IsGoalSet() && GetNavigator()->IsGoalActive() ) || GetNavType() == NAV_JUMP )
+		{
+		DbgNavMsg( this, "Start TASK_STOP_MOVING\n" );
+		if ( pTask->flTaskData == 1 )
+		{
+		DbgNavMsg( this, "Initiating stopping path\n" );
+		GetNavigator()->StopMoving( false );
+		}
+		else
+		{
+		GetNavigator()->ClearGoal();
+		}
 
-				// E3 Hack
-				if (LookupPoseParameter( "move_yaw") >= 0)
-				{
-					SetPoseParameter( "move_yaw", 0 );
-				}
-			}
-			else
-			{
-				if ( pTask->flTaskData == 1 && GetNavigator()->SetGoalFromStoppingPath() )
-				{
-					DbgNavMsg( this, "Start TASK_STOP_MOVING\n" );
-					DbgNavMsg( this, "Initiating stopping path\n" );
-				}
-				else
-				{
-					GetNavigator()->ClearGoal();
-					if (m_bDoEggIdle)
-						SetIdealActivity( (Activity) ACT_ASW_EGG_IDLE );
-					else
-						SetIdealActivity( GetStoppedActivity() );
+		// E3 Hack
+		if (LookupPoseParameter( "move_yaw") >= 0)
+		{
+		SetPoseParameter( "move_yaw", 0 );
+		}
+		}
+		else
+		{
+		if ( pTask->flTaskData == 1 && GetNavigator()->SetGoalFromStoppingPath() )
+		{
+		DbgNavMsg( this, "Start TASK_STOP_MOVING\n" );
+		DbgNavMsg( this, "Initiating stopping path\n" );
+		}
+		else
+		{
+		GetNavigator()->ClearGoal();
+		if (m_bDoEggIdle)
+		SetIdealActivity( (Activity) ACT_ASW_EGG_IDLE );
+		else
+		SetIdealActivity( GetStoppedActivity() );
 
-					TaskComplete();
-				}
-			}
+		TaskComplete();
+		}
+		}
 		}
 		*/
-		case TASK_PARASITE_JUMP_FROM_EGG:
+	case TASK_PARASITE_JUMP_FROM_EGG:
 		{
 			DoJumpFromEgg();
 			break;
 		}
-		case TASK_RANGE_ATTACK1:
+	case TASK_RANGE_ATTACK1:
 		{
 			SetIdealActivity( ACT_RANGE_ATTACK1 );
 			break;
 		}
-		default:
+	default:
 		{
 			BaseClass::StartTask( pTask );
 		}
@@ -1063,8 +1108,8 @@ void CASW_Parasite::RunTask( const Task_t *pTask )
 {
 	switch ( pTask->iTask )
 	{
-		case TASK_RANGE_ATTACK1:
-		case TASK_RANGE_ATTACK2:
+	case TASK_RANGE_ATTACK1:
+	case TASK_RANGE_ATTACK2:
 		{
 			if ( IsActivityFinished() )
 			{
@@ -1076,16 +1121,16 @@ void CASW_Parasite::RunTask( const Task_t *pTask )
 			}
 			break;
 		}
-		case TASK_PARASITE_JUMP_FROM_EGG:
-			GetMotor()->UpdateYaw();
-			if ( FacingIdeal() )
-			{
-				TaskComplete();
-			}
-			break;
-		default:
-			BaseClass::RunTask( pTask );
-			break;	
+	case TASK_PARASITE_JUMP_FROM_EGG:
+		GetMotor()->UpdateYaw();
+		if ( FacingIdeal() )
+		{
+			TaskComplete();
+		}
+		break;
+	default:
+		BaseClass::RunTask( pTask );
+		break;	
 	}
 }
 
@@ -1100,11 +1145,11 @@ void CASW_Parasite::UpdatePlaybackRate()
 	float boost = asw_parasite_speedboost.GetFloat();
 	switch (ASWGameRules()->GetSkillLevel())
 	{
-		case 5: boost *= asw_alien_speed_scale_insane.GetFloat(); break;
-		case 4: boost *= asw_alien_speed_scale_insane.GetFloat(); break;
-		case 3: boost *= asw_alien_speed_scale_hard.GetFloat(); break;
-		case 2: boost *= asw_alien_speed_scale_normal.GetFloat(); break;
-		default: boost *= asw_alien_speed_scale_easy.GetFloat(); break;
+	case 5: boost *= asw_alien_speed_scale_insane.GetFloat(); break;
+	case 4: boost *= asw_alien_speed_scale_insane.GetFloat(); break;
+	case 3: boost *= asw_alien_speed_scale_hard.GetFloat(); break;
+	case 2: boost *= asw_alien_speed_scale_normal.GetFloat(); break;
+	default: boost *= asw_alien_speed_scale_easy.GetFloat(); break;
 	}
 	m_flPlaybackRate = boost;
 }
@@ -1113,8 +1158,8 @@ int CASW_Parasite::TranslateSchedule( int scheduleType )
 {
 	switch( scheduleType )
 	{
-		case SCHED_RANGE_ATTACK1:
-			return SCHED_PARASITE_RANGE_ATTACK1;
+	case SCHED_RANGE_ATTACK1:
+		return SCHED_PARASITE_RANGE_ATTACK1;
 	}
 
 	return BaseClass::TranslateSchedule( scheduleType );
@@ -1173,17 +1218,17 @@ void CASW_Parasite::IdleInEgg(bool b)
 Activity CASW_Parasite::TranslateActivity( Activity baseAct, Activity *pIdealWeaponActivity )
 {
 	Activity translated = BaseClass::TranslateActivity(baseAct, pIdealWeaponActivity);
-/*
+	/*
 	if (translated == ACT_IDLE && m_bDoEggIdle)
 	{
-		Msg("Translated idle to egg idle\n");
-		return (Activity) ACT_ASW_EGG_IDLE;
+	Msg("Translated idle to egg idle\n");
+	return (Activity) ACT_ASW_EGG_IDLE;
 	}
 	else if (translated == ACT_IDLE)
 	{
-		Msg("Go an act idle, but not translating it as we're not set to do an egg idle\n");
+	Msg("Go an act idle, but not translating it as we're not set to do an egg idle\n");
 	}
-*/
+	*/
 	return translated;
 }
 
@@ -1261,7 +1306,7 @@ void CASW_Parasite::NPCThink()
 	{
 		// suicide!		
 		CTakeDamageInfo info(NULL, NULL, Vector(0,0,0), GetAbsOrigin(), GetHealth() * 2,
-				DMG_ACID);
+			DMG_ACID);
 		TakeDamage(info);
 	}
 }
@@ -1274,35 +1319,35 @@ bool CASW_Parasite::CanBeSeenBy( CAI_BaseNPC *pNPC )
 
 AI_BEGIN_CUSTOM_NPC( asw_parasite, CASW_Parasite )
 	DECLARE_ANIMEVENT( AE_HEADCRAB_JUMPATTACK )
-	DECLARE_ANIMEVENT( AE_PARASITE_INFEST_SPURT )
-	DECLARE_ANIMEVENT( AE_PARASITE_INFEST )
-	DECLARE_TASK( TASK_PARASITE_JUMP_FROM_EGG )
-	DECLARE_ACTIVITY( ACT_ASW_EGG_IDLE )
+DECLARE_ANIMEVENT( AE_PARASITE_INFEST_SPURT )
+DECLARE_ANIMEVENT( AE_PARASITE_INFEST )
+DECLARE_TASK( TASK_PARASITE_JUMP_FROM_EGG )
+DECLARE_ACTIVITY( ACT_ASW_EGG_IDLE )
 
-	DEFINE_SCHEDULE
+DEFINE_SCHEDULE
 	(
-		SCHED_PARASITE_RANGE_ATTACK1,
+	SCHED_PARASITE_RANGE_ATTACK1,
 
-		"	Tasks"
-		"		TASK_STOP_MOVING			0"
-		"		TASK_FACE_ENEMY				0"
-		"		TASK_RANGE_ATTACK1			0"
-		"		TASK_SET_ACTIVITY			ACTIVITY:ACT_IDLE"
-		"		TASK_FACE_IDEAL				0"
-		"		TASK_WAIT_RANDOM			0.5"
-		""
-		"	Interrupts"
-		"		COND_ENEMY_OCCLUDED"
-		"		COND_NO_PRIMARY_AMMO"
+	"	Tasks"
+	"		TASK_STOP_MOVING			0"
+	"		TASK_FACE_ENEMY				0"
+	"		TASK_RANGE_ATTACK1			0"
+	"		TASK_SET_ACTIVITY			ACTIVITY:ACT_IDLE"
+	"		TASK_FACE_IDEAL				0"
+	"		TASK_WAIT_RANDOM			0.5"
+	""
+	"	Interrupts"
+	"		COND_ENEMY_OCCLUDED"
+	"		COND_NO_PRIMARY_AMMO"
 	)
 
 	DEFINE_SCHEDULE
 	(
-		SCHED_PARASITE_JUMP_FROM_EGG,
+	SCHED_PARASITE_JUMP_FROM_EGG,
 
-		"	Tasks"
-		"		TASK_PARASITE_JUMP_FROM_EGG			0"
-		""
-		"	Interrupts"
+	"	Tasks"
+	"		TASK_PARASITE_JUMP_FROM_EGG			0"
+	""
+	"	Interrupts"
 	)
-AI_END_CUSTOM_NPC()
+	AI_END_CUSTOM_NPC()

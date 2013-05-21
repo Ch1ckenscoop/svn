@@ -48,6 +48,14 @@ ConVar asw_mortarbug_face_target("asw_mortarbug_face_target", "1", FCVAR_CHEAT, 
 ConVar asw_mortarbug_health("asw_mortarbug_health", "350", FCVAR_CHEAT, "Sets the health of the mortar bug.");
 
 ConVar asw_mortarbug_color("asw_mortarbug_color", "255 255 255", FCVAR_NONE, "Sets the color of mortarbugs.");
+ConVar asw_mortarbug_color2("asw_mortarbug_color2", "255 255 255", FCVAR_NONE, "Sets the color of mortarbugs.");
+ConVar asw_mortarbug_color2_percent("asw_mortarbug_color2_percent", "255 255 255", FCVAR_NONE, "Sets the color of mortarbugs.");
+
+ConVar asw_mortarbug_color3("asw_mortarbug_color3", "255 255 255", FCVAR_NONE, "Sets the color of mortarbugs.");
+ConVar asw_mortarbug_color3_percent("asw_mortarbug_color3_percent", "255 255 255", FCVAR_NONE, "Sets the color of mortarbugs.");
+
+ConVar asw_mortarbug_scalemod("asw_mortarbug_scalemod", "0.0", FCVAR_NONE, "Sets the scale of mod harvesters.");
+ConVar asw_mortarbug_scalemod_percent("asw_mortarbug_scalemod_percent", "0.0", FCVAR_NONE, "Sets the scale of mod harvesters.");
 
 extern ConVar sv_gravity;
 extern ConVar asw_mortarbug_shell_gravity;	// TODO: Replace with proper spit projectile's gravity
@@ -87,6 +95,20 @@ void CASW_Mortarbug::Spawn( void )
 	m_takedamage = DAMAGE_NO;	// alien is invulnerable until she finds her first enemy
 	
 	SetRenderColor(asw_mortarbug_color.GetColor().r(), asw_mortarbug_color.GetColor().g(), asw_mortarbug_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
+
+	//Ch1ckenscoop, allow mortarbug colors
+	float randomColor = RandomFloat (0, 1);
+	if (randomColor <= asw_mortarbug_color2_percent.GetFloat())
+		SetRenderColor(asw_mortarbug_color2.GetColor(). r(), asw_mortarbug_color2.GetColor() .g(), asw_mortarbug_color2.GetColor() .b());
+	else if (randomColor <= (asw_mortarbug_color2_percent.GetFloat() + asw_mortarbug_color3_percent.GetFloat()))
+			SetRenderColor(asw_mortarbug_color3.GetColor().r(), asw_mortarbug_color3.GetColor().g(), asw_mortarbug_color3.GetColor().b());
+	else
+		SetRenderColor(asw_mortarbug_color.GetColor(). r(), asw_mortarbug_color.GetColor() .g(), asw_mortarbug_color.GetColor() .b());
+
+	//Ch1ckenscoop, allow harvesters scalemod.
+		float DroneScale = RandomFloat(0, 1);
+		if (DroneScale <= asw_mortarbug_scalemod_percent.GetFloat())
+			SetModelScale(asw_mortarbug_scalemod.GetFloat());
 }
 
 void CASW_Mortarbug::Precache( void )

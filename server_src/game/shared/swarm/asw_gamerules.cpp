@@ -3975,14 +3975,17 @@ bool CAlienSwarm::ShouldCollide( int collisionGroup0, int collisionGroup1 )
 			TEST_COLLISION(ASW_COLLISION_GROUP_ALIEN, ASW_COLLISION_GROUP_ALIEN))
 			return false;
 	}
-
+	
+		// this collision group only blocks drones
 	if (TESTING_GROUP(ASW_COLLISION_GROUP_BLOCK_DRONES))
 	{
-		// this collision group only blocks drones
 		if (TEST_COLLISION(ASW_COLLISION_GROUP_BLOCK_DRONES, ASW_COLLISION_GROUP_ALIEN) ||
 			TEST_COLLISION(ASW_COLLISION_GROUP_BLOCK_DRONES, ASW_COLLISION_GROUP_BIG_ALIEN))
 			return true;
+
+		return false;
 	}
+	
 
 	if (TESTING_GROUP(ASW_COLLISION_GROUP_PARASITE))
 	{

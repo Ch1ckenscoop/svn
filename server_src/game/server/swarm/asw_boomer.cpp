@@ -38,6 +38,15 @@ ConVar asw_boomer_inflate_debug( "asw_boomer_inflate_debug", "1.0f", FCVAR_CHEAT
 
 ConVar asw_boomer_color("asw_boomer_color", "255 255 255", FCVAR_NONE, "Sets the color of boomers.");
 
+ConVar asw_boomer_color2("asw_boomer_color2", "255 255 255", FCVAR_NONE, "Sets the color of boomers 2");
+ConVar asw_boomer_color2_percent("asw_boomer_color2_percent", "1.0", FCVAR_NONE, "Sets the color of boomers in percentage");
+
+ConVar asw_boomer_color3("asw_boomer_color3", "255 255 255", FCVAR_NONE, "Sets the color of boomers 2");
+ConVar asw_boomer_color3_percent("asw_boomer_color3_percent", "1.0", FCVAR_NONE, "Sets the color of boomers in percentage");
+
+ConVar asw_boomer_scalemod("asw_boomer_scalemod", "0.0", FCVAR_NONE, "Sets the scale of boomers.");
+ConVar asw_boomer_scalemod_percent("asw_boomer_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the boomers you want to scale.");
+
 extern ConVar asw_alien_debug_death_style;
 
 extern ConVar asw_debug_alien_damage;
@@ -78,7 +87,18 @@ void CASW_Boomer::Spawn( void )
 
 	m_bNeverRagdoll = true;
 
-	SetRenderColor(asw_boomer_color.GetColor().r(), asw_boomer_color.GetColor().g(), asw_boomer_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
+	float randomColor = RandomFloat (0, 1);
+	if (randomColor <= asw_boomer_color2_percent.GetFloat())
+		SetRenderColor(asw_boomer_color2.GetColor(). r(), asw_boomer_color2.GetColor() .g(), asw_boomer_color2.GetColor() .b());
+	else if (randomColor <= (asw_boomer_color2_percent.GetFloat() + asw_boomer_color3_percent.GetFloat()))
+			SetRenderColor(asw_boomer_color3.GetColor().r(), asw_boomer_color3.GetColor().g(), asw_boomer_color3.GetColor().b());
+	else
+		SetRenderColor(asw_boomer_color.GetColor(). r(), asw_boomer_color.GetColor() .g(), asw_boomer_color.GetColor() .b());
+
+	//Ch1ckenscoop, allow boomer scalemod.
+		float DroneScale = RandomFloat(0, 1);
+		if (DroneScale <= asw_boomer_scalemod_percent.GetFloat())
+			SetModelScale(asw_boomer_scalemod.GetFloat());
 }
 
 

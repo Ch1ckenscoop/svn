@@ -70,6 +70,14 @@ ConVar asw_shieldbug_force_defend("asw_shieldbug_force_defend", "0", FCVAR_CHEAT
 ConVar asw_shieldbug_health("asw_shieldbug_health", "1000", FCVAR_CHEAT, "Adjusts the health of the shieldbug."); //Ch1ckensCoop: convar for adjusting shieldbug health.
 
 ConVar asw_shieldbug_color("asw_shieldbug_color", "255 255 255", FCVAR_NONE, "Sets the color of shieldbugs.");
+ConVar asw_shieldbug_color2("asw_shieldbug_color2", "255 255 255", FCVAR_NONE, "Sets the color of mod shieldbugs.");
+ConVar asw_shieldbug_color2_percent("asw_shieldbug_color2_percent", "0.0", FCVAR_NONE, "Percentage.");
+
+ConVar asw_shieldbug_color3("asw_shieldbug_color3", "255 255 255", FCVAR_NONE, "Sets the color of mod shieldbugs.");
+ConVar asw_shieldbug_color3_percent("asw_shieldbug_color3_percent", "0.0", FCVAR_NONE, "Percentage.");
+
+ConVar asw_shieldbug_scalemod("asw_shieldbug_scalemod", "0.0", FCVAR_NONE, "Sets the scale of mod shieldbugs.");
+ConVar asw_shieldbug_scalemod_percent("asw_shieldbug_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of mod shieldbugs you want to scale");
 
 extern ConVar sv_gravity;
 extern ConVar asw_debug_marine_chatter;
@@ -134,6 +142,20 @@ void CASW_Shieldbug::Spawn( void )
 	m_bNeverInstagib = true;
 
 	SetRenderColor(asw_shieldbug_color.GetColor().r(), asw_shieldbug_color.GetColor().g(), asw_shieldbug_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
+
+	//Ch1ckensCoop: Mod Shieldbug colors.
+		float randomColor = RandomFloat(0, 1);
+		if (randomColor <= asw_shieldbug_color2_percent.GetFloat())
+			SetRenderColor(asw_shieldbug_color2.GetColor().r(), asw_shieldbug_color2.GetColor().g(), asw_shieldbug_color2.GetColor().b());
+		else if (randomColor <= (asw_shieldbug_color2_percent.GetFloat() + asw_shieldbug_color3_percent.GetFloat()))
+			SetRenderColor(asw_shieldbug_color3.GetColor().r(), asw_shieldbug_color3.GetColor().g(), asw_shieldbug_color3.GetColor().b());
+		else			
+			SetRenderColor(asw_shieldbug_color.GetColor().r(), asw_shieldbug_color.GetColor().g(), asw_shieldbug_color.GetColor().b());
+
+		//Ch1ckenscoop, allow shieldbugs scalemod.
+		float DroneScale = RandomFloat(0, 1);
+		if (DroneScale <= asw_shieldbug_scalemod_percent.GetFloat())
+			SetModelScale(asw_shieldbug_scalemod.GetFloat());
 }
 
 CASW_Shieldbug::~CASW_Shieldbug()
