@@ -54,7 +54,7 @@ void CASW_MissionTextDB::LoadKeyValuesFile( const char *pFilename )
 	if ( !pKeyValuesSource->LoadFromFile( g_pFullFileSystem, pFilename, "GAME" ) )
 	{
 		//AssertMsg1( false, "Could not open key values file %s", pFilename );
-		Warning( "Could not open key values file %s\n", pFilename );
+		//Warning( "Could not open key values file %s\n", pFilename );			//softcopy: suppressed the warning msg
 		return;
 	}
 
