@@ -40,23 +40,23 @@
     <_ProjectFileVersion>11.0.51106.1</_ProjectFileVersion>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>C:\Users\Jeremy\Desktop\Ch1ckenScoop [Fast Ranking]\alien swarm fast ranking\swarm\bin\</OutDir>
+    <OutDir>.\Debug_swarm\</OutDir>
     <IntDir>.\Debug_swarm\</IntDir>
     <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
     <PreLinkEventUseInBuild>true</PreLinkEventUseInBuild>
     <LinkIncremental>true</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
-    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
     <TargetName>server</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>C:\Users\Jeremy\Desktop\Ch1ckenScoop [Fast Ranking]\alien swarm fast ranking\swarm\bin\</OutDir>
+    <OutDir>.\Release_swarm\</OutDir>
     <IntDir>.\Release_swarm\</IntDir>
     <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
     <PreLinkEventUseInBuild>true</PreLinkEventUseInBuild>
     <LinkIncremental>false</LinkIncremental>
     <GenerateManifest>false</GenerateManifest>
-    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
+    <PostBuildEventUseInBuild>true</PostBuildEventUseInBuild>
     <TargetName>server</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -95,6 +95,7 @@ if ERRORLEVEL 1 exit 1
       <CompileAs>CompileAsCpp</CompileAs>
       <ErrorReporting>Prompt</ErrorReporting>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <DisableSpecificWarnings>4819;</DisableSpecificWarnings>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>_DEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -173,6 +174,7 @@ if ERRORLEVEL 1 exit 1
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <MinimalRebuild>true</MinimalRebuild>
       <WholeProgramOptimization>true</WholeProgramOptimization>
+      <DisableSpecificWarnings>4819;</DisableSpecificWarnings>
     </ClCompile>
     <ResourceCompile>
       <PreprocessorDefinitions>NDEBUG;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -210,10 +212,9 @@ if ERRORLEVEL 1 exit 1
       <OutputFile>$(OutDir)server.bsc</OutputFile>
     </Bscmake>
     <PostBuildEvent>
-      <Message>
-      </Message>
-      <Command>
-      </Command>
+      <Message>Publishing to F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.</Message>
+      <Command>copy ^"$(TargetDir)$(TargetName).dll^" ^"E:\ch1ckenscoop_server\swarm\bin\$(TargetName).dll^""
+copy ^"$(TargetDir)$(TargetName).pdb^" ^"E:\ch1ckenscoop_server\swarm\bin\$(TargetName).pdb^""</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
