@@ -2,8 +2,7 @@
 
 #include <sourcemod>
 
-//#define PLUGIN_VERSION "0.2.1"
-#define PLUGIN_VERSION "0.2.2"		//softcopy: error messages correction 
+#define PLUGIN_VERSION "0.2.3"
 public Plugin:myinfo =
 {
 	name = "AdminCheats",
@@ -11,21 +10,20 @@ public Plugin:myinfo =
 	description = "Allow admins to use cheat commands",
 	version = PLUGIN_VERSION,
 	url = "http://www.sourcemod.net/"
-	
 };
-
-//Error messages correction : by Softcopy
 
 #define MAX_COMMANDS 512
 
 new String:hooked[MAX_COMMANDS][128];
 new nextHooked=0;
 new Handle:cCheatOverride;
+new Handle:ccheatdenymsg;
 
 public OnPluginStart()
 {
 	cCheatOverride = CreateConVar("sm_admin_cheats_level","z","Level required to execute cheat commands",FCVAR_PLUGIN);
-	CreateConVar("sm_admin_cheats_version",PLUGIN_VERSION,"Version Information",FCVAR_REPLICATED|FCVAR_NOTIFY);
+	CreateConVar("sm_admin_cheats_version",PLUGIN_VERSION,"Version Information",FCVAR_REPLICATED);
+	ccheatdenymsg = CreateConVar("sm_admin_cheats_alert", "0", "Set 1 to send chat message to the issuer that cheat command succeed or not.");	//softcopy:
 	
 	new String:cmdname[128];
 	new bool:iscmd, cmdflags;
@@ -71,18 +69,29 @@ public Action:cheatcommand(client, args)
 	}
 	if (GetUserFlagBits(client)&ReadFlagString(access) > 0 || GetUserFlagBits(client)&ADMFLAG_ROOT > 0)
 	{
-		LogClient(client,"ran cheat command '%s'",argstring);
+		LogClient(client,"do CHEAT COMMAND '%s'",argstring);
 		for (new i=1;i<MaxClients;i++)
 		{
 			if (IsClientConnected(i) && IsClientInGame(i) && !IsFakeClient(i))
 			{
+				//softcopy: send the cheat command status to player
 				//PrintToConsole(i,"%s <%s> ran cheat command '%s'",argstring);
-				PrintToConsole(i,"ran cheat command '%s'",argstring);			//softcopy:
+				PrintToConsole(i,"ran cheat command '%s'",argstring);	
+				if (GetConVarInt(ccheatdenymsg) == 1)
+				{
+					PrintToChat(client,"You do cheat command '%s' success!",argstring);		
+				}
+					
 			}
 		}
 		return Plugin_Continue;
 	}
-	LogClient(client,"was prevented from running cheat command '%s'",argstring);
+	//softcopy: send the cheat command status to player
+	if (GetConVarInt(ccheatdenymsg) == 1)
+	{
+		PrintToChat(client,"You were denied to run cheat command '%s'",argstring);		
+	}
+	LogClient(client,"was denied to run cheat command '%s'",argstring);
 	return Plugin_Handled;
 }
 
@@ -99,5 +108,6 @@ public LogClient(client,String:format[], any:...)
 	GetClientIP(client,ip,32);
 	
 	//LogAction(client,-1,"<%s><%s><%s> %s",name,steamid,ip,buffer);
-	LogAction(client,-1,"<%s><%s><%s> %s",name,steamid,ip,buffer);	//softcopy: re-enable log	
+	//LogAction(client,-1, "%s:<%s>>%s> %s",name,steamid,ip,buffer);	//softcopy:
+	LogAction(client,-1,"%s %s",name,buffer);                     		//softcopy:
 }
