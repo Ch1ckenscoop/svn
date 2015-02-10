@@ -426,7 +426,12 @@ void CASW_Shieldbug::Event_Killed( const CTakeDamageInfo &info )
 {
 	BaseClass::Event_Killed( info );
 
-	ASWFailAdvice()->OnShiedbugKilled();
+	//softcopy: fix beta shieldbug can't disappear after kill 
+	if (!Q_strcmp(m_pszAlienModelName, SWARM_SHIELDBUG_MODEL))
+		SetThink(&CASW_Shieldbug::SUB_Remove);
+	else
+		ASWFailAdvice()->OnShiedbugKilled();
+
 }
 
 // NOTE: This function doesn't currently get used

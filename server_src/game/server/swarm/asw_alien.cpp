@@ -665,47 +665,42 @@ void CASW_Alien::NPCThink( void )
 	UpdateThawRate();
 
 	//Ch1ckensCoop: Alien pruning
-	if (asw_alien_prune.GetBool() && Classify() != CLASS_ASW_EGG && Classify() != CLASS_ASW_SHIELDBUG)
+    //softcopy: Fix queen can't be spawned on some custom maps.
+	//if (asw_alien_prune.GetBool() && strcmp(this->GetClassname(), "asw_egg") != 0 && strcmp(this->GetClassname(), "asw_shieldbug") != 0)
+	if (asw_alien_prune.GetBool() && strcmp(this->GetClassname(),"asw_egg") !=0 && strcmp(this->GetClassname(),"asw_shieldbug") !=0 && strcmp(this->GetClassname(),"asw_queen") !=0)
 	{
-		bool bAlienSafe = false;
+		//bool bAlienSafe = false; 			//softcopy:
 		bool bMarinesAlive = false;
-
-		if (Classify() == CLASS_ASW_PARASITE)
+		for (int i = 0; i < ASW_MAX_MARINE_RESOURCES; i++)
 		{
-			CASW_Parasite* parasite = dynamic_cast<CASW_Parasite*>(this);
-			if (parasite && parasite->m_bDoEggIdle)	// Parasite is waiting in an egg
-				bAlienSafe = true;
-		}
-
-		if (!bAlienSafe)
-		{
-			for (int i = 0; i < ASW_MAX_MARINE_RESOURCES; i++)
+			CASW_Marine_Resource *pResource = ASWGameResource()->GetMarineResource(i);
+			if (pResource)
 			{
-				CASW_Marine_Resource *pResource = ASWGameResource()->GetMarineResource(i);
-				if (pResource)
+				CASW_Marine *pMarine = pResource->GetMarineEntity();
+				if (pMarine)
 				{
-					CASW_Marine *pMarine = pResource->GetMarineEntity();
-					if (pMarine)
-					{
-						bMarinesAlive = true;
+					bMarinesAlive = true;
 
-						// Check if the marine is close enough to this alien to save it.
-						if (pMarine->GetAbsOrigin().DistTo(GetAbsOrigin()) <= asw_alien_prune_radius.GetFloat())
-						{
-							bAlienSafe = true;
-							break;
-						}
+					// Check if the marine is close enough to this alien to save it.
+					if (pMarine->GetAbsOrigin().DistTo(GetAbsOrigin()) <= asw_alien_prune_radius.GetFloat())
+					{
+						//softcopy: 
+						//bAlienSafe = true;
+						SetTagState(ASW_TAG_SAFE);    
+						break;
 					}
 				}
 			}
 		}
 
 		// Make sure we have at least one marine actually alive before we remove aliens.
-		if (!bAlienSafe && bMarinesAlive)
+		//softcopy: re-use SetTagState from R435 to fix no parasite in egg
+		//if (!bAlienSafe && bMarinesAlive && (GetTagState() != ASW_TAG_SAFE)) 
+		if ( bMarinesAlive && (GetTagState() != ASW_TAG_SAFE))
 			UTIL_Remove(this);
+		SetTagState(ASW_TAG_REMOVE);		
 	}
-
-	m_flLastThinkTime = gpGlobals->curtime;
+	m_flLastThinkTime = gpGlobals->curtime;   
 }
 
 bool CASW_Alien::MarineNearby(float radius, bool bCheck3D)

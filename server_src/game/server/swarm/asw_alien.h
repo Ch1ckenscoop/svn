@@ -317,7 +317,17 @@ public:
 		COND_ASW_FLINCH,
 		NEXT_CONDITION,
 	};
-
+	
+	//softcopy: re-use SetTagState from R257 to fix no parasite appear at some vents or eggs
+	void	SetTagState(int TagState) { m_iTagState = TagState; }
+	int 	GetTagState() { return m_iTagState; }
+	// need this enum for parasite disappear in vents or eggs.
+	enum
+	{
+		ASW_TAG_REMOVE,		//Alien is outside the pruning radius and should be removed
+		ASW_TAG_SAFE,		//Alien is inside the pruning radius
+	};
+	
 protected:	
 	
 	static float sm_flLastHurlTime;
@@ -331,6 +341,10 @@ protected:
 	CUtlVector<CASW_AlienVolley>	m_volleys;
 	CUtlVector<CASW_AlienShot>		m_shots;
 	DEFINE_CUSTOM_AI;
+	
+//softcopy:
+private:
+	int		m_iTagState;	//Current tag state     //re-use SetTagState from R257 to fix no parasite appear at some vents or eggs
 };
 
 // activities
