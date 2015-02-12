@@ -860,7 +860,7 @@ void CASW_MarineGameMovement::SetupMovementBounds( CMoveData *move )
 	// bloat by traveling the max velocity in all directions, plus the stepsize up/down
 	Vector bloat;
 	bloat.Init(radius, radius, radius);
-	bloat.z += player->m_Local.m_flStepSize;
+	bloat.z += player->m_Local.m_flStepSize;  
 	AddPointToBounds( start + boxMaxs + bloat, moveMins, moveMaxs );
 	AddPointToBounds( start + boxMins - bloat, moveMins, moveMaxs );
 	// now build an optimized trace within these bounds
@@ -2201,19 +2201,35 @@ void CASW_MarineGameMovement::MeleeMove( void )
 #endif
 		return;
 	}
-
-	// Don't walk up stairs if not on ground.
+//softcopy: 
+/*	// Don't walk up stairs if not on ground.
 	if ( oldground == NULL && marine->GetWaterLevel()  == 0 )
 	{
 		// Now pull the base velocity back out.   Base velocity is set if you are on a moving object, like a conveyor (or maybe another monster?)
-		VectorSubtract( mv->m_vecVelocity, marine->GetBaseVelocity(), mv->m_vecVelocity );
+		VectorSubtract( mv->m_vecVelocity, marine->GetBaseVelocity(), mv->m_vecVelocity );     
 #ifdef GAME_DLL
 		if ( bLagComp )
 		{
 			CASW_Lag_Compensation::FinishLagCompensation();	// undo lag compensation if we need to
 		}
 #endif
-		return;
+		return;   
+	}
+*/
+//	If activated jumping instead of rolling, some stuck cases occurred.
+//	Stuck can now be resumed by melee(map Landingbay_01, a corner area beside last computer hack panel) 
+	bool melee_walkup = !stricmp(gpGlobals->mapname.ToCStr(), "asi-jac1-landingbay_01");
+	if (( oldground == NULL && marine->GetWaterLevel() == 0 && !melee_walkup ) || 
+		( mv->m_nButtons & IN_JUMP || mv->m_nOldButtons & IN_JUMP || mv->m_vecVelocity[0] > 0 || mv->m_vecVelocity[1] > 0 || !melee_walkup ))
+	{
+			VectorSubtract( mv->m_vecVelocity, marine->GetBaseVelocity(), mv->m_vecVelocity );     
+#ifdef GAME_DLL
+			if ( bLagComp )
+			{
+				CASW_Lag_Compensation::FinishLagCompensation();	
+			}
+#endif
+			return; 
 	}
 
 	// If we are jumping out of water, don't do anything more.
@@ -3135,7 +3151,7 @@ bool CASW_MarineGameMovement::LadderMove( void )
 	Vector end;
 
 	if ( marine->GetMoveType() == MOVETYPE_NOCLIP )
-		return false;
+		return false;										
 
 	// If I'm already moving on a ladder, use the previous ladder direction
 	if ( marine->GetMoveType() == MOVETYPE_LADDER )
@@ -3155,7 +3171,7 @@ bool CASW_MarineGameMovement::LadderMove( void )
 		else
 		{
 			// Player is not attempting to move, no ladder behavior
-			return false;
+			return false;					
 		}
 	}
 
@@ -3205,7 +3221,6 @@ bool CASW_MarineGameMovement::LadderMove( void )
 	{
 		marine->SetMoveType( MOVETYPE_WALK );
 		marine->SetMoveCollide( MOVECOLLIDE_DEFAULT );
-
 		VectorScale( pm.plane.normal, 270, mv->m_vecVelocity );
 	}
 	else
@@ -3213,7 +3228,6 @@ bool CASW_MarineGameMovement::LadderMove( void )
 		if ( forwardSpeed != 0 || rightSpeed != 0 )
 		{
 			Vector velocity, perp, cross, lateral, tmp;
-
 			//ALERT(at_console, "pev %.2f %.2f %.2f - ",
 			//	pev->velocity.x, pev->velocity.y, pev->velocity.z);
 			// Calculate player's intended velocity
@@ -3246,7 +3260,7 @@ bool CASW_MarineGameMovement::LadderMove( void )
 
 			if ( onFloor && normal > 0 )	// On ground moving away from the ladder
 			{
-				VectorMA( mv->m_vecVelocity, MAX_CLIMB_SPEED, pm.plane.normal, mv->m_vecVelocity );
+				VectorMA( mv->m_vecVelocity, MAX_CLIMB_SPEED, pm.plane.normal, mv->m_vecVelocity );	
 			}
 			//pev->velocity = lateral - (CrossProduct( trace.vecPlaneNormal, perp ) * normal);
 		}
@@ -3780,7 +3794,7 @@ int CASW_MarineGameMovement::CheckStuck( void )
 			}
 		}
 	}
-	*/
+	*/        
 	return 1;
 }
 
@@ -4727,7 +4741,7 @@ void CASW_MarineGameMovement::PlayerMove( CASW_Marine *pMarine )
 			//Msg("Befor move: ");
 			if ( CheckStuck() )
 			{
-				//Msg("*** Can't move, we're stuck\n");
+				//Msg("******** Can't move, we're stuck\n");
 				// Can't move, we're stuck
 				return;  
 			}
