@@ -875,7 +875,9 @@ void CASW_Melee_System::SetupMeleeMovement( CASW_Marine *pMarine, CMoveData *pMo
 		pMoveData->m_vecVelocity = ( vecTargetPos - pMarine->GetAbsOrigin() ) / gpGlobals->frametime;
 		if ( pMoveData->m_vecVelocity.z == 0 )
 		{
-			pMoveData->m_vecVelocity.z = flVerticalSpeed;
+			//softcopy: Fixed marine would get serious damage from melee jumping
+			//pMoveData->m_vecVelocity.z = flVerticalSpeed;
+			pMoveData->m_vecVelocity.z = flVerticalSpeed * 0.98;
 		}
 
 		if ( asw_melee_debug.GetBool() && ( fabs( pMoveData->m_vecVelocity[0] ) > sv_maxvelocity.GetFloat() || fabs( pMoveData->m_vecVelocity[1] ) > sv_maxvelocity.GetFloat() ) ) 

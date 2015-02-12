@@ -102,6 +102,8 @@
 #include "missionchooser/iasw_mission_chooser.h"
 #include "missionchooser/iasw_random_missions.h"
 #include "missionchooser/iasw_map_builder.h"
+//softcopy:
+#include "asw_version.h"					// server.dll version information.
 
 
 //#include "entityapi.h"
@@ -113,7 +115,7 @@
 extern ConVar old_radius_damage;
 
 //softcopy:
-#define SERVER_DLL_VERSION "1.3"				//starting mod from Revision: r528. The third changes.
+#define SERVER_DLL_VERSION "1.4"				//starting mod from Revision: r528. The third changes.
 
 #define ASW_LAUNCHING_STEP 0.25f			// time between each stage of launching
 
@@ -6961,11 +6963,11 @@ void asw_list_version(const CCommand &args)
 {
 	CBasePlayer* pPlayer = UTIL_GetCommandClient();
 	char text[36];
-	Q_snprintf( text, sizeof(text), "Ch1ckenscoop version %s", SERVER_DLL_VERSION );
+	Q_snprintf( text, sizeof(text), "Ch1ckenscoop version %s", SERVER_DLL_VERSION );			//var defined in 'asw_version.h'
 	if (pPlayer)
 		UTIL_SayText( text, pPlayer );
 	else
 		Msg("%s\n",text);
 }
-ConCommand asw_version("asw_version", asw_list_version , "Display version of server.dll.");
+ConCommand asw_version("asw_version", asw_list_version , "Display version of server.dll.");		//modded from Revision r528
 #endif
