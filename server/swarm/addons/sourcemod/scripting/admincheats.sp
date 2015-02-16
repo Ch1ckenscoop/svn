@@ -31,7 +31,7 @@ public OnPluginStart()
 {
 	cCheatOverride = CreateConVar("sm_admin_cheats_level","z","Level required to execute cheat commands",FCVAR_PLUGIN);
 	CreateConVar("sm_admin_cheats_version",PLUGIN_VERSION,"Version Information",FCVAR_REPLICATED);
-	ccheatalert = CreateConVar("sm_admin_cheats_alert", "0", "Set 1 to send chat message to the issuer that cheat command succeed or not.");	//softcopy:
+	ccheatalert = CreateConVar("sm_admin_cheats_alert", "0", "Set 1, notify player who issued the cheat command success or not.");	//softcopy:
 	
 	new String:cmdname[128];
 	new bool:iscmd, cmdflags;

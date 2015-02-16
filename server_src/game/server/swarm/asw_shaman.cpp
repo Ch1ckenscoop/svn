@@ -55,7 +55,7 @@ void CASW_Shaman::Spawn( void )
 	SetHullType( HULL_MEDIUM );
 
 	BaseClass::Spawn();
-
+	
 	SetHullType( HULL_MEDIUM );
 	SetHealthByDifficultyLevel();
 	SetBloodColor( BLOOD_COLOR_GREEN );
@@ -68,7 +68,6 @@ void CASW_Shaman::Spawn( void )
 
 	SetCollisionGroup( ASW_COLLISION_GROUP_PARASITE );
 }
-	   
 
 //-----------------------------------------------------------------------------
 // Purpose:	
@@ -80,9 +79,13 @@ void CASW_Shaman::Precache( void )
 	BaseClass::Precache();
 
 	PrecacheModel(m_pszAlienModelName);
+    //softcopy: sound doesn't exist & add more sound effect
+	//PrecacheScriptSound( "Shaman.Pain" );     
+	//PrecacheScriptSound( "Shaman.Die" );      
+	PrecacheScriptSound( "ASW_Drone.DeathFireSizzle" );
+	PrecacheScriptSound( "Ranger.GibSplatHeavy" );
+	PrecacheScriptSound( "ASW_Parasite.Pain" );
 
-	PrecacheScriptSound( "Shaman.Pain" );
-	PrecacheScriptSound( "Shaman.Die" );
 }
 
 
@@ -137,8 +140,11 @@ void CASW_Shaman::PainSound( const CTakeDamageInfo &info )
 {	
 	// sounds for pain and death are defined in the npc_tier_tables excel sheet
 	// they are called from the asw_alien base class (m_fNextPainSound is handled there)
-	BaseClass::PainSound(info);
-	m_fNextPainSound = gpGlobals->curtime + RandomFloat( 0.75f, 1.25f );
+	BaseClass::PainSound(info);  
+	//softcopy: sound more obvious.
+	//m_fNextPainSound = gpGlobals->curtime + RandomFloat( 0.75f, 1.25f );
+	EmitSound("ASW_Parasite.Pain");
+	m_fNextPainSound = gpGlobals->curtime + RandomFloat( 1.0f, 1.5f );
 }
 
 
@@ -147,11 +153,23 @@ void CASW_Shaman::PainSound( const CTakeDamageInfo &info )
 // Input:	
 // Output:	
 //-----------------------------------------------------------------------------
+
+
 void CASW_Shaman::DeathSound( const CTakeDamageInfo &info )
 {
+	//softcopy: add sound more notice obviously.
 	// sounds for pain and death are defined in the npc_tier_tables excel sheet
 	// they are called from the asw_alien base class
-	BaseClass::DeathSound(info);
+	//BaseClass::DeathSound(info);
+	if ( m_nDeathStyle == kDIE_FANCY )
+	    // if we are playing a fancy death animation, don't play death sounds from code
+	    // all death sounds are played from anim events inside the fancy death animation    
+	    return;
+	if ( m_bOnFire )
+		EmitSound( "ASW_Drone.DeathFireSizzle" );
+    else
+        EmitSound( "Ranger.GibSplatHeavy" );
+	
 }
 
 

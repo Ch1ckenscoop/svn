@@ -103,8 +103,8 @@
 #include "missionchooser/iasw_random_missions.h"
 #include "missionchooser/iasw_map_builder.h"
 //softcopy:
+#include "asw_sourcemod_interface.h"	// admin immune vote kicking from players.
 #include "asw_version.h"	// version information.
-
 
 //#include "entityapi.h"
 //#include "entityoutput.h"
@@ -113,6 +113,9 @@
 #include "tier0/memdbgon.h"
 
 extern ConVar old_radius_damage;
+
+//softcopy:
+ConVar asw_vote_kick_admin("asw_vote_kick_admin", "1", FCVAR_CHEAT, "set 1, generic admin immune from a kick voting by players."); 
 
 #define ASW_LAUNCHING_STEP 0.25f	// time between each stage of launching
 
@@ -4092,8 +4095,8 @@ bool CAlienSwarm::ShouldCollide( int collisionGroup0, int collisionGroup1 )
 			TEST_COLLISION(ASW_COLLISION_GROUP_SENTRY_PROJECTILE, ASW_COLLISION_GROUP_SHOTGUN_PELLET) ||
 			TEST_COLLISION(ASW_COLLISION_GROUP_SENTRY_PROJECTILE, ASW_COLLISION_GROUP_IGNORE_NPCS) ||
 			TEST_COLLISION(ASW_COLLISION_GROUP_SENTRY_PROJECTILE, ASW_COLLISION_GROUP_SENTRY) ||
-			TEST_COLLISION(ASW_COLLISION_GROUP_SENTRY_PROJECTILE, ASW_COLLISION_GROUP_IGNORE_NPCS) ||
-			TEST_COLLISION(ASW_COLLISION_GROUP_SENTRY_PROJECTILE, ASW_COLLISION_GROUP_SENTRY) ||
+		  /*TEST_COLLISION(ASW_COLLISION_GROUP_SENTRY_PROJECTILE, ASW_COLLISION_GROUP_IGNORE_NPCS) ||    //softcopy: duplicated statements
+			TEST_COLLISION(ASW_COLLISION_GROUP_SENTRY_PROJECTILE, ASW_COLLISION_GROUP_SENTRY) || */
 			TEST_COLLISION(ASW_COLLISION_GROUP_SENTRY_PROJECTILE, COLLISION_GROUP_WEAPON))
 			return false;
 	}
@@ -5735,14 +5738,18 @@ void CAlienSwarm::SetKickVote(CASW_Player *pPlayer, int iPlayerIndex)
 	if ((float(iPlayers) * asw_vote_kick_fraction.GetFloat()) > iVotesNeeded)
 	{		
 		iVotesNeeded++;
-		Msg("Rounding needed votes up to %d\n", iVotesNeeded);
+		//softcopy:
+		//Msg("Rounding needed votes up to %d\n", iVotesNeeded);
+		Msg("Rounding needed votes up to %d for a kick vote\n", iVotesNeeded);   
 	}
 	if (iVotesNeeded < 2)
 	{
 		Msg("Increasing needed votes to 2 because that's the minimum for a kick vote\n");
 		iVotesNeeded = 2;
 	}
-	Msg("Players %d, Votes %d, Votes needed %d\n", iPlayers, iVotes, iVotesNeeded);
+	//softcopy: more meaning words.
+	//Msg("Players %d, Votes %d, Votes needed %d\n", iPlayers, iVotes, iVotesNeeded);
+	Msg( "Players %d, Votes %d, Votes needed %d for a kick vote\n", iPlayers, iVotes, iVotesNeeded ); 
 	if (iPlayerIndex > 0 && iVotes >= iVotesNeeded)
 	{
 		// kick this player
@@ -5753,7 +5760,7 @@ void CAlienSwarm::SetKickVote(CASW_Player *pPlayer, int iPlayerIndex)
 
 			Msg("kick voting %d out (votes %d/%d)\n", iPlayerIndex, iVotes, iVotesNeeded);
 			ClientPrint( pOtherPlayer, HUD_PRINTCONSOLE, "#asw_kicked_by_vote" );
-			UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, "#asw_player_kicked", pOtherPlayer->GetPlayerName());
+			//UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, "#asw_player_kicked", pOtherPlayer->GetPlayerName()); 	//softcopy: relocated
 
 			bool bPlayerCrashed = false;
 			INetChannelInfo *pNetChanInfo = engine->GetPlayerNetInfo( pOtherPlayer->entindex() );
@@ -5763,7 +5770,9 @@ void CAlienSwarm::SetKickVote(CASW_Player *pPlayer, int iPlayerIndex)
 				DevMsg( "Will not ban kicked player: net channel was idle for %.2f sec.\n", pNetChanInfo ? pNetChanInfo->GetTimeSinceLastReceived() : 0.0f );
 				bPlayerCrashed = true;
 			}
-			if ( ( sv_vote_kick_ban_duration.GetInt() > 0 ) && !bPlayerCrashed )
+			
+			//softcopy: Admin immune from vote kicking
+			/*if ( ( sv_vote_kick_ban_duration.GetInt() > 0 ) && !bPlayerCrashed )
 			{
 				// don't roll the kick command into this, it will fail on a lan, where kickid will go through
 				engine->ServerCommand( CFmtStr( "banid %d %d;", sv_vote_kick_ban_duration.GetInt(), pOtherPlayer->GetUserID() ) );
@@ -5777,7 +5786,46 @@ void CAlienSwarm::SetKickVote(CASW_Player *pPlayer, int iPlayerIndex)
 			//if (iPlayerIndex >= 0 && iPlayerIndex < ASW_MAX_READY_PLAYERS && ASWGameResource())
 			//{
 			//ASWGameResource()->m_iKickVotes.Set(iPlayerIndex-1, 0);
-			//}	
+			//}	*/
+			char buffer[256];
+			int iAdminIndex = -1;
+			bool isAdmin = false; 
+			if ( asw_vote_kick_admin.GetBool() )
+			{
+				CSteamID requesterSteamID;
+				if ( pOtherPlayer->GetSteamID(&requesterSteamID) )
+				{
+					iAdminIndex = Sourcemod()->GetAdminIndex(requesterSteamID);
+					if (iAdminIndex > -1 )  	//if > -1 = admin, if < 0 = non admin  
+						isAdmin = true;
+				}
+				else
+				{
+					Msg("Can not get the kicked ID level\n");
+					return;
+				}
+			}
+			if ( ( sv_vote_kick_ban_duration.GetInt() > 0 ) && !bPlayerCrashed && !isAdmin )  
+			{
+				// don't roll the kick command into this, it will fail on a lan, where kickid will go through
+				engine->ServerCommand( CFmtStr( "banid %d %d;", sv_vote_kick_ban_duration.GetInt(), pOtherPlayer->GetUserID() ) );
+			}
+			if ( !isAdmin )
+			{	
+				Q_snprintf(buffer, sizeof(buffer), "kickid %d\n", pOtherPlayer->GetUserID());
+				Msg("sending command: %s\n", buffer);
+				engine->ServerCommand(buffer);	
+				UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, "#asw_player_kicked", pOtherPlayer->GetPlayerName());
+			}
+			else
+			{
+				Q_snprintf(buffer, sizeof(buffer), "%s is immune from vote kicking on this server!", pOtherPlayer->GetPlayerName());
+				UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, " ");
+				UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, buffer);
+				UTIL_LogPrintf( "%s\n", buffer );
+				Msg( "%s\n", buffer );
+			}
+
 		}
 	}
 	else if (iVotes == 1 && iPlayerIndex != -1)	// if this is the first vote of this kind, check about announcing it
@@ -5789,6 +5837,10 @@ void CAlienSwarm::SetKickVote(CASW_Player *pPlayer, int iPlayerIndex)
 			if (pOtherPlayer)
 			{
 				UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, "#asw_started_kick_vote", pPlayer->GetPlayerName(), pOtherPlayer->GetPlayerName());
+				//softcopy: log who vote kicking.
+				char text[256];
+				Q_snprintf(text, sizeof(text), "**** \"%s\" wants \"%s\" to be kicked ****\n", pPlayer->GetPlayerName(), pOtherPlayer->GetPlayerName());
+				UTIL_LogPrintf(text); Msg(text); 
 			}
 		}
 		pPlayer->m_fLastKLVoteTime = gpGlobals->curtime;
