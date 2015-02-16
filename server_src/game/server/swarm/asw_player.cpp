@@ -1628,7 +1628,9 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				{
 					ASWGameResource()->SetLeader(this);
 					UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, "#asw_player_made_leader", GetPlayerName());
-					Msg("Network ID=%s LastLeaderNetworkID=%s\n", GetASWNetworkID(), ASWGameResource()->GetLastLeaderNetworkID());
+					//softcopy: show leadername instead of only steamID.
+					//Msg("Network ID=%s LastLeaderNetworkID=%s\n", GetASWNetworkID(), ASWGameResource()->GetLastLeaderNetworkID());
+					Msg("Network ID=%s Leader=%s LastLeaderNetworkID=%s\n",GetASWNetworkID(),GetPlayerName(),ASWGameResource()->GetLastLeaderNetworkID());  
 				}
 
 				UTIL_RestartAmbientSounds();

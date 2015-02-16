@@ -882,7 +882,9 @@ void CASW_Marine::SetCommander( CASW_Player *player )
 void CASW_Marine::SetInitialCommander(CASW_Player *player)
 {
 	Q_snprintf( m_szInitialCommanderNetworkID, sizeof(m_szInitialCommanderNetworkID), "%s", player ? player->GetASWNetworkID() : "None" );
-	Msg( " Marine %d:%s SetInitialCommander id to %s\n", entindex(), GetEntityName(), m_szInitialCommanderNetworkID );
+	//softcopy: show playername & userid, instead of only show steamID.
+	//Msg( " Marine %d:%s SetInitialCommander id to %s\n", entindex(), GetEntityName(), m_szInitialCommanderNetworkID );
+	Msg( " Marine %d:%s SetInitialCommander id to %s <%i><%s>\n", entindex(), GetEntityName(), GetPlayerName(), player->GetUserID(), m_szInitialCommanderNetworkID ); 
 }
 
 // called when a player takes direct control of this marine
@@ -3252,6 +3254,9 @@ void CASW_Marine::Event_Killed( const CTakeDamageInfo &info )
 		//Ch1ckensCoop: I wanna know when my victims die...
 		Msg("***** Player %s died! *****\n", this->GetPlayerName());
 	}
+	//softcopy: notify Players a marine is dead
+	if ( !(info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_MARINE) )
+		UTIL_ClientPrintAll( ASW_HUD_PRINTTALKANDCONSOLE, CFmtStr( "%s died!\n", this->GetPlayerName() ) );
 
 	if ( ASWGameRules() && ASWGameRules()->GetMissionManager() )
 	{
@@ -3543,10 +3548,28 @@ void CASW_Marine::Event_Killed( const CTakeDamageInfo &info )
 
 				if ( pOtherMarine == this )
 				{
-					if ( GetMarineProfile()->m_bFemale )
+					//softcopy: display player marine name instead of Profileshortname
+					/*if ( GetMarineProfile()->m_bFemale )
 						UTIL_ClientPrintAll( ASW_HUD_PRINTTALKANDCONSOLE, "#asw_suicide_female", szName );
 					else
 						UTIL_ClientPrintAll( ASW_HUD_PRINTTALKANDCONSOLE, "#asw_suicide_male", GetMarineProfile()->m_ShortName );
+					*/
+					char text[ 256 ], text2[ 256 ];
+					if ( GetMarineProfile()->m_bFemale )
+					{
+						UTIL_ClientPrintAll( ASW_HUD_PRINTTALKANDCONSOLE, "#asw_suicide_female", szName );
+						Q_snprintf( text, sizeof(text), "herself");
+					}
+					else
+					{
+						UTIL_ClientPrintAll( ASW_HUD_PRINTTALKANDCONSOLE, "#asw_suicide_male", szName ); 
+						Q_snprintf( text, sizeof(text), "himself" );
+					}
+					Q_snprintf( text2, sizeof(text2), "***** %s killed %s *****\n", szName, text);	
+					Msg( text2 );
+                    if ( asw_marine_death_notifications.GetBool() )          
+                        UTIL_LogPrintf( text2 );
+
 				}
 				else
 				{
@@ -3555,8 +3578,14 @@ void CASW_Marine::Event_Killed( const CTakeDamageInfo &info )
 					{
 						char szNameOther[ 256 ];
 						pMROther->GetDisplayName( szNameOther, sizeof( szNameOther ) );
-
-						UTIL_ClientPrintAll( ASW_HUD_PRINTTALKANDCONSOLE, "#asw_team_killed", szName, szNameOther );
+						//softcopy: team killer notification
+						//UTIL_ClientPrintAll( ASW_HUD_PRINTTALKANDCONSOLE, "#asw_team_killed", szName, szNameOther );
+						char text[ 256 ]; Q_snprintf( text, sizeof(text), "Teamkill! - %s was killed by %s\n", szName, szNameOther );  
+	                    UTIL_ClientPrintAll( ASW_HUD_PRINTTALKANDCONSOLE, text );
+						if ( asw_marine_death_notifications.GetBool() )   
+						{
+							UTIL_LogPrintf( text );	Msg(text);	//log teamkill information. 
+						}
 					}
 				}
 			}
