@@ -51,6 +51,7 @@ ConVar asw_rocket_homing_range("asw_rocket_homing_range", "640000", FCVAR_CHEAT)
 ConVar asw_rocket_wobble_freq("asw_rocket_wobble_freq", "0.25", FCVAR_CHEAT);
 ConVar asw_rocket_wobble_amp("asw_rocket_wobble_amp", "90", FCVAR_CHEAT);
 ConVar asw_rocket_debug("asw_rocket_debug", "0", FCVAR_CHEAT);
+extern ConVar asw_marine_ff_absorption;			//softcopy:
 
 #define ASW_ROCKET_MIN_SPEED asw_rocket_min_speed.GetFloat()
 #define ASW_ROCKET_MAX_SPEED asw_rocket_max_speed.GetFloat()
@@ -192,7 +193,15 @@ void CASW_Rocket::DoExplosion( bool bHitWall )
 
 	CTakeDamageInfo info( this, GetOwnerEntity(), GetDamage(), DMG_BLAST );
 	info.SetWeapon( m_hCreatorWeapon );
-	ASWGameRules()->RadiusDamage( info, GetAbsOrigin(), 50, CLASS_NONE, NULL );
+	//softcopy: Rocket won't damage marine from hardcore friendly fire is off
+	//ASWGameRules()->RadiusDamage( info, GetAbsOrigin(), 50, CLASS_NONE, NULL );
+	if ( !CAlienSwarm::IsHardcoreFF( ) && asw_marine_ff_absorption.GetInt() != 0)
+		//exclude marine from rocket damage if hardcoreFF is OFF 
+		ASWGameRules()->RadiusDamage( info, GetAbsOrigin(), 50, CLASS_ASW_MARINE, NULL );
+	else
+		//exclude none from rocket damage if hardcoreFF is ON
+		ASWGameRules()->RadiusDamage( info, GetAbsOrigin(), 50, CLASS_NONE, NULL );
+		
 }
 
 void CASW_Rocket::Explode( void )

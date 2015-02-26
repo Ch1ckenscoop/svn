@@ -89,10 +89,14 @@ void CASW_Weapon_Ammo_Satchel::DeployAmmoDrop()
 		return;
 	}
 	m_fLastAmmoDropTime = gpGlobals->curtime;
-
-	if( m_iClip1 <= 0 )
+	if( m_iClip1 <= 0  )
 	{
-		Assert( false );
+		//softcopy: TODO
+		//temporary let it work; "asw_ent_create asw_weapon_ammo_satchel", to make ammo pack with pre-defined packs
+		//Assert( false );     
+		m_iClip1 = AMMO_SATCHEL_DEFAULT_DROP_COUNT; 	
+		Assert( true );								
+
 		return;
 	}
 
