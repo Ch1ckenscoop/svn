@@ -32,6 +32,15 @@ int AE_SHAMAN_SPRAY_START;
 int AE_SHAMAN_SPRAY_END;
 
 ConVar asw_shaman_health( "asw_shaman_health", "60", FCVAR_CHEAT );
+//softcopy:
+ConVar asw_shaman_color("asw_shaman_color", "255 255 255", FCVAR_NONE, "Sets the color of shaman.");
+ConVar asw_shaman_color2("asw_shaman_color2", "255 255 255", FCVAR_NONE, "Sets the color of shamans.");
+ConVar asw_shaman_color2_percent("asw_shaman_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the shamans you want to give the color",true,0,true,1);
+ConVar asw_shaman_color3("asw_shaman_color3", "255 255 255", FCVAR_NONE, "Sets the color of shamans.");
+ConVar asw_shaman_color3_percent("asw_shaman_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the shamans you want to give the color",true,0,true,1);
+ConVar asw_shaman_scalemod("asw_shaman_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal shamans.");
+ConVar asw_shaman_scalemod_percent("asw_shaman_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the shamans you want to scale.",true,0,true,1);
+
 extern ConVar asw_debug_alien_damage;
 
 //-----------------------------------------------------------------------------
@@ -56,6 +65,9 @@ void CASW_Shaman::Spawn( void )
 
 	BaseClass::Spawn();
 	
+	//softcopy: set colors for shaman
+	SetColorScale( "shaman" );
+
 	SetHullType( HULL_MEDIUM );
 	SetHealthByDifficultyLevel();
 	SetBloodColor( BLOOD_COLOR_GREEN );
@@ -170,6 +182,13 @@ void CASW_Shaman::DeathSound( const CTakeDamageInfo &info )
     else
         EmitSound( "Ranger.GibSplatHeavy" );
 	
+}
+
+
+//softcopy:
+void CASW_Shaman::SetColorScale(const char *alienLabel)	
+{
+	BaseClass::SetColorScale(alienLabel);	
 }
 
 

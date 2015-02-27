@@ -108,7 +108,14 @@ ConVar asw_queen_model_scale("asw_queen_model_scale", "1.0", FCVAR_CHEAT, "Sets 
 ConVar asw_queen_max_parasites("asw_queen_max_parasites", "5", FCVAR_CHEAT, "Sets the maximum number of parasites that a queen can spawn.");
 //Ch1ckensCoop: Fix for queen attacking more than once per swipe. This appears to be intended behavior however, so I'll just make it a cvar.
 ConVar asw_queen_slash_multi("asw_queen_slash_multi", "0", FCVAR_CHEAT, "Set to one to have the queen attack more than once (usually 5 times) per slash.");
-
+//softcopy: 
+ConVar asw_queen_color("asw_queen_color", "255 255 255", FCVAR_NONE, "Sets the color of queen.");
+ConVar asw_queen_color2("asw_queen_color2", "255 255 255", FCVAR_NONE, "Sets the color of queen.");
+ConVar asw_queen_color2_percent("asw_queen_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the queen you want to give the color",true,0,true,1);
+ConVar asw_queen_color3("asw_queen_color3", "255 255 255", FCVAR_NONE, "Sets the color of parasites.");
+ConVar asw_queen_color3_percent("asw_queen_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the queen you want to give the color",true,0,true,1);
+ConVar asw_queen_scalemod("asw_queen_scalemod", "1.0", FCVAR_NONE, "Sets the scale of normal queens.");
+ConVar asw_queen_scalemod_percent("asw_queen_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal queens you want to scale.",true,0,true,1);
 ConVar asw_queen_damage_reductions("asw_queen_damage_reductions", "1", FCVAR_CHEAT, "Enables damage reductions for certain player weapons vs the queen.");
 
 ConVar asw_queen_force_remove("asw_queen_force_remove", "1", FCVAR_NONE, "Hack: instantly removes queen on death.");
@@ -184,7 +191,10 @@ void CASW_Queen::Spawn( void )
 
 	//Ch1ckensCoop: Set model scale
 	float fScale = asw_queen_model_scale.GetFloat();
-	SetModelScale(fScale, 0.0f);
+	//softcopy: color scale
+	//SetModelScale(fScale, 0.0f);
+	SetColorScale( "queen" );	
+
 	UTIL_SetSize(this, Vector((fScale * -120),(fScale * -120),(fScale * 0)), Vector((fScale * 120),(fScale * 120),(fScale * 160)));
 }
 
@@ -627,6 +637,18 @@ int CASW_Queen::TranslateSchedule( int scheduleType )
 	}
 
 	return BaseClass::TranslateSchedule( scheduleType );
+}
+
+//softcopy:
+void CASW_Queen::SetColorScale(const char *alienLabel)	
+{
+	BaseClass::SetColorScale(alienLabel);	
+	
+	//avoid duplicated queen scale entities
+	float fScale = asw_queen_model_scale.GetFloat();
+	if (asw_queen_scalemod.GetFloat() < asw_queen_model_scale.GetFloat())	
+		SetModelScale(fScale, 0.0f);
+
 }
 
 bool CASW_Queen::ShouldGib( const CTakeDamageInfo &info )

@@ -60,7 +60,6 @@
     <PreBuildEvent>
       <Command>if EXIST "F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.\$(TargetFileName)" for /f "delims=" %25%25A in (%27attrib "F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.\$(TargetFileName)"%27) do set valveTmpIsReadOnly="%25%25A"
 set valveTmpIsReadOnlyLetter=%25valveTmpIsReadOnly:~6,1%25
-if "%25valveTmpIsReadOnlyLetter%25"=="R" del /q "$(TargetDir)"$(TargetFileName)
 if exist ..\..\devtools\bin\vpccrccheck.exe ..\..\devtools\bin\vpccrccheck.exe -crc2 test_swarm.vcproj
 if ERRORLEVEL 1 exit 1
 </Command>
@@ -137,7 +136,6 @@ if ERRORLEVEL 1 goto BuildEventFailed
 goto BuildEventOK
 :BuildEventFailed
 echo *** ERROR! PostBuildStep FAILED for $(ProjectName)! EXE or DLL is probably running. ***
-del /q "$(TargetDir)"$(TargetFileName)
 exit 1
 :BuildEventOK
 </Command>
@@ -147,7 +145,6 @@ exit 1
     <PreBuildEvent>
       <Command>if EXIST "F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.\$(TargetFileName)" for /f "delims=" %25%25A in (%27attrib "F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.\$(TargetFileName)"%27) do set valveTmpIsReadOnly="%25%25A"
 set valveTmpIsReadOnlyLetter=%25valveTmpIsReadOnly:~6,1%25
-if "%25valveTmpIsReadOnlyLetter%25"=="R" del /q "$(TargetDir)"$(TargetFileName)
 if exist ..\..\devtools\bin\vpccrccheck.exe ..\..\devtools\bin\vpccrccheck.exe -crc2 test_swarm.vcproj
 if ERRORLEVEL 1 exit 1
 </Command>
@@ -228,7 +225,6 @@ if ERRORLEVEL 1 goto BuildEventFailed
 goto BuildEventOK
 :BuildEventFailed
 echo *** ERROR! PostBuildStep FAILED for $(ProjectName)! EXE or DLL is probably running. ***
-del /q "$(TargetDir)"$(TargetFileName)
 exit 1
 :BuildEventOK
 </Command>

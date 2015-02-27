@@ -75,6 +75,10 @@ public:
 	Vector m_vecSaveSpitVelocity;
 	static float s_fNextSpawnSoundTime;
 	static float s_fNextPainSoundTime;
+	
+	//softcopy:
+	const char	*alienLabel, *damageTypes;
+	virtual void SetColorScale(const char *alienLabel);
 
 private:
 	DEFINE_CUSTOM_AI;

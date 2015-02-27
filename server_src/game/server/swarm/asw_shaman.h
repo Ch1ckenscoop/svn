@@ -42,6 +42,9 @@ public:
 	virtual bool		CreateBehaviors();
 
 	virtual bool		ShouldGib( const CTakeDamageInfo &info ) { return false; }
+	//softcopy:
+	const char			*alienLabel;
+	virtual void 		SetColorScale(const char *alienLabel);
 
 	// sounds
 	virtual void PainSound( const CTakeDamageInfo &info );

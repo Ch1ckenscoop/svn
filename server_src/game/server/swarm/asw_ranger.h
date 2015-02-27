@@ -30,7 +30,10 @@ public:
 	virtual void		Precache();
 
 	virtual float		GetIdealSpeed() const;	//Ch1ckensCoop: speed scale settings for the ranger.
-
+	//softcopy: 
+	const char			*alienLabel;
+	virtual void 		SetColorScale(const char *alienLabel);
+	
 	virtual void		SetHealthByDifficultyLevel();
 
 	virtual float		MaxYawSpeed( void );

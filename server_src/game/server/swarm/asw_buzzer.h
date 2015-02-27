@@ -131,6 +131,10 @@ public:
 		m_iHealth = 0;
 	}
 
+	//softcopy:
+	const char		*alienLabel; 
+	virtual void 	SetColorScale(const char *alienLabel);
+	
 	enum BuzzerConditions
 	{
 		COND_ASW_BUZZER_START_ATTACK = BaseClass::NEXT_CONDITION,	// We are able to do a bombing run on the current enemy.

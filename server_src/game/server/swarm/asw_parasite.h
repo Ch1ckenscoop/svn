@@ -104,6 +104,10 @@ public:
 	void StartInfestation();
 	bool CheckInfestTarget( CBaseEntity *pOther );
 	EHANDLE m_hPrepareToInfest;
+	
+	//softcopy: parasite color & scale
+	const char *alienLabel;
+	virtual void SetColorScale(const char *alienLabel);
 
 protected:
 	DEFINE_CUSTOM_AI;

@@ -39,25 +39,20 @@ ConVar asw_drone_melee_range("asw_drone_melee_range", "60.0", FCVAR_CHEAT, "Rang
 ConVar asw_drone_start_melee_range("asw_drone_start_melee_range", "100.0", FCVAR_CHEAT, "Range at which the drone starts his melee attack");
 
 ConVar asw_drone_color("asw_drone_color", "255 255 255", FCVAR_NONE, "Sets the color of normal drones.");
-
-ConVar asw_drone_scalemod("asw_drone_scalemod", "1.0", FCVAR_NONE, "Sets the scale of normal drones.");
-ConVar asw_drone_scalemod_percent("asw_drone_scalemod_percent", "1.0", FCVAR_NONE, "Sets the percentage of the normal drones you want to scale.");
-
-ConVar asw_drone_color2("asw_drone_color2", "255 255 255", FCVAR_NONE, "Color that is applied to <asw_drone_color2_percent> percentage of regular drones.");
-ConVar asw_drone_color2_percent("asw_drone_color2_percent", "0", FCVAR_NONE, "Percentage of drones that are colored with asw_drone_color2.", true, 0.0, true, 1.0);
-
-ConVar asw_drone_color3("asw_drone_color3", "255 255 255", FCVAR_NONE, "Color that is applied to <asw_drone_color2_percent> percentage of regular drones.");
-ConVar asw_drone_color3_percent("asw_drone_color3_percent", "0", FCVAR_NONE, "Percentage of drones that are colored with asw_drone_color2.");
-
 ConVar asw_drone_jumper_color("asw_drone_jumper_color", "255 255 255", FCVAR_NONE, "Sets the color of jumping drones.");
+//softcopy:
+ConVar asw_drone_color2("asw_drone_color2", "255 255 255", FCVAR_NONE, "Sets the color of drones.");
+ConVar asw_drone_color2_percent("asw_drone_color2_percent", "0", FCVAR_NONE, "Sets the percentage of the drones you want to give the color",true,0,true,1);
+ConVar asw_drone_color3("asw_drone_color3", "255 255 255", FCVAR_NONE, "Sets the color of drones.");
+ConVar asw_drone_color3_percent("asw_drone_color3_percent", "0", FCVAR_NONE, "Sets the percentage of the drones you want to give the color",true,0,true,1);
+ConVar asw_drone_scalemod("asw_drone_scalemod", "1.0", FCVAR_NONE, "Sets the scale of normal drones.");
+ConVar asw_drone_scalemod_percent("asw_drone_scalemod_percent", "1.0", FCVAR_NONE, "Sets the percentage of the normal drones you want to scale.",true,0,true,1);
 ConVar asw_drone_jumper_color2("asw_drone_jumper_color2", "255 255 255", FCVAR_NONE, "Sets the color of Mod-jumping drones.");
-ConVar asw_drone_jumper_color2_percent("asw_drone_jumper_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the Mod-Jumping drones you want to give the color");
-
+ConVar asw_drone_jumper_color2_percent("asw_drone_jumper_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the Mod-Jumping drones you want to give the color",true,0,true,1);
 ConVar asw_drone_jumper_color3("asw_drone_jumper_color3", "255 255 255", FCVAR_NONE, "Sets the color of Mod-jumping drones.");
-ConVar asw_drone_jumper_color3_percent("asw_drone_jumper_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the Mod-Jumping drones you want to give the color");
-
+ConVar asw_drone_jumper_color3_percent("asw_drone_jumper_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the Mod-Jumping drones you want to give the color",true,0,true,1);
 ConVar asw_drone_jumper_scalemod("asw_drone_jumper_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal drones.");
-ConVar asw_drone_jumper_scalemod_percent("asw_drone_jumper_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal drones you want to scale.");
+ConVar asw_drone_jumper_scalemod_percent("asw_drone_jumper_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal Mod-Jumping drones you want to scale.",true,0,true,1);
 
 #define ASW_DRONE_MELEE1_START_ATTACK_RANGE asw_drone_start_melee_range.GetFloat()
 #define ASW_DRONE_MELEE1_RANGE asw_drone_melee_range.GetFloat()
@@ -240,48 +235,28 @@ void CASW_Drone_Advanced::Spawn( void )
 		{
 			SetBodygroup ( 5, RandomInt (0, 1 ) );
 		}
+
+		//SetRenderColor(asw_drone_color.GetColor().r(), asw_drone_color.GetColor().g(), asw_drone_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
 	}
 
 	if (FClassnameIs(this, "asw_drone_jumper"))
 	{
 		m_bJumper = true;
-		SetRenderColor(asw_drone_jumper_color.GetColor().r(), asw_drone_jumper_color.GetColor().g(), asw_drone_jumper_color.GetColor().b());	//Ch1ckensCoop: Allow setting colors.
+		//softcopy:
+		//SetRenderColor(asw_drone_jumper_color.GetColor().r(), asw_drone_jumper_color.GetColor().g(), asw_drone_jumper_color.GetColor().b());	//Ch1ckensCoop: Allow setting colors.
+		SetColorScale( "drone_jumper" );
+		
 		m_ClassType = (Class_T)CLASS_ASW_DRONE_JUMPER;
-
-		//Ch1ckensCoop: Mod jumper colors.
-		float randomColor = RandomFloat(0, 1);
-		if (randomColor <= asw_drone_jumper_color2_percent.GetFloat())
-			SetRenderColor(asw_drone_jumper_color2.GetColor().r(), asw_drone_jumper_color2.GetColor().g(), asw_drone_jumper_color2.GetColor().b());
-		else if (randomColor <= (asw_drone_jumper_color2_percent.GetFloat() + asw_drone_jumper_color3_percent.GetFloat()))
-			SetRenderColor(asw_drone_jumper_color3.GetColor().r(), asw_drone_jumper_color3.GetColor().g(), asw_drone_jumper_color3.GetColor().b());
-		else			
-			SetRenderColor(asw_drone_jumper_color.GetColor().r(), asw_drone_jumper_color.GetColor().g(), asw_drone_jumper_color.GetColor().b());
-
-		//Ch1ckenscoop, allow drone jumpers scalemod.
-		float DroneScale = RandomFloat(0, 1);
-		if (DroneScale <= asw_drone_jumper_scalemod_percent.GetFloat())
-			SetModelScale(asw_drone_jumper_scalemod.GetFloat());
 	}
 	else
 	{
 		m_bJumper = false;
 		m_bDisableJump = true;
 		CapabilitiesRemove( bits_CAP_MOVE_JUMP );
+		//softcopy:
+		SetColorScale( "drone" );
+
 		m_ClassType = (Class_T)CLASS_ASW_DRONE;
-
-		//Ch1ckensCoop: Allow setting colors.
-		float randomColor = RandomFloat(0, 1);
-		if (randomColor <= asw_drone_color2_percent.GetFloat())
-			SetRenderColor(asw_drone_color2.GetColor().r(), asw_drone_color2.GetColor().g(), asw_drone_color2.GetColor().b());
-		else if (randomColor <= (asw_drone_color2_percent.GetFloat() + asw_drone_color3_percent.GetFloat()))
-			SetRenderColor(asw_drone_color3.GetColor().r(), asw_drone_color3.GetColor().g(), asw_drone_color3.GetColor().b());
-		else			
-			SetRenderColor(asw_drone_color.GetColor().r(), asw_drone_color.GetColor().g(), asw_drone_color.GetColor().b());
-
-		//Ch1ckenscoop, allow drone scalemod.
-		float DroneScale = RandomFloat(0, 1);
-		if (DroneScale <= asw_drone_scalemod_percent.GetFloat())
-			SetModelScale(asw_drone_scalemod.GetFloat());
 	}	
 
 	SetHullType(HULL_MEDIUMBIG);
@@ -1326,6 +1301,12 @@ void CASW_Drone_Advanced::RunTask( const Task_t *pTask )
 	else
 		m_flPlaybackRate = 1.0f;
 	//}
+}
+
+//softcopy:
+void CASW_Drone_Advanced::SetColorScale(const char *alienLabel)	
+{
+	BaseClass::SetColorScale(alienLabel);	
 }
 
 bool CASW_Drone_Advanced::ShouldGib( const CTakeDamageInfo &info )

@@ -93,6 +93,10 @@ public:
 	};
 
 	bool m_bHasBeenHurt;
+	
+	//softcopy:
+	const char		*alienLabel;
+	virtual void 	SetColorScale(const char *alienLabel);
 
 protected:
 	DEFINE_CUSTOM_AI;

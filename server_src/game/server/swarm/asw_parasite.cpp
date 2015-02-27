@@ -38,25 +38,19 @@ ConVar asw_parasite_defanged_health("asw_parasite_defanged_health", "10", FCVAR_
 
 ConVar asw_parasite_color("asw_parasite_color", "255 255 255", FCVAR_CCOOP, "Sets the color of parasites.");
 ConVar asw_parasite_safe_color("asw_parasite_safe_color", "255 255 255", FCVAR_CCOOP, "Sets the color of defanged parasites.");
-
-ConVar asw_parasite_color2("asw_parasite_color2", "255 255 255", FCVAR_CCOOP, "Sets the color of parasites.");
-ConVar asw_parasite_color2_percent("asw_parasite_color2_percent", "255 255 255", FCVAR_CCOOP, "Sets the color of parasites.");
-
-ConVar asw_parasite_color3("asw_parasite_color3", "255 255 255", FCVAR_CCOOP, "Sets the color of parasites.");
-ConVar asw_parasite_color3_percent("asw_parasite_color3_percent", "255 255 255", FCVAR_CCOOP, "Sets the color of parasites.");
-
-ConVar asw_parasite_scalemod("asw_parasite_scalemod", "0.0", FCVAR_CCOOP, "Sets the scale of mod harvesters.");
-ConVar asw_parasite_scalemod_percent("asw_parasite_scalemod_percent", "0.0", FCVAR_CCOOP, "Sets the scale of mod harvesters.");
-
-ConVar asw_parasite_safe_color2("asw_parasite_safe_color2", "255 255 255", FCVAR_CCOOP, "Sets the color of defanged parasites.");
-ConVar asw_parasite_safe_color2_percent("asw_parasite_safe_color2_percent", "255 255 255", FCVAR_CCOOP, "Sets the color of defanged parasites.");
-
-ConVar asw_parasite_safe_color3("asw_parasite_safe_color3", "255 255 255", FCVAR_CCOOP, "Sets the color of defanged parasites.");
-ConVar asw_parasite_safe_color3_percent("asw_parasite_safe_color3_percent", "255 255 255", FCVAR_CCOOP, "Sets the color of defanged parasites.");
-
-ConVar asw_parasite_safe_scalemod("asw_parasite_safe_scalemod", "0.0", FCVAR_CCOOP, "Sets the scale of mod harvesters.");
-ConVar asw_parasite_safe_scalemod_percent("asw_parasite__safe_scalemod_percent", "0.0", FCVAR_CCOOP, "Sets the scale of mod harvesters.");
-
+//softcopy:
+ConVar asw_parasite_safe_color2("asw_parasite_safe_color2", "255 255 255", FCVAR_NONE, "Sets the color of defanged parasites.");
+ConVar asw_parasite_safe_color2_percent("asw_parasite_safe_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the defanged parasites you want to give the color",true,0,true,1);
+ConVar asw_parasite_safe_color3("asw_parasite_safe_color3", "255 255 255", FCVAR_NONE, "Sets the color of defanged parasites.");
+ConVar asw_parasite_safe_color3_percent("asw_parasite_safe_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the defanged parasites you want to give the color",true,0,true,1);
+ConVar asw_parasite_safe_scalemod("asw_parasite_safe_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal defanged parasites.");
+ConVar asw_parasite_safe_scalemod_percent("asw_parasite_safe_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal defanged parasites you want to scale.",true,0,true,1);
+ConVar asw_parasite_color2("asw_parasite_color2", "255 255 255", FCVAR_NONE, "Sets the color of old model parasites.");
+ConVar asw_parasite_color2_percent("asw_parasite_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the parasites you want to give the color",true,0,true,1);
+ConVar asw_parasite_color3("asw_parasite_color3", "255 255 255", FCVAR_NONE, "Sets the color of parasites.");
+ConVar asw_parasite_color3_percent("asw_parasite_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the parasites you want to give the color",true,0,true,1);
+ConVar asw_parasite_scalemod("asw_parasite_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal old model parasites.");
+ConVar asw_parasite_scalemod_percent("asw_parasite_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal parasites you want to scale.");
 
 extern ConVar asw_debug_alien_damage;
 extern ConVar asw_god;
@@ -139,21 +133,11 @@ void CASW_Parasite::Spawn( void )
 		m_iHealth	= ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_parasite_defanged_health.GetInt());
 		SetBodygroup( 0, 1 );
 		m_fSuicideTime = gpGlobals->curtime + 60;
+		//softcopy:
+		//SetRenderColor(asw_parasite_safe_color.GetColor().r(), asw_parasite_safe_color.GetColor().g(), asw_parasite_safe_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
+		SetColorScale( "parasite_safe" );
+		
 		m_ClassType = (Class_T)CLASS_ASW_PARASITE_DEFANGED;
-
-		//Ch1ckenscoop, parasite-safe color.
-		float randomColor = RandomFloat (0, 1);
-		if (randomColor <= asw_parasite_safe_color2_percent.GetFloat())
-			SetRenderColor(asw_parasite_safe_color2.GetColor(). r(), asw_parasite_safe_color2.GetColor() .g(), asw_parasite_safe_color2.GetColor() .b());
-		else if (randomColor <= (asw_parasite_safe_color2_percent.GetFloat() + asw_parasite_safe_color3_percent.GetFloat()))
-			SetRenderColor(asw_parasite_safe_color3.GetColor().r(), asw_parasite_safe_color3.GetColor().g(), asw_parasite_safe_color3.GetColor().b());
-		else
-			SetRenderColor(asw_parasite_safe_color.GetColor(). r(), asw_parasite_safe_color.GetColor() .g(), asw_parasite_safe_color.GetColor() .b());
-
-		//Ch1ckenscoop, allow parasite safe scalemod.
-		float DroneScale = RandomFloat(0, 1);
-		if (DroneScale <= asw_parasite_safe_scalemod_percent.GetFloat())
-			SetModelScale(asw_parasite_safe_scalemod.GetFloat());
 	}
 	else
 	{
@@ -161,21 +145,11 @@ void CASW_Parasite::Spawn( void )
 		m_iHealth	= ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_parasite_health.GetInt());
 		SetBodygroup( 0, 0 );
 		m_fSuicideTime = 0;
+		//softcopy:
+		//SetRenderColor(asw_parasite_color.GetColor().r(), asw_parasite_color.GetColor().g(), asw_parasite_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
+		SetColorScale( "parasite" );
+		
 		m_ClassType = (Class_T)CLASS_ASW_PARASITE;
-
-		//Ch1ckenscoop, parasite color.
-		float randomColor = RandomFloat (0, 1);
-		if (randomColor <= asw_parasite_color2_percent.GetFloat())
-			SetRenderColor(asw_parasite_color2.GetColor(). r(), asw_parasite_color2.GetColor() .g(), asw_parasite_color2.GetColor() .b());
-		else if (randomColor <= (asw_parasite_color2_percent.GetFloat() + asw_parasite_color3_percent.GetFloat()))
-			SetRenderColor(asw_parasite_color3.GetColor().r(), asw_parasite_color3.GetColor().g(), asw_parasite_color3.GetColor().b());
-		else
-			SetRenderColor(asw_parasite_color.GetColor(). r(), asw_parasite_color.GetColor() .g(), asw_parasite_color.GetColor() .b());
-
-		//Ch1ckenscoop, allow parasite scalemod.
-		float DroneScale = RandomFloat(0, 1);
-		if (DroneScale <= asw_parasite_scalemod_percent.GetFloat())
-			SetModelScale(asw_parasite_scalemod.GetFloat());
 	}
 
 	SetMoveType( MOVETYPE_STEP );
@@ -1321,6 +1295,12 @@ void CASW_Parasite::NPCThink()
 bool CASW_Parasite::CanBeSeenBy( CAI_BaseNPC *pNPC )
 {
 	return !m_bInfesting;
+}
+
+//softcopy:
+void CASW_Parasite::SetColorScale(const char *alienLabel)	
+{
+	BaseClass::SetColorScale(alienLabel);	
 }
 
 AI_BEGIN_CUSTOM_NPC( asw_parasite, CASW_Parasite )

@@ -15,6 +15,13 @@ ConVar asw_drone_uber_color("asw_drone_uber_color", "255 255 255", FCVAR_NONE, "
 //ConVar asw_drone_uber_color_b("asw_drone_uber_color_b", "255", FCVAR_NONE, "Adjusts the blue componant of the Uber drones' color.", true, 0.0f, true, 255.0f);
 // Doesn't change anything - ConVar asw_drone_uber_color("asw_drone_uber_color", "1", FCVAR_NONE, "Enables/disables the Color rendermode for the Uber drones.");
 ConVar asw_drone_uber_scale("asw_drone_uber_scale", "1.0", FCVAR_CHEAT, "Scales the Uber drone model.");
+//softcopy: 
+ConVar asw_drone_uber_color2("asw_drone_uber_color2", "255 255 255", FCVAR_NONE, "Sets the color of drone_ubers.");
+ConVar asw_drone_uber_color2_percent("asw_drone_uber_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the drone_ubers you want to give the color",true,0,true,1);
+ConVar asw_drone_uber_color3("asw_drone_uber_color3", "255 255 255", FCVAR_NONE, "Sets the color of drone_ubers.");
+ConVar asw_drone_uber_color3_percent("asw_drone_uber_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the drone_ubers you want to give the color",true,0,true,1);
+ConVar asw_drone_uber_scalemod("asw_drone_uber_scalemod", "1.0", FCVAR_NONE, "Sets the scale of the normal drone_ubers.");
+ConVar asw_drone_uber_scalemod_percent("asw_drone_uber_scalemod_percent", "1.0", FCVAR_NONE, "Sets the percentage of the normal drone_ubers you want to scale.",true,0,true,1);
 
 ConVar asw_drone_uber_health("asw_drone_uber_health", "500", FCVAR_CHEAT, "How much health the uber Swarm drones have");
 ConVar asw_uber_speed_scale("asw_uber_speed_scale", "0.5f", FCVAR_CHEAT, "Speed scale of uber drone compared to normal");
@@ -49,7 +56,7 @@ void CASW_Drone_Uber::Spawn( void )
 	BaseClass::Spawn();
 
 	//SetRenderColor(asw_drone_uber_color_r.GetInt(), asw_drone_uber_color_g.GetInt(), asw_drone_uber_color_b.GetInt());
-	SetRenderColor(asw_drone_uber_color.GetColor().r(), asw_drone_uber_color.GetColor().g(), asw_drone_uber_color.GetColor().b());
+	//SetRenderColor(asw_drone_uber_color.GetColor().r(), asw_drone_uber_color.GetColor().g(), asw_drone_uber_color.GetColor().b());	//softcopy:
 
 
 	SetModel( SWARM_NEW_DRONE_MODEL );	
@@ -65,7 +72,9 @@ void CASW_Drone_Uber::Spawn( void )
 	m_nSkin = 0;
 	SetHitboxSet(0);
 	//Ch1ckensCoop: Made uber drones bigger
-	SetModelScale(asw_drone_uber_scale.GetFloat(), 0.0f);
+	//softcopy: set uber colors & scale
+	//SetModelScale(asw_drone_uber_scale.GetFloat(), 0.0f);
+	SetColorScale( "drone_uber" );	
 
 	if (asw_uber_scary.GetBool())	//Ch1ckensCoop: Make uber drones SCARY :S
 	{
@@ -105,6 +114,16 @@ void CASW_Drone_Uber::SetHealthByDifficultyLevel()
 float CASW_Drone_Uber::GetDamage()	//Ch1ckensCoop: Easy customizing of alien damages.
 {
 	return sk_asw_uber_damage.GetFloat();
+}
+
+//softcopy:
+void CASW_Drone_Uber::SetColorScale(const char *alienLabel)	
+{
+	BaseClass::SetColorScale(alienLabel);
+	
+	if (asw_drone_uber_scalemod.GetFloat() < asw_drone_uber_scale.GetFloat())	//avoid duplicated uber scale entities
+		SetModelScale(asw_drone_uber_scale.GetFloat());
+
 }
 
 float CASW_Drone_Uber::GetIdealSpeed() const

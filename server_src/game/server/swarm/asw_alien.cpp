@@ -703,6 +703,30 @@ void CASW_Alien::NPCThink( void )
 	m_flLastThinkTime = gpGlobals->curtime;   
 }
 
+//softcopy: set aliens color scale function
+void CASW_Alien::SetColorScale(const char *alienLabel)		
+{
+	char text[48], text2[48], text3[48], text4[48], text5[48], text6[48], text7[48];
+	Q_snprintf(text,  sizeof(text),  "asw_%s_color", alienLabel);
+	Q_snprintf(text2, sizeof(text2), "asw_%s_color2", alienLabel);
+	Q_snprintf(text3, sizeof(text3), "asw_%s_color3", alienLabel);
+	Q_snprintf(text4, sizeof(text4), "asw_%s_color2_percent", alienLabel);
+	Q_snprintf(text5, sizeof(text5), "asw_%s_color3_percent", alienLabel);
+	Q_snprintf(text6, sizeof(text6), "asw_%s_scalemod_percent", alienLabel);
+	Q_snprintf(text7, sizeof(text7), "asw_%s_scalemod", alienLabel); 
+	
+	float randomColor = RandomFloat(0, 1);
+	if ( randomColor <= ((ConVar *)cvar->FindVar(text2))->GetFloat() )
+		SetRenderColor( ((ConVar *)cvar->FindVar(text2))->GetColor().r(),((ConVar *)cvar->FindVar(text2))->GetColor().g(),((ConVar *)cvar->FindVar(text2))->GetColor().b() );  
+	else if ( randomColor <= ((ConVar *)cvar->FindVar(text4))->GetFloat() + ((ConVar *)cvar->FindVar(text5))->GetFloat() )
+		SetRenderColor( ((ConVar *)cvar->FindVar(text3))->GetColor().r(),((ConVar *)cvar->FindVar(text3))->GetColor().g(),((ConVar *)cvar->FindVar(text3))->GetColor().b() );
+	else SetRenderColor( ((ConVar *)cvar->FindVar(text))->GetColor().r(),((ConVar *)cvar->FindVar(text))->GetColor().g(),((ConVar *)cvar->FindVar(text))->GetColor().b() );
+	float alienScale = RandomFloat(0, 1);
+	if ( alienScale <= ((ConVar *)cvar->FindVar(text6))->GetFloat() )
+		SetModelScale( ((ConVar *)cvar->FindVar(text7))->GetFloat() );
+
+}
+
 bool CASW_Alien::MarineNearby(float radius, bool bCheck3D)
 {
 	// find the closest marine

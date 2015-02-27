@@ -42,6 +42,9 @@ public:
 	virtual bool		ShouldGib( const CTakeDamageInfo &info ) { return false; }
 	virtual bool		CorpseGib( const CTakeDamageInfo &info );
 	virtual bool		CanBreak() { return true; };
+	//softcopy: 
+	const char			*alienLabel;
+	virtual void 		SetColorScale(const char *alienLabel);
 
 	// sounds
 	virtual void DeathSound( const CTakeDamageInfo &info );

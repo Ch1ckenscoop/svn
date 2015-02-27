@@ -79,12 +79,13 @@
 #define	ASW_BUZZER_CHARGE_MIN_DIST	200
 
 ConVar asw_buzzer_color("asw_buzzer_color", "255 255 255", FCVAR_NONE, "Sets the color of buzzers.");
-
-ConVar asw_buzzer_color2("asw_buzzer_color2", "255 255 255", FCVAR_NONE, "Sets the color of buzzers.");
-ConVar asw_buzzer_color2_percent("asw_buzzer_color2_percent", "255 255 255", FCVAR_NONE, "Sets the color of buzzers.");
-
+//softcopy
+ConVar asw_buzzer_color2("asw_buzzer_color2", "255 255 255", FCVAR_NONE, "Sets the color of old model buzzers.");
+ConVar asw_buzzer_color2_percent("asw_buzzer_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the old model buzzers you want to give the color",true,0,true,1);
 ConVar asw_buzzer_color3("asw_buzzer_color3", "255 255 255", FCVAR_NONE, "Sets the color of buzzers.");
-ConVar asw_buzzer_color3_percent("asw_buzzer_color3_percent", "255 255 255", FCVAR_NONE, "Sets the color of buzzers.");
+ConVar asw_buzzer_color3_percent("asw_buzzer_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the old model buzzers you want to give the color",true,0,true,1);
+ConVar asw_buzzer_scalemod("asw_buzzer_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal buzzers.");
+ConVar asw_buzzer_scalemod_percent("asw_buzzer_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal old model buzzers you want to scale.",true,0,true,1);
 
 ConVar	sk_asw_buzzer_health( "sk_asw_buzzer_health","30", FCVAR_CHEAT, "Health of the buzzer");
 ConVar	sk_asw_buzzer_melee_dmg( "sk_asw_buzzer_melee_dmg","15", FCVAR_CHEAT, "Damage caused by buzzer");
@@ -753,6 +754,29 @@ int	CASW_Buzzer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		pMarine->HurtAlien(this, info);
 
 	return nRetVal;
+}
+
+//softcopy: set color scale function
+void CASW_Buzzer::SetColorScale(const char *alienLabel)		
+{
+	char text[48], text2[48], text3[48], text4[48], text5[48], text6[48], text7[48];
+	Q_snprintf(text,  sizeof(text),  "asw_%s_color", alienLabel);
+	Q_snprintf(text2, sizeof(text2), "asw_%s_color2", alienLabel);
+	Q_snprintf(text3, sizeof(text3), "asw_%s_color3", alienLabel);
+	Q_snprintf(text4, sizeof(text4), "asw_%s_color2_percent", alienLabel);
+	Q_snprintf(text5, sizeof(text5), "asw_%s_color3_percent", alienLabel);
+	Q_snprintf(text6, sizeof(text6), "asw_%s_scalemod_percent", alienLabel);
+	Q_snprintf(text7, sizeof(text7), "asw_%s_scalemod", alienLabel); 
+	
+	float randomColor = RandomFloat(0, 1);
+	if ( randomColor <= ((ConVar *)cvar->FindVar(text2))->GetFloat() )
+		SetRenderColor( ((ConVar *)cvar->FindVar(text2))->GetColor().r(),((ConVar *)cvar->FindVar(text2))->GetColor().g(),((ConVar *)cvar->FindVar(text2))->GetColor().b() );  
+	else if ( randomColor <= ((ConVar *)cvar->FindVar(text4))->GetFloat() + ((ConVar *)cvar->FindVar(text5))->GetFloat() )
+		SetRenderColor( ((ConVar *)cvar->FindVar(text3))->GetColor().r(),((ConVar *)cvar->FindVar(text3))->GetColor().g(),((ConVar *)cvar->FindVar(text3))->GetColor().b() );
+	else SetRenderColor( ((ConVar *)cvar->FindVar(text))->GetColor().r(),((ConVar *)cvar->FindVar(text))->GetColor().g(),((ConVar *)cvar->FindVar(text))->GetColor().b() );
+	float alienScale = RandomFloat(0, 1);
+	if ( alienScale <= ((ConVar *)cvar->FindVar(text6))->GetFloat() )
+		SetModelScale( ((ConVar *)cvar->FindVar(text7))->GetFloat() );
 }
 
 bool CASW_Buzzer::CorpseGib( const CTakeDamageInfo &info )
@@ -2180,17 +2204,10 @@ void CASW_Buzzer::Spawn(void)
 	// for instance, we don't want him to bob whilst he's waiting for a script. This allows designers
 	// to 'hide' buzzers in small places. (sjb)
 	SetNoiseMod( ASW_BUZZER_NOISEMOD_HIDE, ASW_BUZZER_NOISEMOD_HIDE, ASW_BUZZER_NOISEMOD_HIDE );
-
-	SetRenderColor(asw_buzzer_color.GetColor().r(), asw_buzzer_color.GetColor().g(), asw_buzzer_color.GetColor().b());
-
-	//Ch1ckenscoop, allow buzzer colors
-	float randomColor = RandomFloat (0, 1);
-	if (randomColor <= asw_buzzer_color2_percent.GetFloat())
-		SetRenderColor(asw_buzzer_color2.GetColor(). r(), asw_buzzer_color2.GetColor() .g(), asw_buzzer_color2.GetColor() .b());
-	else if (randomColor <= (asw_buzzer_color2_percent.GetFloat() + asw_buzzer_color3_percent.GetFloat()))
-			SetRenderColor(asw_buzzer_color3.GetColor().r(), asw_buzzer_color3.GetColor().g(), asw_buzzer_color3.GetColor().b());
-	else
-		SetRenderColor(asw_buzzer_color.GetColor(). r(), asw_buzzer_color.GetColor() .g(), asw_buzzer_color.GetColor() .b());
+	
+	//softcopy:
+	//SetRenderColor(asw_buzzer_color.GetColor().r(), asw_buzzer_color.GetColor().g(), asw_buzzer_color.GetColor().b());
+	SetColorScale( "buzzer" );
 
 	// Start out with full power! 
 	m_fEnginePowerScale = GetMaxEnginePower();

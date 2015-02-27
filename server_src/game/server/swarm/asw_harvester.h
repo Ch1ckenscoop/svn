@@ -79,6 +79,9 @@ public:
 	float m_flIdleDelay;
 	static float s_fNextSpawnSoundTime;
 	static float s_fNextPainSoundTime;
+	//softcopy:
+	const char	*alienLabel;
+	virtual void SetColorScale(const char *alienLabel);
 
 private:
 	DEFINE_CUSTOM_AI;

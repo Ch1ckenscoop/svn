@@ -327,6 +327,7 @@ public:
 		ASW_TAG_REMOVE,		//Alien is outside the pruning radius and should be removed
 		ASW_TAG_SAFE,		//Alien is inside the pruning radius
 	};
+	virtual void 	SetColorScale(const char *alienLabel);	
 	
 protected:	
 	

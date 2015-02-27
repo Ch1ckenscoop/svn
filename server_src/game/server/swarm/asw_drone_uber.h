@@ -24,6 +24,9 @@ public:
 	virtual float GetIdealSpeed() const;
 	virtual int OnTakeDamage_Alive( const CTakeDamageInfo &info );
 	virtual bool ModifyAutoMovement( Vector &vecNewPos );
+	//softcopy: 
+	const char	*alienLabel;
+	virtual void SetColorScale(const char *alienLabel);
 
 private:
 	float GetDamage();	//Ch1ckensCoop: easy modification of alien damages.

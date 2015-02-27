@@ -68,6 +68,9 @@ public:
 
 	virtual void SpitProjectile();
 	Vector GetQueenAutoaimVector(Vector &spitSrc, QAngle &angSpit);
+	//softcopy: 
+	const char	*alienLabel;
+	virtual void SetColorScale(const char *alienLabel);
 
 	virtual	bool		AllowedToIgnite( void ) { return false; }
 
