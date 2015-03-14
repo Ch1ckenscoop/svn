@@ -103,8 +103,8 @@
 #include "missionchooser/iasw_random_missions.h"
 #include "missionchooser/iasw_map_builder.h"
 //softcopy:
-#include "asw_sourcemod_interface.h"	// admin immune vote kicking from players.
-#include "asw_version.h"	// version information.
+#include "asw_sourcemod_interface.h"	// requesterSteamID
+#include "asw_version.h"
 
 //#include "entityapi.h"
 //#include "entityoutput.h"
@@ -115,7 +115,8 @@
 extern ConVar old_radius_damage;
 
 //softcopy:
-ConVar asw_vote_kick_admin("asw_vote_kick_admin", "1", FCVAR_CHEAT, "set 1, generic admin immune from a kick voting by players."); 
+ConVar asw_hibernate_skill_default("asw_hibernate_skill_default", "1", FCVAR_CHEAT, "skill/FF has set in lobby will reset to normal when hibernating.");
+ConVar asw_vote_kick_admin("asw_vote_kick_admin", "1", FCVAR_CHEAT, "generic admin or above level immune from a kick voting."); 
 
 #define ASW_LAUNCHING_STEP 0.25f	// time between each stage of launching
 
@@ -2740,6 +2741,27 @@ void CAlienSwarm::OnServerHibernating()
 			"changelevel",
 			szMissionName,
 			szSaveFilename ) );
+	}
+	
+	//softcopy: when server hibernating, skill level or hardcoreFF will reset to normal if it was changed in lobby by player
+	if (asw_hibernate_skill_default.GetBool())
+	{
+		ConVar *var = (ConVar *)cvar->FindVar( "asw_skill" );
+		if ( var && var->GetInt() != 2 )
+		{
+			const char *lvlname = "Normal";
+			switch( var->GetInt() )
+			{	case 1: lvlname = "Easy"; 	break;	case 2: lvlname = "Normal"; break;	case 3: lvlname = "Hard"; break;
+				case 4: lvlname = "Insane"; break;	case 5: lvlname = "Brutal"; break;	}
+			var->SetValue( 2 );
+			Msg( "Skill level \"%s\" default to \"Normal\"\n", lvlname );
+		}
+		if ( CAlienSwarm::IsHardcoreFF() )
+		{
+			asw_marine_ff_absorption.SetValue( 1 );
+			asw_sentry_friendly_fire_scale.SetValue( 0.0f );
+			Msg( "FriendlyFire \"Hardcore\" default to \"Normal\"\n" );
+		}
 	}
 }
 
@@ -6691,7 +6713,8 @@ void CAlienSwarm::LevelInitPostEntity()
 	Q_snprintf(execCmd, sizeof(execCmd), "exec server\n", mapName);
 	engine->ServerCommand(execCmd);
 
-	if (asw_map_configs.GetBool())
+	//if (asw_map_configs.GetBool())
+	if (asw_map_configs.GetBool() && !IsLobbyMap())		//softcopy: preventing execute lobby.cfg
 	{
 		//Ch1ckensCoop: Fix the per-map configs.
 		Q_snprintf(execCmd, sizeof(execCmd), "exec asw_mapconfigs/%s\n", mapName);

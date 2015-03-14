@@ -95,9 +95,11 @@ void CASW_Mine::Explode()
 	{
 		pFirewall->SetAbsAngles( GetAbsAngles() );
 		if (GetOwnerEntity())
-			Msg("Creating firewall with owner %s\n", GetOwnerEntity()->GetClassname());
+		//softcopy: show playername instead of 'asw_marine'
+			//Msg("Creating firewall with owner %s\n", GetOwnerEntity()->GetClassname());
+			Msg("Creating firewall with owner \"%s\"\n", GetOwnerEntity()->GetPlayerName());
 		pFirewall->SetOwnerEntity(GetOwnerEntity());
-		pFirewall->SetAbsOrigin( GetAbsOrigin() );			
+		pFirewall->SetAbsOrigin( GetAbsOrigin() );
 
 		CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(GetOwnerEntity());
 		if (!pMarine)

@@ -221,7 +221,11 @@ void CASW_Voting_Missions::ScanThink()
 
 void CASW_Voting_Missions::SetListType(CASW_Player *pPlayer, int iListType, int nOffset, int iNumSlots, int iCampaignIndex)
 {
-	Msg("CASW_Voting_Missions::SetListType %d\n", iListType);
+	//softcopy: want to know who listing server maps
+	//Msg("CASW_Voting_Missions::SetListType %d\n", iListType);
+	if (pPlayer)
+		Msg("CASW_Voting_Missions::SetListType %d (\"%s\" list maps)\n", iListType, pPlayer->GetPlayerName());
+
 	m_hPlayer = pPlayer;
 	m_iListType = iListType;
 	m_nOffset = nOffset;

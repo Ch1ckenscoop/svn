@@ -47,43 +47,33 @@
 		"type"		"S"
 		"text"		"Grab something other than a medkit!\nRegenerative health is on."
 	}
-	"7"
-	{
-		"type"		"S"
-		"text"		"Updated Maps as of 9/5/11!\nDownload 'Call to Cathalu' at bit.ly/Ch1ckenscoop"
-	}
-	"8"
+	"6"
 	{
 		"type"		"S"
 		"text"		"All aliens burn forever..."
 	}
-	"9"
+	"7"
 	{
 		"type"		"S"
-		"text"		"TO ADMINS:\nKick people without a vote by typing !kick <name or part of name>"
+		"text"		"TO ADMINS:\nSet youself as leader by typing /setleader\nKick people without a vote by typing /kick <name or part of name>"
 		"flags"		""
-	}	
-	"10"
-	{
-		"type"		"S"
-		"text"		"Detailed player statistics at bit.ly/ch1ckenscoop!"
 	}
-	"11"
+	"8"
 	{
 		"type"		"S"
 		"text"		"The current server time is {TIME}"
 	}
-	"12"
+	"9"
 	{
 		"type"		"S"
 		"text"		"Join our steam group: Ch1ckensCoop Servers!"
 	}
-	"13"
+	"10"
 	{
 		"type"		"S"
 		"text"		"Have an idea? Found a bug?\nPost it at ch1ckenscoop.googlecode.com!"
 	}	
-	"14"
+	"11"
 	{
 		"type"		"S"
 		"text"		"Don't like the new effects? Type /cfx in chat to toggle."
