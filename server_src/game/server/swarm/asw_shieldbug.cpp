@@ -18,6 +18,9 @@
 #include "te.h"
 #include "props_shared.h"
 #include "asw_fail_advice.h"
+//softcopy: explosion effect
+#include "particle_parse.h"
+#include "asw_barrel_explosive.h"
 
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -65,11 +68,6 @@ ConVar asw_shieldbug_screen_shake("asw_shieldbug_screen_shake", "1", FCVAR_CHEAT
 ConVar asw_shieldbug_melee_force("asw_shieldbug_melee_force", "2.0", FCVAR_CHEAT, "Melee force of the shieldbug");
 ConVar asw_sb_gallop_min_range("asw_sb_gallop_min_range", "50.0", FCVAR_CHEAT, "Min range to do ram attack");
 ConVar asw_sb_gallop_max_range("asw_sb_gallop_max_range", "130.0", FCVAR_CHEAT, "Max range to do ram attack");
-ConVar asw_old_shieldbug ("asw_old_shieldbug", "0", FCVAR_CHEAT, "1= old shield bug, 0 = new model");
-ConVar asw_shieldbug_force_defend("asw_shieldbug_force_defend", "0", FCVAR_CHEAT, "0 = no force, 1 = force open, 2 = force defend");
-ConVar asw_shieldbug_health("asw_shieldbug_health", "1000", FCVAR_CHEAT, "Adjusts the health of the shieldbug."); //Ch1ckensCoop: convar for adjusting shieldbug health.
-
-ConVar asw_shieldbug_color("asw_shieldbug_color", "255 255 255", FCVAR_NONE, "Sets the color of shieldbugs.");
 //softcopy:
 ConVar asw_shieldbug_color2("asw_shieldbug_color2", "255 255 255", FCVAR_NONE, "Sets the color of new model shieldbugs.");
 ConVar asw_shieldbug_color2_percent("asw_shieldbug_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the new model shieldbugs you want to give the color",true,0,true,1);
@@ -84,6 +82,21 @@ ConVar asw_shieldbug_beta_color3("asw_shieldbug_beta_color3", "255 255 255", FCV
 ConVar asw_shieldbug_beta_color3_percent("asw_shieldbug_beta_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the beta shieldbugs you want to give the color",true,0,true,1);
 ConVar asw_shieldbug_beta_scalemod("asw_shieldbug_beta_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal beta shieldbugs.");
 ConVar asw_shieldbug_beta_scalemod_percent("asw_shieldbug_beta_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal beta shieldbugs you want to scale.",true,0,true,1);
+ConVar asw_shieldbug_touch_damage("asw_shieldbug_touch_damage", "5", FCVAR_CHEAT, "Sets damage caused by shieldbug on touch.");
+ConVar asw_shieldbug_ignite("asw_shieldbug_ignite", "0", FCVAR_CHEAT, "Sets 1=melee, 2=touch, 3=All, ignite marine on shieldbug melee/touch.");
+ConVar asw_shieldbug_explode("asw_shieldbug_explode", "0", FCVAR_CHEAT, "Sets 1=melee, 2=touch, 3=All, explode marine on shieldbug melee/touch.");
+ConVar asw_shieldbug_touch_onfire("asw_shieldbug_touch_onfire", "0", FCVAR_CHEAT, "Ignite marine if shieldbug body on fire touch.");
+ConVar asw_shieldbug_beta_gib_chance("asw_shieldbug_beta_gib_chance", "0.80", FCVAR_CHEAT, "Chance of beta shieldbug break into ragdoll pieces instead of ragdoll.",true,0,true,1);
+ConVar asw_shieldbug_beta_defend("asw_shieldbug_beta_defend", "1", FCVAR_CHEAT, "Sets 1=keep on defend attack, 0=defend attack randomly.");
+//ConVar asw_old_shieldbug ("asw_old_shieldbug", "0", FCVAR_CHEAT, "1= old shield bug, 0 = new model");
+ConVar asw_old_shieldbug ("asw_old_shieldbug", "0", FCVAR_CHEAT, "1= beta shieldbug, 0 = new model, 2=random all");
+extern ConVar asw_debug_alien_ignite;
+
+ConVar asw_shieldbug_force_defend("asw_shieldbug_force_defend", "0", FCVAR_CHEAT, "0 = no force, 1 = force open, 2 = force defend");
+ConVar asw_shieldbug_health("asw_shieldbug_health", "1000", FCVAR_CHEAT, "Adjusts the health of the shieldbug."); //Ch1ckensCoop: convar for adjusting shieldbug health.
+
+ConVar asw_shieldbug_color("asw_shieldbug_color", "255 255 255", FCVAR_NONE, "Sets the color of shieldbugs.");
+
 
 extern ConVar sv_gravity;
 extern ConVar asw_debug_marine_chatter;
@@ -97,7 +110,8 @@ CASW_Shieldbug::CASW_Shieldbug( void )
 	m_fMarineBlockCounter = 0;
 	m_fLastMarineBlockTime = 0;
 	m_flDefendDuration = RandomFloat( 6.0f, 10.0f );
-	if ( asw_old_shieldbug.GetBool() )
+	//if ( asw_old_shieldbug.GetBool() )
+	if ( asw_old_shieldbug.GetFloat() == 1 )	//softcopy:
 	{
 		m_pszAlienModelName = SWARM_SHIELDBUG_MODEL;
 	}
@@ -107,6 +121,8 @@ CASW_Shieldbug::CASW_Shieldbug( void )
 	}
 	m_bLastShouldDefend = false;  
 	m_nDeathStyle = kDIE_FANCY;
+	
+	m_fLastTouchHurtTime = 0;	//softcopy:
 }
 
 LINK_ENTITY_TO_CLASS( asw_shieldbug, CASW_Shieldbug );
@@ -120,11 +136,16 @@ BEGIN_DATADESC( CASW_Shieldbug )
 	DEFINE_FIELD(m_fNextFlinchTime, FIELD_FLOAT),
 	DEFINE_FIELD(m_fLastHurtTime, FIELD_TIME),
 	DEFINE_FIELD(m_fNextHeadhitAttack, FIELD_TIME),
+	DEFINE_FIELD( m_fLastTouchHurtTime, FIELD_TIME ),	//softcopy:
 	DEFINE_KEYFIELD(m_nExtraHeath, FIELD_INTEGER, "extrahealth"),
 END_DATADESC()
 
 void CASW_Shieldbug::Spawn( void )
 {
+	//softcopy: both shieldbug/beta shieldbug
+	if (asw_old_shieldbug.GetFloat() == 2 )
+		m_pszAlienModelName = RandomFloat() <= 0.5 ? SWARM_SHIELDBUG_MODEL : SWARM_NEW_SHIELDBUG_MODEL; 
+
 	SetHullType(HULL_WIDE_SHORT);
 
 	BaseClass::Spawn();
@@ -133,7 +154,7 @@ void CASW_Shieldbug::Spawn( void )
 	
 	SetHullType(HULL_WIDE_SHORT);
 
-	SetViewOffset( Vector(6, 0, 11) ) ;		// Position of the eyes relative to NPC's origin.
+	SetViewOffset( Vector(6, 0, 11) );		// Position of the eyes relative to NPC's origin.
 
 	SetHealthByDifficultyLevel();	
 	m_bDefending = false;
@@ -150,10 +171,16 @@ void CASW_Shieldbug::Spawn( void )
 	//softcopy: set shieldbugs color & scale 
 	//SetRenderColor(asw_shieldbug_color.GetColor().r(), asw_shieldbug_color.GetColor().g(), asw_shieldbug_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
 	if (!Q_strcmp(m_pszAlienModelName, SWARM_SHIELDBUG_MODEL))
-		SetColorScale( "shieldbug_beta" );
+	{
+		alienLabel = "shieldbug_beta";
+		SetColorScale( alienLabel );
+		m_bDefending = true;	//fix beta shieldbug no defending after hurt
+	}	
 	else
-		SetColorScale( "shieldbug" );	
-
+{
+		alienLabel = "shieldbug";
+		SetColorScale( alienLabel );
+	}
 }
 
 CASW_Shieldbug::~CASW_Shieldbug()
@@ -164,7 +191,7 @@ CASW_Shieldbug::~CASW_Shieldbug()
 void CASW_Shieldbug::Precache( void )
 {
 	PrecacheScriptSound("ASW_Drone.Alert");
-	PrecacheScriptSound("ASW_Drone.Attack");	
+	PrecacheScriptSound("ASW_Drone.Attack");
 	PrecacheScriptSound("ASW_Parasite.Death");
 	PrecacheScriptSound("ASW_Parasite.Idle");
 	PrecacheScriptSound("ASW_Parasite.Attack");
@@ -176,6 +203,15 @@ void CASW_Shieldbug::Precache( void )
 	PrecacheScriptSound( "ASW_ShieldBug.Attack" );
 	PrecacheScriptSound( "ASW_ShieldBug.Circle" );
 	PrecacheScriptSound( "ASW_ShieldBug.Idle" );
+	//softcopy:
+	PrecacheScriptSound( "ASW_Drone.DeathFireSizzle" );
+	PrecacheScriptSound( "BaseExplosionEffect.Sound" );
+	PrecacheScriptSound( "ASW_T75.Explode" );
+	PrecacheScriptSound( "Crash.Dead0" );
+	PrecacheParticleSystem( "explosion_barrel" );
+	// fix late precache 
+	PrecacheModel( SWARM_NEW_SHIELDBUG_MODEL );   
+	PrecacheModel( SWARM_SHIELDBUG_MODEL );
 
 	// these are all his breakables
 	PrecacheModel( "models/aliens/shieldbug/gib_back_leg.mdl");
@@ -289,6 +325,20 @@ void CASW_Shieldbug::IdleSound()
 
 void CASW_Shieldbug::DeathSound( const CTakeDamageInfo &info )
 {
+	//softcopy: add beta shieldbug onfire death sound
+	if (!Q_strcmp(m_pszAlienModelName, SWARM_SHIELDBUG_MODEL))
+	{
+		if ( m_nDeathStyle == kDIE_FANCY )
+			return;
+
+		CTakeDamageInfo newInfo(info);
+		if (m_bOnFire && (newInfo.GetDamageType() & DMG_BURN))
+		{
+			EmitSound( "ASW_Drone.DeathFireSizzle" );
+			return;
+		}
+	}
+
 	EmitSound( "ASW_ShieldBug.Death" );
 }
 
@@ -305,6 +355,18 @@ void CASW_Shieldbug::PrescheduleThink( void )
 
 bool CASW_Shieldbug::ShouldDefend()
 {
+	//softcopy: beta shieldbug keep in defending stage
+	if (!Q_strcmp(m_pszAlienModelName, SWARM_SHIELDBUG_MODEL))
+	{
+		if (!asw_shieldbug_beta_defend.GetBool())
+		{
+			// randomly leave defending to surprise people if we haven't done a headhit attack in a while
+			if (gpGlobals->curtime > m_fNextHeadhitAttack && random->RandomFloat() > 0.8f)
+				return false;
+		}
+		return true;
+	}
+
 	if ( asw_shieldbug_force_defend.GetInt() == 1 )
 		return false;
 
@@ -423,13 +485,32 @@ Activity CASW_Shieldbug::GetDeathActivity ( void )
 void CASW_Shieldbug::Event_Killed( const CTakeDamageInfo &info )
 {
 	BaseClass::Event_Killed( info );
-
-	//softcopy: fix beta shieldbug can't disappear after kill 
+	//softcopy: 
 	if (!Q_strcmp(m_pszAlienModelName, SWARM_SHIELDBUG_MODEL))
+	{
+		CTakeDamageInfo newInfo(info);
+		//beta shieldbug add death animations
+		if (m_bElectroStunned )
+				m_nDeathStyle = kDIE_INSTAGIB;
+		else if (m_bOnFire)
+				m_nDeathStyle = kDIE_FANCY;
+		else if (newInfo.GetDamageType() & (DMG_BULLET | DMG_BUCKSHOT | DMG_ENERGYBEAM))
+				m_nDeathStyle = kDIE_BREAKABLE;
+		else if (newInfo.GetDamageType() & (DMG_BLAST | DMG_SONIC))
+				m_nDeathStyle = RandomFloat() < asw_shieldbug_beta_gib_chance.GetFloat() ? kDIE_BREAKABLE : kDIE_HURL;
+		else 	m_nDeathStyle = kDIE_FANCY;
+		
+		trace_t tr;
+		UTIL_TraceLine( GetAbsOrigin() + Vector( 0, 0, 16 ), GetAbsOrigin() - Vector( 0, 0, 64 ), MASK_SOLID, this, COLLISION_GROUP_NONE, &tr );
+		UTIL_DecalTrace( &tr, "GreenBloodBig" );
+		//fix beta shieldbug can't disappear after kill 
 		SetThink(&CASW_Shieldbug::SUB_Remove);
+		if (m_bOnFire && (newInfo.GetDamageType() & DMG_BURN))
+			CorpseGib(info);	//add corpsegib effect if on fire
+	}
 	else
+	
 		ASWFailAdvice()->OnShiedbugKilled();
-
 }
 
 // NOTE: This function doesn't currently get used
@@ -551,6 +632,12 @@ int CASW_Shieldbug::TranslateSchedule( int scheduleType )
 {	
 	if ( scheduleType == SCHED_MELEE_ATTACK1 )
 	{
+		if (!Q_strcmp(m_pszAlienModelName, SWARM_SHIELDBUG_MODEL))
+		{
+			//softcopy: this var is used to leave beta shieldbug attacking mode (so we'll do a charge if we haven't done one for a while)
+			m_fNextHeadhitAttack = gpGlobals->curtime + random->RandomFloat(7.0f, 15.0f);
+		}
+		
 		//RemoveAllGestures();
 		return SCHED_ASW_SHIELDBUG_MELEE_ATTACK1;
 	}
@@ -697,8 +784,9 @@ void CASW_Shieldbug::MeleeAttack( float distance, float damage, QAngle &viewPunc
 	}
 
 	CBaseEntity *pHurt = CheckTraceHullAttack( distance, -Vector(16,16,32), Vector(16,16,32), damage, DMG_SLASH, asw_shieldbug_melee_force.GetFloat() );
-
-	if ( pHurt && asw_shieldbug_knockdown.GetBool() && !asw_god.GetBool() )
+	//softcopy:
+	//if ( pHurt && asw_shieldbug_knockdown.GetBool() && !asw_god.GetBool() )
+	if ( pHurt && asw_shieldbug_knockdown.GetBool() && (!asw_god.GetBool() || asw_shieldbug_ignite.GetInt() > 0 || asw_shieldbug_explode.GetInt() > 0) )
 	{
 		CASW_Marine *pMarine = CASW_Marine::AsMarine( pHurt );
 		if ( pMarine )
@@ -708,10 +796,19 @@ void CASW_Shieldbug::MeleeAttack( float distance, float damage, QAngle &viewPunc
 			vecForceDir *= asw_shieldbug_knockdown_force.GetFloat();
 			vecForceDir += Vector( 0, 0, asw_shieldbug_knockdown_lift.GetFloat() );
 			pMarine->Knockdown( this, vecForceDir  );
+			
+			//softcopy: ignited/exploded marine by shieldbug knockdown, 1=melee, 2=touch, 3=All
+			m_TouchExplosionDamage = asw_shieldbug_touch_damage.GetInt();
+			CTakeDamageInfo info( this, this, m_TouchExplosionDamage, DMG_SLASH );
+			damageTypes = "knockdown";
+			if (asw_shieldbug_ignite.GetInt()== 1 || asw_shieldbug_ignite.GetInt()== 3)
+				MarineIgnite(pMarine, info, alienLabel, damageTypes);
+			if ((asw_shieldbug_explode.GetInt()==1 || asw_shieldbug_explode.GetInt()==3) && m_TouchExplosionDamage > 0)
+				MarineExplode(pMarine, alienLabel, damageTypes);
+			EmitSound( "Crash.Dead0" );
 		}
 	}
 }
-
 
 void CASW_Shieldbug::CheckForShieldbugHint( const CTakeDamageInfo &info )
 {
@@ -887,10 +984,43 @@ int CASW_Shieldbug::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	return result;
 }
 
-//softcopy:
-void CASW_Shieldbug::SetColorScale(const char *alienLabel)	
+//softcopy: ignite/explode marine by shieldbug on touch/on fire touch, 1=melee, 2=touch, 3=All
+void CASW_Shieldbug::StartTouch( CBaseEntity *pOther )
 {
-	BaseClass::SetColorScale(alienLabel);	
+	BaseClass::StartTouch( pOther );
+	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
+	if ( pMarine )
+	{
+		m_TouchExplosionDamage = asw_shieldbug_touch_damage.GetInt();
+		CTakeDamageInfo info( this, this, m_TouchExplosionDamage, DMG_SLASH );
+		damageTypes = "on touch";
+		if (asw_shieldbug_ignite.GetInt() >= 2 || (m_bOnFire && asw_shieldbug_touch_onfire.GetBool()))
+			MarineIgnite(pMarine, info, alienLabel, damageTypes);
+		if (m_fLastTouchHurtTime + 0.5f /*0.6*/ > gpGlobals->curtime || m_TouchExplosionDamage <= 0)	//don't hurt him if he was hurt recently
+			return;
+		Vector vecForceDir = ( pMarine->GetAbsOrigin() - GetAbsOrigin() );	// hurt the marine
+		CalculateMeleeDamageForce( &info, vecForceDir, pMarine->GetAbsOrigin() );
+		pMarine->TakeDamage( info );
+		if (asw_shieldbug_explode.GetInt() >= 2)
+			MarineExplode(pMarine, alienLabel, damageTypes);
+
+		m_fLastTouchHurtTime = gpGlobals->curtime;
+	}
+}
+//softcopy:
+void CASW_Shieldbug::SetColorScale(const char *alienLabel)
+{
+	BaseClass::SetColorScale(alienLabel);
+}
+//softcopy:
+void CASW_Shieldbug::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
+{
+	BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);
+}
+//softcopy:
+void CASW_Shieldbug::MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes)
+{
+	BaseClass::MarineExplode(pMarine, alienLabel, damageTypes);
 }
 
 bool CASW_Shieldbug::ShouldGib( const CTakeDamageInfo &info )
@@ -898,7 +1028,7 @@ bool CASW_Shieldbug::ShouldGib( const CTakeDamageInfo &info )
 	// don't gib if we burnt to death
 	if (info.GetDamageType() & DMG_BURN)
 		return false;
-
+	
 	return false;
 }
 
@@ -971,7 +1101,7 @@ void CASW_Shieldbug::NPCThink()
 		}
 		else
 			s_fNextSpottedChatterTime = gpGlobals->curtime + 1.0f;
-	}		
+	}
 }
 
 // is the enemy near enough to left slash at?
@@ -1039,7 +1169,7 @@ AI_BEGIN_CUSTOM_NPC( asw_shieldbug, CASW_Shieldbug )
 	DECLARE_ACTIVITY( ACT_LEAVE_DEFENDING );
 	DECLARE_ACTIVITY( ACT_RUN_DEFEND );
 	DECLARE_ACTIVITY( ACT_IDLE_DEFEND );
-	DECLARE_ACTIVITY( ACT_FLINCH_LEFTARM_DEFEND );;
+	DECLARE_ACTIVITY( ACT_FLINCH_LEFTARM_DEFEND );
 	DECLARE_ACTIVITY( ACT_FLINCH_RIGHTARM_DEFEND );
 	DECLARE_ACTIVITY( ACT_MELEE_ATTACK1_DEFEND );
 	DECLARE_ACTIVITY( ACT_TURN_LEFT_DEFEND );

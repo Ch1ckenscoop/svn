@@ -15,7 +15,8 @@
 ConVar asw_marine_ai_followspot( "asw_marine_ai_followspot", "0", FCVAR_CHEAT );
 ConVar asw_follow_hint_max_range( "asw_follow_hint_max_range", "300", FCVAR_CHEAT );
 ConVar asw_follow_hint_max_z_dist( "asw_follow_hint_max_z_dist", "120", FCVAR_CHEAT );
-ConVar asw_follow_use_hints( "asw_follow_use_hints", "2", FCVAR_CHEAT, "0 = follow formation, 1 = use hints when in combat, 2 = always use hints" );
+//softcopy: set default=0 to avoid sometime crashed by hints enabled
+ConVar asw_follow_use_hints( "asw_follow_use_hints", "0", FCVAR_CHEAT, "0 = follow formation, 1 = use hints when in combat, 2 = always use hints" ); 
 ConVar asw_follow_hint_debug( "asw_follow_hint_debug", "0", FCVAR_CHEAT );
 ConVar asw_follow_velocity_predict( "asw_follow_velocity_predict", "0.3", FCVAR_CHEAT, "Marines travelling in diamond follow formation will predict their leader's movement ahead by this many seconds" );
 ConVar asw_follow_threshold( "asw_follow_threshold", "40", FCVAR_CHEAT, "Marines in diamond formation will move after leader has moved this much" );
@@ -35,7 +36,14 @@ void CASW_SquadFormation::LevelInitPostEntity()
 #else
 	m_bLevelHasFollowHints = ( MarineHintManager()->GetHintCount() > 0 );
 #endif
-	Msg( "Level has follow hints %d\n", m_bLevelHasFollowHints );
+	//softcopy: show current hints status to console.
+	//Msg( "Level has follow hints %d\n", m_bLevelHasFollowHints );
+	Msg( "Level has follow hints %d ", m_bLevelHasFollowHints );
+	if ( m_bLevelHasFollowHints && asw_follow_use_hints.GetInt() == 0 )
+		m_bLevelHasFollowHints = false;
+	if (asw_follow_use_hints.GetInt() >=0 && asw_follow_use_hints.GetInt() <=2)
+		Msg( "(use hints = %d)\n", asw_follow_use_hints.GetInt() );
+
 }
 
 unsigned int CASW_SquadFormation::Add( CASW_Marine *pMarine )

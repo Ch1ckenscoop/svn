@@ -122,6 +122,23 @@ ConVar asw_hordemode_harvester_beta_min("asw_hordemode_harvester_beta_min", "1",
 ConVar asw_hordemode_harvester_beta_health_max("asw_hordemode_harvester_beta_health_max", "325", FCVAR_CHEAT | FCVAR_CCOOP, "Maximum beta harvester heatlh.");
 ConVar asw_hordemode_harvester_beta_health_min("asw_hordemode_harvester_beta_health_min", "150", FCVAR_CHEAT | FCVAR_CCOOP, "Minimum beta harvester health.");
 
+//softcopy: hordemode horde_size_max settings and beta aliens health settings
+//Beta Parasites   
+ConVar asw_hordemode_parasite_beta_max("asw_hordemode_parasite_beta_max", "1", FCVAR_CHEAT, "Maximum beta parasite to spawn.");
+ConVar asw_hordemode_parasite_beta_min("asw_hordemode_parasite_beta_min", "1", FCVAR_CHEAT, "Minimum beta parasite  to spawn.");
+ConVar asw_hordemode_parasite_beta_health_max("asw_hordemode_parasite_beta_health_max", "35", FCVAR_CHEAT, "Maximum beta parasite  heatlh.");
+ConVar asw_hordemode_parasite_beta_health_min("asw_hordemode_parasite_beta_health_min", "20", FCVAR_CHEAT, "Minimum beta parasite  health.");
+//Beta Buzzers    
+ConVar asw_hordemode_buzzer_beta_max("asw_hordemode_buzzer_beta_max", "1", FCVAR_CHEAT, "Maximum beta buzzer to spawn.");
+ConVar asw_hordemode_buzzer_beta_min("asw_hordemode_buzzer_beta_min", "1", FCVAR_CHEAT, "Minimum beta buzzer  to spawn.");
+ConVar asw_hordemode_buzzer_beta_health_max("asw_hordemode_buzzer_beta_health_max", "120", FCVAR_CHEAT, "Maximum beta buzzer  heatlh.");
+ConVar asw_hordemode_buzzer_beta_health_min("asw_hordemode_buzzer_beta_health_min", "60", FCVAR_CHEAT, "Minimum beta buzzer  health.");
+//Beta Mortars    
+ConVar asw_hordemode_mortar_beta_max("asw_hordemode_mortar_beta_max", "1", FCVAR_CHEAT, "Maximum beta mortar to spawn.");
+ConVar asw_hordemode_mortar_beta_min("asw_hordemode_mortar_beta_min", "1", FCVAR_CHEAT, "Minimum beta mortar  to spawn.");
+ConVar asw_hordemode_mortar_beta_health_max("asw_hordemode_mortar_beta_health_max", "425", FCVAR_CHEAT, "Maximum beta mortar  heatlh.");
+ConVar asw_hordemode_mortar_beta_health_min("asw_hordemode_mortar_beta_health_min", "300", FCVAR_CHEAT, "Minimum beta mortar  health.");
+
 static CASW_Horde_Mode g_ASWHordeMode;
 CASW_Horde_Mode* ASWHordeMode() 
 {
@@ -196,14 +213,17 @@ void CASW_Horde_Mode::UpdateHordeMode()
 	{
 		if (!m_AlienInfoArray[m_iLastAlienClass].m_pBetaAlienCvar)
 			Warning("Bad beta convar for alien class %s!\n", m_AlienInfoArray[m_iLastAlienClass].m_szAlienClassName);
+		//softcopy: cvar 2 = random cvar 1 or 2, no reverse for cvar 2 has set
+		if (m_AlienInfoArray[m_iLastAlienClass].m_pBetaAlienCvar->GetFloat() != 2)
+		{
+			if (!m_AlienInfoArray[m_iLastAlienClass].m_bBetaAlienCvarReversed)
+				m_AlienInfoArray[m_iLastAlienClass].m_pBetaAlienCvar->SetValue(1);
+			else
+				m_AlienInfoArray[m_iLastAlienClass].m_pBetaAlienCvar->SetValue(0);
 
-		if (!m_AlienInfoArray[m_iLastAlienClass].m_bBetaAlienCvarReversed)
-			m_AlienInfoArray[m_iLastAlienClass].m_pBetaAlienCvar->SetValue(1);
-		else
-			m_AlienInfoArray[m_iLastAlienClass].m_pBetaAlienCvar->SetValue(0);
-
-		if (asw_hordemode_debug.GetBool())
-			Msg("Disabled beta spawning for %s.\n", m_AlienInfoArray[m_iLastAlienClass].m_szAlienClassName);
+			if (asw_hordemode_debug.GetBool())
+				Msg("Disabled beta spawning for %s.\n", m_AlienInfoArray[m_iLastAlienClass].m_szAlienClassName);
+		}
 	}
 
 	//Ch1ckensCoop: Select the next random alien
@@ -227,15 +247,17 @@ void CASW_Horde_Mode::UpdateHordeMode()
 	int mode = asw_hordemode_mode.GetInt();
 	if (mode == 0 || mode == 1)
 		RandomizeHealth();
-
-	if (alienIsBeta && alienBetaCvar)
+	//softcopy: cvar 2 = random cvar 1 or 2, no reverse for cvar 2 has set
+	//if (alienIsBeta && alienBetaCvar)
+	if (alienIsBeta && alienBetaCvar && m_AlienInfoArray[alienIndex].m_pBetaAlienCvar->GetFloat() != 2)
 	{
 		if (!alienBetaCvarReversed)
 			alienBetaCvar->SetValue(0);
 		else
 			alienBetaCvar->SetValue(1);
 	}
-	else if (!alienIsBeta && alienBetaCvar)
+	//else if (!alienIsBeta && alienBetaCvar)
+	else if (!alienIsBeta && alienBetaCvar && m_AlienInfoArray[alienIndex].m_pBetaAlienCvar->GetFloat() != 2)
 	{
 		if (!alienBetaCvarReversed)
 			alienBetaCvar->SetValue(1);
@@ -254,7 +276,7 @@ void CASW_Horde_Mode::UpdateHordeMode()
 			boolText = "false";
 
 		engine->Con_NPrintf( 19, "Hordemode set alien class to %s, health to %i, isBeta = %s.\n", alienClassName, alienHealthCvar->GetInt(), boolText);
-		Msg("Hordemode set alien class to %s, health to %i, isBeta = %s.\n", alienClassName, alienHealthCvar->GetInt(), boolText);		
+		Msg("Hordemode set alien class to %s, health to %i, isBeta = %s.\n", alienClassName, alienHealthCvar->GetInt(), boolText);
 	}
 }
 
@@ -328,6 +350,10 @@ void CASW_Horde_Mode::InitAlienData()
 	m_AlienInfoArray[BETA_DRONE_INDEX].m_szAlienClassName = "asw_drone";
 	m_AlienInfoArray[BETA_SHIELDBUG_INDEX].m_szAlienClassName = "asw_shieldbug";
 	m_AlienInfoArray[BETA_HARVESTER_INDEX].m_szAlienClassName = "asw_harvester";
+	//softcopy: 
+	m_AlienInfoArray[BETA_BUZZER_INDEX].m_szAlienClassName = "asw_buzzer";
+	m_AlienInfoArray[BETA_PARASITE_INDEX].m_szAlienClassName = "asw_parasite";
+	m_AlienInfoArray[BETA_MORTAR_INDEX].m_szAlienClassName = "asw_mortarbug";
 
 
 	// Alien Flags
@@ -347,15 +373,27 @@ void CASW_Horde_Mode::InitAlienData()
 	m_AlienInfoArray[BETA_DRONE_INDEX].m_iFlag = 8192;
 	m_AlienInfoArray[BETA_SHIELDBUG_INDEX].m_iFlag = 16384;
 	m_AlienInfoArray[BETA_HARVESTER_INDEX].m_iFlag = 32768;
+	//softcopy: beta alien Flags
+	m_AlienInfoArray[BETA_BUZZER_INDEX].m_iFlag = 65536;
+	m_AlienInfoArray[BETA_PARASITE_INDEX].m_iFlag = 131072;
+	m_AlienInfoArray[BETA_MORTAR_INDEX].m_iFlag = 262144;
 
 
 	// Beta Alien Flags
 	m_AlienInfoArray[DRONE_INDEX].m_pBetaAlienCvar = g_pCVar->FindVar("asw_new_drone");
-
+	//softcopy:
+	m_AlienInfoArray[BUZZER_INDEX].m_pBetaAlienCvar = g_pCVar->FindVar("asw_old_buzzer");
+	m_AlienInfoArray[BUZZER_INDEX].m_bBetaAlienCvarReversed = true;
+	m_AlienInfoArray[PARASITE_INDEX].m_pBetaAlienCvar = g_pCVar->FindVar("asw_old_parasite");
+	m_AlienInfoArray[PARASITE_INDEX].m_bBetaAlienCvarReversed = true;
+	
 	m_AlienInfoArray[SHIELDBUG_INDEX].m_pBetaAlienCvar = g_pCVar->FindVar("asw_old_shieldbug");
 	m_AlienInfoArray[SHIELDBUG_INDEX].m_bBetaAlienCvarReversed = true;
 
 	m_AlienInfoArray[HARVESTER_INDEX].m_pBetaAlienCvar = g_pCVar->FindVar("asw_harvester_new");
+	//softcopy:
+	m_AlienInfoArray[MORTAR_INDEX].m_pBetaAlienCvar = g_pCVar->FindVar("asw_old_mortarbug");
+	m_AlienInfoArray[MORTAR_INDEX].m_bBetaAlienCvarReversed = true;
 
 	m_AlienInfoArray[BETA_DRONE_INDEX].m_pBetaAlienCvar = g_pCVar->FindVar("asw_new_drone");
 	m_AlienInfoArray[BETA_DRONE_INDEX].m_bBeta = true;
@@ -366,8 +404,18 @@ void CASW_Horde_Mode::InitAlienData()
 
 	m_AlienInfoArray[BETA_HARVESTER_INDEX].m_pBetaAlienCvar = g_pCVar->FindVar("asw_harvester_new");
 	m_AlienInfoArray[BETA_HARVESTER_INDEX].m_bBeta = true;
-
-
+	//softcopy:
+	m_AlienInfoArray[BETA_BUZZER_INDEX].m_pBetaAlienCvar = g_pCVar->FindVar("asw_old_buzzer");
+	m_AlienInfoArray[BETA_BUZZER_INDEX].m_bBetaAlienCvarReversed = true;
+	m_AlienInfoArray[BETA_BUZZER_INDEX].m_bBeta = true;
+	m_AlienInfoArray[BETA_PARASITE_INDEX].m_pBetaAlienCvar = g_pCVar->FindVar("asw_old_parasite");
+	m_AlienInfoArray[BETA_PARASITE_INDEX].m_bBetaAlienCvarReversed = true;
+	m_AlienInfoArray[BETA_PARASITE_INDEX].m_bBeta = true;
+	m_AlienInfoArray[BETA_MORTAR_INDEX].m_pBetaAlienCvar = g_pCVar->FindVar("asw_old_mortarbug");
+	m_AlienInfoArray[BETA_MORTAR_INDEX].m_bBetaAlienCvarReversed = true;
+	m_AlienInfoArray[BETA_MORTAR_INDEX].m_bBeta = true;
+	
+	
 	// Non beta alien flags
 	m_AlienInfoArray[DRONE_INDEX].m_bBeta = false;
 	m_AlienInfoArray[BUZZER_INDEX].m_bBeta = false;
@@ -401,6 +449,10 @@ void CASW_Horde_Mode::InitAlienData()
 	m_AlienInfoArray[BETA_DRONE_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_drone_beta_health_max");
 	m_AlienInfoArray[BETA_SHIELDBUG_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_shieldbug_beta_health_max");
 	m_AlienInfoArray[BETA_HARVESTER_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_harvester_beta_health_max");
+	//softcopy:
+	m_AlienInfoArray[BETA_BUZZER_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_buzzer_beta_health_max");
+	m_AlienInfoArray[BETA_PARASITE_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_parasite_beta_health_max");
+	m_AlienInfoArray[BETA_MORTAR_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_mortar_beta_health_max");
 
 
 	// Alien Minimum Healths
@@ -420,6 +472,10 @@ void CASW_Horde_Mode::InitAlienData()
 	m_AlienInfoArray[BETA_DRONE_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_drone_beta_health_max");
 	m_AlienInfoArray[BETA_SHIELDBUG_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_shieldbug_beta_health_min");
 	m_AlienInfoArray[BETA_HARVESTER_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_harvester_beta_health_min");
+	//softcopy:
+	m_AlienInfoArray[BETA_BUZZER_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_buzzer_beta_health_min");
+	m_AlienInfoArray[BETA_PARASITE_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_parasite_beta_health_min");
+	m_AlienInfoArray[BETA_MORTAR_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_mortar_beta_health_min");
 
 
 	// Alien Maximums
@@ -439,6 +495,10 @@ void CASW_Horde_Mode::InitAlienData()
 	m_AlienInfoArray[BETA_DRONE_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_drone_beta_max");
 	m_AlienInfoArray[BETA_SHIELDBUG_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_shieldbug_beta_max");
 	m_AlienInfoArray[BETA_HARVESTER_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_harvester_beta_max");
+	//softcopy:
+	m_AlienInfoArray[BETA_BUZZER_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_buzzer_beta_max");
+	m_AlienInfoArray[BETA_PARASITE_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_parasite_beta_max");
+	m_AlienInfoArray[BETA_MORTAR_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_mortar_beta_max");
 
 
 	// Alien Minimums
@@ -458,6 +518,10 @@ void CASW_Horde_Mode::InitAlienData()
 	m_AlienInfoArray[BETA_DRONE_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_drone_beta_min");
 	m_AlienInfoArray[BETA_SHIELDBUG_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_shieldbug_beta_min");
 	m_AlienInfoArray[BETA_HARVESTER_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_harvester_beta_min");
+	//softcopy:
+	m_AlienInfoArray[BETA_BUZZER_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_buzzer_beta_min");
+	m_AlienInfoArray[BETA_PARASITE_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_parasite_beta_min");
+	m_AlienInfoArray[BETA_MORTAR_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_mortar_beta_min");
 
 
 	// Alien Health Cvar ConVarRefs
@@ -477,6 +541,11 @@ void CASW_Horde_Mode::InitAlienData()
 	m_AlienInfoArray[BETA_DRONE_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("asw_drone_health");
 	m_AlienInfoArray[BETA_SHIELDBUG_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("asw_shieldbug_health");
 	m_AlienInfoArray[BETA_HARVESTER_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("asw_harvester_health");
+	//softcopy:
+	m_AlienInfoArray[BETA_BUZZER_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("sk_asw_buzzer_beta_health");
+	m_AlienInfoArray[BETA_PARASITE_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("asw_parasite_health");
+	m_AlienInfoArray[BETA_MORTAR_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("asw_mortarbug_health");
+
 }
 
 const CASW_Horde_Mode::AlienInfo *CASW_Horde_Mode::GetAlienInfo(int index)

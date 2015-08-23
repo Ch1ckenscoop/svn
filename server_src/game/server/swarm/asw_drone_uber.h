@@ -16,7 +16,6 @@ public:
 	virtual ~CASW_Drone_Uber( void );
 	
 	virtual Class_T		Classify( void ) { return (Class_T) CLASS_ASW_DRONE_UBER; }	//Ch1ckensCoop: Statistics reporting (don't report this as a drone, but as an uber drone instead.)
-
 	virtual void Spawn();
 	virtual void Precache();
 	virtual bool ShouldMoveSlow() const;
@@ -25,11 +24,14 @@ public:
 	virtual int OnTakeDamage_Alive( const CTakeDamageInfo &info );
 	virtual bool ModifyAutoMovement( Vector &vecNewPos );
 	//softcopy: 
-	const char	*alienLabel;
+	virtual void StartTouch( CBaseEntity *pOther );
+	const char	*alienLabel, *damageTypes;
+	virtual void MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes);
 	virtual void SetColorScale(const char *alienLabel);
 
 private:
 	float GetDamage();	//Ch1ckensCoop: easy modification of alien damages.
+
 };
 
 #endif // _INCLUDED_ASW_DRONE_UBER_H

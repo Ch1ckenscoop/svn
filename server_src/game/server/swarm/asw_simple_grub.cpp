@@ -16,7 +16,14 @@ PRECACHE_REGISTER( asw_grub );
 
 BEGIN_DATADESC( CASW_Simple_Grub )
 	DEFINE_ENTITYFUNC(GrubTouch),
+	DEFINE_FIELD( m_fLastTouchHurtTime, FIELD_TIME ),	//softcopy:
 END_DATADESC()
+
+//softcopy:
+ConVar asw_grub_touch_damage("asw_grub_touch_damage", "0", FCVAR_CHEAT, "Sets damage caused by grub on touch.");
+ConVar asw_grub_ignite("asw_grub_ignite", "0", FCVAR_CHEAT, "Ignite marine by grub on touch.");
+extern ConVar asw_debug_alien_ignite;
+bool IsIgnitedGrub;
 
 extern ConVar asw_debug_simple_alien;
 
@@ -31,6 +38,7 @@ extern ConVar asw_debug_simple_alien;
 CASW_Simple_Grub::CASW_Simple_Grub()
 {
 	m_bSkipGravity = false;
+	m_fLastTouchHurtTime = 0;	//softcopy:
 }
 
 CASW_Simple_Grub::~CASW_Simple_Grub()
@@ -48,8 +56,12 @@ void CASW_Simple_Grub::Spawn(void)
 	UTIL_SetSize(this, Vector(-12,-12,   0),	Vector(12, 12, 12));
 
 	SetTouch( &CASW_Simple_Grub::GrubTouch );
+	m_iHealth = 1;
+	//softcopy: strong health if it has damage
+	if ( asw_grub_touch_damage.GetInt() > 0 )
+		m_iHealth = 20;
+	IsIgnitedGrub = false;	//debug marine has ignited
 
-	m_iHealth	= 1;
 	SetBlocksLOS(false);
 }
 
@@ -58,7 +70,8 @@ void CASW_Simple_Grub::GrubTouch( CBaseEntity *pOther )
 	if (!pOther)
 		return;
 
-	if (pOther->Classify() == CLASS_ASW_MARINE && pOther->GetAbsVelocity().Length() > 100)
+	//softcopy: ignite/damage marine on grub touch
+	/*if (pOther->Classify() == CLASS_ASW_MARINE && pOther->GetAbsVelocity().Length() > 100)
 	{
 		Vector xydiff = GetAbsOrigin() - pOther->GetAbsOrigin();
 		xydiff.z = 0;
@@ -66,6 +79,55 @@ void CASW_Simple_Grub::GrubTouch( CBaseEntity *pOther )
 		{
 			CTakeDamageInfo dmg(pOther, pOther, Vector(0, 0, -1), GetAbsOrigin() + Vector(0, 0, 1), 20, DMG_CRUSH);
 			TakeDamage(dmg);
+		}
+	}*/
+	if ( pOther->Classify() == CLASS_ASW_MARINE )
+	{
+		CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
+		CTakeDamageInfo info( this, this, asw_grub_touch_damage.GetInt(), DMG_ACID );
+		if (asw_grub_ignite.GetBool())
+		{
+			pMarine->ASW_Ignite( 1.5f, 1.5, info.GetAttacker(), info.GetWeapon() );
+			if (asw_debug_alien_ignite.GetBool())	//debug marine has ignited
+			{
+				if (pMarine->IsOnFire() && !IsIgnitedGrub)
+				{
+					Msg("----- Player %s has ignited  by grub on touch -----\n", pMarine->GetPlayerName());
+					IsIgnitedGrub = true;
+				}
+			}
+		}
+		if (asw_grub_touch_damage.GetInt() > 0)
+		{
+			if ( m_fLastTouchHurtTime + 1.5f > gpGlobals->curtime )	//don't hurt him if he was hurt recently
+				return;
+			Vector	killDir = pOther->GetAbsOrigin() - GetAbsOrigin();
+			VectorNormalize( killDir );
+			info.SetDamageForce( killDir );
+			Vector vecDamagePos = pOther->GetAbsOrigin() -killDir * 32.0f;
+			info.SetDamagePosition( vecDamagePos );
+			pOther->TakeDamage(info);
+			EmitSound("ASWFire.AcidBurn");
+			CEffectData	data;
+			data.m_vOrigin = vecDamagePos;
+			data.m_nOtherEntIndex = pOther->entindex();
+			DispatchEffect( "ASWAcidBurn", data );
+			if ( asw_debug_alien_ignite.GetBool() )		//debug marine has damaged
+				Msg("----- Player %s has damaged  by grub on touch -----\n", pMarine->GetPlayerName());
+			m_fLastTouchHurtTime = gpGlobals->curtime;
+		}
+		else
+		{
+			if (pOther->GetAbsVelocity().Length() > 100)
+			{
+				Vector xydiff = GetAbsOrigin() - pOther->GetAbsOrigin();
+				xydiff.z = 0;
+				if (xydiff.Length() < 20)
+				{
+					CTakeDamageInfo dmg(pOther, pOther, Vector(0, 0, -1), GetAbsOrigin() + Vector(0, 0, 1), 20, DMG_CRUSH);
+					TakeDamage(dmg);
+				}
+			}
 		}
 	}
 }

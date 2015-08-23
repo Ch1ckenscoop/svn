@@ -1,4 +1,4 @@
-//========= Copyright � 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright (c) 1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose:
 //
@@ -2256,8 +2256,9 @@ bool CAI_Navigator::OnMoveBlocked( AIMoveResult_t *pResult )
 		return true;
 
 	float flWaypointDist;
-
-	if ( !GetPath()->CurWaypointIsGoal() && GetPath()->GetCurWaypoint()->IsReducible() )
+	//softcopy:test debug "CUtlRBTree overflow!" crashes on this statement
+	//if ( !GetPath()->CurWaypointIsGoal() && GetPath()->GetCurWaypoint()->IsReducible() )
+	if ( !GetPath()->CurWaypointIsGoal() && GetPath()->GetCurWaypoint() && GetPath()->GetCurWaypoint()->IsReducible() )
 	{
 		flWaypointDist = ComputePathDistance( GetNavType(), GetLocalOrigin(), GetCurWaypointPos() );
 		if ( flWaypointDist < GetHullWidth() )

@@ -43,8 +43,13 @@ public:
 	virtual bool		CorpseGib( const CTakeDamageInfo &info );
 	virtual bool		CanBreak() { return true; };
 	//softcopy: 
-	const char			*alienLabel;
+	virtual void 		StartTouch( CBaseEntity *pOther );
+	float				m_fLastTouchHurtTime;
+	const char			*alienLabel, *damageTypes;
 	virtual void 		SetColorScale(const char *alienLabel);
+	virtual void 		MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes);
+	virtual void 		MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes);
+	void 				MeleeAttack(float distance, float damage);
 
 	// sounds
 	virtual void DeathSound( const CTakeDamageInfo &info );
@@ -66,7 +71,7 @@ public:
 	CNetworkVar( bool, m_bInflated );
 
 	CUtlVector<EHANDLE> m_hMarineAttackers;
-
+	
 private:
 
 protected:

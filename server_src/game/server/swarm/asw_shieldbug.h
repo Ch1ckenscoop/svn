@@ -31,7 +31,7 @@ public:
 	int MeleeAttack2Conditions ( float flDot, float flDist );
 	void MeleeAttack( float distance, float damage, QAngle &viewPunch, Vector &shove );
 	float MaxYawSpeed( void );
-	void HandleAnimEvent( animevent_t *pEvent );	
+	void HandleAnimEvent( animevent_t *pEvent );
 	Class_T		Classify( void ) { return (Class_T) CLASS_ASW_SHIELDBUG; }	
 	bool CorpseGib( const CTakeDamageInfo &info );
 	void BuildScheduleTestBits( void );
@@ -85,7 +85,7 @@ public:
 	float m_flDefendDuration;
 
 	static float s_fNextSpottedChatterTime;
-
+	
 	enum
 	{
 		COND_SHIELDBUG_CHANGE_DEFEND = BaseClass::NEXT_CONDITION,
@@ -95,8 +95,12 @@ public:
 	bool m_bHasBeenHurt;
 	
 	//softcopy:
-	const char		*alienLabel;
+	virtual void	StartTouch( CBaseEntity *pOther );
+	float			m_fLastTouchHurtTime;
+	const char		*alienLabel, *damageTypes;
 	virtual void 	SetColorScale(const char *alienLabel);
+	virtual void 	MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes);
+	virtual void 	MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes);
 
 protected:
 	DEFINE_CUSTOM_AI;

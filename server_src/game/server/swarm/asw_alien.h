@@ -310,14 +310,14 @@ public:
 	float	m_flRangeAttackStartTime;
 	float	m_flRangeAttackLastUpdateTime;
 	Vector	m_vecRangeAttackTargetPosition;
-
+	
 	enum
 	{
 		COND_ASW_BEGIN_COMBAT_STUN = BaseClass::NEXT_CONDITION,
 		COND_ASW_FLINCH,
 		NEXT_CONDITION,
 	};
-	
+
 	//softcopy: re-use SetTagState from R257 to fix no parasite appear at some vents or eggs
 	void	SetTagState(int TagState) { m_iTagState = TagState; }
 	int 	GetTagState() { return m_iTagState; }
@@ -327,8 +327,13 @@ public:
 		ASW_TAG_REMOVE,		//Alien is outside the pruning radius and should be removed
 		ASW_TAG_SAFE,		//Alien is inside the pruning radius
 	};
-	virtual void 	SetColorScale(const char *alienLabel);	
-	
+	int		m_TouchExplosionDamage;
+	virtual void	DoTouchExplosion( CBaseEntity *pMarine );
+	virtual void	MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes);
+	virtual void	MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes);
+	virtual void	SetColorScale(const char *alienLabel);
+	bool	IsIgnited;		//debug marine is ignited
+
 protected:	
 	
 	static float sm_flLastHurlTime;
@@ -343,7 +348,7 @@ protected:
 	CUtlVector<CASW_AlienShot>		m_shots;
 	DEFINE_CUSTOM_AI;
 	
-//softcopy:
+//softcopy: 
 private:
 	int		m_iTagState;	//Current tag state     //re-use SetTagState from R257 to fix no parasite appear at some vents or eggs
 };

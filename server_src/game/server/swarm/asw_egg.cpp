@@ -86,6 +86,17 @@ ConVar asw_egg_health("asw_egg_health", "50", FCVAR_CHEAT, "Sets the health of e
 ConVar ASW_EGG_ALWAYS_BURST_DISTANCE("asw_egg_always_burst_distance", "120.0", FCVAR_CHEAT, "*Always* burst if marines are this close.");
 ConVar ASW_EGG_BURST_DISTANCE("asw_egg_burst_distance", "450.0", FCVAR_CHEAT, "Sometimes burst if a marine comes this close.");
 ConVar asw_egg_max_respawns("asw_egg_max_respawns", "0", FCVAR_CHEAT, "Maximum parasites for an egg to spawn. 0 = infinite.");
+//softcopy:
+ConVar asw_egg_color("asw_egg_color", "255 255 255", FCVAR_NONE, "The Eggs color adjust.");
+ConVar asw_egg_color2("asw_egg_color2", "255 255 255", FCVAR_NONE, "The Eggs color adjust.");
+ConVar asw_egg_color2_percent("asw_egg_color2_percent", "0.0", FCVAR_NONE, "Percentage Adjusts the Eggs color.");
+ConVar asw_egg_color3("asw_egg_color3", "255 255 255", FCVAR_NONE, "The Eggs color adjust.");
+ConVar asw_egg_color3_percent("asw_egg_color3_percent", "0.0", FCVAR_NONE, "Percentage Adjusts the Eggs color.");
+ConVar asw_egg_scalemod("asw_egg_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal egg.");
+ConVar asw_egg_scalemod_percent("asw_egg_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal egg you want to scale.");
+ConVar asw_egg_touch_onfire("asw_egg_touch_onfire", "0", FCVAR_CHEAT, "Ignite marine if egg body on fire touch.");
+extern ConVar asw_debug_alien_ignite;
+bool IsIgnited;		//debug marine has ignited
 
 float CASW_Egg::s_fNextSpottedChatterTime = 0;
 
@@ -120,11 +131,23 @@ void CASW_Egg::Spawn( void )
 	CreateVPhysics();
 	SetCollisionGroup( ASW_COLLISION_GROUP_EGG );
 
+	//softcopy:
+	float randomColor = RandomFloat(0, 1);
+	if (randomColor <= asw_egg_color2_percent.GetFloat())
+		SetRenderColor(asw_egg_color2.GetColor().r(), asw_egg_color2.GetColor().g(), asw_egg_color2.GetColor().b());
+	else if (randomColor <= (asw_egg_color2_percent.GetFloat() + asw_egg_color3_percent.GetFloat()))
+		SetRenderColor(asw_egg_color3.GetColor().r(), asw_egg_color3.GetColor().g(), asw_egg_color3.GetColor().b());
+	else
+		SetRenderColor(asw_egg_color.GetColor().r(), asw_egg_color.GetColor().g(), asw_egg_color.GetColor().b());
+	float EggScale = RandomFloat(0, 1);
+	if (EggScale <= asw_egg_scalemod_percent.GetFloat())
+		SetModelScale(asw_egg_scalemod.GetFloat());
+
 	Precache();
 	SetModel(EGG_MODEL);
 	ResetSequence( LookupSequence( EGG_CLOSED_ANIM ) );
 	SetPlaybackRate( RandomFloat( 0.95, 1.05 ) ); // Slightly randomize the playback rate so they don't all match
-	m_bStoredEggSize = false;	
+	m_bStoredEggSize = false;
 
 	BaseClass::Spawn();
 
@@ -449,6 +472,32 @@ void CASW_Egg::EggTouch(CBaseEntity* pOther)
 	{
 		if (!m_bOpen)
 			Open(pOther);
+
+		//softcopy:
+		if ( m_bOnFire && asw_egg_touch_onfire.GetBool() )
+		{
+			CTakeDamageInfo info( this, this, 0, DMG_BURN );
+			MarineIgnite(pMarine, info, "egg", "on fire touch");
+		}
+
+	}
+}
+
+//softcopy:
+void CASW_Egg::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
+{
+	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
+	pMarine->ASW_Ignite( 1.0f, 0, info.GetAttacker(), info.GetWeapon() );
+	
+	if (asw_debug_alien_ignite.GetBool())	//debug marine has ignited
+	{	
+		if (!pMarine->IsOnFire()) 
+			IsIgnited = false;
+		if (pMarine->IsOnFire() && !IsIgnited) 
+		{
+			Msg("----- Player %s has ignited  by %s %s -----\n", pMarine->GetPlayerName(), alienLabel, damageTypes);
+			IsIgnited = true;
+		}
 	}
 }
 

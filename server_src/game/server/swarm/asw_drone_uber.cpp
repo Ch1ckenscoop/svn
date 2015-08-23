@@ -4,12 +4,13 @@
 #include "asw_gamerules.h"
 #include "asw_marine.h"
 #include "asw_weapon_assault_shotgun_shared.h"
+#include "te_effect_dispatch.h"		//softcopy:
+
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
 //Ch1ckenscoop - drone uber color mod
 ConVar asw_drone_uber_color("asw_drone_uber_color", "255 255 255", FCVAR_NONE, "Color255: Adjusts the Uber drones' color.");
-
 //ConVar asw_drone_uber_color_r("asw_drone_uber_color_r", "255", FCVAR_NONE, "Adjusts the red componant of the Uber drones' color.", true, 0.0f, true, 255.0f);
 //ConVar asw_drone_uber_color_g("asw_drone_uber_color_g", "255", FCVAR_NONE, "Adjusts the green componant of the Uber drones' color.", true, 0.0f, true, 255.0f);
 //ConVar asw_drone_uber_color_b("asw_drone_uber_color_b", "255", FCVAR_NONE, "Adjusts the blue componant of the Uber drones' color.", true, 0.0f, true, 255.0f);
@@ -22,12 +23,16 @@ ConVar asw_drone_uber_color3("asw_drone_uber_color3", "255 255 255", FCVAR_NONE,
 ConVar asw_drone_uber_color3_percent("asw_drone_uber_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the drone_ubers you want to give the color",true,0,true,1);
 ConVar asw_drone_uber_scalemod("asw_drone_uber_scalemod", "1.0", FCVAR_NONE, "Sets the scale of the normal drone_ubers.");
 ConVar asw_drone_uber_scalemod_percent("asw_drone_uber_scalemod_percent", "1.0", FCVAR_NONE, "Sets the percentage of the normal drone_ubers you want to scale.",true,0,true,1);
+ConVar asw_drone_uber_ignite( "asw_drone_uber_ignite", "0", FCVAR_CHEAT, "Sets 1=melee,2=touch,3=All,ignite marine on uber melee/touch" );
+ConVar asw_drone_uber_touch_onfire("asw_drone_uber_touch_onfire", "0", FCVAR_CHEAT, "Ignite marine if uber body on fire touch.");
+extern ConVar asw_drone_melee_force;
+extern ConVar asw_drone_melee_range;
+extern ConVar asw_debug_alien_ignite;
 
 ConVar asw_drone_uber_health("asw_drone_uber_health", "500", FCVAR_CHEAT, "How much health the uber Swarm drones have");
 ConVar asw_uber_speed_scale("asw_uber_speed_scale", "0.5f", FCVAR_CHEAT, "Speed scale of uber drone compared to normal");
 ConVar asw_uber_auto_speed_scale("asw_uber_auto_speed_scale", "0.3f", FCVAR_CHEAT, "Speed scale of uber drones when attacking");
 ConVar asw_uber_scary("asw_uber_scary", "1", FCVAR_NONE, "Set bodygroups on ubers to the scariest appendage.");
-
 ConVar sk_asw_uber_damage("sk_asw_uber_damage", "15", FCVAR_CHEAT, "Damage inflicted by uber drone attacks.");
 
 extern ConVar asw_alien_hurt_speed;
@@ -37,12 +42,12 @@ extern ConVar asw_alien_stunned_speed;
 
 CASW_Drone_Uber::CASW_Drone_Uber()	
 {
-	
+
 }
 
 CASW_Drone_Uber::~CASW_Drone_Uber()
 {
-
+	
 }
 
 LINK_ENTITY_TO_CLASS( asw_drone_uber, CASW_Drone_Uber );
@@ -57,10 +62,9 @@ void CASW_Drone_Uber::Spawn( void )
 
 	//SetRenderColor(asw_drone_uber_color_r.GetInt(), asw_drone_uber_color_g.GetInt(), asw_drone_uber_color_b.GetInt());
 	//SetRenderColor(asw_drone_uber_color.GetColor().r(), asw_drone_uber_color.GetColor().g(), asw_drone_uber_color.GetColor().b());	//softcopy:
-
-
-	SetModel( SWARM_NEW_DRONE_MODEL );	
-	Precache();	
+	
+	SetModel( SWARM_NEW_DRONE_MODEL );
+	Precache();
 
 	SetHullType(HULL_MEDIUMBIG);
 	SetHullSizeNormal();
@@ -71,10 +75,12 @@ void CASW_Drone_Uber::Spawn( void )
 	// make sure uber drones are green
 	m_nSkin = 0;
 	SetHitboxSet(0);
+	
 	//Ch1ckensCoop: Made uber drones bigger
 	//softcopy: set uber colors & scale
 	//SetModelScale(asw_drone_uber_scale.GetFloat(), 0.0f);
-	SetColorScale( "drone_uber" );	
+	alienLabel = "drone_uber";
+	SetColorScale(alienLabel);
 
 	if (asw_uber_scary.GetBool())	//Ch1ckensCoop: Make uber drones SCARY :S
 	{
@@ -113,17 +119,50 @@ void CASW_Drone_Uber::SetHealthByDifficultyLevel()
 
 float CASW_Drone_Uber::GetDamage()	//Ch1ckensCoop: Easy customizing of alien damages.
 {
+	//softcopy: marine ignite by uber melee attack, 1=melee, 2=touch, 3=All
+	if ( asw_drone_uber_ignite.GetInt() == 1 || asw_drone_uber_ignite.GetInt() == 3 )
+	{
+		//float damage = MAX( 3.0f, ASWGameRules()->ModifyAlienDamageBySkillLevel(sk_asw_uber_damage.GetFloat()) );
+		CBaseEntity *pHurt = CheckTraceHullAttack(asw_drone_melee_range.GetFloat(), -Vector(16,16,32), Vector(16,16,32),/*damage*/0, DMG_SLASH, asw_drone_melee_force.GetFloat());
+		if ( pHurt )
+		{
+			CASW_Marine *pMarine = CASW_Marine::AsMarine( pHurt );
+			if ( pMarine )
+			{
+				CTakeDamageInfo info( this, this, sk_asw_uber_damage.GetFloat() /*damage*/, DMG_SLASH );
+				MarineIgnite(pMarine, info, alienLabel, /*damageTypes*/ "melee attack");
+			}
+		}
+	}
+
 	return sk_asw_uber_damage.GetFloat();
 }
 
-//softcopy:
-void CASW_Drone_Uber::SetColorScale(const char *alienLabel)	
+//softcopy:	ignite marine by Uber on touch/on fire touch, 1=melee, 2=on touch, 3=All
+void CASW_Drone_Uber::StartTouch( CBaseEntity *pOther )
+{
+	BaseClass::StartTouch( pOther );
+	if ( asw_drone_uber_ignite.GetInt() >= 2 || (asw_drone_uber_touch_onfire.GetBool() && m_bOnFire) )
+	{
+		CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
+		if ( pMarine )
+		{
+			CTakeDamageInfo info( this, this, 0, DMG_SLASH );
+			MarineIgnite(pMarine, info, alienLabel, /*damageTypes*/ "on touch");
+		}
+	}
+}
+void CASW_Drone_Uber::SetColorScale(const char *alienLabel)
 {
 	BaseClass::SetColorScale(alienLabel);
 	
 	if (asw_drone_uber_scalemod.GetFloat() < asw_drone_uber_scale.GetFloat())	//avoid duplicated uber scale entities
 		SetModelScale(asw_drone_uber_scale.GetFloat());
 
+}
+void CASW_Drone_Uber::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
+{
+	BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);
 }
 
 float CASW_Drone_Uber::GetIdealSpeed() const

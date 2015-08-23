@@ -65,11 +65,14 @@ public:
 	virtual void Event_Killed( const CTakeDamageInfo &info );
 	virtual int OnTakeDamage_Alive( const CTakeDamageInfo &info );
 	virtual bool PassesDamageFilter( const CTakeDamageInfo &info );
-
 	virtual void SpitProjectile();
 	Vector GetQueenAutoaimVector(Vector &spitSrc, QAngle &angSpit);
 	//softcopy: 
-	const char	*alienLabel;
+	virtual void StartTouch( CBaseEntity *pOther );
+	float		 m_fLastTouchHurtTime;
+	const char	*alienLabel, *damageTypes;
+	virtual void MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes);
+	virtual void MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes);
 	virtual void SetColorScale(const char *alienLabel);
 
 	virtual	bool		AllowedToIgnite( void ) { return false; }

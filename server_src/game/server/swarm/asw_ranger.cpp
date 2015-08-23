@@ -44,9 +44,11 @@ ConVar asw_ranger_color3("asw_ranger_color3", "255 255 255", FCVAR_NONE, "Sets t
 ConVar asw_ranger_color3_percent("asw_ranger_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the rangers you want to give the color",true,0,true,1);
 ConVar asw_ranger_scalemod("asw_ranger_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal rangers.");
 ConVar asw_ranger_scalemod_percent("asw_ranger_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal rangers you want to scale.",true,0,true,1);
+ConVar asw_ranger_touch_ignite("asw_ranger_touch_ignite", "0", FCVAR_NONE, "Ignite marine by ranger on touch.");
+ConVar asw_ranger_touch_onfire("asw_ranger_touch_onfire", "0", FCVAR_CHEAT, "Ignite marine if ranger body on fire touch.");
+extern ConVar asw_debug_alien_ignite;
 
 extern ConVar asw_debug_alien_damage;
-
 extern int AE_MORTARBUG_LAUNCH;		// actual launch of the projectile
 extern ConVar asw_drone_death_force_pitch;
 
@@ -98,12 +100,12 @@ void CASW_Ranger::Spawn( void )
 	SetIdealState( NPC_STATE_ALERT );
 
 	m_bNeverRagdoll = true;
-	
-	//softcopy:	
+
+	//softcopy:
 	//SetRenderColor(asw_ranger_color.GetColor().r(), asw_ranger_color.GetColor().g(), asw_ranger_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
-	SetColorScale( "ranger" );
-	
-	//
+	alienLabel = "ranger";
+	SetColorScale(alienLabel);
+
 	// Firing patterns
 	// 
 
@@ -138,7 +140,6 @@ void CASW_Ranger::Spawn( void )
 	volley.m_rounds[2].m_flHorizontalOffset = 0;
 	CreateVolley( "volley1", &volley );
 }
-
 
 //-----------------------------------------------------------------------------
 // Purpose:	
@@ -343,10 +344,27 @@ void CASW_Ranger::Event_Killed( const CTakeDamageInfo &info )
 	BaseClass::Event_Killed( newInfo );
 }
 
-//softcopy:
-void  CASW_Ranger::SetColorScale(const char *alienLabel)	
+//softcopy: ignite marine on touch/on fire touch fucntion
+void CASW_Ranger::StartTouch( CBaseEntity *pOther )
 {
-	BaseClass::SetColorScale(alienLabel);	
+	BaseClass::StartTouch( pOther );
+	if ( asw_ranger_touch_ignite.GetBool() || (m_bOnFire && asw_ranger_touch_onfire.GetBool()) )
+	{
+		CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
+		CTakeDamageInfo info( this, this, 0, DMG_SLASH );
+		if (pMarine)
+			MarineIgnite(pMarine, info, alienLabel, /*damageTypes*/ "on touch");
+	}
+}
+//softcopy:
+void  CASW_Ranger::SetColorScale(const char *alienLabel)
+{
+	BaseClass::SetColorScale(alienLabel);
+}
+//softcopy:
+void  CASW_Ranger::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
+{
+	BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);
 }
 
 //-----------------------------------------------------------------------------

@@ -43,8 +43,13 @@ public:
 
 	virtual bool		ShouldGib( const CTakeDamageInfo &info ) { return false; }
 	//softcopy:
-	const char			*alienLabel;
+	virtual void		Event_Killed( const CTakeDamageInfo &info );
+	CNetworkVar( bool, m_bInflated );
+	virtual void 		StartTouch( CBaseEntity *pOther );
+	float 				m_fLastTouchHurtTime;
+	const char			*alienLabel, *damageTypes;
 	virtual void 		SetColorScale(const char *alienLabel);
+	virtual void 		MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes);
 
 	// sounds
 	virtual void PainSound( const CTakeDamageInfo &info );

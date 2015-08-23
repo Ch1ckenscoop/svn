@@ -31,9 +31,11 @@ public:
 
 	virtual float		GetIdealSpeed() const;	//Ch1ckensCoop: speed scale settings for the ranger.
 	//softcopy: 
-	const char			*alienLabel;
+	virtual void 		StartTouch( CBaseEntity *pOther );
+	const char			*alienLabel, *damageTypes;
 	virtual void 		SetColorScale(const char *alienLabel);
-	
+	virtual void		MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes);
+
 	virtual void		SetHealthByDifficultyLevel();
 
 	virtual float		MaxYawSpeed( void );

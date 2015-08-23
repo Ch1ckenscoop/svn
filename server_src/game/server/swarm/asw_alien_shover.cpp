@@ -52,7 +52,6 @@ int AE_ALIEN_SHOVER_SHOVE_PHYSOBJECT;
 int AE_ALIEN_SHOVER_SHOVE;
 int AE_ALIEN_SHOVER_ROAR;
 
-
 CASW_Alien_Shover::CASW_Alien_Shover( void )// : CASW_Alien()
 {
 	
@@ -192,7 +191,8 @@ int CASW_Alien_Shover::SelectUnreachableSchedule( void )
 	// Otherwise, roar at the player
 	if ( m_bCanRoar && HasCondition(COND_SEE_ENEMY) && m_flNextRoarTime < gpGlobals->curtime )
 	{
-		m_flNextRoarTime = gpGlobals->curtime + RandomFloat( 20,40 );
+		//m_flNextRoarTime = gpGlobals->curtime + RandomFloat( 20,40 );
+		m_flNextRoarTime = gpGlobals->curtime + RandomFloat( 20,30 );	//softcopy: more roar
 		return SCHED_ALIEN_SHOVER_ROAR;
 	}
 
@@ -368,6 +368,12 @@ void CASW_Alien_Shover::HandleAnimEvent( animevent_t *pEvent )
 
 		//Setup the throw velocity
 		IPhysicsObject *physObj = m_hPhysicsTarget->VPhysicsGetObject();
+		
+		//softcopy: prevent server crashes on targetDir by beta shieldbug
+		if (!physObj)
+			return;
+		if ( !GetEnemy() || GetEnemy() == NULL )
+			return;
 
 		Vector	targetDir = ( GetEnemy()->GetAbsOrigin() - m_hPhysicsTarget->WorldSpaceCenter() );
 		float	targetDist = VectorNormalize( targetDir );
@@ -386,8 +392,8 @@ void CASW_Alien_Shover::HandleAnimEvent( animevent_t *pEvent )
 			targetDist = 1024;
 
 		targetDir *= targetDist * 3 * physObj->GetMass();	//FIXME: Scale by skill
-		targetDir[2] += physObj->GetMass() * 350.0f;
-		
+		targetDir[2] += physObj->GetMass() * 350.0f; 
+
 		//Display dust
 		Vector vecRandom = RandomVector( -1, 1);
 		VectorNormalize( vecRandom );
@@ -400,7 +406,8 @@ void CASW_Alien_Shover::HandleAnimEvent( animevent_t *pEvent )
 
 		//Send it flying
 		AngularImpulse angVel( random->RandomFloat(-180, 180), 100, random->RandomFloat(-360, 360) );
-		physObj->ApplyForceCenter( targetDir );
+		
+		physObj->ApplyForceCenter( targetDir );		
 		physObj->AddVelocity( NULL, &angVel );
 		
 		//Clear the state information, we're done

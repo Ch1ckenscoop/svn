@@ -34,6 +34,9 @@ public:
 	void ResetEgg();
 
 	int m_iRespawns;	//Ch1ckensCoop: Maximum egg respawns.
+	//softcopy:
+	const char	*alienLabel, *damageTypes;	
+	virtual void	MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes);
 	
 	bool m_bOpen, m_bHatched, m_bOpening;
 	float m_fHatchTime, m_fEggResetTime;

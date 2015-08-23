@@ -21,6 +21,11 @@
 #include "asw_weapon_assault_shotgun_shared.h"
 #include "asw_sentry_base.h"
 #include "props.h"
+//softcopy:
+#include "asw_fx_shared.h"
+#include "particle_parse.h"
+#include "asw_barrel_explosive.h"
+
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -59,6 +64,7 @@ BEGIN_DATADESC( CASW_Queen )
 	DEFINE_FIELD( m_fLastRangedAttack, FIELD_FLOAT ),
 	DEFINE_FIELD( m_iCrittersAlive, FIELD_INTEGER ),
 	DEFINE_FIELD( m_hBlockingSentry, FIELD_EHANDLE ),
+	DEFINE_FIELD( m_fLastTouchHurtTime, FIELD_TIME ),	//softcopy:
 	
 	DEFINE_OUTPUT( m_OnSummonWave1,		"OnSummonWave1" ),
 	DEFINE_OUTPUT( m_OnSummonWave2,		"OnSummonWave2" ),
@@ -116,6 +122,12 @@ ConVar asw_queen_color3("asw_queen_color3", "255 255 255", FCVAR_NONE, "Sets the
 ConVar asw_queen_color3_percent("asw_queen_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the queen you want to give the color",true,0,true,1);
 ConVar asw_queen_scalemod("asw_queen_scalemod", "1.0", FCVAR_NONE, "Sets the scale of normal queens.");
 ConVar asw_queen_scalemod_percent("asw_queen_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal queens you want to scale.",true,0,true,1);
+ConVar asw_queen_touch_damage("asw_queen_touch_damage", "5", FCVAR_CHEAT, "set damage caused by queen on touch.");
+ConVar asw_queen_ignite("asw_queen_ignite", "0", FCVAR_CHEAT, "Sets 1=melee, 2=touch, 3=All, ignite marine on queen melee/touch.");
+ConVar asw_queen_explode("asw_queen_explode", "0", FCVAR_CHEAT, "Sets 1=melee, 2=touch, 3=All, explode marine on queen melee/touch.");
+ConVar asw_queen_touch_onfire("asw_queen_touch_onfire", "0", FCVAR_CHEAT, "Ignite marine if queen body on fire touch.");
+extern ConVar asw_debug_alien_ignite;
+
 ConVar asw_queen_damage_reductions("asw_queen_damage_reductions", "1", FCVAR_CHEAT, "Enables damage reductions for certain player weapons vs the queen.");
 
 ConVar asw_queen_force_remove("asw_queen_force_remove", "1", FCVAR_NONE, "Hack: instantly removes queen on death.");
@@ -148,6 +160,7 @@ CASW_Queen::CASW_Queen()
 	m_iCrittersAlive = 0;
 	m_fLayParasiteTime = 0;
 	m_iCrittersSpawnedRecently = 0;
+	m_fLastTouchHurtTime = 0;	//softcopy:
 	m_pszAlienModelName = SWARM_QUEEN_MODEL;
 	m_nAlienCollisionGroup = ASW_COLLISION_GROUP_ALIEN;
 }
@@ -188,12 +201,13 @@ void CASW_Queen::Spawn( void )
 	m_takedamage = DAMAGE_NO;	// queen is invulnerable until she finds her first enemy
 		
 	m_hRetreatSpot = gEntList.FindEntityByClassname( NULL, "asw_queen_retreat_spot" );
-
+	
 	//Ch1ckensCoop: Set model scale
 	float fScale = asw_queen_model_scale.GetFloat();
 	//softcopy: color scale
 	//SetModelScale(fScale, 0.0f);
-	SetColorScale( "queen" );	
+	alienLabel = "queen";
+	SetColorScale(alienLabel);
 
 	UTIL_SetSize(this, Vector((fScale * -120),(fScale * -120),(fScale * 0)), Vector((fScale * 120),(fScale * 120),(fScale * 160)));
 }
@@ -217,6 +231,9 @@ void CASW_Queen::Precache( void )
 	PrecacheScriptSound( "ASW_Queen.AttackWave" );
 	PrecacheScriptSound( "ASW_Queen.Spit" );
 	PrecacheScriptSound( "ASW_Queen.TentacleAttackStart" );
+	//softcopy:
+	PrecacheScriptSound( "ASW_T75.Explode" );
+	PrecacheParticleSystem( "explosion_barrel" );
 
 	BaseClass::Precache();
 }
@@ -639,16 +656,49 @@ int CASW_Queen::TranslateSchedule( int scheduleType )
 	return BaseClass::TranslateSchedule( scheduleType );
 }
 
-//softcopy:
-void CASW_Queen::SetColorScale(const char *alienLabel)	
+//softcopy:	ignite/exploade marine by queen on touch/on fire touch, 1=melee, 2=touch, 3=All 
+void CASW_Queen::StartTouch( CBaseEntity *pOther )
 {
-	BaseClass::SetColorScale(alienLabel);	
+	BaseClass::StartTouch( pOther );
+	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
+	if ( pMarine )
+	{
+		m_TouchExplosionDamage = asw_queen_touch_damage.GetInt();
+		CTakeDamageInfo info( this, this, m_TouchExplosionDamage, DMG_SLASH );
+		damageTypes = "on touch";
+		if(asw_queen_ignite.GetInt() >= 2 || (m_bOnFire && asw_queen_touch_onfire.GetBool()))
+			MarineIgnite(pMarine, info, alienLabel, damageTypes);
+		if (m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime || m_TouchExplosionDamage <= 0)	//don't hurt him if he was hurt recently
+			return;
+		Vector vecForceDir = ( pMarine->GetAbsOrigin() - GetAbsOrigin() );		// hurt the marine
+		CalculateMeleeDamageForce( &info, vecForceDir, pMarine->GetAbsOrigin() );
+		pMarine->TakeDamage( info );
+		if (asw_queen_explode.GetInt() >= 2)
+			MarineExplode(pMarine, alienLabel, damageTypes);
+
+		m_fLastTouchHurtTime = gpGlobals->curtime;
+	}
+}
+//softcopy:
+void CASW_Queen::SetColorScale(const char *alienLabel)
+{
+	BaseClass::SetColorScale(alienLabel);
 	
 	//avoid duplicated queen scale entities
 	float fScale = asw_queen_model_scale.GetFloat();
-	if (asw_queen_scalemod.GetFloat() < asw_queen_model_scale.GetFloat())	
+	if (asw_queen_scalemod.GetFloat() < asw_queen_model_scale.GetFloat())
 		SetModelScale(fScale, 0.0f);
 
+}
+//softcopy:
+void CASW_Queen::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
+{
+	BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);
+}
+//softcopy:
+void CASW_Queen::MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes)
+{
+	BaseClass::MarineExplode(pMarine, alienLabel, damageTypes);
 }
 
 bool CASW_Queen::ShouldGib( const CTakeDamageInfo &info )
@@ -1117,7 +1167,19 @@ void CASW_Queen::SlashAttack(bool bRightClaw)
 			pAlien->MeleeBleed(&info);
 		CASW_Marine* pMarine = CASW_Marine::AsMarine( pEntity );
 		if (pMarine)
+		{
 			pMarine->MeleeBleed(&info);
+			//softcopy: ignite/explode marine by queen slash, 1=melee, 2=touch, 3=All
+			damageTypes = "melee attack";
+			if (asw_queen_ignite.GetInt() == 1 || asw_queen_ignite.GetInt() == 3)
+				MarineIgnite(pMarine, info, alienLabel, damageTypes);
+			if (asw_queen_explode.GetInt() == 1 || asw_queen_explode.GetInt() == 3)
+			{
+				m_TouchExplosionDamage = asw_queen_touch_damage.GetInt();
+				MarineExplode(pMarine, alienLabel, damageTypes);
+			}
+			
+		}
 		else
 		{
 			CASW_Colonist *pColonist = dynamic_cast<CASW_Colonist*>(pEntity);
@@ -1475,7 +1537,8 @@ void CASW_Queen::Event_Killed( const CTakeDamageInfo &info )
 	if (asw_queen_force_remove.GetBool())	//Ch1ckensCoop: Hack Hack Hack... TALK TO JIM
 	{
 		SetThink(&CASW_Queen::SUB_Remove);
-		SetNextThink(gpGlobals->curtime += 4.0f);
+		//SetNextThink(gpGlobals->curtime += 4.0f);
+		SetNextThink(gpGlobals->curtime + 4.0f);
 	}
 	
 }

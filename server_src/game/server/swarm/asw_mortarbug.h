@@ -40,7 +40,7 @@ public:
 	virtual void NPCThink();
 	virtual void Event_Killed( const CTakeDamageInfo &info );
 	virtual int OnTakeDamage_Alive( const CTakeDamageInfo &info );
-
+	
 	virtual float InnateRange1MinRange( void );
 	virtual float InnateRange1MaxRange( void );
 	virtual int RangeAttack1Conditions( float flDot, float flDist );
@@ -79,6 +79,8 @@ public:
 	//softcopy:
 	const char	*alienLabel, *damageTypes;
 	virtual void SetColorScale(const char *alienLabel);
+	virtual void MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes);
+	virtual void MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes);
 
 private:
 	DEFINE_CUSTOM_AI;

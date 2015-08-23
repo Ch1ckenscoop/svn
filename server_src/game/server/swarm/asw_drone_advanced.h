@@ -124,7 +124,7 @@ public:
 	static float s_fNextTooCloseChatterTime;
 
 	CNetworkVar( EHANDLE, m_hAimTarget );
-
+	
 	enum
 	{
 		COND_DRONE_BLOCKED_BY_DOOR = BaseClass::NEXT_CONDITION,
@@ -136,8 +136,9 @@ public:
 	};
 	
 	//softcopy:
-	const char		*alienLabel;
+	const char		*alienLabel, *damageTypes;
 	virtual void	SetColorScale(const char *alienLabel);
+	virtual void	MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes);
 
 private:
 	Class_T			m_ClassType;

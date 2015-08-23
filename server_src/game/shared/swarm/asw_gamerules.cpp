@@ -118,8 +118,16 @@ extern ConVar old_radius_damage;
 bool bReadyclicked = false;
 int playreadyclicked = 0;
 int skill_default_level = 2;
+ConVar asw_autokick_player_enable("asw_autokick_player_enable", "0", FCVAR_NONE, "sets 1 = enable auto kick players.");
+ConVar asw_autokick_player_promotion_level("asw_autokick_player_promotion_level", "0", FCVAR_NONE, "sets 0-3 promotion level, if below this level will be autokicked.");
+ConVar asw_autokick_player_experience_level("asw_autokick_player_experience_level", "10800", FCVAR_NONE, "sets player below the skill point will be autokicked.");
 ConVar asw_marine_lobby_ready("asw_marine_lobby_ready", "1", FCVAR_NONE, "set 0=All lobby marked not ready,1=ClientConnected lobby not ready,2=All ready");
 ConVar asw_level_lock("asw_level_lock","0", FCVAR_CHEAT, "default = 0, set 1 - 5 to enable what skill level lock on.");
+ConVar asw_infest_damage_easy("asw_infest_damage_easy","175", FCVAR_CHEAT, "sets infest damage on easy level.");
+ConVar asw_infest_damage_normal("asw_infest_damage_normal","225", FCVAR_CHEAT, "sets infest damage on normal level.");
+ConVar asw_infest_damage_hard("asw_infest_damage_hard","270", FCVAR_CHEAT, "sets infest damage on hard level.");
+ConVar asw_infest_damage_insane("asw_infest_damage_insane","280", FCVAR_CHEAT, "sets infest damage on insane level.");
+ConVar asw_infest_damage_brutal("asw_infest_damage_brutal","280", FCVAR_CHEAT, "sets infest damage on brutal level.");
 ConVar asw_hibernate_skill_default("asw_hibernate_skill_default", "0", FCVAR_CHEAT, "skill/FF has set in lobby will reset to normal when hibernating.");
 ConVar asw_vote_kick_admin("asw_vote_kick_admin", "1", FCVAR_CHEAT, "generic admin or above level immune from a kick voting."); 
 extern ConVar asw_hardcore_ff_force;
@@ -4045,7 +4053,9 @@ void CAlienSwarm::AlienKilled(CBaseEntity *pAlien, const CTakeDamageInfo &info)
 
 	gameeventmanager->FireEvent( pEvent );
 
-	if (pMarine) {
+	//softcopy: prevent server crashes on 'pMarine->GetCommander()->IncrementFragCount(1)'
+	//if (pMarine) {
+	if (pMarine && pMarine->GetCommander()) {
 		pMarine->GetCommander()->IncrementFragCount(1);
 	}
 }
@@ -6545,6 +6555,45 @@ void CAlienSwarm::BroadcastSound( const char *sound )
 
 void CAlienSwarm::OnPlayerFullyJoined( CASW_Player *pPlayer )
 {
+	//softcopy: players below the required entrance level will be auto kicked when logged in.
+	if ( asw_autokick_player_enable.GetBool() &&  pPlayer && pPlayer->entindex() )
+	{
+		int elevel = 0, islevel = 0, calexp = 0;
+		char text[64], text2[64], text3[128];
+		int iexplevel  = asw_autokick_player_experience_level.GetInt(); //kick player who below experience points value.
+		int ipromlevel = asw_autokick_player_promotion_level.GetInt();  //kick player who below promotion level value(0-3) only, more than that is too harsh.  
+		if ( ( pPlayer->GetExperience() < iexplevel ) && ( pPlayer->GetPromotion() <= ipromlevel ) )  
+		{ 
+			for (int i=0; i <= 26; i++)
+			{
+				if ( iexplevel >= calexp  &&  i <= 26 )
+					islevel = i + 1;                    //get input value to calucate the player level   
+				if ( pPlayer->GetExperience() >= calexp  &&  i <= 26 ) 
+					elevel = i + 1;                     //get player exp from Steam to calcuate player level
+				calexp = calexp + (1000 +( 50 * i ));   //http://alienswarm.wikia.com/wiki/Leveling for Player experiences table details.
+				if (i == 19)
+					calexp = calexp + 50;               //adjustment exp level after looping to match with Steam 
+				if (i == 20)
+					calexp = calexp - 50;
+				//Msg("experience table: %d\n",calexp); //debug check: calculated experience value.
+			}
+			if ( pPlayer->GetPromotion() == 0 )
+			{
+				Q_snprintf(text, sizeof(text),"<level %d> was auto kicked", elevel);
+				Q_snprintf(text2,sizeof(text2),"need level %d+ to join this modded server", islevel);
+			}
+			else
+			{ 
+				Q_snprintf(text, sizeof(text),"<promoted %d level %d> was auto kicked", elevel, pPlayer->GetPromotion());
+				Q_snprintf(text2,sizeof(text2),"need promoted %d level %d+ to join this modded server", islevel, ipromlevel); 
+			}
+			engine->ServerCommand(CFmtStr("kickid %s Auto kicked:  Sorry! %s\n", pPlayer->GetASWNetworkID(), text2));
+			Q_snprintf(text3, sizeof(text3),"%s %s, %s\n", pPlayer->GetPlayerName(), text, text2);  
+			UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE,text3);
+			UTIL_LogPrintf("Client %s", text3);	Msg("Client %s", text3);
+		}
+	}
+
 	// Set briefing start time
 	m_fBriefingStartedTime = gpGlobals->curtime;
 }
@@ -6985,7 +7034,9 @@ int CAlienSwarm::TotalInfestDamage()
 
 	switch ( m_iSkillLevel )
 	{
-	case 1:
+
+	//softcopy: parasite infest damage cvar control
+	/*case 1:
 		return 175;
 	case 2:
 		return 225;
@@ -6994,7 +7045,13 @@ int CAlienSwarm::TotalInfestDamage()
 	case 4:
 		return 280;	// BARELY survivable with Bastille and heal beacon
 	case 5:
-		return 280;
+		return 280;	*/
+	case 1:	return asw_infest_damage_easy.GetInt();   
+	case 2:	return asw_infest_damage_normal.GetInt();
+	case 3:	return asw_infest_damage_hard.GetInt();
+	case 4:	return asw_infest_damage_insane.GetInt();   
+	case 5:	return asw_infest_damage_brutal.GetInt();
+	
 	}
 
 	// ASv1 Total infest damage = 90 + difficulty * 20;

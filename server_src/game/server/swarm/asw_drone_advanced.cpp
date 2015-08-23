@@ -53,6 +53,10 @@ ConVar asw_drone_jumper_color3("asw_drone_jumper_color3", "255 255 255", FCVAR_N
 ConVar asw_drone_jumper_color3_percent("asw_drone_jumper_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the Mod-Jumping drones you want to give the color",true,0,true,1);
 ConVar asw_drone_jumper_scalemod("asw_drone_jumper_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal drones.");
 ConVar asw_drone_jumper_scalemod_percent("asw_drone_jumper_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal Mod-Jumping drones you want to scale.",true,0,true,1);
+ConVar asw_drone_touch_ignite("asw_drone_touch_ignite", "0", FCVAR_CHEAT, "set 1=drone, 2=jumper, 3=All, ignite marine on touch.");
+ConVar asw_drone_melee_ignite("asw_drone_melee_ignite", "0", FCVAR_CHEAT, "set 1=drone, 2=jumper, 3=All, ignite marine on melee.");
+ConVar asw_drone_touch_onfire("asw_drone_touch_onfire", "0", FCVAR_CHEAT, "Ignite marine if drone body on fire touch.");
+extern ConVar asw_debug_alien_ignite;
 
 #define ASW_DRONE_MELEE1_START_ATTACK_RANGE asw_drone_start_melee_range.GetFloat()
 #define ASW_DRONE_MELEE1_RANGE asw_drone_melee_range.GetFloat()
@@ -99,7 +103,6 @@ ConVar asw_new_drone("asw_new_drone", "1", FCVAR_CHEAT, "Set to 1 to use the new
 ConVar asw_drone_bones("asw_drone_bones", "0", FCVAR_NONE, "Should normal drones have bones coming out of their backs?");
 ConVar asw_drone_efficient("asw_drone_efficient", "0", FCVAR_NONE, "Uses lower-polycount appendages. Disables asw_drone_bones.");
 
-
 extern ConVar asw_debug_alien_damage;
 extern ConVar asw_alien_hurt_speed;
 extern ConVar asw_alien_stunned_speed;
@@ -142,16 +145,16 @@ CASW_Drone_Movement *g_pDroneMovement = &g_DroneGameMovement;
 
 CASW_Drone_Advanced::CASW_Drone_Advanced( void )
 	: m_DurationDoorBash( 2)
-	// : CASW_Alien()
+	   // : CASW_Alien()
 {
 	g_DroneList.AddToTail(this);
 	if ( asw_new_drone.GetBool() )
 	{
-		m_pszAlienModelName = SWARM_NEW_DRONE_MODEL;
+	  m_pszAlienModelName = SWARM_NEW_DRONE_MODEL;
 	}
 	else
 	{
-		m_pszAlienModelName = SWARM_DRONE_MODEL;
+	   m_pszAlienModelName = SWARM_DRONE_MODEL;
 	}
 	m_flNextSmallFlinchTime = 0.0f;
 	m_nAlienCollisionGroup = ASW_COLLISION_GROUP_ALIEN;
@@ -186,15 +189,15 @@ BEGIN_DATADESC( CASW_Drone_Advanced )
 	DEFINE_FIELD( m_bDoneAlienCloseChatter, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_vecEnemyStandoffPosition, FIELD_VECTOR ),
 	DEFINE_FIELD( m_bHasAttacked, FIELD_BOOLEAN ),
-	END_DATADESC()
+END_DATADESC()
 
-	IMPLEMENT_SERVERCLASS_ST( CASW_Drone_Advanced, DT_ASW_Drone_Advanced )
+IMPLEMENT_SERVERCLASS_ST( CASW_Drone_Advanced, DT_ASW_Drone_Advanced )
 	SendPropExclude( "DT_BaseAnimating", "m_flPoseParameter" ),
 	SendPropEHandle( SENDINFO( m_hAimTarget ) ),
-	END_SEND_TABLE()
+END_SEND_TABLE()
 
 
-	CAI_Navigator *CASW_Drone_Advanced::CreateNavigator()
+CAI_Navigator *CASW_Drone_Advanced::CreateNavigator()
 {
 	//return BaseClass::CreateNavigator();
 	return new CASW_Drone_Navigator( this );
@@ -206,7 +209,7 @@ void CASW_Drone_Advanced::Spawn( void )
 	BaseClass::Spawn();
 	if (asw_drone_efficient.GetBool())
 		asw_drone_bones.SetValue(false);
-
+	
 
 	//m_debugOverlays |= OVERLAY_NPC_ROUTE_BIT | OVERLAY_BBOX_BIT | OVERLAY_PIVOT_BIT | OVERLAY_TASK_TEXT_BIT | OVERLAY_TEXT_BIT;
 
@@ -228,7 +231,7 @@ void CASW_Drone_Advanced::Spawn( void )
 		// body
 		if ( RandomFloat() < .5 && !asw_drone_efficient.GetBool())
 		{
-			SetBodygroup ( 0, RandomInt (0, 1 ) );
+		    SetBodygroup ( 0, RandomInt (0, 1 ) );
 		}
 		// bones
 		if ( RandomFloat() < .25 && asw_drone_bones.GetBool())
@@ -244,7 +247,8 @@ void CASW_Drone_Advanced::Spawn( void )
 		m_bJumper = true;
 		//softcopy:
 		//SetRenderColor(asw_drone_jumper_color.GetColor().r(), asw_drone_jumper_color.GetColor().g(), asw_drone_jumper_color.GetColor().b());	//Ch1ckensCoop: Allow setting colors.
-		SetColorScale( "drone_jumper" );
+		alienLabel = "drone_jumper";
+		SetColorScale( alienLabel );
 		
 		m_ClassType = (Class_T)CLASS_ASW_DRONE_JUMPER;
 	}
@@ -254,10 +258,11 @@ void CASW_Drone_Advanced::Spawn( void )
 		m_bDisableJump = true;
 		CapabilitiesRemove( bits_CAP_MOVE_JUMP );
 		//softcopy:
-		SetColorScale( "drone" );
+		alienLabel = "drone";
+		SetColorScale( alienLabel );
 
 		m_ClassType = (Class_T)CLASS_ASW_DRONE;
-	}	
+	}
 
 	SetHullType(HULL_MEDIUMBIG);
 
@@ -265,9 +270,9 @@ void CASW_Drone_Advanced::Spawn( void )
 	UTIL_SetSize(this, Vector(-17,-17,0), Vector(17,17,69));
 
 	//UseClientSideAnimation();	
-
+		
 	SetHealthByDifficultyLevel();	
-
+	
 	CapabilitiesAdd( bits_CAP_MOVE_CLIMB | bits_CAP_MOVE_GROUND | bits_CAP_INNATE_MELEE_ATTACK1 | bits_CAP_INNATE_MELEE_ATTACK2 );	// removed: bits_CAP_MOVE_JUMP
 	CapabilitiesAdd( bits_CAP_MOVE_SHOOT );
 
@@ -292,7 +297,7 @@ void CASW_Drone_Advanced::Precache( void )
 	PrecacheScriptSound( "ASW_Drone.DeathFireSizzle" );
 
 	PrecacheModel( "models/aliens/drone/ragdoll_tail.mdl" );
-	PrecacheModel( "models/aliens/drone/ragdoll_uparm.mdl" );
+   	PrecacheModel( "models/aliens/drone/ragdoll_uparm.mdl" );
 	PrecacheModel( "models/aliens/drone/ragdoll_uparm_r.mdl" );
 	PrecacheModel( "models/aliens/drone/ragdoll_leg_r.mdl" );
 	PrecacheModel( "models/aliens/drone/ragdoll_leg.mdl" );
@@ -300,7 +305,7 @@ void CASW_Drone_Advanced::Precache( void )
 
 	//Ch1ckensCoop: Fix late precache
 	PrecacheModel( SWARM_DRONE_MODEL );
-
+	
 	BaseClass::Precache();
 }
 
@@ -350,11 +355,11 @@ float CASW_Drone_Advanced::GetIdealSpeed() const
 
 	switch (ASWGameRules()->GetSkillLevel())
 	{
-	case 5: boost *= asw_alien_speed_scale_insane.GetFloat(); break;
-	case 4: boost *= asw_alien_speed_scale_insane.GetFloat(); break;
-	case 3: boost *= asw_alien_speed_scale_hard.GetFloat(); break;
-	case 2: boost *= asw_alien_speed_scale_normal.GetFloat(); break;
-	default: boost *= asw_alien_speed_scale_easy.GetFloat(); break;
+		case 5: boost *= asw_alien_speed_scale_insane.GetFloat(); break;
+		case 4: boost *= asw_alien_speed_scale_insane.GetFloat(); break;
+		case 3: boost *= asw_alien_speed_scale_hard.GetFloat(); break;
+		case 2: boost *= asw_alien_speed_scale_normal.GetFloat(); break;
+		default: boost *= asw_alien_speed_scale_easy.GetFloat(); break;
 	}
 
 	float flFreezeSpeedScale = 1.0f - m_flFrozen;
@@ -496,7 +501,7 @@ bool CASW_Drone_Advanced::MoveExecute_Alive(float flInterval)
 	if (GetGroundEntity() && GetGroundEntity()->Classify() == CLASS_ASW_MARINE)	// if we're standing on a marine's head, just move forward
 		flTargetYaw = GetAbsAngles().y;
 	GetMotor()->SetIdealYawAndUpdate(flTargetYaw);
-
+	
 	// rotate our movement vector a bit too, to stop the slideyness
 	float fMovementYaw = VecToYaw(m_vecSavedVelocity);
 	float fNewYaw = ASW_ClampYaw(MaxYawSpeed() * 5, fMovementYaw, flTargetYaw, flInterval);
@@ -504,7 +509,7 @@ bool CASW_Drone_Advanced::MoveExecute_Alive(float flInterval)
 	//NDebugOverlay::YawArrow( GetAbsOrigin() + Vector( 0, 0, 24 ), fMovementYaw, 64, 16, 0, 0, 255, 0, true, 0.1f );
 	//NDebugOverlay::YawArrow( GetAbsOrigin() + Vector( 0, 0, 24 ), fNewYaw, 64, 16, 128, 128, 255, 0, true, 0.1f );
 	//NDebugOverlay::YawArrow( GetAbsOrigin() + Vector( 0, 0, 24 ), flTargetYaw, 64, 16, 255, 0, 0, 0, true, 0.1f );
-	//Vector temp = m_vecSavedVelocity; 25
+	//Vector temp = m_vecSavedVelocity;
 	//VectorYawRotate(temp, -UTIL_AngleDiff(fNewYaw, fMovementYaw), m_vecSavedVelocity);
 
 	// find our ideal(max) speed at full run
@@ -567,7 +572,7 @@ bool CASW_Drone_Advanced::MoveExecute_Alive(float flInterval)
 			}
 		}
 	}
-
+	
 	// do the movement
 	Vector vecOriginalPos = GetAbsOrigin();	
 	vecRequestedMovement.z = fZMovement;
@@ -580,7 +585,7 @@ bool CASW_Drone_Advanced::MoveExecute_Alive(float flInterval)
 			//Attempt a half-step
 			if ( WalkMove( (vecRequestedMovement*0.5f) * flInterval,  MASK_NPCSOLID) == false )
 			{
-
+				
 			}
 			else
 			{
@@ -608,8 +613,8 @@ bool CASW_Drone_Advanced::MoveExecute_Alive(float flInterval)
 				bFailedToMove = true;
 				if (asw_debug_drone.GetBool())
 					Msg("Drone failed to move (%f/%f) fraction: %f abs=%f,%f,%f\n", 
-					fFractionMoved * fRequestedMovementLength, fRequestedMovementLength, fFractionMoved,
-					vecRequestedMovement.x, vecRequestedMovement.y, vecRequestedMovement.z);
+						fFractionMoved * fRequestedMovementLength, fRequestedMovementLength, fFractionMoved,
+						vecRequestedMovement.x, vecRequestedMovement.y, vecRequestedMovement.z);
 			}
 		}		
 	}
@@ -655,17 +660,17 @@ void CASW_Drone_Advanced::NPCThink()
 	{
 		m_vecLastGoodPosition = GetAbsOrigin();
 	}
-
+	
 	m_bPerformingOverride = (GetTask() && 
 		( (GetTask()->iTask == TASK_DRONE_WAIT_FOR_OVERRIDE_MOVE) || 
-		(GetTask()->iTask == TASK_MELEE_ATTACK1)	   ) );
+		  (GetTask()->iTask == TASK_MELEE_ATTACK1)	   ) );
 
 	BaseClass::NPCThink();
 
 	m_bPerformingOverride = (GetTask() && 
 		( (GetTask()->iTask == TASK_DRONE_WAIT_FOR_OVERRIDE_MOVE) || 
-		(GetTask()->iTask == TASK_MELEE_ATTACK1)	   ) );
-
+		  (GetTask()->iTask == TASK_MELEE_ATTACK1)	   ) );
+	
 	if (asw_drone_show_override.GetBool())
 	{
 		float flYaw = GetAbsAngles().y;		
@@ -713,12 +718,12 @@ bool CASW_Drone_Advanced::CanBePushedAway()
 {
 	// if doing stationary, well telegraphed melee attacks then don't get pushed away during them
 	//bool bMeleeAttack = ( IsCurSchedule( SCHED_ASW_ALIEN_MELEE_ATTACK1, false ) || IsCurSchedule( SCHED_ASW_ALIEN_SLOW_MELEE_ATTACK1, false ) );
-	//|| IsCurSchedule( SCHED_DRONE_POUNCE ) );
+			//|| IsCurSchedule( SCHED_DRONE_POUNCE ) );
 	bool bMeleeAttack = IsMeleeAttacking();
 
 	if ( GetTask() && (GetTask()->iTask == TASK_DRONE_ATTACK_DOOR) ) 
 		return false;
-
+	
 	if ( !asw_drone_override_attack.GetBool() && bMeleeAttack )
 	{
 		return false;
@@ -739,11 +744,11 @@ bool CASW_Drone_Advanced::CanBePushedAway()
 			if ( pWaypoint->NavType() == NAV_JUMP || pWaypoint->NavType() == NAV_CLIMB )
 				return false;
 
-			// 			float flDistSqr = pWaypoint->GetPos().DistToSqr( GetAbsOrigin() );
-			// 			if ( flDistSqr < asw_drone_waypoint_push_dist.GetFloat() )
-			// 			{
-			// 				return false;
-			// 			}
+// 			float flDistSqr = pWaypoint->GetPos().DistToSqr( GetAbsOrigin() );
+// 			if ( flDistSqr < asw_drone_waypoint_push_dist.GetFloat() )
+// 			{
+// 				return false;
+// 			}
 		}
 	}
 
@@ -769,7 +774,7 @@ int CASW_Drone_Advanced::MeleeAttack1Conditions( float flDot, float flDist )
 	float		flPrDist, flPrDot;
 	Vector		vecPrPos;
 	Vector2D	vec2DPrDir;
-
+	
 	//Get our likely position in one half second
 	//UTIL_PredictedPosition( GetEnemy(), 0.5f, &vecPrPos );
 	if (!GetEnemy())
@@ -783,7 +788,7 @@ int CASW_Drone_Advanced::MeleeAttack1Conditions( float flDot, float flDist )
 	Vector vecBodyDir = BodyDirection2D();
 
 	Vector2D vec2DBodyDir = vecBodyDir.AsVector2D();
-
+	
 	flPrDot	= DotProduct2D ( vec2DPrDir, vec2DBodyDir );
 
 	if (!asw_drone_attacks.GetBool())
@@ -874,13 +879,13 @@ void CASW_Drone_Advanced::HandleAnimEvent( animevent_t *pEvent )
 		MeleeAttack( ASW_DRONE_MELEE1_RANGE, fDamage, QAngle( 20.0f, 0.0f, 0.0f ), Vector( -350.0f, 1.0f, 1.0f ) );
 		return;
 	}	
-
+	
 	if ( nEvent == AE_DRONE_MELEE1_SOUND )
 	{
 		EmitSound( "ASW_Drone.Attack" );
 		return;
 	}
-
+	
 	if ( nEvent == AE_DRONE_MELEE2_SOUND )
 	{
 		EmitSound( "ASW_Drone.Attack" );
@@ -921,8 +926,26 @@ void CASW_Drone_Advanced::StartTouch( CBaseEntity *pOther )
 	BaseClass::StartTouch( pOther );
 
 	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
+	
 	if (pMarine)
 	{
+		//softcopy: ignite marine by drone/jumper on touch/on fire touch, 1=drone, 2=jumper, 3=All.
+		if ( asw_drone_touch_ignite.GetBool() || asw_drone_touch_onfire.GetBool() )
+		{
+			CTakeDamageInfo info( this, this, 0, DMG_SLASH );
+			damageTypes = "on touch";
+			if (asw_drone_touch_ignite.GetInt() >=2 || (m_bOnFire && asw_drone_touch_onfire.GetInt() > 0))
+			{
+				if (info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_DRONE_JUMPER)
+					MarineIgnite(pMarine, info, alienLabel, damageTypes);
+			}
+			if ((asw_drone_touch_ignite.GetInt()==1 || asw_drone_touch_ignite.GetInt()==3) || (m_bOnFire && asw_drone_touch_onfire.GetInt() > 0))
+			{
+				if (info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_DRONE)
+					MarineIgnite(pMarine, info, alienLabel, damageTypes);
+			}
+		}
+
 		int iTouchDamage = asw_drone_touch_damage.GetInt();
 		if (GetActivity() == ACT_CLIMB_UP || GetActivity() == ACT_CLIMB_DISMOUNT)
 		{
@@ -980,7 +1003,40 @@ void CASW_Drone_Advanced::MeleeAttack( float distance, float damage, QAngle &vie
 
 		// Play a random attack hit sound
 		EmitSound( "ASW_Drone.Attack" );
+
+		//softcopy: ignite marine by drone/jumper melee attack, 1=drone, 2=jumper, 3=All.
+		if (  asw_drone_melee_ignite.GetBool() )
+		{
+			CASW_Marine *pMarine = CASW_Marine::AsMarine(pHurt);
+			if ( pMarine )
+			{
+				CTakeDamageInfo info( this, this, 0, DMG_SLASH );
+				damageTypes = "melee attack";
+				if ( asw_drone_melee_ignite.GetInt() >=2)
+				{
+					if (info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_DRONE_JUMPER)
+						MarineIgnite(pMarine, info, alienLabel, damageTypes);
+				}
+				if ( asw_drone_melee_ignite.GetInt()==1 ||  asw_drone_melee_ignite.GetInt()==3)
+				{
+					if (info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_DRONE)
+						MarineIgnite(pMarine, info, alienLabel, damageTypes);
+				}
+			}
+		}
+		
 	}
+}
+
+//softcopy:
+void CASW_Drone_Advanced::SetColorScale(const char *alienLabel)
+{
+	BaseClass::SetColorScale(alienLabel);
+}
+//softcopy:
+void CASW_Drone_Advanced::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
+{
+	BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);
 }
 
 bool CASW_Drone_Advanced::CorpseGib( const CTakeDamageInfo &info )
@@ -988,11 +1044,11 @@ bool CASW_Drone_Advanced::CorpseGib( const CTakeDamageInfo &info )
 	CEffectData	data;
 
 	m_LagCompensation.UndoLaggedPosition();
-
+	
 	data.m_vOrigin = WorldSpaceCenter();
 	data.m_vNormal = data.m_vOrigin - info.GetDamagePosition();
 	VectorNormalize( data.m_vNormal );
-
+	
 	data.m_flScale = RemapVal( m_iHealth, 0, -500, 1, 3 );
 	data.m_flScale = clamp( data.m_flScale, 1, 3 );
 	data.m_nColor = m_nSkin;
@@ -1066,12 +1122,12 @@ void CASW_Drone_Advanced::GatherEnemyConditions( CBaseEntity *pEnemy )
 
 bool CASW_Drone_Advanced::OverrideMoveFacing( const AILocalMoveGoal_t &move, float flInterval )
 {
-	// FIXME: this will break scripted sequences that walk when they have an enemy
-
-	if ( GetEnemy() && GetNavigator()->GetMovementActivity() == ACT_RUN )
-	{
+  	// FIXME: this will break scripted sequences that walk when they have an enemy
+	
+  	if ( GetEnemy() && GetNavigator()->GetMovementActivity() == ACT_RUN )
+  	{
 		Vector vecEnemyLKP = GetEnemyLKP();
-
+		
 		// Only start facing when we're close enough
 		if ( UTIL_DistApprox( vecEnemyLKP, GetAbsOrigin() ) < 192 )
 		{
@@ -1090,50 +1146,50 @@ Activity CASW_Drone_Advanced::NPC_TranslateActivity( Activity eNewActivity )
 {
 	//if (eNewActivity == ACT_RUN)
 	//{
-	//eNewActivity = ( Activity ) ACT_DRONE_RUN_ATTACKING;
-	//return eNewActivity;
+		//eNewActivity = ( Activity ) ACT_DRONE_RUN_ATTACKING;
+		//return eNewActivity;
 	//}
 	//if ( eNewActivity == ACT_CLIMB_DOWN )
-	//return ACT_CLIMB_UP;
+		//return ACT_CLIMB_UP;
 
 	return BaseClass::NPC_TranslateActivity(eNewActivity);
 }
 
 void CASW_Drone_Advanced::RunTaskOverlay()
 {/*
- if ( IsCurTaskContinuousMove() )
- {
- Activity curActivity = GetNavigator()->GetMovementActivity();
- Activity newActivity = curActivity;
+	if ( IsCurTaskContinuousMove() )
+	{
+		Activity curActivity = GetNavigator()->GetMovementActivity();
+		Activity newActivity = curActivity;
 
- switch( curActivity )
- {
- case ACT_WALK:
- newActivity = ACT_WALK_AIM;
- break;
- case ACT_RUN:
- newActivity = ACT_RUN_AIM;
- break;
- }		
+		switch( curActivity )
+		{
+		case ACT_WALK:
+			newActivity = ACT_WALK_AIM;
+			break;
+		case ACT_RUN:
+			newActivity = ACT_RUN_AIM;
+			break;
+		}		
 
- if ( curActivity != newActivity )
- {
- GetNavigator()->SetMovementActivity( newActivity );
- }
- }*/
+		if ( curActivity != newActivity )
+		{
+			GetNavigator()->SetMovementActivity( newActivity );
+		}
+	}*/
 	BaseClass::RunTaskOverlay();
 }
 /*
 void CASW_Drone_Advanced::ReachedEndOfSequence()
 {
-BaseClass::ReachedEndOfSequence();
+	BaseClass::ReachedEndOfSequence();
 
-if (GetTask()->iTask == TASK_MELEE_ATTACK1 && GetActivity() == ACT_DRONE_RUN_ATTACKING)
-{
-Msg("Making task complete early!\n");
-TaskComplete();
-SetActivity( ACT_RUN );
-}
+	if (GetTask()->iTask == TASK_MELEE_ATTACK1 && GetActivity() == ACT_DRONE_RUN_ATTACKING)
+	{
+		Msg("Making task complete early!\n");
+		TaskComplete();
+		SetActivity( ACT_RUN );
+	}
 }*/
 
 void CASW_Drone_Advanced::RunTask( const Task_t *pTask )
@@ -1148,15 +1204,15 @@ void CASW_Drone_Advanced::RunTask( const Task_t *pTask )
 			// see if we're near enough to the door
 			if (LinearDistanceToDoor() <= asw_drone_door_distance.GetFloat())
 				TaskComplete();
-
+			
 			bool fTimeExpired = ( pTask->flTaskData != 0 && pTask->flTaskData < gpGlobals->curtime - GetTimeTaskStarted() );
-
+			
 			if (fTimeExpired || GetNavigator()->GetGoalType() == GOALTYPE_NONE)
 			{
 				//if (fTimeExpired)
-				//Msg("Finished TASK_DRONE_WAIT_FOR_DOOR_MOVEMENT with fTimeExpired\n");
+					//Msg("Finished TASK_DRONE_WAIT_FOR_DOOR_MOVEMENT with fTimeExpired\n");
 				//else
-				//Msg("Finished TASK_DRONE_WAIT_FOR_DOOR_MOVEMENT with run no goal in runtask\n");
+					//Msg("Finished TASK_DRONE_WAIT_FOR_DOOR_MOVEMENT with run no goal in runtask\n");
 				//TaskComplete();
 				//GetNavigator()->StopMoving();		// Stop moving
 				//SetSchedule(SCHED_DRONE_DOOR_WAIT);
@@ -1189,7 +1245,7 @@ void CASW_Drone_Advanced::RunTask( const Task_t *pTask )
 				vecEnemyLKP = GetEnemyLKP();
 				bUpdateYaw = !FInAimCone( vecEnemyLKP );
 			}
-
+			
 			if ( bUpdateYaw )
 			{
 				GetMotor()->SetIdealYawToTargetAndUpdate( vecEnemyLKP , AI_KEEP_YAW_SPEED );
@@ -1219,7 +1275,7 @@ void CASW_Drone_Advanced::RunTask( const Task_t *pTask )
 			}
 
 			bool fTimeExpired = ( pTask->flTaskData != 0 && pTask->flTaskData < gpGlobals->curtime - GetTimeTaskStarted() );
-
+			
 			if (fTimeExpired || !GetEnemy() || m_lifeState == LIFE_DEAD || GetHealth() <= 0)
 			{
 				TaskComplete();
@@ -1231,13 +1287,13 @@ void CASW_Drone_Advanced::RunTask( const Task_t *pTask )
 		{
 			CASW_Door *pDoor = m_hBlockingDoor.Get();
 			if ( !pDoor || pDoor->m_bDoorFallen
-				|| ( GetEnemy() && !IsBehindDoor( GetEnemy() ) && GetAlienOrders() != AOT_MoveToIgnoringMarines ) )	// or enemy is no longer behind the door
+					|| ( GetEnemy() && !IsBehindDoor( GetEnemy() ) && GetAlienOrders() != AOT_MoveToIgnoringMarines ) )	// or enemy is no longer behind the door
 			{
 				//if (!pDoor && entindex()==45)
-				//Msg("Drone completing door wait since no door\n");
+					//Msg("Drone completing door wait since no door\n");
 				//else if (entindex() == 45)
-				//Msg("Drone completing door wait since door health is 0\n");
-
+					//Msg("Drone completing door wait since door health is 0\n");
+				
 				m_iDoorPos = 0;
 				TaskComplete();
 			}
@@ -1253,17 +1309,17 @@ void CASW_Drone_Advanced::RunTask( const Task_t *pTask )
 			}
 			//if ( IsActivityFinished() )
 			//{
-			// periodically check if the door is still ok to bash
-			if ( m_DurationDoorBash.Expired() )
-			{
-				if (!ValidBlockingDoor())
+				// periodically check if the door is still ok to bash
+				if ( m_DurationDoorBash.Expired() )
 				{
-					TaskComplete();
+					if (!ValidBlockingDoor())
+					{
+						TaskComplete();
+					}
+					m_DurationDoorBash.Reset();
 				}
-				m_DurationDoorBash.Reset();
-			}
-			//else
-			//ResetIdealActivity( SelectDoorBash() );
+				//else
+					//ResetIdealActivity( SelectDoorBash() );
 			//}
 			break;
 		}
@@ -1295,28 +1351,22 @@ void CASW_Drone_Advanced::RunTask( const Task_t *pTask )
 
 	//if (!HasCondition(COND_NPC_FREEZE) && !IsCurSchedule(SCHED_NPC_FREEZE))
 	//{
-	if (GetActivity() == ACT_RUN || GetActivity() == ACT_DRONE_RUN_ATTACKING
-		|| GetActivity() == ACT_MELEE_ATTACK1)
-		m_flPlaybackRate = 1.25f;
-	else
-		m_flPlaybackRate = 1.0f;
+		if (GetActivity() == ACT_RUN || GetActivity() == ACT_DRONE_RUN_ATTACKING
+			|| GetActivity() == ACT_MELEE_ATTACK1)
+			m_flPlaybackRate = 1.25f;
+		else
+			m_flPlaybackRate = 1.0f;
 	//}
-}
-
-//softcopy:
-void CASW_Drone_Advanced::SetColorScale(const char *alienLabel)	
-{
-	BaseClass::SetColorScale(alienLabel);	
 }
 
 bool CASW_Drone_Advanced::ShouldGib( const CTakeDamageInfo &info )
 {
 	// don't gib if we burnt to death
 	//if (info.GetDamageType() & DMG_BURN)
-	//return false;
+		//return false;
 
 	//if (info.GetDamageType() & DMG_ALWAYSGIB)
-	//return true;
+		//return true;
 
 	//return m_bGibber;
 
@@ -1397,12 +1447,12 @@ bool CASW_Drone_Advanced::HasOverridePathTo(CBaseEntity* pEnt)
 	if (tr.m_pEnt != pEnt && tr.fraction < 1.0f)	// centre of the alien can't see this corner
 		return false;
 
-	//AIMoveTrace_t moveTrace;
-	//unsigned testFlags = AITGM_IGNORE_FLOOR;
-	//GetMoveProbe()->TestGroundMove( GetLocalOrigin(), GetEnemy()->WorldSpaceCenter(), MASK_OPAQUE_AND_NPCS, testFlags, &moveTrace );
-	//if ( !IsMoveBlocked(moveTrace.fStatus) || 
-	//( moveTrace.flTotalDist - moveTrace.flDistObstructed < GetEnemy()->BoundingRadius() * 1.5 )
-	//)
+		//AIMoveTrace_t moveTrace;
+		//unsigned testFlags = AITGM_IGNORE_FLOOR;
+		//GetMoveProbe()->TestGroundMove( GetLocalOrigin(), GetEnemy()->WorldSpaceCenter(), MASK_OPAQUE_AND_NPCS, testFlags, &moveTrace );
+		//if ( !IsMoveBlocked(moveTrace.fStatus) || 
+			//( moveTrace.flTotalDist - moveTrace.flDistObstructed < GetEnemy()->BoundingRadius() * 1.5 )
+			//)
 	return true;
 }
 
@@ -1412,10 +1462,10 @@ bool CASW_Drone_Advanced::CheckStuck()
 	Ray_t ray;
 	ray.Init( GetAbsOrigin(), GetAbsOrigin(), WorldAlignMins(), WorldAlignMaxs() );
 	UTIL_TraceRay( ray, GetAITraceMask(), this, GetCollisionGroup(), &tr );
-	// 	if ( (traceresult.contents & MASK_NPCSOLID) && traceresult.m_pEnt )
-	// 	{
-	// 		return true;
-	// 	}
+// 	if ( (traceresult.contents & MASK_NPCSOLID) && traceresult.m_pEnt )
+// 	{
+// 		return true;
+// 	}
 	if ( tr.startsolid || tr.fraction < 1.0f || tr.allsolid )
 		return true;
 	return false;
@@ -1505,8 +1555,8 @@ void CASW_Drone_Advanced::GatherConditions( void )
 	ClearConditions( conditionsToClear, ARRAYSIZE( conditionsToClear ) );
 
 	if ( m_hBlockingDoor == NULL || 
-		( m_hBlockingDoor->IsDoorOpen() || 
-		m_hBlockingDoor->IsDoorOpening() || m_hBlockingDoor->m_bDoorFallen )  )
+		 ( m_hBlockingDoor->IsDoorOpen() || 
+		   m_hBlockingDoor->IsDoorOpening() || m_hBlockingDoor->m_bDoorFallen )  )
 	{
 		ClearCondition( COND_DRONE_BLOCKED_BY_DOOR );
 		if ( m_hBlockingDoor != NULL )
@@ -1730,13 +1780,13 @@ void CASW_Drone_Advanced::StartTask( const Task_t *pTask )
 			// sending the AI into a solid object
 			trace_t tr;			
 			UTIL_TraceHull( GetAbsOrigin() + Vector(0, 0, 20),
-				vecNewPos  + Vector(0, 0, 20),
-				Vector(-5, -5, -5),
-				Vector(5, 5, 5),
-				MASK_NPCSOLID_BRUSHONLY,
-				this,
-				COLLISION_GROUP_NONE,
-				&tr );
+							vecNewPos  + Vector(0, 0, 20),
+							Vector(-5, -5, -5),
+							Vector(5, 5, 5),
+							MASK_NPCSOLID_BRUSHONLY,
+							this,
+							COLLISION_GROUP_NONE,
+							&tr );
 
 			Vector vecCirclePos;
 			if (tr.fraction == 1.0)
@@ -1802,7 +1852,7 @@ void CASW_Drone_Advanced::StartTask( const Task_t *pTask )
 			{
 				//MoveAwayFromDoor();
 			}
-			m_DurationDoorBash.Reset();
+		 	m_DurationDoorBash.Reset();
 			ResetIdealActivity( SelectDoorBash() );
 			break;
 		}
@@ -1815,10 +1865,10 @@ void CASW_Drone_Advanced::StartTask( const Task_t *pTask )
 			else
 			{
 #ifdef INFESTED_DLL
-				if (ai_sequence_debug.GetBool() == true && (m_debugOverlays & OVERLAY_NPC_SELECTED_BIT))
-				{
-					DevMsg("StartTask TASK_DRONE_WAIT_FOR_OVERRIDE_MOVE calling SetActivity(ACT_RUN)");
-				}
+		if (ai_sequence_debug.GetBool() == true && (m_debugOverlays & OVERLAY_NPC_SELECTED_BIT))
+		{
+			DevMsg("StartTask TASK_DRONE_WAIT_FOR_OVERRIDE_MOVE calling SetActivity(ACT_RUN)");
+		}
 #endif
 				SetActivity(ACT_RUN);
 				// note: Override move will kick in while we're doing this task and run us straight at our enemy
@@ -1845,8 +1895,8 @@ void CASW_Drone_Advanced::StartTask( const Task_t *pTask )
 //---------------------------------------------------------
 
 bool CASW_Drone_Advanced::OnObstructionPreSteer( AILocalMoveGoal_t *pMoveGoal,
-												float distClear,
-												AIMoveResult_t *pResult )
+										float distClear,
+										AIMoveResult_t *pResult )
 {
 	if ( pMoveGoal->directTrace.pObstruction )
 	{
@@ -1878,15 +1928,15 @@ bool CASW_Drone_Advanced::OnObstructionPreSteer( AILocalMoveGoal_t *pMoveGoal,
 		}
 	}
 	//if (ValidBlockingDoor())
-	//NDebugOverlay::HorzArrow(WorldSpaceCenter(), pMoveGoal->directTrace.pObstruction->WorldSpaceCenter(), 5, 0,0,255,255,true, 1.0f);
+		//NDebugOverlay::HorzArrow(WorldSpaceCenter(), pMoveGoal->directTrace.pObstruction->WorldSpaceCenter(), 5, 0,0,255,255,true, 1.0f);
 	//else
-	//NDebugOverlay::HorzArrow(WorldSpaceCenter(), pMoveGoal->directTrace.pObstruction->WorldSpaceCenter(), 5, 255,0,0,255,true, 1.0f);
+		//NDebugOverlay::HorzArrow(WorldSpaceCenter(), pMoveGoal->directTrace.pObstruction->WorldSpaceCenter(), 5, 255,0,0,255,true, 1.0f);
 
 	return false;
 }
 
 bool CASW_Drone_Advanced::OnObstructingASWDoor( AILocalMoveGoal_t *pMoveGoal, CASW_Door *pDoor, 
-											   float distClear, AIMoveResult_t *pResult )
+							  float distClear, AIMoveResult_t *pResult )
 {
 	if ( pMoveGoal->maxDist < distClear )
 		return false;
@@ -1938,7 +1988,7 @@ int CASW_Drone_Advanced::TranslateSchedule( int scheduleType )
 	{
 		// decide whether to go with pathed movement or straight override running at the enemy
 		if (HasCondition(COND_DRONE_LOS) && gpGlobals->curtime - m_fLastLostLOSTime > 2.0f
-			&& asw_drone_override_move.GetBool() && (!FailedOverrideMove() || IsMeleeAttacking()))
+				&& asw_drone_override_move.GetBool() && (!FailedOverrideMove() || IsMeleeAttacking()))
 			i = SCHED_DRONE_OVERRIDE_MOVE;
 		else
 		{			
@@ -1969,7 +2019,7 @@ int CASW_Drone_Advanced::TranslateSchedule( int scheduleType )
 Activity CASW_Drone_Advanced::SelectDoorBash()
 {
 	//if ( random->RandomInt( 1, 3 ) == 1 )
-	//return ACT_MELEE_ATTACK1;
+		//return ACT_MELEE_ATTACK1;
 	return (Activity)ACT_DRONE_WALLPOUND;
 }
 
@@ -2013,7 +2063,7 @@ int	CASW_Drone_Advanced::DrawDebugTextOverlays()
 		else
 			NDebugOverlay::EntityText(entindex(),text_offset,CFmtStr("Cannot jump."),0);
 		text_offset++;
-
+			
 		if (HasCondition(COND_DRONE_LOS))
 			NDebugOverlay::EntityText(entindex(),text_offset,CFmtStr("Has COND_DRONE_LOS"),0);
 		else
@@ -2065,7 +2115,7 @@ bool CASW_Drone_Advanced::MovementCost( int moveType, const Vector &vecStart, co
 
 	// increase cost of marines can see vecend?
 	//if (UTIL_ASW_MarineViewCone(vecEnd))
-	//multiplier *= asw_marine_view_cone_cost.GetFloat();	
+		//multiplier *= asw_marine_view_cone_cost.GetFloat();	
 
 	return ( multiplier != 1 );
 }
@@ -2074,7 +2124,7 @@ bool CASW_Drone_Advanced::MovementCost( int moveType, const Vector &vecStart, co
 // Purpose: Custom trace filter used for NPC LOS traces
 //-----------------------------------------------------------------------------
 CDroneTraceFilterLOS::CDroneTraceFilterLOS( IHandleEntity *pHandleEntity, int collisionGroup ) :
-	CTraceFilterSimple( pHandleEntity, collisionGroup )
+		CTraceFilterSimple( pHandleEntity, collisionGroup )
 {
 }
 
@@ -2120,7 +2170,7 @@ bool CASW_Drone_Advanced::IsHeavyDamage( const CTakeDamageInfo &info )
 	// check the attacker's weapon, if this is a marine
 	//if (info.GetAttacker())
 	//{
-	//Msg("Drone attacked by %s\n", info.GetAttacker()->GetClassname());
+		//Msg("Drone attacked by %s\n", info.GetAttacker()->GetClassname());
 	//}
 	CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(info.GetAttacker());
 	if (pMarine)
@@ -2153,14 +2203,14 @@ bool CASW_Drone_Advanced::IsHeavyDamage( const CTakeDamageInfo &info )
 int CASW_Drone_Advanced::SelectFlinchSchedule_ASW()
 {
 	//if ( !HasCondition(COND_HEAVY_DAMAGE) && !HasCondition(COND_LIGHT_DAMAGE) )
-	//return SCHED_NONE;
+		//return SCHED_NONE;
 
 	if ( IsCurSchedule( SCHED_BIG_FLINCH ) )
 		return SCHED_NONE;
 
 	// only light damage flinch if shot during a melee attack
 	//if (!HasCondition(COND_HEAVY_DAMAGE) && !(GetTask() && (GetTask()->iTask == TASK_MELEE_ATTACK1)) )
-	//return SCHED_NONE;
+		//return SCHED_NONE;
 	if (!HasCondition(COND_HEAVY_DAMAGE))	// only flinch on heavy damage condition (which is set if a particular marine's weapon + skills cause a flinch)
 		return SCHED_NONE;
 
@@ -2265,7 +2315,7 @@ void CASW_Drone_Advanced::SetSmallDoorBashHull( bool bSmall )
 			}
 		}
 	}
-
+	
 }
 
 // a rough heuristic to see if our enemy is sitting behind a door
@@ -2312,7 +2362,7 @@ void CASW_Drone_Advanced::MoveAwayFromDoor()
 	CASW_Door *pDoor = m_hBlockingDoor.Get();
 	if (!pDoor)
 		return;
-
+	
 	Vector vecPerp;
 	QAngle angFacing = pDoor->GetAbsAngles();
 	angFacing[YAW] += 90;
@@ -2341,7 +2391,7 @@ float CASW_Drone_Advanced::LinearDistanceToDoor()
 	CASW_Door *pDoor = m_hBlockingDoor.Get();
 	if (!pDoor)
 		return -1;
-
+	
 	Vector vecPerp;
 	QAngle angFacing = pDoor->GetAbsAngles();
 	angFacing[YAW] += 90;
@@ -2358,7 +2408,7 @@ void CASW_Drone_Advanced::SetDoorBashYaw()
 	CASW_Door *pDoor = m_hBlockingDoor.Get();
 	if (!pDoor)
 		return;
-
+	
 	// figure out which side of the door we're on
 	Vector vecFacing;
 	Vector vecDiff = GetAbsOrigin() - pDoor->GetAbsOrigin();
@@ -2405,202 +2455,202 @@ bool CASW_Drone_Advanced::ShouldClearOrdersOnMovementComplete()
 
 AI_BEGIN_CUSTOM_NPC( asw_drone_advanced, CASW_Drone_Advanced )
 	DECLARE_CONDITION( COND_DRONE_BLOCKED_BY_DOOR )
-DECLARE_CONDITION( COND_DRONE_DOOR_OPENED )
-DECLARE_CONDITION( COND_DRONE_LOS )
-DECLARE_CONDITION( COND_DRONE_LOST_LOS )
-DECLARE_CONDITION( COND_DRONE_GAINED_LOS )
-DECLARE_TASK( TASK_DRONE_YAW_TO_DOOR )
-DECLARE_TASK( TASK_DRONE_ATTACK_DOOR )
-DECLARE_TASK( TASK_DRONE_WAIT_FOR_OVERRIDE_MOVE )
-DECLARE_TASK( TASK_DRONE_GET_PATH_TO_DOOR )
-DECLARE_TASK( TASK_DRONE_WAIT_FOR_DOOR_MOVEMENT )
-DECLARE_TASK( TASK_DRONE_DOOR_WAIT )
-DECLARE_TASK( TASK_DRONE_GET_CIRCLE_PATH )
-DECLARE_TASK( TASK_DRONE_WAIT_FACE_ENEMY )
-// Activities
-DECLARE_ACTIVITY( ACT_DRONE_RUN_ATTACKING )
-DECLARE_ACTIVITY( ACT_DRONE_WALLPOUND )
+	DECLARE_CONDITION( COND_DRONE_DOOR_OPENED )
+	DECLARE_CONDITION( COND_DRONE_LOS )
+	DECLARE_CONDITION( COND_DRONE_LOST_LOS )
+	DECLARE_CONDITION( COND_DRONE_GAINED_LOS )
+	DECLARE_TASK( TASK_DRONE_YAW_TO_DOOR )
+	DECLARE_TASK( TASK_DRONE_ATTACK_DOOR )
+	DECLARE_TASK( TASK_DRONE_WAIT_FOR_OVERRIDE_MOVE )
+	DECLARE_TASK( TASK_DRONE_GET_PATH_TO_DOOR )
+	DECLARE_TASK( TASK_DRONE_WAIT_FOR_DOOR_MOVEMENT )
+	DECLARE_TASK( TASK_DRONE_DOOR_WAIT )
+	DECLARE_TASK( TASK_DRONE_GET_CIRCLE_PATH )
+	DECLARE_TASK( TASK_DRONE_WAIT_FACE_ENEMY )
+	// Activities
+	DECLARE_ACTIVITY( ACT_DRONE_RUN_ATTACKING )
+	DECLARE_ACTIVITY( ACT_DRONE_WALLPOUND )
 
-// Events
-DECLARE_ANIMEVENT( AE_DRONE_WALK_FOOTSTEP )
-DECLARE_ANIMEVENT( AE_DRONE_FOOTSTEP_SOFT )
-DECLARE_ANIMEVENT( AE_DRONE_FOOTSTEP_HEAVY )
-DECLARE_ANIMEVENT( AE_DRONE_MELEE_HIT1 )
-DECLARE_ANIMEVENT( AE_DRONE_MELEE_HIT2 )	
-DECLARE_ANIMEVENT( AE_DRONE_MELEE1_SOUND )
-DECLARE_ANIMEVENT( AE_DRONE_MELEE2_SOUND )
-DECLARE_ANIMEVENT( AE_DRONE_MOUTH_BLEED )
-DECLARE_ANIMEVENT( AE_DRONE_ALERT_SOUND )
-DECLARE_ANIMEVENT( AE_DRONE_SHADOW_ON )
-DEFINE_SCHEDULE
+	// Events
+	DECLARE_ANIMEVENT( AE_DRONE_WALK_FOOTSTEP )
+	DECLARE_ANIMEVENT( AE_DRONE_FOOTSTEP_SOFT )
+	DECLARE_ANIMEVENT( AE_DRONE_FOOTSTEP_HEAVY )
+	DECLARE_ANIMEVENT( AE_DRONE_MELEE_HIT1 )
+	DECLARE_ANIMEVENT( AE_DRONE_MELEE_HIT2 )	
+	DECLARE_ANIMEVENT( AE_DRONE_MELEE1_SOUND )
+	DECLARE_ANIMEVENT( AE_DRONE_MELEE2_SOUND )
+	DECLARE_ANIMEVENT( AE_DRONE_MOUTH_BLEED )
+	DECLARE_ANIMEVENT( AE_DRONE_ALERT_SOUND )
+	DECLARE_ANIMEVENT( AE_DRONE_SHADOW_ON )
+	DEFINE_SCHEDULE
 	( 
-	SCHED_DRONE_BASH_DOOR,
+		SCHED_DRONE_BASH_DOOR,
 
-	"	Tasks"
-	//"		TASK_SET_ACTIVITY				ACTIVITY:ACT_ALIEN_SHOVER_ROAR"
-	"		TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_DRONE_DOOR_WAIT"
-	"		TASK_DRONE_GET_PATH_TO_DOOR		0"
-	"		TASK_RUN_PATH					0"
-	"		TASK_DRONE_WAIT_FOR_DOOR_MOVEMENT		0"
-	"		TASK_DRONE_YAW_TO_DOOR			0"
-	"		TASK_FACE_IDEAL					0"
-	"		TASK_STOP_MOVING				1"
-	"		TASK_DRONE_ATTACK_DOOR			0"
-	""
-	"	Interrupts"
-	"		COND_ENEMY_DEAD"
-	"		COND_NEW_ENEMY"
-	"		COND_DRONE_DOOR_OPENED"
+		"	Tasks"
+		//"		TASK_SET_ACTIVITY				ACTIVITY:ACT_ALIEN_SHOVER_ROAR"
+		"		TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_DRONE_DOOR_WAIT"
+		"		TASK_DRONE_GET_PATH_TO_DOOR		0"
+		"		TASK_RUN_PATH					0"
+		"		TASK_DRONE_WAIT_FOR_DOOR_MOVEMENT		0"
+		"		TASK_DRONE_YAW_TO_DOOR			0"
+		"		TASK_FACE_IDEAL					0"
+		"		TASK_STOP_MOVING				1"
+		"		TASK_DRONE_ATTACK_DOOR			0"
+		""
+		"	Interrupts"
+		"		COND_ENEMY_DEAD"
+		"		COND_NEW_ENEMY"
+		"		COND_DRONE_DOOR_OPENED"
 	)
 
 	// attack a door we're already near to
 	DEFINE_SCHEDULE
 	( 
-	SCHED_DRONE_BASH_CLOSE_DOOR,
+		SCHED_DRONE_BASH_CLOSE_DOOR,
 
-	"	Tasks"		
-	"		TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_DRONE_DOOR_WAIT"		
-	"		TASK_DRONE_YAW_TO_DOOR			0"
-	"		TASK_FACE_IDEAL					0"
-	"		TASK_STOP_MOVING				1"
-	"		TASK_DRONE_ATTACK_DOOR			0"
-	""
-	"	Interrupts"
-	"		COND_ENEMY_DEAD"
-	"		COND_NEW_ENEMY"
-	"		COND_DRONE_DOOR_OPENED"
+		"	Tasks"		
+		"		TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_DRONE_DOOR_WAIT"		
+		"		TASK_DRONE_YAW_TO_DOOR			0"
+		"		TASK_FACE_IDEAL					0"
+		"		TASK_STOP_MOVING				1"
+		"		TASK_DRONE_ATTACK_DOOR			0"
+		""
+		"	Interrupts"
+		"		COND_ENEMY_DEAD"
+		"		COND_NEW_ENEMY"
+		"		COND_DRONE_DOOR_OPENED"
 	)
 
 	// drone waiting for a door to be bashed open by some other aliens
 	DEFINE_SCHEDULE
 	( 
-	SCHED_DRONE_DOOR_WAIT,
+		SCHED_DRONE_DOOR_WAIT,
 
-	"	Tasks"
-	"		TASK_SET_ACTIVITY				ACTIVITY:ACT_IDLE"
-	"		TASK_DRONE_DOOR_WAIT			1"
-	""
-	"	Interrupts"
-	"		COND_DRONE_DOOR_OPENED"
+		"	Tasks"
+		"		TASK_SET_ACTIVITY				ACTIVITY:ACT_IDLE"
+		"		TASK_DRONE_DOOR_WAIT			1"
+		""
+		"	Interrupts"
+		"		COND_DRONE_DOOR_OPENED"
 	)
 
 
 	DEFINE_SCHEDULE
 	(
-	SCHED_DRONE_CHASE_ENEMY,
+		SCHED_DRONE_CHASE_ENEMY,
 
-	"	Tasks"
-	"		 TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_CHASE_ENEMY_FAILED"
-	//"		 TASK_SET_TOLERANCE_DISTANCE	24"
-	"		 TASK_GET_CHASE_PATH_TO_ENEMY	300"
-	"		 TASK_RUN_PATH					0"
-	"		 TASK_WAIT_FOR_MOVEMENT			0"
-	//"		 TASK_FACE_ENEMY				0"
-	"	"
-	"	Interrupts"
-	"		COND_NEW_ENEMY"
-	"		COND_ENEMY_DEAD"
-	"		COND_ENEMY_UNREACHABLE"
-	"		COND_CAN_RANGE_ATTACK1"
-	"		COND_CAN_MELEE_ATTACK1"
-	"		COND_CAN_RANGE_ATTACK2"
-	"		COND_CAN_MELEE_ATTACK2"
-	"		COND_TOO_CLOSE_TO_ATTACK"
-	"		COND_TASK_FAILED"
-	"		COND_ALIEN_SHOVER_PHYSICS_TARGET"
-	"		COND_DRONE_BLOCKED_BY_DOOR"
-	"		COND_DRONE_GAINED_LOS"
-	"		COND_HEAVY_DAMAGE"
-	//"		COND_DRONE_LOS"		// this is needed for override move, but currently seems to be bugged and always on, causing this schedule to fail constantly
+		"	Tasks"
+		"		 TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_CHASE_ENEMY_FAILED"
+		//"		 TASK_SET_TOLERANCE_DISTANCE	24"
+		"		 TASK_GET_CHASE_PATH_TO_ENEMY	300"
+		"		 TASK_RUN_PATH					0"
+		"		 TASK_WAIT_FOR_MOVEMENT			0"
+		//"		 TASK_FACE_ENEMY				0"
+		"	"
+		"	Interrupts"
+		"		COND_NEW_ENEMY"
+		"		COND_ENEMY_DEAD"
+		"		COND_ENEMY_UNREACHABLE"
+		"		COND_CAN_RANGE_ATTACK1"
+		"		COND_CAN_MELEE_ATTACK1"
+		"		COND_CAN_RANGE_ATTACK2"
+		"		COND_CAN_MELEE_ATTACK2"
+		"		COND_TOO_CLOSE_TO_ATTACK"
+		"		COND_TASK_FAILED"
+		"		COND_ALIEN_SHOVER_PHYSICS_TARGET"
+		"		COND_DRONE_BLOCKED_BY_DOOR"
+		"		COND_DRONE_GAINED_LOS"
+		"		COND_HEAVY_DAMAGE"
+		//"		COND_DRONE_LOS"		// this is needed for override move, but currently seems to be bugged and always on, causing this schedule to fail constantly
 	)
 	DEFINE_SCHEDULE
 	(
-	SCHED_DRONE_CIRCLE_ENEMY,	
+		SCHED_DRONE_CIRCLE_ENEMY,	
 
-	"	Tasks"
-	"		 TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_DRONE_CIRCLE_ENEMY_FAILED"
-	//"		 TASK_SET_TOLERANCE_DISTANCE	24"
-	"		 TASK_DRONE_GET_CIRCLE_PATH	300"
-	"		 TASK_RUN_PATH					0"
-	"		 TASK_WAIT_FOR_MOVEMENT			0"
-	//"		 TASK_FACE_ENEMY				0"
-	"	"
-	"	Interrupts"
-	"		COND_NEW_ENEMY"
-	"		COND_ENEMY_DEAD"
-	"		COND_ENEMY_UNREACHABLE"
-	"		COND_CAN_RANGE_ATTACK1"
-	"		COND_CAN_MELEE_ATTACK1"
-	"		COND_CAN_RANGE_ATTACK2"
-	"		COND_CAN_MELEE_ATTACK2"
-	"		COND_TOO_CLOSE_TO_ATTACK"
-	"		COND_TASK_FAILED"
-	"		COND_ALIEN_SHOVER_PHYSICS_TARGET"
-	"		COND_DRONE_BLOCKED_BY_DOOR"
-	"		COND_DRONE_GAINED_LOS"
-	"		COND_HEAVY_DAMAGE"
+		"	Tasks"
+		"		 TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_DRONE_CIRCLE_ENEMY_FAILED"
+		//"		 TASK_SET_TOLERANCE_DISTANCE	24"
+		"		 TASK_DRONE_GET_CIRCLE_PATH	300"
+		"		 TASK_RUN_PATH					0"
+		"		 TASK_WAIT_FOR_MOVEMENT			0"
+		//"		 TASK_FACE_ENEMY				0"
+		"	"
+		"	Interrupts"
+		"		COND_NEW_ENEMY"
+		"		COND_ENEMY_DEAD"
+		"		COND_ENEMY_UNREACHABLE"
+		"		COND_CAN_RANGE_ATTACK1"
+		"		COND_CAN_MELEE_ATTACK1"
+		"		COND_CAN_RANGE_ATTACK2"
+		"		COND_CAN_MELEE_ATTACK2"
+		"		COND_TOO_CLOSE_TO_ATTACK"
+		"		COND_TASK_FAILED"
+		"		COND_ALIEN_SHOVER_PHYSICS_TARGET"
+		"		COND_DRONE_BLOCKED_BY_DOOR"
+		"		COND_DRONE_GAINED_LOS"
+		"		COND_HEAVY_DAMAGE"
 	)
 	DEFINE_SCHEDULE
 	(
-	SCHED_DRONE_CIRCLE_ENEMY_FAILED,	
-	// much like the default standoff schedule, but the AI is more agressive at starting chasing again
-	// the wait is also much shorter, so the drone will try to circle to a new position fairly quickly
-	// reattempts circling once this schedule is done
-	"	Tasks"
-	"		TASK_STOP_MOVING			0"
-	"		TASK_SET_ACTIVITY			ACTIVITY:ACT_IDLE"		// Translated to cover
-	"		TASK_DRONE_WAIT_FACE_ENEMY	0.4"
-	"		TASK_SET_SCHEDULE					SCHEDULE:SCHED_DRONE_CIRCLE_ENEMY"
-	""
-	"	Interrupts"
-	"		COND_CAN_RANGE_ATTACK1"
-	"		COND_CAN_RANGE_ATTACK2"
-	"		COND_CAN_MELEE_ATTACK1"
-	"		COND_CAN_MELEE_ATTACK2"
-	"		COND_ENEMY_DEAD"
-	"		COND_NEW_ENEMY"
-	"		COND_HEAR_DANGER"
-	"		COND_HEAVY_DAMAGE"
+		SCHED_DRONE_CIRCLE_ENEMY_FAILED,	
+		// much like the default standoff schedule, but the AI is more agressive at starting chasing again
+		// the wait is also much shorter, so the drone will try to circle to a new position fairly quickly
+		// reattempts circling once this schedule is done
+		"	Tasks"
+		"		TASK_STOP_MOVING			0"
+		"		TASK_SET_ACTIVITY			ACTIVITY:ACT_IDLE"		// Translated to cover
+		"		TASK_DRONE_WAIT_FACE_ENEMY	0.4"
+		"		TASK_SET_SCHEDULE					SCHEDULE:SCHED_DRONE_CIRCLE_ENEMY"
+		""
+		"	Interrupts"
+		"		COND_CAN_RANGE_ATTACK1"
+		"		COND_CAN_RANGE_ATTACK2"
+		"		COND_CAN_MELEE_ATTACK1"
+		"		COND_CAN_MELEE_ATTACK2"
+		"		COND_ENEMY_DEAD"
+		"		COND_NEW_ENEMY"
+		"		COND_HEAR_DANGER"
+		"		COND_HEAVY_DAMAGE"
 	)
 	DEFINE_SCHEDULE
 	(
-	SCHED_DRONE_STANDOFF,	
-	// much like the default standoff schedule, but the AI is more agressive at starting chasing again
-	"	Tasks"
-	"		TASK_STOP_MOVING			0"
-	"		TASK_SET_ACTIVITY			ACTIVITY:ACT_IDLE"		// Translated to cover
-	"		TASK_DRONE_WAIT_FACE_ENEMY	2"
-	""
-	"	Interrupts"
-	"		COND_CAN_RANGE_ATTACK1"
-	"		COND_CAN_RANGE_ATTACK2"
-	"		COND_CAN_MELEE_ATTACK1"
-	"		COND_CAN_MELEE_ATTACK2"
-	"		COND_ENEMY_DEAD"
-	"		COND_NEW_ENEMY"
-	"		COND_HEAR_DANGER"
-	"		COND_HEAVY_DAMAGE"
+		SCHED_DRONE_STANDOFF,	
+		// much like the default standoff schedule, but the AI is more agressive at starting chasing again
+		"	Tasks"
+		"		TASK_STOP_MOVING			0"
+		"		TASK_SET_ACTIVITY			ACTIVITY:ACT_IDLE"		// Translated to cover
+		"		TASK_DRONE_WAIT_FACE_ENEMY	2"
+		""
+		"	Interrupts"
+		"		COND_CAN_RANGE_ATTACK1"
+		"		COND_CAN_RANGE_ATTACK2"
+		"		COND_CAN_MELEE_ATTACK1"
+		"		COND_CAN_MELEE_ATTACK2"
+		"		COND_ENEMY_DEAD"
+		"		COND_NEW_ENEMY"
+		"		COND_HEAR_DANGER"
+		"		COND_HEAVY_DAMAGE"
 	)
 	DEFINE_SCHEDULE
 	(
-	SCHED_DRONE_OVERRIDE_MOVE,	
+		SCHED_DRONE_OVERRIDE_MOVE,	
 
-	"	Tasks"
-	"		 TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_DRONE_CHASE_ENEMY"
-	"		 TASK_RUN_PATH					0"
-	"		 TASK_DRONE_WAIT_FOR_OVERRIDE_MOVE			0"		
-	"	"
-	"	Interrupts"
-	"		COND_NEW_ENEMY"
-	"		COND_ENEMY_DEAD"
-	"		COND_ENEMY_UNREACHABLE"
-	"		COND_CAN_MELEE_ATTACK1"
-	"		COND_CAN_MELEE_ATTACK2"
-	"		COND_TASK_FAILED"
-	"		COND_ALIEN_SHOVER_PHYSICS_TARGET"
-	"		COND_DRONE_BLOCKED_BY_DOOR"
-	"		COND_DRONE_LOST_LOS"
-	"		COND_HEAVY_DAMAGE"
+		"	Tasks"
+		"		 TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_DRONE_CHASE_ENEMY"
+		"		 TASK_RUN_PATH					0"
+		"		 TASK_DRONE_WAIT_FOR_OVERRIDE_MOVE			0"		
+		"	"
+		"	Interrupts"
+		"		COND_NEW_ENEMY"
+		"		COND_ENEMY_DEAD"
+		"		COND_ENEMY_UNREACHABLE"
+		"		COND_CAN_MELEE_ATTACK1"
+		"		COND_CAN_MELEE_ATTACK2"
+		"		COND_TASK_FAILED"
+		"		COND_ALIEN_SHOVER_PHYSICS_TARGET"
+		"		COND_DRONE_BLOCKED_BY_DOOR"
+		"		COND_DRONE_LOST_LOS"
+		"		COND_HEAVY_DAMAGE"
 	)
 
-	AI_END_CUSTOM_NPC()
+AI_END_CUSTOM_NPC()

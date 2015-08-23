@@ -1,3 +1,10 @@
+///////////////////////////////////////////////////////////////////////////
+//     added part of statments from asbi asw_colonist.cpp to play bi-rescue
+//     modified colonist immune status
+//     modified colonist sound types
+//     added zombie style for fun.
+///////////////////////////////////////////////////////////////////////////
+
 #include "cbase.h"
 #include "asw_colonist.h"
 #include "asw_marine.h"
@@ -6,16 +13,24 @@
 #include "asw_parasite.h"
 #include "asw_fx_shared.h"
 #include "asw_player.h"
+//softcopy:
+#include "asw_burning.h"            
+#include "effect_dispatch_data.h"
+#include "te_effect_dispatch.h"
+
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
 const int MAX_PLAYER_SQUAD = 4;
 
-ConVar	asw_colonist_health				( "asw_colonist_health",				"90");
-ConVar	asw_colonist_tom_health				( "asw_colonist_tom_health",				"30");	// tutorial guy who gets eaten
+ConVar	asw_colonist_health ( "asw_colonist_health", "90" );
+ConVar	asw_colonist_tom_health ( "asw_colonist_tom_health", "30" );	// tutorial guy who gets eaten
+ConVar	asw_colonist_zombie_change("asw_colonist_zombie_change","1", FCVAR_CHEAT, "Colonist and zombie.");	//softcopy:
 
-#define SWARM_COLONIST_MODEL "models/swarm/Colonist/Male/MaleColonist.mdl"
+#define SWARM_COLONIST_MODEL_ZOMBIE  "models/zombie/classic.mdl"   
+#define SWARM_COLONIST_MODEL         "models/swarm/Colonist/Male/MaleColonist.mdl"
+#define SWARM_COLONIST_MODEL_FEMALE  "models/humans/group01/female_01.mdl" 		//softcopy: add female colonist
 
 LINK_ENTITY_TO_CLASS( asw_colonist, CASW_Colonist );
 
@@ -37,22 +52,44 @@ CASW_Colonist::CASW_Colonist()
 {
 	m_fInfestedTime = 0;
 	m_iInfestCycle = 0;
-	Msg("CASW_Colonist created\n");
+	//softcopy:
+	//Msg("CASW_Colonist created\n");        
+	if ( asw_colonist_zombie_change.GetBool() )  
+	    Msg("CASW_Zombie created\n");      
+	else
+	    Msg("CASW_Colonist created\n");
+	selectedBy = -1;  
+	
 }
 
 CASW_Colonist::~CASW_Colonist()
 {
-	Msg("CASW_Colonist destroyed\n");
+	//softcopy:
+	//Msg("CASW_Colonist destroyed\n");       
+	if ( asw_colonist_zombie_change.GetBool() )  
+	    Msg("CASW_Zombie destroyed\n");      
+	else
+	    Msg("CASW_Colonist destroyed\n");
+		
 }
 
 void CASW_Colonist::Precache()
 {
-	PrecacheModel( SWARM_COLONIST_MODEL );	
+	PrecacheModel( SWARM_COLONIST_MODEL );
 	
-	PrecacheScriptSound( "NPC_Citizen.FootstepLeft" );
-	PrecacheScriptSound( "NPC_Citizen.FootstepRight" );
-	PrecacheScriptSound( "NPC_Citizen.Die" );
-	PrecacheScriptSound( "MaleMarine.Pain" );
+	//softcopy: doesn't exist, no use, skip it!
+	//PrecacheScriptSound( "NPC_Citizen.FootstepLeft" );      
+	//PrecacheScriptSound( "NPC_Citizen.FootstepRight" );
+	//PrecacheScriptSound( "NPC_Citizen.Die" );
+	//PrecacheScriptSound( "MaleMarine.Pain" );
+	//add female and zombie model
+	PrecacheModel( SWARM_COLONIST_MODEL_ZOMBIE );
+	PrecacheModel( SWARM_COLONIST_MODEL_FEMALE );
+	PrecacheScriptSound( "Crash.Dead0" );
+	PrecacheScriptSound( "Crash.SmallPain0" );
+	PrecacheScriptSound( "Faith.Dead0" );
+	PrecacheScriptSound( "Faith.SmallPain0" );
+
 
 	//PrecacheInstancedScene( "scenes/swarmscenes/tutorialscript3.vcd" );
 	//PrecacheInstancedScene( "scenes/swarmscenes/FishermanAlert.vcd" );
@@ -63,22 +100,36 @@ void CASW_Colonist::Precache()
 void CASW_Colonist::Spawn()
 {
 	Precache();
-	
+	//softcopy:
 	SetModel( SWARM_COLONIST_MODEL );
+	isFemale = RandomInt(0,1)==0;
+	if (asw_colonist_zombie_change.GetBool())
+	{
+		SetModel( SWARM_COLONIST_MODEL_ZOMBIE );	//need steam online to make zombie starting move.
+	}
+	else 
+	{
+	if (isFemale)
+		SetModel( SWARM_COLONIST_MODEL_FEMALE );
+	else
+		 SetModel(  SWARM_COLONIST_MODEL ); 
+	}
+ 	SetRenderMode(kRenderNormal);
+	SetRenderColor(180,180,180);
+	
 	SetHullType(HULL_HUMAN);
 	SetHullSizeNormal();
-
+	
 	ChangeFaction( FACTION_MARINES );
-
+	
 	SetSolid( SOLID_BBOX );
 	AddSolidFlags( FSOLID_NOT_STANDABLE );
 	SetBloodColor( BLOOD_COLOR_RED );
 	m_flFieldOfView		= 0.02;
 	m_NPCState		= NPC_STATE_NONE;
-
+	
 	CapabilitiesClear();
 	CapabilitiesAdd( bits_CAP_SQUAD );
-
 	if ( !HasSpawnFlags( SF_NPC_START_EFFICIENT ) )
 	{
 		CapabilitiesAdd( bits_CAP_ANIMATEDFACE | bits_CAP_TURN_HEAD );
@@ -86,8 +137,13 @@ void CASW_Colonist::Spawn()
 		CapabilitiesAdd( bits_CAP_DUCK | bits_CAP_DOORS_GROUP );
 		CapabilitiesAdd( bits_CAP_USE_SHOT_REGULATOR );
 	}
+
 	CapabilitiesAdd( bits_CAP_NO_HIT_PLAYER | bits_CAP_NO_HIT_SQUADMATES | bits_CAP_FRIENDLY_DMG_IMMUNE );
 	CapabilitiesAdd( bits_CAP_MOVE_GROUND );
+	//softcopy: if on map "bi-rescure", colonist will die on any type of damages
+	if ( !stricmp(gpGlobals->mapname.ToCStr(), "bi_rescue") )
+		CapabilitiesRemove( bits_CAP_FRIENDLY_DMG_IMMUNE );
+		
 	SetMoveType( MOVETYPE_STEP );
 
 	m_HackedGunPos = Vector( 0, 0, ASW_MARINE_GUN_OFFSET_Z );
@@ -105,8 +161,13 @@ void CASW_Colonist::Spawn()
 	AddEFlags( EFL_NO_DISSOLVE | EFL_NO_MEGAPHYSCANNON_RAGDOLL | EFL_NO_PHYSCANNON_INTERACTION );
 
 	NPCInit();
-
-	Msg("Colonist health after NPCInit %d\n", m_iHealth);
+	//softcopy:
+	//Msg("Colonist health after NPCInit %d\n", m_iHealth);
+	if ( asw_colonist_zombie_change.GetBool() )
+	   Msg("Zombie health after NPCInit %d\n", m_iHealth);
+	else
+	   Msg("Colonist health after NPCInit %d\n", m_iHealth);
+	   
 }
 
 Activity CASW_Colonist::NPC_TranslateActivity( Activity activity )
@@ -115,7 +176,7 @@ Activity CASW_Colonist::NPC_TranslateActivity( Activity activity )
 	{
 		return ACT_MELEE_ATTACK_SWING;
 	}
-
+	
 	// !!!HACK - Citizens don't have the required animations for shotguns, 
 	// so trick them into using the rifle counterparts for now (sjb)
 	if ( activity == ACT_RUN_AIM_SHOTGUN )
@@ -126,8 +187,16 @@ Activity CASW_Colonist::NPC_TranslateActivity( Activity activity )
 		return ACT_IDLE_ANGRY_SMG1;
 	if ( activity == ACT_RANGE_ATTACK_SHOTGUN_LOW )
 		return ACT_RANGE_ATTACK_SMG1_LOW;
-
+		
 	return BaseClass::NPC_TranslateActivity( activity );
+}
+
+//softcopy:
+void CASW_Colonist::ASW_Ignite( float flFlameLifetime, float flSize, CBaseEntity *pAttacker, CBaseEntity *pDamagingWeapon ) 
+{
+	if ( ASWBurning() ) 
+		ASWBurning()->BurnEntity(this, pAttacker, flFlameLifetime, 0.4f, 10.0f * 0.4f, pDamagingWeapon );	// 10 dps, applied every 0.4 seconds
+	Ignite( flFlameLifetime, false, 1, true );
 }
 
 int CASW_Colonist::OnTakeDamage_Alive( const CTakeDamageInfo &info )
@@ -139,13 +208,19 @@ int CASW_Colonist::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 
 		Scorch( CITIZEN_SCORCH_RATE, CITIZEN_SCORCH_FLOOR );
 	}
-
+//softcopy:
+	if( info.GetDamageType() & DMG_BURN ) 
+	{
+		if (!IsOnFire()) 
+			ASW_Ignite(7, 0, info.GetAttacker(), info.GetWeapon());
+	}
+	
 	CTakeDamageInfo newInfo = info;
 
 	return BaseClass::OnTakeDamage_Alive( newInfo );
 }
 
-bool CASW_Colonist::IsPlayerAlly( CBasePlayer *pPlayer )											
+bool CASW_Colonist::IsPlayerAlly( CBasePlayer *pPlayer )
 { 
 	return true;
 }
@@ -154,8 +229,13 @@ void CASW_Colonist::DeathSound( const CTakeDamageInfo &info )
 {
 	// Sentences don't play on dead NPCs
 	SentenceStop();
-
-	EmitSound( "NPC_Citizen.Die" );
+	
+	//softcopy: female or male sound
+	//EmitSound( "NPC_Citizen.Die" );
+	if (isFemale)
+		EmitSound( "Faith.Dead0" );
+	else 
+		EmitSound( "Crash.Dead0" );
 }
 
 bool CASW_Colonist::IsHeavyDamage( const CTakeDamageInfo &info )
@@ -185,7 +265,13 @@ void CASW_Colonist::BecomeInfested(CASW_Alien* pAlien)
 	CTakeDamageInfo info(NULL, NULL, Vector(0,0,0), GetAbsOrigin(), DamagePerTick,
 		DMG_INFEST);
 	TakeDamage(info);
-	EmitSound("MaleMarine.Pain");
+	
+	//softcopy: female or male sound
+	//EmitSound("MaleMarine.Pain");
+	if (isFemale)
+		EmitSound( "Faith.SmallPain0" );
+	else 
+		EmitSound( "Crash.SmallPain0" );
 }
 
 void CASW_Colonist::CureInfestation(CASW_Marine *pHealer, float fCureFraction)
@@ -325,7 +411,7 @@ void CASW_Colonist::ASWThinkEffects()
 					TakeDamage(info);
 					SetSchedule(SCHED_BIG_FLINCH);
 
-					EmitSound("MaleMarine.Pain");
+					//EmitSound("MaleMarine.Pain");		//softcopy:
 					m_iInfestCycle = 0;
 
 					m_fInfestedTime-=1.0f;
@@ -372,7 +458,17 @@ void CASW_Colonist::AddSlowHeal(int iHealAmount, CASW_Marine *pMedic)
 			Extinguish();
 		}
 	}
-}	
+}
+
+//softcopy:
+void CASW_Colonist::Extinguish()
+{
+	if (ASWBurning()) 
+		ASWBurning()->Extinguish(this);
+
+	BaseClass::Extinguish();
+}
+
 
 int CASW_Colonist::SelectFlinchSchedule_ASW()
 {
@@ -389,17 +485,32 @@ int CASW_Colonist::SelectFlinchSchedule_ASW()
 	return SCHED_BIG_FLINCH;
 }
 
+
 int CASW_Colonist::SelectSchedule( void )
 {
 	int nSched = SelectFlinchSchedule_ASW();
 	if ( nSched != SCHED_NONE )
 		return nSched;
+	 //softcopy:
+	if (selectedBy != -1) 
+		return SCHED_SA_FOLLOW_MOVE;
 
 	return BaseClass::SelectSchedule();
 }
 
 Activity CASW_Colonist::GetFlinchActivity( bool bHeavyDamage, bool bGesture )
 {
+   //softcopy:
+	if (isFemale) 
+		EmitSound("Faith.SmallPain0");
+	else 
+		EmitSound("Crash.SmallPain0");
+
+	if (isFemale)
+		return (Activity) ACT_COWER;
+	else
+
+
 	return (Activity) ACT_BIG_FLINCH;
 }
 
@@ -419,13 +530,50 @@ void CASW_Colonist::MeleeBleed(CTakeDamageInfo* info)
 		
 	UTIL_ASW_BloodDrips( GetAbsOrigin()+Vector(0,0,60)+vecDir*3, vecDir, BloodColor(), 5 );
 	SetSchedule(SCHED_BIG_FLINCH);
-	EmitSound("MaleMarine.Pain");
+	//EmitSound("MaleMarine.Pain");    //softcopy:
 }
 
 AI_BEGIN_CUSTOM_NPC( asw_colonist, CASW_Colonist )
+//softcopy:
+	DECLARE_TASK( TASK_SA_GET_PATH_TO_FOLLOW_TARGET )
+	DECLARE_TASK( TASK_SA_WAIT_FOR_FOLLOW_MOVEMENT )
+	DECLARE_TASK( TASK_SA_FACE_FOLLOW_WAIT )
+
+	DEFINE_SCHEDULE
+	(
+		SCHED_SA_FOLLOW_MOVE,
+
+		"	Tasks"
+		"		 TASK_SET_FAIL_SCHEDULE			SCHEDULE:SCHED_SA_FOLLOW_WAIT"
+		"		 TASK_SA_GET_PATH_TO_FOLLOW_TARGET			0"
+		"		 TASK_RUN_PATH								0"
+		"		 TASK_SA_WAIT_FOR_FOLLOW_MOVEMENT			0"
+		"		 TASK_STOP_MOVING							1"
+		"	"
+		"	Interrupts"
+		"		COND_TASK_FAILED"
+		"		COND_DAMAGE"
+		"		COND_REPEATED_DAMAGE"
+		"		COND_HEAVY_DAMAGE"
+	)
+
+	DEFINE_SCHEDULE	
+	(
+		SCHED_SA_FOLLOW_WAIT,
+		  
+		"	Tasks"
+		"		TASK_STOP_MOVING						0"
+		"		TASK_SA_FACE_FOLLOW_WAIT				0.3"
+		""
+		"	Interrupts"
+		"		COND_LIGHT_DAMAGE"
+		"		COND_HEAVY_DAMAGE"
+		"		COND_IDLE_INTERRUPT"
+		"       COND_ASW_NEW_ORDERS"
+		"		COND_GIVE_WAY"
+	)
 
 AI_END_CUSTOM_NPC()
-
 
 static ConVar asw_npc_go_do_run( "asw_npc_go_do_run", "1", FCVAR_CHEAT, "Set whether should run on asw_npc_go" );
 
@@ -448,3 +596,154 @@ void CC_ASW_NPC_Go( void )
 	CAI_BaseNPC::ForceSelectedGo(pPlayer, vecSrc + forward * dist, forward, asw_npc_go_do_run.GetBool());
 }
 static ConCommand asw_npc_go("asw_npc_go", CC_ASW_NPC_Go, "Selected NPC(s) will go to the location that the player is looking (shown with a purple box)\n\tArguments:	-none-", FCVAR_CHEAT);
+
+//softcopy:
+const Vector CASW_Colonist::GetFollowPos() 
+{
+	if (!GetTarget()) 
+	{
+		selectedBy = -1;
+		SetSchedule(SCHED_IDLE_STAND);
+		SetRenderColor(180,180,180);
+		return GetAbsOrigin();
+	}
+
+	Vector marineForward;
+	AngleVectors( GetTarget()->GetAbsAngles(), &marineForward );
+	Vector offset = marineForward*100;
+
+	trace_t tr;
+	UTIL_TraceLine( GetTarget()->GetAbsOrigin(),
+		GetTarget()->GetAbsOrigin() - offset, MASK_SOLID_BRUSHONLY, 
+		NULL, COLLISION_GROUP_NONE, &tr );
+
+
+	Vector followPos;
+	if (tr.fraction < 1) 
+	   followPos = GetTarget()->GetAbsOrigin() - marineForward*(MAX(0, 100*tr.fraction-10));
+	else
+	   followPos = GetTarget()->GetAbsOrigin() - offset;
+	
+	return followPos;
+}
+void CASW_Colonist::RunTask( const Task_t *pTask ) 
+{
+	switch (pTask->iTask) 
+	{
+	case TASK_SA_FACE_FOLLOW_WAIT:
+		{
+			//UpdateFacing();
+			if ( IsWaitFinished())
+				TaskComplete();
+			break;
+		}
+	case TASK_SA_WAIT_FOR_FOLLOW_MOVEMENT:
+		{
+			//UpdateFacing();
+			bool fTimeExpired = ( pTask->flTaskData != 0 && pTask->flTaskData < gpGlobals->curtime - GetTimeTaskStarted() );
+			if (fTimeExpired || GetNavigator()->GetGoalType() == GOALTYPE_NONE)
+			{
+				TaskComplete();
+				GetNavigator()->StopMoving();		// Stop moving
+			}
+			else if (!GetNavigator()->IsGoalActive())
+			{
+				SetIdealActivity( GetStoppedActivity() );
+			}
+			else
+			{
+				// Check validity of goal type
+				ValidateNavGoal();
+
+				const Vector &vecFollowPos = GetFollowPos();
+				if ( ( GetNavigator()->GetGoalPos() - vecFollowPos ).LengthSqr() > Square( 150 ) )
+				{
+					if ( GetNavigator()->GetNavType() != NAV_JUMP )
+					{
+						if ( !GetNavigator()->UpdateGoalPos( vecFollowPos ) )
+						{
+							TaskFail(FAIL_NO_ROUTE);
+						}
+					}
+				}
+
+#define ASW_FOLLOW_DISTANCE 150
+				float dist = ( GetAbsOrigin() - GetFollowPos() ).Length2DSqr();
+				if (dist < ( ASW_FOLLOW_DISTANCE * ASW_FOLLOW_DISTANCE )) 
+					TaskComplete();
+			}
+			break;
+		}
+		default:
+			BaseClass::RunTask(pTask);
+			break;
+	}
+}
+void CASW_Colonist::StartTask( const Task_t *pTask )
+{
+	switch( pTask->iTask ) 
+	{
+	case TASK_SA_GET_PATH_TO_FOLLOW_TARGET:
+		{
+			AI_NavGoal_t goal( GetFollowPos(), ACT_RUN, 60 ); // AIN_HULL_TOLERANCE
+			GetNavigator()->SetGoal( goal );
+			TaskComplete();
+			break;
+		}
+	case TASK_SA_WAIT_FOR_FOLLOW_MOVEMENT:
+		{
+			if (GetNavigator()->GetGoalType() == GOALTYPE_NONE)
+			{
+				TaskComplete();
+				GetNavigator()->ClearGoal();		// Clear residual state
+			}
+			else if (!GetNavigator()->IsGoalActive())
+				SetIdealActivity( GetStoppedActivity() );
+			else
+				// Check validity of goal type
+				ValidateNavGoal();
+			break;
+		}
+	case TASK_SA_FACE_FOLLOW_WAIT:
+		{
+			SetWait( pTask->flTaskData );
+			break;
+		}
+
+	default:
+		BaseClass::StartTask( pTask );
+		break;
+	}
+}
+void CASW_Colonist::ActivateUseIcon( CASW_Marine* pMarine, int nHoldType )
+{
+	if ( nHoldType == ASW_USE_HOLD_START )
+		return;
+
+	if (!isSelectedBy(pMarine)) 
+	{
+		SetPrimaryBehavior( NULL );
+		SetTarget(pMarine);
+		SetSchedule(SCHED_SA_FOLLOW_MOVE);
+		if (m_hCine != NULL) 
+			ExitScriptedSequence();
+
+		selectedBy = pMarine->entindex();
+		SetEffects(0);
+		SetRenderColor(255,255,255);
+	} 
+	else 
+	{
+		selectedBy = -1;
+		SetSchedule(SCHED_IDLE_STAND);
+		SetRenderColor(180,180,180);
+	}
+}
+bool CASW_Colonist::isSelectedBy(CASW_Marine* marine) 
+{
+	return selectedBy == marine->entindex();
+}
+bool CASW_Colonist::IsUsable(CBaseEntity *pUser) 
+{
+	return (pUser && pUser->GetAbsOrigin().DistTo(GetAbsOrigin()) < ASW_MARINE_USE_RADIUS);	// near enough?
+}

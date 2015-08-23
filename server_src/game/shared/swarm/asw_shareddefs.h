@@ -160,6 +160,10 @@ enum
 #define SWARM_NEW_SHIELDBUG_MODEL	"models/aliens/Shieldbug/Shieldbug.mdl"
 #define SWARM_MORTARBUG_MODEL		"models/aliens/mortar/mortar.mdl"
 #define SWARM_NEW_HARVESTER_MODEL	"models/aliens/harvester/harvester.mdl"
+//softcopy:
+#define ASW_BETA_BUZZER_MODEL		"models/swarm/buzzer/buzzer.mdl"
+#define SWARM_BETA_PARASITE_MODEL	"models/swarm/parasite/parasite.mdl"
+#define SWARM_BETA_MORTARBUG_MODEL	"models/swarm/mortarbug/mortarbug_model.mdl"
 
 #define ASW_BLIP_SPEECH_INTERVAL 10.0f
 

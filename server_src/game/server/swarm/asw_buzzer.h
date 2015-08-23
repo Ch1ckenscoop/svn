@@ -11,6 +11,7 @@
 #include "iasw_spawnable_npc.h"
 #include "asw_lag_compensation.h"
 #include "asw_shareddefs.h"
+#include "asw_barrel_radioactive.h"		//softcopy:   
 
 // Start with the engine off and folded up.
 #define SF_ASW_BUZZER_NO_DAMAGE_EFFECTS	(1 << 17)
@@ -132,9 +133,16 @@ public:
 	}
 
 	//softcopy:
-	const char		*alienLabel; 
+	CSoundPatch	*m_pRadSound;
+	CHandle<CASW_Radiation_Volume> m_hRadVolume;
+	virtual void	StartRadLoopSound();
+	const char 		*b_AlienModelName;
+	float			m_fLastTouchHurtTime;
+	virtual void	DoRadiationLeak(const CTakeDamageInfo &info);
+	const char		*alienLabel, *damageTypes;
 	virtual void 	SetColorScale(const char *alienLabel);
-	
+	virtual void	MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes);
+
 	enum BuzzerConditions
 	{
 		COND_ASW_BUZZER_START_ATTACK = BaseClass::NEXT_CONDITION,	// We are able to do a bombing run on the current enemy.
@@ -279,6 +287,8 @@ private:
 	float m_fHurtSlowMoveTime;
 	float m_flElectroStunSlowMoveTime;
 	CNetworkVar(bool, m_bElectroStunned);
+	
+
 };
 
 #endif	//_INLCUDED_ASW_BUZZER_H

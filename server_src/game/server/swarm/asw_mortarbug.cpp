@@ -18,6 +18,9 @@
 #include "ai_pathfinder.h"
 #include "ai_link.h"
 #include "asw_util_shared.h"
+//softcopy:
+#include "ammodef.h"
+#include "asw_barrel_explosive.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -55,6 +58,18 @@ ConVar asw_mortarbug_color3("asw_mortarbug_color3", "255 255 255", FCVAR_NONE, "
 ConVar asw_mortarbug_color3_percent("asw_mortarbug_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the mortarbugs you want to give the color",true,0,true,1);
 ConVar asw_mortarbug_scalemod("asw_mortarbug_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal mortarbugs.");
 ConVar asw_mortarbug_scalemod_percent("asw_mortarbug_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal mortarbugs you want to scale.",true,0,true,1);
+ConVar asw_mortarbug_beta_color("asw_mortarbug_beta_color", "255 255 255", FCVAR_NONE, "Sets the color of beta mortarbugs.");
+ConVar asw_mortarbug_beta_color2("asw_mortarbug_beta_color2", "255 255 255", FCVAR_NONE, "Sets the color of beta mortarbugs.");
+ConVar asw_mortarbug_beta_color2_percent("asw_mortarbug_beta_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the beta mortarbugs you want to give the color",true,0,true,1);
+ConVar asw_mortarbug_beta_color3("asw_mortarbug_beta_color3", "255 255 255", FCVAR_NONE, "Sets the color of mortarbugs.");
+ConVar asw_mortarbug_beta_color3_percent("asw_mortarbug_beta_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the beta mortarbugs you want to give the color",true,0,true,1);
+ConVar asw_mortarbug_beta_scalemod("asw_mortarbug_beta_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal mortarbugs.");
+ConVar asw_mortarbug_beta_scalemod_percent("asw_mortarbug_beta_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal beta mortarbugs you want to scale.",true,0,true,1);
+ConVar asw_old_mortarbug( "asw_old_mortarbug","0", FCVAR_NONE, "Set 0=new model, 1=beta mortarbug, 2=random all.");
+ConVar asw_mortarbug_touch("asw_mortarbug_touch", "0", FCVAR_CHEAT, "Sets 1=ignite,2=explode,3=All,ignite/explode marine on mortar touch.");
+ConVar asw_mortarbug_touch_onfire("asw_mortarbug_touch_onfire", "0", FCVAR_CHEAT, "Ignite marine if mortarbug body on fire touch.");
+ConVar asw_mortarbug_gib_chance("asw_mortarbug_gib_chance", "0.80", FCVAR_CHEAT, "Chance of mortarbug break into ragdoll pieces instead of ragdoll.");
+extern ConVar asw_debug_alien_ignite;
 
 extern ConVar sv_gravity;
 extern ConVar asw_mortarbug_shell_gravity;	// TODO: Replace with proper spit projectile's gravity
@@ -70,7 +85,13 @@ CASW_Mortarbug::CASW_Mortarbug()
 {
 	m_fLastFireTime = 0;
 	m_fLastTouchHurtTime = 0;
-	m_pszAlienModelName = SWARM_MORTARBUG_MODEL;
+	//softcopy:
+	//m_pszAlienModelName = SWARM_MORTARBUG_MODEL;
+	if ( asw_old_mortarbug.GetFloat() == 1 )
+		m_pszAlienModelName = SWARM_BETA_MORTARBUG_MODEL;
+	else
+		m_pszAlienModelName = SWARM_MORTARBUG_MODEL;
+	
 	m_nAlienCollisionGroup = ASW_COLLISION_GROUP_ALIEN;
 }
 
@@ -80,6 +101,10 @@ CASW_Mortarbug::~CASW_Mortarbug()
 
 void CASW_Mortarbug::Spawn( void )
 {
+	//softcopy: both mortarbug/beta mortarbug
+	if (asw_old_mortarbug.GetFloat() == 2 )
+		m_pszAlienModelName = RandomFloat() <= 0.5 ? SWARM_BETA_MORTARBUG_MODEL : SWARM_MORTARBUG_MODEL;  
+
 	SetHullType(HULL_WIDE_SHORT);
 
 	BaseClass::Spawn();
@@ -90,12 +115,20 @@ void CASW_Mortarbug::Spawn( void )
 	m_iHealth	= ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_mortarbug_health.GetInt());
 
 	CapabilitiesAdd( bits_CAP_MOVE_GROUND | bits_CAP_INNATE_RANGE_ATTACK1 );
-		
+	
 	m_takedamage = DAMAGE_NO;	// alien is invulnerable until she finds her first enemy
-	//softcopy:
+	//softcopy:	
 	//SetRenderColor(asw_mortarbug_color.GetColor().r(), asw_mortarbug_color.GetColor().g(), asw_mortarbug_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
-	SetColorScale( "mortarbug" );
-
+	if (!Q_strcmp(m_pszAlienModelName, SWARM_BETA_MORTARBUG_MODEL))
+	{
+		alienLabel = "mortarbug_beta";
+		SetColorScale( alienLabel );
+	}
+	else
+	{
+		alienLabel = "mortarbug";
+		SetColorScale( alienLabel );
+	}
 }
 
 void CASW_Mortarbug::Precache( void )
@@ -106,7 +139,16 @@ void CASW_Mortarbug::Precache( void )
 	PrecacheScriptSound( "ASW_MortarBug.OnFire" );
 	PrecacheScriptSound( "ASW_MortarBug.Death" );
 	PrecacheParticleSystem( "mortar_launch" );
-
+	
+	//softcopy: add death sound more obviously.
+	PrecacheParticleSystem( "explosion_barrel" );
+	PrecacheScriptSound( "ASW_T75.Explode" );
+	PrecacheScriptSound( "ASW_ShieldBug.Death" );
+	PrecacheScriptSound( "Ranger.GibSplatHeavy" ); 
+	//fix late precache	
+	PrecacheModel( SWARM_MORTARBUG_MODEL );
+	PrecacheModel( SWARM_BETA_MORTARBUG_MODEL );
+	
 	UTIL_PrecacheOther( ASW_MORTARBUG_PROJECTILE );
 
 	BaseClass::Precache();
@@ -139,10 +181,10 @@ void CASW_Mortarbug::AlertSound()
 void CASW_Mortarbug::PainSound( const CTakeDamageInfo &info )
 {
 	if (gpGlobals->curtime > m_fNextPainSound && gpGlobals->curtime > s_fNextPainSoundTime)
-	{		
-		m_fNextPainSound = gpGlobals->curtime + 0.5f;
+	{	
+		EmitSound("ASW_MortarBug.Pain");	//softcopy:     
+		m_fNextPainSound = gpGlobals->curtime + /*0.5f*/ 1.0f;
 		s_fNextPainSoundTime = gpGlobals->curtime + 1.0f;
-		EmitSound("ASW_MortarBug.Pain");
 	}
 }
 
@@ -163,7 +205,19 @@ void CASW_Mortarbug::IdleSound()
 
 void CASW_Mortarbug::DeathSound( const CTakeDamageInfo &info )
 {
-	EmitSound("ASW_MortarBug.Death");
+    //softcopy: add more sound for mortarbug death
+	//EmitSound("ASW_MortarBug.Death");  
+  	if ( m_nDeathStyle == kDIE_FANCY )
+		return;
+	// if we are playing a fancy death animation, don't play death sounds from code
+	// all death sounds are played from anim events inside the fancy death animation
+	if ( m_nDeathStyle == kDIE_INSTAGIB || m_nDeathStyle == kDIE_BREAKABLE )
+		EmitSound( "ASW_ShieldBug.Death" );
+	else if ( m_nDeathStyle == kDIE_HURL || m_nDeathStyle == kDIE_RAGDOLLFADE )
+		EmitSound("ASW_MortarBug.Death");  
+	else
+		EmitSound( "Ranger.GibSplatHeavy" );
+
 }
 
 // make the mortarbug look at his enemy
@@ -458,18 +512,34 @@ void CASW_Mortarbug::StartTouch( CBaseEntity *pOther )
 	BaseClass::StartTouch( pOther );
 
 	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
+	
 	if (pMarine)
 	{
-		// don't hurt him if he was hurt recently
+		//softcopy: ignite/explode marine on touch/on fire touch, 1=ignite, 2=explode, 3=All
+		/*
 		if (m_fLastTouchHurtTime + 0.6f > gpGlobals->curtime)
 		{
 			return;
 		}
 		// hurt the marine
 		Vector vecForceDir = (pMarine->GetAbsOrigin() - GetAbsOrigin());
-		CTakeDamageInfo info( this, this, asw_mortarbug_touch_damage.GetInt(), DMG_SLASH );
+		CTakeDamageInfo info( this, this, asw_mortarbug_touch_damage.GetInt(), DMG_SLASH );	
 		CalculateMeleeDamageForce( &info, vecForceDir, pMarine->GetAbsOrigin() );
 		pMarine->TakeDamage( info );
+		m_fLastTouchHurtTime = gpGlobals->curtime;
+		*/
+		m_TouchExplosionDamage = asw_mortarbug_touch_damage.GetInt();
+		CTakeDamageInfo info( this, this, m_TouchExplosionDamage, DMG_SLASH );
+		damageTypes = "on touch";
+		if ((asw_mortarbug_touch.GetInt() == 1 || asw_mortarbug_touch.GetInt() == 3) || (m_bOnFire && asw_mortarbug_touch_onfire.GetBool()))
+			MarineIgnite(pMarine, info, alienLabel, damageTypes);
+		if (m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime || m_TouchExplosionDamage <=0)		//don't hurt him if he was hurt recently
+			return;
+		Vector vecForceDir = ( pMarine->GetAbsOrigin() - GetAbsOrigin() );	// hurt the marine
+		CalculateMeleeDamageForce( &info, vecForceDir, pMarine->GetAbsOrigin() );
+		pMarine->TakeDamage( info );
+		if (asw_mortarbug_touch.GetInt() >= 2)
+			MarineExplode(pMarine, alienLabel, damageTypes);
 		m_fLastTouchHurtTime = gpGlobals->curtime;
 	}
 }
@@ -628,9 +698,28 @@ bool CASW_Mortarbug::IsHeavyDamage( const CTakeDamageInfo &info )
 
 void CASW_Mortarbug::Event_Killed( const CTakeDamageInfo &info )
 {
+	//softcopy: add death animations
+	CTakeDamageInfo newInfo(info);
+	if (m_bElectroStunned )
+			m_nDeathStyle = kDIE_INSTAGIB;
+	else if (m_bOnFire)
+			m_nDeathStyle = kDIE_FANCY;
+	else if	(newInfo.GetDamageType() & (DMG_BULLET | DMG_BUCKSHOT | DMG_ENERGYBEAM))
+			m_nDeathStyle = kDIE_BREAKABLE;
+	else if (newInfo.GetDamageType() & (DMG_BLAST | DMG_SONIC))
+			m_nDeathStyle = RandomFloat() < asw_mortarbug_gib_chance.GetFloat() ? kDIE_BREAKABLE : kDIE_HURL;
+	else 	m_nDeathStyle = kDIE_FANCY;
+	trace_t tr;
+	UTIL_TraceLine( GetAbsOrigin() + Vector( 0, 0, 16 ), GetAbsOrigin() - Vector( 0, 0, 64 ), MASK_SOLID, this, COLLISION_GROUP_NONE, &tr );
+	UTIL_DecalTrace( &tr, "GreenBloodBig" );
+	m_fGibTime = gpGlobals->curtime + random->RandomFloat(20.0f, 30.0f);
+	if (!Q_strcmp(m_pszAlienModelName, SWARM_BETA_MORTARBUG_MODEL) && m_bOnFire)
+		m_fGibTime = gpGlobals->curtime;	//remove beta mortardbug after firing 
+	
 	BaseClass::Event_Killed(info);
 
-	m_fGibTime = gpGlobals->curtime + random->RandomFloat(20.0f, 30.0f);
+	//m_fGibTime = gpGlobals->curtime + random->RandomFloat(20.0f, 30.0f);	//softcopy:
+	
 }
 
 int CASW_Mortarbug::OnTakeDamage_Alive( const CTakeDamageInfo &info )
@@ -995,9 +1084,19 @@ int CASW_Mortarbug::FindMortarNode( const Vector &vThreatPos, float flMinThreatD
 }
 
 //softcopy:
-void CASW_Mortarbug::SetColorScale(const char *alienLabel)	
+void CASW_Mortarbug::SetColorScale(const char *alienLabel)
 {
-	BaseClass::SetColorScale(alienLabel);	
+	BaseClass::SetColorScale(alienLabel);
+}
+//softcopy:
+void CASW_Mortarbug::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
+{
+	BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);
+}
+//softcopy:
+void CASW_Mortarbug::MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes)
+{
+	BaseClass::MarineExplode(pMarine, alienLabel, damageTypes);
 }
 
 AI_BEGIN_CUSTOM_NPC( asw_mortarbug, CASW_Mortarbug )

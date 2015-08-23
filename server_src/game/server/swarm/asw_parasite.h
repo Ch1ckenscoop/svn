@@ -106,9 +106,14 @@ public:
 	EHANDLE m_hPrepareToInfest;
 	
 	//softcopy: parasite color & scale
-	const char *alienLabel;
+	virtual void DefangedColorScale();
+	virtual void ParasiteColorScale();
+	virtual void BParasiteColorScale();
+	const char *alienLabel, *damageTypes;
 	virtual void SetColorScale(const char *alienLabel);
+	virtual void MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes);
 
+	
 protected:
 	DEFINE_CUSTOM_AI;
 

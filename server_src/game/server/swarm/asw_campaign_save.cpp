@@ -1058,17 +1058,21 @@ void CASW_Campaign_Save::PlayerDisconnected(CASW_Player *pPlayer)
 	// check for ending the vote
 	if (pGameResource->AreAllOtherPlayersReady(pPlayer->entindex()))
 	{
+		//softcopy:test debug mission completed and sometime can't continue while player disconnected
 		if ( gpGlobals->maxClients > 1 )
 		{
-			if (!m_fVoteEndTime != 0)
+			/*if (!m_fVoteEndTime != 0)
 			{	
 				m_fVoteEndTime = gpGlobals->curtime + 4.0f;
 			}
 			SetThink( &CASW_Campaign_Save::VoteEndThink );
-			SetNextThink( m_fVoteEndTime );
+			SetNextThink( m_fVoteEndTime );*/
+			Msg("Debug: player has disconnected, maxClients %i > 1, FORCED VoteEnded()\n", gpGlobals->maxClients);	//softcopy:test debug
+			VoteEnded();
 		}
-		else
+		else 
 		{
+			Msg("Debug: player has disconnected, maxClients %i <= 1, FORCED VoteEnded()\n", gpGlobals->maxClients);	//softcopy:test debug
 			VoteEnded();
 		}
 	}

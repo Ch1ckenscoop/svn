@@ -17,6 +17,8 @@
 #include "asw_player.h"
 #include "asw_achievements.h"
 #include "asw_marine_resource.h"
+#include "asw_barrel_explosive.h"	//softcopy:
+
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -30,6 +32,7 @@ END_SEND_TABLE()
 BEGIN_DATADESC( CASW_Boomer )
 	DEFINE_EMBEDDEDBYREF( m_pExpresser ),
 	DEFINE_FIELD( m_bInflating, FIELD_BOOLEAN ),
+	DEFINE_FIELD( m_fLastTouchHurtTime, FIELD_TIME ),	//softcopy:
 END_DATADESC()
 
 ConVar asw_boomer_health( "asw_boomer_health", "800", FCVAR_CHEAT );
@@ -44,6 +47,19 @@ ConVar asw_boomer_color3("asw_boomer_color3", "255 255 255", FCVAR_NONE, "Sets t
 ConVar asw_boomer_color3_percent("asw_boomer_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the boomers you want to give the color",true,0,true,1);
 ConVar asw_boomer_scalemod("asw_boomer_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal new model parasites.");
 ConVar asw_boomer_scalemod_percent("asw_boomer_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal boomers you want to scale.",true,0,true,1);
+ConVar asw_boomer_explode_range( "asw_boomer_explode_range", "200", FCVAR_CHEAT, "Sets boomer explode range." );
+ConVar asw_boomer_max_projectile( "asw_boomer_max_projectile", "8", FCVAR_CHEAT, "Sets boomer max projectile." );
+ConVar asw_boomer_explode_damage( "asw_boomer_explode_damage", "55", FCVAR_CHEAT, "Sets boomer explode damage." );
+ConVar asw_boomer_explode_radius( "asw_boomer_explode_radius", "240", FCVAR_CHEAT, "Sets boomer explode radius." );
+ConVar asw_boomer_melee_range( "asw_boomer_melee_range", "140", FCVAR_CHEAT, "Sets boomer melee range." );
+ConVar asw_boomer_melee_min_damage( "asw_boomer_melee_min_damage", "4", FCVAR_CHEAT, "Sets boomer melee min damage." );
+ConVar asw_boomer_melee_max_damage( "asw_boomer_melee_max_damage", "6", FCVAR_CHEAT, "Sets boomer melee max damage." );
+ConVar asw_boomer_melee_force( "asw_boomer_melee_force", "4", FCVAR_CHEAT, "Sets boomer melee force." );
+ConVar asw_boomer_touch_damage( "asw_boomer_touch_damage", "5", FCVAR_CHEAT, "Sets damage caused by boomer on touch." );
+ConVar asw_boomer_ignite("asw_boomer_ignite", "0", FCVAR_CHEAT, "Sets 1=melee, 2=touch, 3=All, ignite marine on boomer melee/touch.");
+ConVar asw_boomer_explode("asw_boomer_explode", "0", FCVAR_CHEAT, "Sets 1=melee, 2=touch, 3=All, explode marine on boomer melee/touch.");
+ConVar asw_boomer_touch_onfire("asw_boomer_touch_onfire", "0", FCVAR_CHEAT, "Ignite marine if boomer body on fire touch.");
+extern ConVar asw_debug_alien_ignite;
 
 extern ConVar asw_alien_debug_death_style;
 
@@ -55,10 +71,13 @@ int ACT_MELEE_ATTACK1_INFLATED;
 int ACT_DEATH_FIRE_INFLATED;   
 int AE_BOOMER_INFLATED;
 
+#define ASW_BOOMER_MELEE_RANGE asw_boomer_melee_range.GetFloat()	//softcopy:
+
 CASW_Boomer::CASW_Boomer()
 {
 	m_pszAlienModelName = "models/aliens/boomer/boomer.mdl";
 	m_bInflated = false;
+	m_fLastTouchHurtTime = 0;	//softcopy:
 }
 
 //-----------------------------------------------------------------------------
@@ -84,13 +103,13 @@ void CASW_Boomer::Spawn( void )
 	SetIdealState( NPC_STATE_ALERT );
 
 	m_bNeverRagdoll = true;
-	
+
 	//softcopy: 
 	//SetRenderColor(asw_boomer_color.GetColor().r(), asw_boomer_color.GetColor().g(), asw_boomer_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
-	SetColorScale( "boomer" );
+	alienLabel = "boomer";
+	SetColorScale( alienLabel );
 
 }
-
 
 void CASW_Boomer::SetHealthByDifficultyLevel()
 {
@@ -115,9 +134,12 @@ void CASW_Boomer::Precache( void )
 	PrecacheModel( "models/aliens/boomer/boomerLegC.mdl");
 	PrecacheScriptSound( "ASW_Boomer.Death_Explode" );
 	PrecacheScriptSound( "ASW_Boomer.Death_Gib" );
-	BaseClass::Precache();	
+	//softcopy:
+	PrecacheScriptSound( "ASW_T75.Explode" );
+	PrecacheParticleSystem( "explosion_barrel" );
+	
+	BaseClass::Precache();
 }
-
 
 //-----------------------------------------------------------------------------
 // Purpose:	
@@ -141,12 +163,20 @@ float CASW_Boomer::MaxYawSpeed( void )
 //-----------------------------------------------------------------------------
 void CASW_Boomer::HandleAnimEvent( animevent_t *pEvent )
 {
+	//softcopy: ignite/explode marine by boomer melee attack
+	if ( GetActivity() == ACT_MELEE_ATTACK1 ) 
+	{
+		float damage =  MAX(3.0f, ASWGameRules()->ModifyAlienDamageBySkillLevel(asw_boomer_melee_min_damage.GetFloat()));
+		MeleeAttack(ASW_BOOMER_MELEE_RANGE, damage);
+	}
+
 	int nEvent = pEvent->Event();
 	if ( nEvent == AE_BOOMER_INFLATED )
 	{
 		m_bInflated = true;
 		return;
 	}
+
 	BaseClass::HandleAnimEvent( pEvent );
 }
 
@@ -237,10 +267,62 @@ bool CASW_Boomer::CanDoFancyDeath()
 		return BaseClass::CanDoFancyDeath();
 }
 
+//softcopy: ignited/explode marine by boomer on touch/on fire touch, 1=melee, 2=touch, 3=All
+void CASW_Boomer::StartTouch( CBaseEntity *pOther )
+{
+	BaseClass::StartTouch( pOther );
+	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
+	if ( pMarine )
+	{
+		m_TouchExplosionDamage = asw_boomer_touch_damage.GetInt();
+		CTakeDamageInfo info( this, this, m_TouchExplosionDamage, DMG_SLASH );
+		damageTypes = "on touch";
+		if (asw_boomer_ignite.GetInt() >= 2 || (m_bOnFire && asw_boomer_touch_onfire.GetBool()))
+			MarineIgnite(pMarine, info, alienLabel, damageTypes);
+		if ( m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime || m_TouchExplosionDamage <=0 )	//don't hurt him if he was hurt recently
+			return;
+		Vector vecForceDir = ( pMarine->GetAbsOrigin() - GetAbsOrigin() );	// hurt the marine
+		CalculateMeleeDamageForce( &info, vecForceDir, pMarine->GetAbsOrigin() );
+		pMarine->TakeDamage( info );
+		if (asw_boomer_explode.GetInt() >= 2 )
+			MarineExplode(pMarine, alienLabel, damageTypes);
+
+		m_fLastTouchHurtTime = gpGlobals->curtime;
+	}
+}
+//softcopy: ignite/explode marine by boomer melee attack, 1=melee, 2=touch, 3=All
+void CASW_Boomer::MeleeAttack(float distance, float damage)
+{
+	CBaseEntity *pHurt = CheckTraceHullAttack( distance, -Vector(16,16,32), Vector(16,16,32), damage, DMG_SLASH, asw_boomer_melee_force.GetFloat() );
+	if ( pHurt )
+	{
+		CASW_Marine *pMarine = CASW_Marine::AsMarine( pHurt );
+		if ( pMarine )
+		{
+			CTakeDamageInfo info( this, this, damage, DMG_SLASH );
+			damageTypes = "melee attack";
+			if (asw_boomer_ignite.GetInt() == 1 || asw_boomer_ignite.GetInt() == 3)
+				MarineIgnite(pMarine, info, alienLabel, damageTypes);
+
+			if ((asw_boomer_explode.GetInt()==1 || asw_boomer_explode.GetInt()==3) && asw_boomer_touch_damage.GetInt() > 0)
+				MarineExplode(pMarine, alienLabel, damageTypes);
+		}
+	}
+}
 //softcopy:
 void CASW_Boomer::SetColorScale(const char *alienLabel)
 {
 	BaseClass::SetColorScale(alienLabel);
+}
+//softcopy:
+void CASW_Boomer::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
+{
+	BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);
+}
+//softcopy:
+void CASW_Boomer::MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes)
+{
+	BaseClass::MarineExplode(pMarine, alienLabel, damageTypes);
 }
 
 //-----------------------------------------------------------------------------
@@ -319,26 +401,41 @@ bool CASW_Boomer::CreateBehaviors()
 {
 	m_ExplodeBehavior.KeyValue( "schedule_chance", "40" );
 	m_ExplodeBehavior.KeyValue( "schedule_chance_rate", "1" );
-	m_ExplodeBehavior.KeyValue( "range", "200" );
-	m_ExplodeBehavior.KeyValue( "max_projectiles", "8" );
+	//softcopy: explode range, max projectiles cvar
+	//m_ExplodeBehavior.KeyValue( "range", "200" );
+	//m_ExplodeBehavior.KeyValue( "max_projectiles", "8" );
+	m_ExplodeBehavior.KeyValue( "range", asw_boomer_explode_range.GetString() );
+	m_ExplodeBehavior.KeyValue( "max_projectiles",asw_boomer_max_projectile.GetString() );
+	
 	m_ExplodeBehavior.KeyValue( "max_buildup_time", "3" );
 	m_ExplodeBehavior.KeyValue( "min_velocity", "150" );
 	m_ExplodeBehavior.KeyValue( "max_velocity", "450" );
 	m_ExplodeBehavior.KeyValue( "attach_name", "sack_" );
 	m_ExplodeBehavior.KeyValue( "attach_count", "12" );
-	m_ExplodeBehavior.KeyValue( "damage", "55" );
-	m_ExplodeBehavior.KeyValue( "radius", "240" );
+	//softcopy: explode damage, radius cvar
+	//m_ExplodeBehavior.KeyValue( "damage", "55" );
+	//m_ExplodeBehavior.KeyValue( "radius", "240" );
+	m_ExplodeBehavior.KeyValue( "damage", asw_boomer_explode_damage.GetString() );
+	m_ExplodeBehavior.KeyValue( "radius", asw_boomer_explode_radius.GetString() );
+
 	AddBehavior( &m_ExplodeBehavior );
 	m_ExplodeBehavior.Init();
 
-	m_MeleeBehavior.KeyValue( "range", "140" );
-	m_MeleeBehavior.KeyValue( "min_damage", "4" );
-	m_MeleeBehavior.KeyValue( "max_damage", "6" );
-	m_MeleeBehavior.KeyValue( "force", "4" );
+	//softcopy: melee cvar
+	//m_MeleeBehavior.KeyValue( "range", "140" );
+	//m_MeleeBehavior.KeyValue( "min_damage", "4" );
+	//m_MeleeBehavior.KeyValue( "max_damage", "6" );
+	//m_MeleeBehavior.KeyValue( "force", "4" );
+	m_MeleeBehavior.KeyValue( "range", asw_boomer_melee_range.GetString() );
+	m_MeleeBehavior.KeyValue( "min_damage", asw_boomer_melee_min_damage.GetString() );
+	m_MeleeBehavior.KeyValue( "max_damage", asw_boomer_melee_max_damage.GetString()  );
+	m_MeleeBehavior.KeyValue( "force", asw_boomer_melee_force.GetString() );
+	
 	AddBehavior( &m_MeleeBehavior );
 	m_MeleeBehavior.Init();
-
-	m_ChaseEnemyBehavior.KeyValue( "chase_distance", "600" );
+	//softcopy: increase boomer chase distance
+	//m_ChaseEnemyBehavior.KeyValue( "chase_distance", "600" );
+	m_ChaseEnemyBehavior.KeyValue( "chase_distance", "1100" );
 	AddBehavior( &m_ChaseEnemyBehavior );
 	m_ChaseEnemyBehavior.Init();
 

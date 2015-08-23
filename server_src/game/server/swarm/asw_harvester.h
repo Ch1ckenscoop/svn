@@ -80,8 +80,10 @@ public:
 	static float s_fNextSpawnSoundTime;
 	static float s_fNextPainSoundTime;
 	//softcopy:
-	const char	*alienLabel;
+	const char	*alienLabel, *damageTypes;
 	virtual void SetColorScale(const char *alienLabel);
+	virtual void MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes);
+	virtual void MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes);
 
 private:
 	DEFINE_CUSTOM_AI;

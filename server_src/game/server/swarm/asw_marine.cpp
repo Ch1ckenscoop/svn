@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2003, Valve LLC, All rights reserved. ============
+//========= Copyright (c) 1996-2003, Valve LLC, All rights reserved. ============
 //
 // Purpose: 
 //
@@ -82,6 +82,8 @@
 #include "sendprop_priorities.h"
 #include "asw_marine_gamemovement.h"
 #include "asw_client_effects.h"
+#include "asw_barrel_explosive.h"	//softcopy:
+
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -344,6 +346,7 @@ IMPLEMENT_SERVERCLASS_ST(CASW_Marine, DT_ASW_Marine)
 	DEFINE_FIELD( m_iPowerupType, FIELD_INTEGER ),
 	DEFINE_FIELD( m_flPowerupExpireTime, FIELD_FLOAT ),
 	DEFINE_FIELD( m_bPowerupExpires, FIELD_BOOLEAN ),
+
 	END_DATADESC()
 
 	extern ConVar weapon_showproficiency;
@@ -391,6 +394,13 @@ ConVar asw_realistic_death_chatter("asw_realistic_death_chatter", "0", FCVAR_NON
 ConVar asw_god( "asw_god", "0", FCVAR_CHEAT, "Set to 1 to make marines invulnerable" );
 extern ConVar asw_sentry_friendly_fire_scale;
 extern ConVar asw_marine_ff_absorption;
+//softcopy: 
+extern ConVar asw_boomer_ignite_marine;
+extern ConVar asw_boomer_explode_marine;
+extern ConVar asw_boomer_touch_damage;
+extern ConVar asw_blurpoison_enable;
+extern ConVar asw_debug_alien_ignite;
+
 ConVar asw_movement_direction_tolerance( "asw_movement_direction_tolerance", "30.0", FCVAR_CHEAT );
 ConVar asw_movement_direction_interval( "asw_movement_direction_interval", "0.5", FCVAR_CHEAT );
 ConVar asw_marine_ff_immune("asw_marine_ff_immune", "1", FCVAR_CHEAT, "while airborne: 0: disabled, 1: immune to others ff, 2: immune to all ff");
@@ -563,6 +573,7 @@ CASW_Marine::CASW_Marine() : m_RecentMeleeHits( 16, 16 )
 	m_bWaitingToRappel = false;
 	m_bOnGround = true;
 	m_vecRopeAnchor = vec3_origin;
+
 }
 
 
@@ -701,12 +712,16 @@ void CASW_Marine::Precache()
 	PrecacheModel("models/swarm/shouldercone/shouldercone.mdl");
 	PrecacheModel("models/swarm/shouldercone/lasersight.mdl");	
 	PrecacheModel( "cable/cable.vmt" );
+	//softcopy:
+	PrecacheModel( "materials/effects/bluelaser2.vmt" );	//fix 'late precache materials/effects/bluelaser2.vmt'
+	PrecacheScriptSound( "ASW_T75.Explode" );	//alien touch explosion sound
+	
 	PrecacheScriptSound( "ASW.MarineMeleeAttack" );
 	PrecacheScriptSound( "ASW.MarineMeleeAttackFP" );
 	PrecacheScriptSound( "ASW.MarinePowerFistAttack" );
 	PrecacheScriptSound( "ASW.MarinePowerFistAttackFP" );
 	PrecacheScriptSound( "ASW_Weapon_Flamer.FlameLoop" );
-	PrecacheScriptSound( "ASW_Weapon_Flamer.FlameStop" );	
+	PrecacheScriptSound( "ASW_Weapon_Flamer.FlameStop" );
 	PrecacheScriptSound( "ASWFlashlight.FlashlightToggle" );
 	PrecacheScriptSound( "ASW_Flare.IgniteFlare" );
 	PrecacheScriptSound( "ASWScanner.Idle1" );
@@ -769,6 +784,7 @@ void CASW_Marine::Precache()
 	PrecacheParticleSystem( "jj_ground_pound" );
 	PrecacheParticleSystem( "invalid_destination" );
 	PrecacheParticleSystem( "Blink" );
+	PrecacheParticleSystem( "explosion_barrel" );	//softcopy: touch explosion effect
 }
 
 void CASW_Marine::PrecacheSpeech()
@@ -884,7 +900,7 @@ void CASW_Marine::SetInitialCommander(CASW_Player *player)
 	Q_snprintf( m_szInitialCommanderNetworkID, sizeof(m_szInitialCommanderNetworkID), "%s", player ? player->GetASWNetworkID() : "None" );
 	//softcopy: show playername & userid, instead of only show steamID.
 	//Msg( " Marine %d:%s SetInitialCommander id to %s\n", entindex(), GetEntityName(), m_szInitialCommanderNetworkID );
-	Msg( " Marine %d:%s SetInitialCommander id to %s <%i><%s>\n", entindex(), GetEntityName(), GetPlayerName(), player->GetUserID(), m_szInitialCommanderNetworkID ); 
+	Msg( " Marine %d:%s SetInitialCommander id to %s <%i><%s>\n", entindex(), GetEntityName(), GetPlayerName(), player->GetUserID(), m_szInitialCommanderNetworkID );  
 }
 
 // called when a player takes direct control of this marine
@@ -1045,7 +1061,7 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 			return 0;
 		}
 	}
-
+	
 	CTakeDamageInfo newInfo(info);
 
 	if ( asw_debug_marine_damage.GetBool() )
@@ -1383,7 +1399,9 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 					}
 					MessageEnd();
 				}
-				if (info.GetDamageType() & DMG_BLURPOISON)
+				//softcopy: disable beta buzzer blurpoison to marine
+				//if (info.GetDamageType() & DMG_BLURPOISON)
+				if ((info.GetDamageType() & DMG_BLURPOISON) && asw_blurpoison_enable.GetBool())
 				{
 					float duration = asw_buzzer_poison_duration.GetFloat();
 					// affect duration by mission difficulty
@@ -1391,7 +1409,7 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 					{
 						duration = duration + (duration * (ASWGameRules()->GetMissionDifficulty() / 10.0f));
 					}
-					if (duration > 0)
+					if (duration > 0 )
 						UTIL_ASW_PoisonBlur( player, duration );
 				}
 				bool bBurnDamage = ( info.GetDamageType() & ( DMG_BURN | DMG_DIRECT ) ) != 0;
@@ -1502,7 +1520,7 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		{
 			ASW_Ignite( 1.0f, 0, newInfo.GetAttacker(), info.GetWeapon() );
 		}
-
+		
 		// short stumbles on damage
 		if ( !(newInfo.GetDamageType() & (DMG_BURN | DMG_DIRECT | DMG_RADIATION) ) && asw_marine_stumble_on_damage.GetBool() )
 		{
@@ -1522,7 +1540,7 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 			m_fNextPainSoundTime = gpGlobals->curtime + fPainInterval;
 		}		
 	}
-
+	
 	// Ch1ckenscoop: Fire event for statistics
 	IGameEvent *pEvent = gameeventmanager->CreateEvent( "marine_hurt" );
 	if ( pEvent )
@@ -2202,7 +2220,6 @@ void CASW_Marine::ASWThinkEffects()
 		if ( (gpGlobals->curtime - m_flFirstBurnTime) > flGraceTime + 1.0f )
 			m_flFirstBurnTime = 0;
 	}
-
 	m_fLastASWThink = gpGlobals->curtime;
 }
 /*
@@ -3545,7 +3562,7 @@ void CASW_Marine::Event_Killed( const CTakeDamageInfo &info )
 			{
 				char szName[ 256 ];
 				pMR->GetDisplayName( szName, sizeof( szName ) );
-
+ 
 				if ( pOtherMarine == this )
 				{
 					//softcopy: display player marine name instead of Profileshortname
@@ -3565,7 +3582,7 @@ void CASW_Marine::Event_Killed( const CTakeDamageInfo &info )
 						UTIL_ClientPrintAll( ASW_HUD_PRINTTALKANDCONSOLE, "#asw_suicide_male", szName ); 
 						Q_snprintf( text, sizeof(text), "himself" );
 					}
-					Q_snprintf( text2, sizeof(text2), "***** %s killed %s *****\n", szName, text);	
+					Q_snprintf( text2, sizeof(text2), "***** %s killed %s *****\n", szName, text);
 					Msg( text2 );
                     if ( asw_marine_death_notifications.GetBool() )          
                         UTIL_LogPrintf( text2 );
@@ -4195,15 +4212,20 @@ void CASW_Marine::ASW_Ignite( float flFlameLifetime, float flSize, CBaseEntity *
 
 	if ( m_flFirstBurnTime == 0 )
 		m_flFirstBurnTime = gpGlobals->curtime;
-
+	
 	// if this is an env_fire trying to burn us, ignore the grace period that the AllowedToIgnite function does
 	// we want env_fires to always ignite the marine immediately so they can be used as dangerous blockers in levels
 	CFire *pFire = dynamic_cast<CFire*>(pAttacker);
-	if ( AllowedToIgnite() || pFire )
+	//softcopy: uber/jumper/drone/Fire will a seconds delay to ignite marine, other aliens ignore the grace period to ignite marine immediately.
+	//if ( AllowedToIgnite() || pFire )
+	if ( AllowedToIgnite() || pFire || (/*pAttacker->Classify() != CLASS_ASW_DRONE_UBER &&*/ 
+										/*pAttacker->Classify() != CLASS_ASW_DRONE_JUMPER &&
+										pAttacker->Classify() != CLASS_ASW_DRONE &&*/ 
+										pAttacker->Classify() != CLASS_ASW_MARINE))
 	{
 		if( IsOnFire() )
 			return;
-
+		
 		// scream about being on fire
 		GetMarineSpeech()->PersonalChatter(CHATTER_ON_FIRE);
 

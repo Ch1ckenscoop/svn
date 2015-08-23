@@ -7,8 +7,12 @@
 
 LINK_ENTITY_TO_CLASS( asw_radiation_volume, CASW_Radiation_Volume );
 
-#define RAD_DAMAGE_INTERVAL 1.0f
+//softcopy: 
+//#define RAD_DAMAGE_INTERVAL 1.0f        
 #define ASW_RAD_DAMAGE 20
+ConVar	asw_radiation_leak_damage( "asw_radiation_leak_damage","0.3f", FCVAR_NONE, "Radiation gas leak damage to marine.");
+ConVar	asw_radiation_leak_damage_interval( "asw_radiation_leak_damage_interval","2.0f", FCVAR_NONE, "Radiation gas leak damage interval.");
+ConVar	asw_radiation_leak_damage_boxwidth( "asw_radiation_leak_damage_boxwidth","150.0f", FCVAR_NONE, "Radiation gas leak damage distance away from the nearest marine.");
 
 BEGIN_DATADESC( CASW_Radiation_Volume )
 	DEFINE_FUNCTION(RadTouch),
@@ -27,9 +31,11 @@ void CASW_Radiation_Volume::Spawn( void )
 	// make us invisible, a cube, non solid, but still firing touch triggers
 	AddEffects(EF_NODRAW);
 	SetSolid( SOLID_BBOX );
-	float boxWidth = 100.0f;
+	//softcopy: how far the radiation gas area to get hurt.
+	//float boxWidth = 100.0f;
+	float boxWidth = asw_radiation_leak_damage_boxwidth.GetFloat();     
 	UTIL_SetSize(this, Vector(-boxWidth,-boxWidth,0),Vector(boxWidth,boxWidth,boxWidth * 2));
-	SetCollisionGroup(ASW_COLLISION_GROUP_PASSABLE);	
+	SetCollisionGroup(ASW_COLLISION_GROUP_PASSABLE);
 	AddSolidFlags(FSOLID_TRIGGER);
 	SetTouch( &CASW_Radiation_Volume::RadTouch );
 
@@ -77,7 +83,9 @@ void CASW_Radiation_Volume::RadHurt(CBaseEntity *pEnt)
 
 	float fDamage = ASW_RAD_DAMAGE;
 	if (pEnt->Classify() == CLASS_ASW_MARINE)
-		fDamage *= 0.5f;
+		//softcopy:
+		//fDamage *= 0.5f;
+		fDamage *= asw_radiation_leak_damage.GetFloat();
 	pEnt->TakeDamage( CTakeDamageInfo( this, pAttacker, fDamage, DMG_RADIATION ) );
 }
 
@@ -104,6 +112,8 @@ void CASW_Radiation_Volume::RadThink()
 
 	if (m_hRadTouching.Count() > 0)
 	{
-		SetNextThink( gpGlobals->curtime + RAD_DAMAGE_INTERVAL );
+		//softcopy:
+		//SetNextThink( gpGlobals->curtime + RAD_DAMAGE_INTERVAL );
+		SetNextThink( gpGlobals->curtime + asw_radiation_leak_damage_interval.GetFloat() );  
 	}
 }

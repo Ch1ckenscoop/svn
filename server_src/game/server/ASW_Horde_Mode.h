@@ -29,6 +29,10 @@ public:
 		BETA_DRONE_INDEX,
 		BETA_SHIELDBUG_INDEX,
 		BETA_HARVESTER_INDEX,
+		//softcopy: add new beta alien index
+		BETA_PARASITE_INDEX,
+		BETA_BUZZER_INDEX,
+		BETA_MORTAR_INDEX,
 
 		ALIEN_INDEX_COUNT,	//Ch1ckensCoop: If you're going to add anything, add it before this!
 	};

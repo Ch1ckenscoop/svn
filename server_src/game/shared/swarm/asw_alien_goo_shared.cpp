@@ -32,6 +32,7 @@
 #define ACID_BURN_INTERVAL 1.0f
 #define ASW_ACID_DAMAGE 10.0f
 
+ConVar asw_grenade_ignite_biomass("asw_grenade_ignite_biomass","0",FCVAR_NONE,"set 1, grenade can ignite fire to burn biomass.");		//softcopy:
 
 IMPLEMENT_NETWORKCLASS_ALIASED( ASW_Alien_Goo, DT_ASW_Alien_Goo )
 
@@ -231,9 +232,21 @@ int CASW_Alien_Goo::OnTakeDamage( const CTakeDamageInfo &info )
 	}
 
 	// goo is only damaged by fire!
-	if ( !( info.GetDamageType() & DMG_BURN ) && !( info.GetDamageType() & DMG_ENERGYBEAM ) )
-		return 0;
-
+	//softcopy: grenade ignite fire to burn biomass
+	//if ( !( info.GetDamageType() & DMG_BURN ) && !( info.GetDamageType() & DMG_ENERGYBEAM ) )
+	//	return 0;
+	if ( asw_grenade_ignite_biomass.GetBool() )  
+	 {
+		if (!( info.GetDamageType() & DMG_BURN ) && !( info.GetDamageType() & DMG_ENERGYBEAM )  && 
+			!( info.GetDamageType() & DMG_BLAST && info.GetAttacker()->Classify() == CLASS_ASW_MARINE ))
+			return 0;
+	 }
+	else
+	{
+		if (!( info.GetDamageType() & DMG_BURN ) && !( info.GetDamageType() & DMG_ENERGYBEAM ))  
+			return 0;
+	} 
+	
 	// notify the marine that he's hurting this, so his accuracy doesn't drop
 	if (info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_MARINE)
 	{
@@ -262,8 +275,10 @@ int CASW_Alien_Goo::OnTakeDamage( const CTakeDamageInfo &info )
 	int result = BaseClass::OnTakeDamage( info );
 
 	if ( result > 0 )
-	{		
-		if ( info.GetDamageType() & DMG_BURN )
+	{	
+		//softcopy: add DMG_BLAST, grenade ignite fire
+		//if ( info.GetDamageType() & DMG_BURN )
+		if ( info.GetDamageType() & ( DMG_BURN | DMG_BLAST ) )   
 		{
 			Ignite( 30.0f );
 
@@ -474,6 +489,7 @@ void CASW_Alien_Goo::SpawnGrubs()
 	CollisionProp()->RandomPointInBounds( Vector(0.1f, 0.1f, 0.1f), Vector( 0.9f, 0.9f, 0.9f ), &vecSpawnPos[2] );
 	CollisionProp()->RandomPointInBounds( Vector(0.1f, 0.1f, 0.1f), Vector( 0.9f, 0.9f, 0.9f ), &vecSpawnPos[3] );
 	CollisionProp()->RandomPointInBounds( Vector(0.1f, 0.1f, 0.1f), Vector( 0.9f, 0.9f, 0.9f ), &vecSpawnPos[4] );
+
 	Vector mins, maxs;
 	CollisionProp()->WorldSpaceAABB( &mins, &mins );
 	for (int i=0;i<num_grubs;i++)

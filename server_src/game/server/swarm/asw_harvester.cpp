@@ -26,18 +26,18 @@ float CASW_Harvester::s_fNextSpawnSoundTime = 0;
 float CASW_Harvester::s_fNextPainSoundTime = 0;
 
 BEGIN_DATADESC( CASW_Harvester )
-	DEFINE_FIELD( m_fLastLayTime, FIELD_TIME ),	
+	DEFINE_FIELD( m_fLastLayTime, FIELD_TIME ),
 	DEFINE_FIELD( m_iCrittersAlive, FIELD_INTEGER ),
 	DEFINE_FIELD( m_fLastTouchHurtTime, FIELD_TIME ),
 	DEFINE_FIELD( m_fGibTime, FIELD_TIME ),
-	DEFINE_FIELD( m_flIdleDelay,			FIELD_TIME ),
+	DEFINE_FIELD( m_flIdleDelay, FIELD_TIME ),
 END_DATADESC()
 
 ConVar asw_harvester_speedboost( "asw_harvester_speedboost", "1.0",FCVAR_CHEAT , "boost speed for the harvesters" );
 ConVar asw_harvester_max_critters( "asw_harvester_max_critters", "5",FCVAR_CHEAT , "maximum critters the harvester can spawn" );
 ConVar asw_harvester_touch_damage( "asw_harvester_touch_damage", "5",FCVAR_CHEAT , "Damage caused by harvesters on touch" );
 ConVar asw_harverter_suppress_children( "asw_harverter_suppress_children", "0", FCVAR_CHEAT, "If set to 1, harvesters won't spawn harvesites");
-ConVar asw_harvester_new( "asw_harvester_new", "1", FCVAR_CHEAT, "If set to 1, use the new model");
+//ConVar asw_harvester_new( "asw_harvester_new", "1", FCVAR_CHEAT, "If set to 1, use the new model");	//softcopy:
 ConVar asw_harvester_spawn_height( "asw_harvester_spawn_height", "16", FCVAR_CHEAT, "Height above harvester origin to spawn harvesites at" );
 ConVar asw_harvester_spawn_interval( "asw_harvester_spawn_interval", "1.0", FCVAR_CHEAT, "Time between spawning a harvesite and starting to spawn another" );
 
@@ -56,6 +56,10 @@ ConVar asw_harvester_beta_color3("asw_harvester_beta_color3", "255 255 255", FCV
 ConVar asw_harvester_beta_color3_percent("asw_harvester_beta_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the new model harvesters you want to give the color",true,0,true,1);
 ConVar asw_harvester_beta_scalemod("asw_harvester_beta_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal harvesters.");
 ConVar asw_harvester_beta_scalemod_percent("asw_harvester_beta_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal new model harvesters you want to scale.",true,0,true,1);
+ConVar asw_harvester_new( "asw_harvester_new", "1", FCVAR_CHEAT, "If set to 0=beta harvester, 1=new model, 2=random all.");
+ConVar asw_harvester_touch("asw_harvester_touch", "0", FCVAR_CHEAT, "Sets 1=ignite, 2=explode, 3=All, ignite/explode marine on harvester touch.");
+ConVar asw_harvester_touch_onfire("asw_harvester_touch_onfire", "0", FCVAR_CHEAT, "Ignite marine if harvester body on fire touch.");
+extern ConVar asw_debug_alien_ignite;
 
 //Ch1ckensCoop: Allow setting harvester health
 ConVar asw_harvester_health("asw_harvester_health", "200", FCVAR_CHEAT, "Sets health of harvesters.");
@@ -72,10 +76,12 @@ CASW_Harvester::CASW_Harvester()
 	m_iCrittersAlive = 0;
 	m_fLastLayTime = 0;
 	m_fLastTouchHurtTime = 0;
+	
 	if ( asw_harvester_new.GetBool() )
 		m_pszAlienModelName = SWARM_NEW_HARVESTER_MODEL;
 	else
 		m_pszAlienModelName = SWARM_HARVESTER_MODEL;
+
 	m_nAlienCollisionGroup = ASW_COLLISION_GROUP_ALIEN;
 }
 
@@ -85,6 +91,10 @@ CASW_Harvester::~CASW_Harvester()
 
 void CASW_Harvester::Spawn( void )
 {
+	//softcopy: both harvester/beta harvester
+	if (asw_harvester_new.GetFloat() == 2 )
+		m_pszAlienModelName = RandomFloat() <= 0.5f ? SWARM_HARVESTER_MODEL : SWARM_NEW_HARVESTER_MODEL; 
+	
 	SetHullType(HULL_WIDE_SHORT);
 
 	BaseClass::Spawn();
@@ -97,15 +107,20 @@ void CASW_Harvester::Spawn( void )
 	CapabilitiesAdd( bits_CAP_MOVE_GROUND | bits_CAP_INNATE_RANGE_ATTACK1 );
 
 	m_takedamage = DAMAGE_NO;	// alien is invulnerable until she finds her first enemy
-	m_bNeverRagdoll = true;
+	m_bNeverRagdoll = true;  
 
 	//softcopy: 
 	//SetRenderColor(asw_harvester_color.GetColor().r(), asw_harvester_color.GetColor().g(), asw_harvester_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors
 	if (!Q_strcmp(m_pszAlienModelName, SWARM_HARVESTER_MODEL))
-		SetColorScale( "harvester_beta" );
+	{
+		alienLabel = "harvester_beta";
+		SetColorScale( alienLabel );
+	}
 	else
-		SetColorScale( "harvester" );
-
+	{
+		alienLabel = "harvester";
+		SetColorScale( alienLabel );
+	}
 }
 
 void CASW_Harvester::Precache( void )
@@ -116,7 +131,8 @@ void CASW_Harvester::Precache( void )
 	PrecacheScriptSound( "ASW_Harvester.SpawnCritter" );
 	PrecacheScriptSound( "ASW_Harvester.Alert" );
 	PrecacheScriptSound( "ASW_Harvester.Sniffing" );
-
+	PrecacheScriptSound( "ASW_T75.Explode" );	//softcopy:
+	
 	UTIL_PrecacheOther( "asw_parasite_defanged" );
 
 	// Ch1ckensCoop: Precache both new and old models
@@ -502,6 +518,9 @@ void CASW_Harvester::StartTouch( CBaseEntity *pOther )
 	BaseClass::StartTouch( pOther );
 
 	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
+	
+	//softcopy:	ignite marine by harvester on touch/on fire touch
+	/*
 	if (pMarine)
 	{
 		// don't hurt him if he was hurt recently
@@ -516,6 +535,25 @@ void CASW_Harvester::StartTouch( CBaseEntity *pOther )
 		pMarine->TakeDamage( info );
 		m_fLastTouchHurtTime = gpGlobals->curtime;
 	}
+	*/
+	if (pMarine)
+	{
+		m_TouchExplosionDamage = asw_harvester_touch_damage.GetInt();
+		CTakeDamageInfo info( this, this, m_TouchExplosionDamage, DMG_SLASH );
+		damageTypes = "on touch";
+		//1=ignite, 2=explode, 3=All to marine
+		if ((asw_harvester_touch.GetInt() == 1 || asw_harvester_touch.GetInt() == 3) || (m_bOnFire && asw_harvester_touch_onfire.GetBool()))
+			MarineIgnite(pMarine, info, alienLabel, damageTypes);
+		if (m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime || m_TouchExplosionDamage <= 0)	// don't hurt him if he was hurt recently
+			return;
+		Vector vecForceDir = ( pMarine->GetAbsOrigin() - GetAbsOrigin() );	// hurt the marine
+		CalculateMeleeDamageForce( &info, vecForceDir, pMarine->GetAbsOrigin() );
+		pMarine->TakeDamage( info );
+		if ( asw_harvester_touch.GetInt() >= 2 )
+			MarineExplode(pMarine, alienLabel, damageTypes);
+		m_fLastTouchHurtTime = gpGlobals->curtime;
+	}
+
 }
 
 bool CASW_Harvester::ShouldGib( const CTakeDamageInfo &info )
@@ -789,6 +827,16 @@ bool CASW_Harvester::CanBePushedAway()
 void CASW_Harvester::SetColorScale(const char *alienLabel)	
 {
 	BaseClass::SetColorScale(alienLabel);	
+}
+//softcopy:
+void CASW_Harvester::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
+{
+	BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);
+}
+//softcopy:
+void CASW_Harvester::MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes)
+{
+	BaseClass::MarineExplode(pMarine, alienLabel, damageTypes);
 }
 
 AI_BEGIN_CUSTOM_NPC( asw_harvester, CASW_Harvester )
