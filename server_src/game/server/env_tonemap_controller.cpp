@@ -1,4 +1,4 @@
-//====== Copyright © 1996-2004, Valve Corporation, All rights reserved. =======
+//====== Copyright (c) 1996-2004, Valve Corporation, All rights reserved. =======
 //
 // Purpose: 
 //
@@ -212,7 +212,10 @@ void CEnvTonemapController::InputSetBloomScaleRange( inputdata_t &inputdata )
 void CEnvTonemapController::InputSetTonemapRate( inputdata_t &inputdata )
 {
 	// TODO: There should be a better way to do this.
-	ConVarRef mat_hdr_manual_tonemap_rate( "mat_hdr_manual_tonemap_rate" );
+	////softcopy: try to fix 'ConVarRef mat_hdr_manual_tonemap_rate doesn't point to an existing ConVar'
+	//ConVarRef mat_hdr_manual_tonemap_rate( "mat_hdr_manual_tonemap_rate" );
+	ConVarRef mat_hdr_manual_tonemap_rate( "mat_hdr_manual_tonemap_rate", FCVAR_CHEAT );
+	
 	if ( mat_hdr_manual_tonemap_rate.IsValid() )
 	{
 		float flTonemapRate = inputdata.value.Float();

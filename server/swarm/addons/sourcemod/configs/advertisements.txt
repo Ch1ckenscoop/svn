@@ -30,7 +30,7 @@
 	"2"
 	{
 		"type"		"S"
-		"text"		"Almost 3x as many aliens as other servers... \nThey're tougher, too..."
+		"text"		"Almost 3x as many aliens as other servers... \nThey're modded & tougher, too..."
 	}
 	"3"
 	{

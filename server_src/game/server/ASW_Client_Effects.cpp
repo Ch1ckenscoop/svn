@@ -8,7 +8,7 @@
 
 #include "memdbgon.h"
 
-ConVar asw_cfx_enable("asw_cfx_enable", "1", FCVAR_CHEAT, "Enables client effects.");
+ConVar asw_cfx_enable("asw_cfx_enable", "1", FCVAR_CHEAT, "Enables client effects.");   
 ConVar asw_cfx_debug("asw_cfx_debug", "0", FCVAR_NONE, "Shows debug messages for client effects.");
 
 ConVar asw_cfx_lce_multi("asw_cfx_lce_multi", "1.0", FCVAR_CHEAT, "Controls local contrast enhancement intensity.");
@@ -140,7 +140,7 @@ bool CASW_Client_Effects::PlayerAdd(CASW_Player *pPlayer)
 					CASW_Player *pPlayer2 = m_PlayerInfoArray[i].m_hPlayer;
 					if (pPlayer2)
 					{
-						Msg(" :: %s\n", pPlayer2->GetPlayerName());
+						Msg(" :: %s \n", pPlayer2->GetPlayerName());	//softcopy: add a space to avoid special charactor playername caused "\n" not working
 					}
 					else
 					{
@@ -202,7 +202,7 @@ void CASW_Client_Effects::PlayerRemove(CASW_Player *pPlayer)
 				CASW_Player *pPlayer2 = m_PlayerInfoArray[i].m_hPlayer;
 				if (pPlayer2)
 				{
-					Msg(" :: %s\n", pPlayer2->GetPlayerName());
+					Msg(" :: %s \n", pPlayer2->GetPlayerName());	//softcopy: add a space to avoid special charactor playername caused "\n" not working
 				}
 				else
 				{

@@ -18,6 +18,11 @@
 
 extern ConVar asw_sentry_friendly_target;
 
+//softcopy:
+ConVar asw_sentry_cannon_fire_rate("asw_sentry_cannon_fire_rate", "1.75f", FCVAR_CHEAT, "Cannon gun sentry fire rate in seconds.");
+ConVar asw_sentry_cannon_grenade_damage("asw_sentry_cannon_grenade_damage", "0.5f", FCVAR_CHEAT, "Cannon gun sentry grenade damage.");
+ConVar asw_sentry_cannon_grenade_radius("asw_sentry_cannon_grenade_radius", "0.5f", FCVAR_CHEAT, "Cannon gun sentry grenade radius.");
+ConVar asw_sentry_cannon_range("asw_sentry_cannon_range", "1000", FCVAR_CHEAT, "Sets the shoot range of the cannon sentry.");
 
 LINK_ENTITY_TO_CLASS( asw_sentry_top_cannon, CASW_Sentry_Top_Cannon );
 PRECACHE_REGISTER( asw_sentry_top_cannon );
@@ -38,10 +43,12 @@ void CASW_Sentry_Top_Cannon::SetTopModel()
 
 CASW_Sentry_Top_Cannon::CASW_Sentry_Top_Cannon() 
 {
-	m_flShootRange = 1000;
+	//softcopy: cannon fire range.
+	//m_flShootRange = 1000;
+	m_flShootRange = asw_sentry_cannon_range.GetFloat();    
 }
 
-#define ASW_SENTRY_CANNON_FIRE_RATE 1.75f		// time in seconds between each shot
+//#define ASW_SENTRY_CANNON_FIRE_RATE 1.75f		// time in seconds between each shot	//softcopy: predefined by other cvar
 
 /// @TODO: lead target
 void CASW_Sentry_Top_Cannon::Fire()
@@ -60,8 +67,11 @@ void CASW_Sentry_Top_Cannon::Fire()
 	CASW_Marine * RESTRICT pMarineDeployer = GetSentryBase()->m_hDeployer.Get();
 	Assert( pMarineDeployer );
 
-	float fGrenadeDamage = CASW_Weapon_Grenades::GetBoomDamage(pMarineDeployer) * 0.5f;
-	float fGrenadeRadius = CASW_Weapon_Grenades::GetBoomRadius(pMarineDeployer) * 0.5f;
+	//softcopy: grenade damage/radius 
+	//float fGrenadeDamage = CASW_Weapon_Grenades::GetBoomDamage(pMarineDeployer) * 0.5f;
+	//float fGrenadeRadius = CASW_Weapon_Grenades::GetBoomRadius(pMarineDeployer) * 0.5f;
+	float fGrenadeDamage = CASW_Weapon_Grenades::GetBoomDamage(pMarineDeployer) * asw_sentry_cannon_grenade_damage.GetFloat();
+	float fGrenadeRadius = CASW_Weapon_Grenades::GetBoomRadius(pMarineDeployer) * asw_sentry_cannon_grenade_radius.GetFloat();
 
 	CASW_Rifle_Grenade::Rifle_Grenade_Create( 
 		fGrenadeDamage,	fGrenadeRadius,
@@ -72,8 +82,9 @@ void CASW_Sentry_Top_Cannon::Fire()
 		pMarineDeployer->OnWeaponFired( this, 1 );
 
 	EmitSound("ASW_Sentry.CannonFire");
-
-	m_fNextFireTime = gpGlobals->curtime + ASW_SENTRY_CANNON_FIRE_RATE;
+	//softcopy: cannon fire rate
+	//m_fNextFireTime = gpGlobals->curtime + ASW_SENTRY_CANNON_FIRE_RATE;
+	m_fNextFireTime = gpGlobals->curtime + asw_sentry_cannon_fire_rate.GetFloat();   
 
 	// use ammo
 	if ( GetSentryBase() )

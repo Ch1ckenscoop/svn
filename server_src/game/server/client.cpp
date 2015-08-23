@@ -201,7 +201,7 @@ void Host_Say( edict_t *pEdict, const CCommand &args, bool teamonly )
 		p[j] = 0;
 
 	Q_strncat( text, p, sizeof( text ), COPY_ALL_CHARACTERS );
-	Q_strncat( text, "\n", sizeof( text ), COPY_ALL_CHARACTERS );
+	Q_strncat( text, " \n", sizeof( text ), COPY_ALL_CHARACTERS );	//softcopy: add space to prevent special character playername caused "\n" not working
 
 	// loop through all players
 	// Start with the first player.
@@ -262,14 +262,18 @@ void Host_Say( edict_t *pEdict, const CCommand &args, bool teamonly )
 	// echo to server console
 	// Adrian: Only do this if we're running a dedicated server since we already print to console on the client.
 	if ( engine->IsDedicatedServer() )
-		Msg( "%s", text );
+		Msg( "@%s", text );		//softcopy: add "@" for chat message filtering
 
 	Assert( p );
 
 	int userid = 0;
-	const char *networkID = "Console";
+	//softcopy: shorter console message. 
+	//const char *networkID = "Console";
+	const char *networkID = "";
 	const char *playerName = "Console";
-	const char *playerTeam = "Console";
+	//const char *playerTeam = "Console";
+	const char *playerTeam = "";
+
 	if ( pPlayer )
 	{
 		userid = pPlayer->GetUserID();
@@ -281,11 +285,11 @@ void Host_Say( edict_t *pEdict, const CCommand &args, bool teamonly )
 			playerTeam = team->GetName();
 		}
 	}
-
+	//softcopy: add "@" for chat message filtering & add space to prevent special character playername caused "\n" not working
 	if ( teamonly )
-		UTIL_LogPrintf( "\"%s<%i><%s><%s>\" say_team \"%s\"\n", playerName, userid, networkID, playerTeam, p );
+		UTIL_LogPrintf( "\"@%s<%i><%s><%s>\" say_team \"%s\"\n", playerName, userid, networkID, playerTeam, p );
 	else
-		UTIL_LogPrintf( "\"%s<%i><%s><%s>\" say \"%s\"\n", playerName, userid, networkID, playerTeam, p );
+		UTIL_LogPrintf( "\"@%s<%i><%s><%s>\" say \"%s\"\n", playerName, userid, networkID, playerTeam, p );
 
 	IGameEvent * event = gameeventmanager->CreateEvent( "player_say" );
 

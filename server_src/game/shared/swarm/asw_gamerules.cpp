@@ -115,10 +115,16 @@
 extern ConVar old_radius_damage;
 
 //softcopy:
-ConVar asw_hibernate_skill_default("asw_hibernate_skill_default", "1", FCVAR_CHEAT, "skill/FF has set in lobby will reset to normal when hibernating.");
+bool bReadyclicked = false;
+int playreadyclicked = 0;
+int skill_default_level = 2;
+ConVar asw_marine_lobby_ready("asw_marine_lobby_ready", "1", FCVAR_NONE, "set 0=All lobby marked not ready,1=ClientConnected lobby not ready,2=All ready");
+ConVar asw_level_lock("asw_level_lock","0", FCVAR_CHEAT, "default = 0, set 1 - 5 to enable what skill level lock on.");
+ConVar asw_hibernate_skill_default("asw_hibernate_skill_default", "0", FCVAR_CHEAT, "skill/FF has set in lobby will reset to normal when hibernating.");
 ConVar asw_vote_kick_admin("asw_vote_kick_admin", "1", FCVAR_CHEAT, "generic admin or above level immune from a kick voting."); 
+extern ConVar asw_hardcore_ff_force;
 
-#define ASW_LAUNCHING_STEP 0.25f	// time between each stage of launching
+#define ASW_LAUNCHING_STEP 0.25f			// time between each stage of launching
 
 #ifndef CLIENT_DLL
 extern ConVar asw_debug_alien_damage;
@@ -150,6 +156,7 @@ ConVar sv_timeout_when_fully_connected( "sv_timeout_when_fully_connected", "30",
 ConVar mm_swarm_state( "mm_swarm_state", "ingame", FCVAR_DEVELOPMENTONLY );
 
 ConVar asw_map_configs("asw_map_configs", "1", FCVAR_CCOOP, "On mapchange: exec asw_mapconfigs/<bspname> and asw_mapconfigs/custom/<bspname>.");
+
 ConVar asw_full_treatment_tradeoff("asw_full_treatment_tradeoff", "1", FCVAR_CCOOP, "Remove some useless entities in exchange for more aliens on syntek_hospital.");
 ConVar asw_remove_prop_ragdolls("asw_remove_prop_ragdolls", "1", FCVAR_CCOOP, "Remove laggy prop_ragdolls from levels.");
 
@@ -219,7 +226,9 @@ ConVar	sk_plr_dmg_asw_r_g			( "sk_plr_dmg_asw_r_g","0", FCVAR_REPLICATED | FCVAR
 ConVar	sk_npc_dmg_asw_r_g			( "sk_npc_dmg_asw_r_g","0", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY);
 ConVar	sk_max_asw_r_g				( "sk_max_asw_r_g","0", FCVAR_REPLICATED);
 // Autogun
-ConVar	sk_plr_dmg_asw_ag			( "sk_plr_dmg_asw_ag","0", FCVAR_REPLICATED | FCVAR_CHEAT, "Sets the damage for the Autogun." );
+//softcopy: fix err msg at developer console 'Convar sk_plr_dmg_asw_ag has conflicting FCVAR_CHEAT flags (child: has FCVAR_CHEAT, parent: no FCVAR_CHEAT, parent wins)' 
+//ConVar	sk_plr_dmg_asw_ag		( "sk_plr_dmg_asw_ag","0", FCVAR_REPLICATED | FCVAR_CHEAT, "Sets the damage for the Autogun." );
+ConVar	sk_plr_dmg_asw_ag			( "sk_plr_dmg_asw_ag","0", FCVAR_REPLICATED | FCVAR_CCOOP, "Sets the damage for the Autogun." );
 ConVar	sk_npc_dmg_asw_ag			( "sk_npc_dmg_asw_ag","0", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY);
 ConVar	sk_max_asw_ag				( "sk_max_asw_ag","0", FCVAR_REPLICATED);
 // Shotgun
@@ -239,7 +248,10 @@ ConVar	sk_plr_dmg_asw_p			( "sk_plr_dmg_asw_p","0", FCVAR_REPLICATED | FCVAR_DEV
 ConVar	sk_npc_dmg_asw_p			( "sk_npc_dmg_asw_p","0", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY);
 ConVar	sk_max_asw_p				( "sk_max_asw_p","0", FCVAR_REPLICATED);
 // Mining laser
-ConVar	sk_plr_dmg_asw_ml			( "sk_plr_dmg_asw_ml","50", FCVAR_REPLICATED | FCVAR_CHEAT, "Sets the damage for the mining laser." );
+//softcopy: fix err msg at developer console 'Convar sk_plr_dmg_asw_ml has conflicting FCVAR_CHEAT flags (child: has FCVAR_CHEAT, parent: no FCVAR_CHEAT, parent wins)'
+//ConVar	sk_plr_dmg_asw_ml		( "sk_plr_dmg_asw_ml","50", FCVAR_REPLICATED | FCVAR_CHEAT, "Sets the damage for the mining laser." );
+ConVar	sk_plr_dmg_asw_ml			( "sk_plr_dmg_asw_ml","50", FCVAR_REPLICATED | FCVAR_CCOOP, "Sets the damage for the mining laser." );
+//
 ConVar	sk_npc_dmg_asw_ml			( "sk_npc_dmg_asw_ml","0", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY);
 ConVar	sk_max_asw_ml				( "sk_max_asw_ml","0", FCVAR_REPLICATED);
 // TeslaGun
@@ -684,7 +696,8 @@ const char * GenerateNewSaveGameName()
 
 CAlienSwarm::CAlienSwarm()
 {
-	Msg("CAlienSwarm created\n");
+	//Msg("CAlienSwarm created\n");
+	Msg("CAlienSwarm created on map %s\n", STRING(gpGlobals->mapname));	//softcopy: want to know the current map
 
 	// create the profile list for the server
 	//  clients do this is in c_asw_player.cpp
@@ -792,6 +805,14 @@ CAlienSwarm::CAlienSwarm()
 
 	m_fLastPowerupDropTime = 0;
 	m_flTechFailureRestartTime = 0.0f;
+	
+	//softcopy:
+	playreadyclicked = asw_marine_lobby_ready.GetInt();
+    if ( (playreadyclicked >= 1) && (playreadyclicked <= 2) )
+	     bReadyclicked = true;		//set for matchmaking marked as ready.
+	else if ( playreadyclicked == 0 )
+         bReadyclicked = false;		//set for matchmaking marked as not ready.
+	
 }
 
 CAlienSwarm::~CAlienSwarm()
@@ -1075,9 +1096,15 @@ bool CAlienSwarm::ClientConnected( edict_t *pEntity, const char *pszName, const 
 		int index = ENTINDEX(pEntity) - 1;
 		if (index >= 0 && index < 8)
 		{
-			ASWGameResource()->m_bPlayerReady.Set(index, false);
-		}
+			//softcopy: marked players  as ready/not ready on ClientConnected lobby
+			//ASWGameResource()->m_bPlayerReady.Set(index, false);
+			if (playreadyclicked == 2)
+			   ASWGameResource()->m_bPlayerReady.Set(index, bReadyclicked);		//marked players  as ready if bReadyclicked=true
+			else 
+			   ASWGameResource()->m_bPlayerReady.Set(index, false);		//palyers marked as not ready if false.
 
+		}
+		
 		// if we have no leader
 		if (ASWGameResource()->GetLeader() == NULL)
 		{
@@ -1085,6 +1112,16 @@ bool CAlienSwarm::ClientConnected( edict_t *pEntity, const char *pszName, const 
 				ASWGameResource()->SetLeader(pPlayer);
 			//else
 			//Msg("Failed to cast connected player\n");
+			if (index >= 0 && index < 8)
+			{
+				//softcopy: leader marked as ready/not ready on ClientConnected lobby
+				//ASWGameResource()->m_bPlayerReady.Set(index, false);
+				if ( playreadyclicked == 2 )
+					ASWGameResource()->m_bPlayerReady.Set(index, bReadyclicked);	//if bReadyclicked=true, leader marked as ready
+				else
+					ASWGameResource()->m_bPlayerReady.Set(index, false);
+
+			}
 		}
 	}	
 
@@ -1276,7 +1313,9 @@ bool CAlienSwarm::RosterSelect( CASW_Player *pPlayer, int RosterIndex, int nPref
 				}
 			}
 			m->Spawn();	// asw needed?
-			if ( !ASWGameResource()->AddMarineResource( m, nPreferredSlot ) )
+			//softcopy: for AddMarineResource function, add pPlayer to show player who adding bots
+			//if ( !ASWGameResource()->AddMarineResource( m, nPreferredSlot ) )
+			if ( !ASWGameResource()->AddMarineResource( pPlayer, m, nPreferredSlot ) )
 			{
 				UTIL_Remove( m );
 				return false;
@@ -2175,7 +2214,9 @@ void CAlienSwarm::CampaignSaveAndShowCampaignMap(CASW_Player* pPlayer, bool bFor
 		{
 			for (int i=0;i<ASW_MAX_READY_PLAYERS;i++)
 			{
-				ASWGameResource()->m_bPlayerReady.Set(i, false);
+				//softcopy: marked players  as ready on (CampaignSaveAndShowCampaignMap) if bReadyclicked=true
+				//ASWGameResource()->m_bPlayerReady.Set(i, false);
+				ASWGameResource()->m_bPlayerReady.Set(i, bReadyclicked);   
 			}
 		}
 		SetGameState(ASW_GS_CAMPAIGNMAP);
@@ -2742,7 +2783,7 @@ void CAlienSwarm::OnServerHibernating()
 			szMissionName,
 			szSaveFilename ) );
 	}
-	
+
 	//softcopy: when server hibernating, skill level or hardcoreFF will reset to normal if it was changed in lobby by player
 	if (asw_hibernate_skill_default.GetBool())
 	{
@@ -2756,7 +2797,7 @@ void CAlienSwarm::OnServerHibernating()
 			var->SetValue( 2 );
 			Msg( "Skill level \"%s\" default to \"Normal\"\n", lvlname );
 		}
-		if ( CAlienSwarm::IsHardcoreFF() )
+		if ( CAlienSwarm::IsHardcoreFF() && !asw_hardcore_ff_force.GetBool() )
 		{
 			asw_marine_ff_absorption.SetValue( 1 );
 			asw_sentry_friendly_fire_scale.SetValue( 0.0f );
@@ -2922,6 +2963,22 @@ ConVar asw_bonus_charges_laser_mines("asw_bonus_charges_mines_laser", "12", FCVA
 ConVar asw_bonus_charges_stun_grenade("asw_bonus_charges_stun_grenade", "5", FCVAR_CHEAT, "Number of P-rifle grenades marine starts out with.");
 ConVar asw_bonus_charges_stim("asw_bonus_charges_stim", "3", FCVAR_CHEAT, "Number of adrenaline usages a marine starts out with.");
 
+//softcopy: ammo cvars for primary weapon.
+ConVar asw_bonus_charges_autogun("asw_bonus_charges_autogun", "250", FCVAR_CHEAT, "set ammo in clip of autogun.");
+ConVar asw_bonus_charges_flamer("asw_bonus_charges_flamer", "40", FCVAR_CHEAT, " Set ammo in clip of flamer.");
+ConVar asw_bonus_charges_minigun("asw_bonus_charges_minigun", "250", FCVAR_CHEAT, "set ammo in clip of minigun.");
+ConVar asw_bonus_charges_grenade_launcher("asw_bonus_charges_grenade_launcher", "6", FCVAR_CHEAT, "set ammo in clip of grenades in launcher.");
+ConVar asw_bonus_charges_pistol("asw_bonus_charges_pistol", "24", FCVAR_CHEAT, "set ammo in clip of pistol.");
+ConVar asw_bonus_charges_pwd("asw_bonus_charges_pwd", "80", FCVAR_CHEAT, "set ammo in clip of pwd.");
+ConVar asw_bonus_charges_prifle("asw_bonus_charges_prifle", "98", FCVAR_CHEAT, "set ammo in clip of prifle.");
+ConVar asw_bonus_charges_rifle("asw_bonus_charges_rifle", "98", FCVAR_CHEAT, "set ammo in clip of rifle.");
+ConVar asw_bonus_charges_railgun("asw_bonus_charges_railgun", "1", FCVAR_CHEAT, "set ammo in clip of railgun.");
+ConVar asw_bonus_charges_shotgun("asw_bonus_charges_shotgun", "4", FCVAR_CHEAT, "set ammo in clip of shotgun.");
+ConVar asw_bonus_charges_sniper_rifle("asw_bonus_charges_sniper_rifle", "12", FCVAR_CHEAT, "set ammo in clip of sniper rifle.");
+ConVar asw_bonus_charges_vindicator("asw_bonus_charges_vindicator", "14", FCVAR_CHEAT, "set ammo in clip of vindicator.");
+ConVar asw_bonus_charges_rifle_grenade("asw_bonus_charges_rifle_grenade", "5", FCVAR_CHEAT, "Number of rifle grenades marine starts out with.");  
+ConVar asw_bonus_charges_vindicator_grenade("asw_bonus_charges_vindicator_grenade","5",FCVAR_CHEAT,"Number of vindicator grenades marine starts out with."); 
+
 void CAlienSwarm::GiveStartingWeaponToMarine(CASW_Marine* pMarine, int iEquipIndex, int iSlot)
 {
 	if ( !pMarine || iEquipIndex == -1 || iSlot < 0 || iSlot >= ASW_MAX_EQUIP_SLOTS )
@@ -2995,6 +3052,38 @@ void CAlienSwarm::GiveStartingWeaponToMarine(CASW_Marine* pMarine, int iEquipInd
 	if ( !stricmp(szWeaponClass, "asw_weapon_prifle") )
 		pWeapon->SetClip2(asw_bonus_charges_stun_grenade.GetInt());
 
+	//softcopy: primary ammo control not more than limitation 255
+	if ( !stricmp(szWeaponClass, "asw_weapon_autogun") )
+		pWeapon->SetClip1(asw_bonus_charges_autogun.GetInt()); 
+	if ( !stricmp(szWeaponClass, "asw_weapon_flamer") )
+		pWeapon->SetClip1(asw_bonus_charges_flamer.GetInt());
+    if ( !stricmp(szWeaponClass, "asw_weapon_grenade_launcher") )
+		pWeapon->SetClip1(asw_bonus_charges_grenade_launcher.GetInt());  
+	if ( !stricmp(szWeaponClass, "asw_weapon_minigun") )
+		pWeapon->SetClip1(asw_bonus_charges_minigun.GetInt());  
+    if ( !stricmp(szWeaponClass, "asw_weapon_pistol") )
+		pWeapon->SetClip1(asw_bonus_charges_pistol.GetInt());	
+    if ( !stricmp(szWeaponClass, "asw_weapon_prifle") )
+		pWeapon->SetClip1(asw_bonus_charges_prifle.GetInt());
+    if ( !stricmp(szWeaponClass, "asw_weapon_pwd") )
+		pWeapon->SetClip1(asw_bonus_charges_pwd.GetInt());	
+	if ( !stricmp(szWeaponClass, "asw_weapon_railgun") )
+		pWeapon->SetClip1(asw_bonus_charges_railgun.GetInt());
+	if ( !stricmp(szWeaponClass, "asw_weapon_rifle") )
+		pWeapon->SetClip1(asw_bonus_charges_rifle.GetInt());
+    if ( !stricmp(szWeaponClass, "asw_weapon_shotgun") )
+		pWeapon->SetClip1(asw_bonus_charges_shotgun.GetInt());
+	if ( !stricmp(szWeaponClass, "asw_weapon_sniper_rifle") )
+		pWeapon->SetClip1(asw_bonus_charges_sniper_rifle.GetInt());
+	if ( !stricmp(szWeaponClass, "asw_weapon_vindicator") )
+		pWeapon->SetClip1(asw_bonus_charges_vindicator.GetInt());
+	//Extra secondary ammo control		
+	if ( !stricmp(szWeaponClass, "asw_weapon_rifle"))                                
+		pWeapon->SetClip2(asw_bonus_charges_rifle_grenade.GetInt());       
+	if ( !stricmp(szWeaponClass, "asw_weapon_vindicator"))          
+		pWeapon->SetClip2(asw_bonus_charges_vindicator_grenade.GetInt()); 	
+
+	
 	//Ch1ckensCoop: Extra ammo control
 	if ( !stricmp(szWeaponClass, "asw_weapon_tesla_trap") )
 		pWeapon->SetClip1(asw_bonus_charges_tesla_trap.GetInt());
@@ -3245,7 +3334,9 @@ void CAlienSwarm::MissionComplete( bool bSuccess )
 		for ( int i = 0; i < ASW_MAX_READY_PLAYERS; i++ )
 		{
 			// make sure all players are marked as not ready to leave debrief
-			pGameResource->m_bPlayerReady.Set(i, false);
+			//softcopy: if bReadyclicked=true, marked as ready on (MissionComplete lobby).
+			//pGameResource->m_bPlayerReady.Set(i, false);
+			pGameResource->m_bPlayerReady.Set(i, bReadyclicked);   
 		}
 
 		if ( bSuccess )
@@ -4002,17 +4093,15 @@ bool CAlienSwarm::ShouldCollide( int collisionGroup0, int collisionGroup1 )
 			TEST_COLLISION(ASW_COLLISION_GROUP_ALIEN, ASW_COLLISION_GROUP_ALIEN))
 			return false;
 	}
-	
-		// this collision group only blocks drones
+
 	if (TESTING_GROUP(ASW_COLLISION_GROUP_BLOCK_DRONES))
 	{
+		// this collision group only blocks drones
 		if (TEST_COLLISION(ASW_COLLISION_GROUP_BLOCK_DRONES, ASW_COLLISION_GROUP_ALIEN) ||
 			TEST_COLLISION(ASW_COLLISION_GROUP_BLOCK_DRONES, ASW_COLLISION_GROUP_BIG_ALIEN))
 			return true;
-
-		return false;
+		return false;   //fix door can't be broken.
 	}
-	
 
 	if (TESTING_GROUP(ASW_COLLISION_GROUP_PARASITE))
 	{
@@ -4117,12 +4206,12 @@ bool CAlienSwarm::ShouldCollide( int collisionGroup0, int collisionGroup1 )
 			TEST_COLLISION(ASW_COLLISION_GROUP_SENTRY_PROJECTILE, ASW_COLLISION_GROUP_SHOTGUN_PELLET) ||
 			TEST_COLLISION(ASW_COLLISION_GROUP_SENTRY_PROJECTILE, ASW_COLLISION_GROUP_IGNORE_NPCS) ||
 			TEST_COLLISION(ASW_COLLISION_GROUP_SENTRY_PROJECTILE, ASW_COLLISION_GROUP_SENTRY) ||
-		  /*TEST_COLLISION(ASW_COLLISION_GROUP_SENTRY_PROJECTILE, ASW_COLLISION_GROUP_IGNORE_NPCS) ||    //softcopy: duplicated statements
-			TEST_COLLISION(ASW_COLLISION_GROUP_SENTRY_PROJECTILE, ASW_COLLISION_GROUP_SENTRY) || */
+		  /*TEST_COLLISION(ASW_COLLISION_GROUP_SENTRY_PROJECTILE, ASW_COLLISION_GROUP_IGNORE_NPCS) ||
+			TEST_COLLISION(ASW_COLLISION_GROUP_SENTRY_PROJECTILE, ASW_COLLISION_GROUP_SENTRY) || */		//softcopy: duplicated statements.
 			TEST_COLLISION(ASW_COLLISION_GROUP_SENTRY_PROJECTILE, COLLISION_GROUP_WEAPON))
 			return false;
 	}
-
+	
 	if (TESTING_GROUP(ASW_COLLISION_GROUP_ALIEN_MISSILE))
 	{
 		if (TEST_COLLISION(ASW_COLLISION_GROUP_ALIEN_MISSILE, COLLISION_GROUP_NPC) ||
@@ -5261,7 +5350,7 @@ bool CAlienSwarm::SkillsUndo(CASW_Player *pPlayer, int iProfileIndex)
 
 void CAlienSwarm::OnSkillLevelChanged( int iNewLevel )
 {
-	Msg("Skill level changed\n");
+	//Msg("Skill level changed\n");		//softcopy: 
 	if ( !( GetGameState() == ASW_GS_BRIEFING || GetGameState() == ASW_GS_DEBRIEF ) )
 	{
 		m_bCheated = true;
@@ -5347,6 +5436,16 @@ void CAlienSwarm::OnSkillLevelChanged( int iNewLevel )
 	UpdateMatchmakingTagsCallback( NULL, "0", 0.0f );
 
 	m_iSkillLevel = iNewLevel;
+
+	//softcopy: the chosen level show to players(related to asw_level_lock statments)
+	char text[64]; 
+	if (!Q_strcmp( szDifficulty, "imba")) 
+		Q_snprintf(text, sizeof(text),"%s", "brutal");
+	else 
+		Q_snprintf(text, sizeof(text),"%s", szDifficulty);
+	*text=(char)toupper(*text);
+	UTIL_ClientPrintAll( ASW_HUD_PRINTTALKANDCONSOLE, CFmtStr("This server is now on %s\n", text) );
+	Msg("Skill level changed to \"%s\" \n", text);
 }
 
 void CAlienSwarm::FindAndModifyAlienHealth(const char *szClass)
@@ -5383,6 +5482,28 @@ void CAlienSwarm::RequestSkill( CASW_Player *pPlayer, int nSkill )
 			{
 				CReliableBroadcastRecipientFilter filter;
 				filter.RemoveRecipient( pPlayer );		// notify everyone except the player changing the difficulty level
+
+				//softcopy: skill level lock cvar control, same as plugin 'asw-exec-skills.smx'
+				if ( asw_level_lock.GetInt() > 0 )
+				{
+					if ( var->GetInt() < asw_level_lock.GetInt() )    
+					{
+						int lvlnotallow = var->GetInt(); 
+						const char *lvlname = "Normal";
+						var->SetValue( ( asw_level_lock.GetInt() ) );    
+						switch( lvlnotallow )
+						{ case 1: lvlname = "Easy"; break; 
+						  case 2: lvlname = "Normal"; break;
+						  case 3: lvlname = "Hard"; break; 
+						  case 4: lvlname = "Insane"; break;  
+						}
+						char text[128];	Q_snprintf(text, sizeof(text), "%s Level is not allowed on this server", lvlname );
+						UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, text);	UTIL_LogPrintf("\"%s\"\n",text); Msg("%s\n",text);
+					}
+					engine->ServerCommand(CFmtStr("exec skill_%d.cfg\n", var->GetInt()));
+					//Msg("Ran skill_%d.cfg\n", var->GetInt());   //dedug check: whick skill file executed
+				}
+				
 				switch(var->GetInt())
 				{
 				case 1: UTIL_ClientPrintFilter( filter, ASW_HUD_PRINTTALKANDCONSOLE, "#asw_set_difficulty_easy", pPlayer->GetPlayerName() ); break;
@@ -5670,7 +5791,7 @@ void CAlienSwarm::SetLeaderVote(CASW_Player *pPlayer, int iPlayerIndex)
 		iVotesNeeded = 2;
 	if (iPlayerIndex > 0 && iVotes >= iVotesNeeded)
 	{
-		Msg("leader voting %d in (votes %d/%d\n", iPlayerIndex, iVotes, iVotesNeeded);
+		Msg("leader voting %d in (votes %d/%d)\n", iPlayerIndex, iVotes, iVotesNeeded);	//softcopy:
 		// make this player leader!
 		CASW_Player* pOtherPlayer = dynamic_cast<CASW_Player*>(UTIL_PlayerByIndex(iPlayerIndex));
 		if (pOtherPlayer)
@@ -5762,7 +5883,7 @@ void CAlienSwarm::SetKickVote(CASW_Player *pPlayer, int iPlayerIndex)
 		iVotesNeeded++;
 		//softcopy:
 		//Msg("Rounding needed votes up to %d\n", iVotesNeeded);
-		Msg("Rounding needed votes up to %d for a kick vote\n", iVotesNeeded);   
+		Msg("Rounding needed votes up to %d for a kick vote\n", iVotesNeeded);
 	}
 	if (iVotesNeeded < 2)
 	{
@@ -5771,7 +5892,7 @@ void CAlienSwarm::SetKickVote(CASW_Player *pPlayer, int iPlayerIndex)
 	}
 	//softcopy: more meaning words.
 	//Msg("Players %d, Votes %d, Votes needed %d\n", iPlayers, iVotes, iVotesNeeded);
-	Msg( "Players %d, Votes %d, Votes needed %d for a kick vote\n", iPlayers, iVotes, iVotesNeeded ); 
+	Msg( "Players %d, Votes %d, Votes needed %d for a kick vote\n", iPlayers, iVotes, iVotesNeeded );
 	if (iPlayerIndex > 0 && iVotes >= iVotesNeeded)
 	{
 		// kick this player
@@ -5782,7 +5903,7 @@ void CAlienSwarm::SetKickVote(CASW_Player *pPlayer, int iPlayerIndex)
 
 			Msg("kick voting %d out (votes %d/%d)\n", iPlayerIndex, iVotes, iVotesNeeded);
 			ClientPrint( pOtherPlayer, HUD_PRINTCONSOLE, "#asw_kicked_by_vote" );
-			//UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, "#asw_player_kicked", pOtherPlayer->GetPlayerName()); 	//softcopy: relocated
+			//UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, "#asw_player_kicked", pOtherPlayer->GetPlayerName());	//softcopy: relocated
 
 			bool bPlayerCrashed = false;
 			INetChannelInfo *pNetChanInfo = engine->GetPlayerNetInfo( pOtherPlayer->entindex() );
@@ -5803,7 +5924,7 @@ void CAlienSwarm::SetKickVote(CASW_Player *pPlayer, int iPlayerIndex)
 			char buffer[256];
 			Q_snprintf(buffer, sizeof(buffer), "kickid %d\n", pOtherPlayer->GetUserID());
 			Msg("sending command: %s\n", buffer);
-			engine->ServerCommand(buffer);			
+			engine->ServerCommand(buffer);
 
 			//if (iPlayerIndex >= 0 && iPlayerIndex < ASW_MAX_READY_PLAYERS && ASWGameResource())
 			//{
@@ -5818,7 +5939,7 @@ void CAlienSwarm::SetKickVote(CASW_Player *pPlayer, int iPlayerIndex)
 				if ( pOtherPlayer->GetSteamID(&requesterSteamID) )
 				{
 					iAdminIndex = Sourcemod()->GetAdminIndex(requesterSteamID);
-					if (iAdminIndex > -1 )  	//if > -1 = admin, if < 0 = non admin  
+					if (iAdminIndex > -1 )		//if > -1 = admin, if < 0 = non admin  
 						isAdmin = true;
 				}
 				else
@@ -5842,7 +5963,7 @@ void CAlienSwarm::SetKickVote(CASW_Player *pPlayer, int iPlayerIndex)
 			else
 			{
 				Q_snprintf(buffer, sizeof(buffer), "%s is immune from vote kicking on this server!", pOtherPlayer->GetPlayerName());
-				UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, " ");
+				UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, " ");		//add a line before msg
 				UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, buffer);
 				UTIL_LogPrintf( "%s\n", buffer );
 				Msg( "%s\n", buffer );
@@ -5951,9 +6072,12 @@ void CAlienSwarm::StartVote(CASW_Player *pPlayer, int iVoteType, const char *szV
 
 	// print a message telling players about the new vote that has started and how to bring up their voting options
 	const char *desc = m_szCurrentVoteDescription;
+	
 	if (iVoteType == ASW_VOTE_CHANGE_MISSION)
 	{
-		UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, "#asw_vote_mission_start", pPlayer->GetPlayerName(), desc);		
+		UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, "#asw_vote_mission_start", pPlayer->GetPlayerName(), desc);
+		//softcopy: want to know who vote the mission
+		Msg("Player %s voting mission: ----- %s -----\n" , pPlayer->GetPlayerName(), desc);
 	}
 	else if (iVoteType == ASW_VOTE_SAVED_CAMPAIGN)
 	{
@@ -6046,6 +6170,7 @@ void CAlienSwarm::UpdateVote()
 
 		// make it so
 		UTIL_ClientPrintAll( ASW_HUD_PRINTTALKANDCONSOLE, "#asw_vote_passed" );
+		Msg("Vote mission passed!\n");	//softcopy:
 		if (m_iCurrentVoteType == ASW_VOTE_CHANGE_MISSION)
 		{
 			// if we're ingame, then upload for state (we don't do this once the mission is over, as stats are already sent on MissionComplete)
@@ -6111,6 +6236,7 @@ void CAlienSwarm::UpdateVote()
 	{
 		// the people decided against this vote, clear it all
 		UTIL_ClientPrintAll( ASW_HUD_PRINTTALKANDCONSOLE, "#asw_vote_failed" );
+		Msg("Vote mission failed!\n");	//softcopy:
 		m_iCurrentVoteType = (int) ASW_VOTE_NONE;		
 		m_iCurrentVoteYes = 0;
 		m_iCurrentVoteNo = 0;
@@ -6376,8 +6502,10 @@ void CAlienSwarm::FinishForceReady()
 			// make sure all players are marked as not ready
 			for (int i=0;i<ASW_MAX_READY_PLAYERS;i++)
 			{
-				pGameResource->m_bPlayerReady.Set(i, false);
-			}				
+				//softcopy: if bReadyclicked=true, we no need click ready on(FinishForceReady) page.
+				//pGameResource->m_bPlayerReady.Set(i, false);
+				pGameResource->m_bPlayerReady.Set(i, bReadyclicked);
+			}
 			SetGameState(ASW_GS_CAMPAIGNMAP);
 			GetCampaignSave()->SelectDefaultNextCampaignMission();
 		}
@@ -6712,9 +6840,9 @@ void CAlienSwarm::LevelInitPostEntity()
 	char execCmd[350];
 	Q_snprintf(execCmd, sizeof(execCmd), "exec server\n", mapName);
 	engine->ServerCommand(execCmd);
-
+	//softcopy: preventing execute lobby.cfg
 	//if (asw_map_configs.GetBool())
-	if (asw_map_configs.GetBool() && !IsLobbyMap())		//softcopy: preventing execute lobby.cfg
+	if (asw_map_configs.GetBool() && !IsLobbyMap())
 	{
 		//Ch1ckensCoop: Fix the per-map configs.
 		Q_snprintf(execCmd, sizeof(execCmd), "exec asw_mapconfigs/%s\n", mapName);
@@ -6725,6 +6853,15 @@ void CAlienSwarm::LevelInitPostEntity()
 		Q_snprintf(execCmd, sizeof(execCmd), "exec asw_mapconfigs/custom/%s\n", mapName);
 		engine->ServerCommand(execCmd);
 		DevMsg("Ran command '%s'\n", execCmd);
+	}
+
+	//softcopy: skill lock control init if activated. Same function as plugin 'asw-exec-skills.smx'
+	if (asw_level_lock.GetInt() > 0 )
+	{
+		if (asw_skill.GetInt() <= asw_level_lock.GetInt())
+			asw_skill.SetValue(asw_level_lock.GetInt());
+		engine->ServerCommand(CFmtStr("exec skill_%d.cfg\n",asw_skill.GetInt())); 
+		//Msg("Ran skill_%d.cfg\n",asw_skill.GetInt());		//dedug check:
 	}
 
 	m_bPlayedBlipSpeech = false;
@@ -7041,5 +7178,5 @@ void asw_list_version(const CCommand &args)
 	else
 		Msg("%s\n",text);
 }
-ConCommand asw_version("asw_version", asw_list_version , "Display version of server.dll.");
+ConCommand asw_version("asw_version", asw_list_version , "Display the version of server.dll.");
 #endif

@@ -33,7 +33,7 @@ void CASW_Map_Scores::LoadMapScores()
 	m_pScoreKeyValues = new KeyValues( "MAPSCORES" );
 	if ( !m_pScoreKeyValues->LoadFromFile( filesystem, "cfg/mapscores.dat" ) )
 	{
-		Msg("couldn't fine any, keyvalues is empty!\n");
+		Msg("couldn't find any, keyvalues is empty!\n");	//softcopy: typo
 		// if we get here, it means the player has no mapscores.dat file and therefore no scores
 		// (but that's fine)
 		return;

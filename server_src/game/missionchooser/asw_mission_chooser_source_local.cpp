@@ -124,7 +124,7 @@ void CASW_Mission_Chooser_Source_Local::OnSaveUpdated(const char *szSaveName)
 			break;
 		}
 	}
-	//Msg("Updating save game summary %s\n", szSaveName);	//softcopy: suppressed it
+	//Msg("Updating save game summary %s\n", szSaveName);	//softcopy: 
 	AddToSavedCampaignList(szWithExtension);
 }
 
@@ -958,7 +958,7 @@ void CASW_Mission_Chooser_Source_Local::NotifyNewSave(const char *szSaveName)
 		if (!Q_strcmp(m_SavedCampaignList[i].m_szSaveName, szWithExtension))
 			return;
 	}
-	//Msg("New save created, adding it to the list of saved campaigns: %s\n", szSaveName);	//softcopy: suppressed the msg
+	//Msg("New save created, adding it to the list of saved campaigns: %s\n", szSaveName);	//softcopy:
 	AddToSavedCampaignList(szWithExtension);
 }
 
@@ -1035,10 +1035,10 @@ bool CASW_Mission_Chooser_Source_Local::ASW_Campaign_CreateNewSaveGame(char *szF
 	char tempbuffer[256];
 	Q_snprintf(tempbuffer, sizeof(tempbuffer), "%s", szFileName);
 	const char *pszNoPathName = Q_UnqualifiedFileName(tempbuffer);
-	//Msg("Unqualified = %s\n", pszNoPathName);		//softcopy: suppressed the msg
+	//Msg("Unqualified = %s\n", pszNoPathName);		//softcopy:
 	char szFullFileName[256];
 	Q_snprintf(szFullFileName, sizeof(szFullFileName), "save/%s", pszNoPathName);
-	//Msg("Creating new save with filename: %s\n", szFullFileName);		//softcopy: suppressed the msg
+	//Msg("Creating new save with filename: %s\n", szFullFileName);		//softcopy:
 
 	KeyValues *pSaveKeyValues = new KeyValues( pszNoPathName );
 
@@ -1126,7 +1126,7 @@ bool CASW_Mission_Chooser_Source_Local::ASW_Campaign_CreateNewSaveGame(char *szF
 	{
 		// make sure our save summary list adds this to it, if needed
 		//Msg("New save created: %s\n", szFullFileName);
-		Msg("New save game summary created: %s\n", szFullFileName);		//softcopy:
+		Msg("New save game summary created on %s: %s\n", szDateTime, szFullFileName);	//softcopy:
 		NotifyNewSave(pszNoPathName);
 		return true;
 	}

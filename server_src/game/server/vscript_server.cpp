@@ -1,4 +1,4 @@
-//========== Copyright © 2008, Valve Corporation, All rights reserved. ========
+//========== Copyright (c) 2008, Valve Corporation, All rights reserved. ========
 //
 // Purpose:
 //
@@ -500,6 +500,10 @@ bool VScriptServerReplaceClosures( const char *pszScriptName, HSCRIPT hScope, bo
 
 CON_COMMAND( script_reload_code, "Execute a vscript file, replacing existing functions with the functions in the run script" )
 {
+	//softcopy: prevent client side non-admin cheating,
+	if ( !UTIL_IsCommandIssuedByServerAdmin() )
+		return;
+
 	if ( !*args[1] )
 	{
 		Log_Warning( LOG_VScript, "No script specified\n" );
@@ -517,6 +521,10 @@ CON_COMMAND( script_reload_code, "Execute a vscript file, replacing existing fun
 
 CON_COMMAND( script_reload_entity_code, "Execute all of this entity's VScripts, replacing existing functions with the functions in the run scripts" )
 {
+	//softcopy: prevent client side non-admin cheating,
+	if ( !UTIL_IsCommandIssuedByServerAdmin() )
+		return;
+
 	extern CBaseEntity *GetNextCommandEntity( CBasePlayer *pPlayer, const char *name, CBaseEntity *ent );
 
 	const char *pszTarget = "";
@@ -555,6 +563,10 @@ CON_COMMAND( script_reload_entity_code, "Execute all of this entity's VScripts, 
 
 CON_COMMAND( script_reload_think, "Execute an activation script, replacing existing functions with the functions in the run script" )
 {
+	//softcopy: prevent client side non-admin cheating,
+	if ( !UTIL_IsCommandIssuedByServerAdmin() )
+		return;
+
 	extern CBaseEntity *GetNextCommandEntity( CBasePlayer *pPlayer, const char *name, CBaseEntity *ent );
 
 	const char *pszTarget = "";

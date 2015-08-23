@@ -213,6 +213,13 @@ ConVar sv_force_transmit_ents( "sv_force_transmit_ents", "0", FCVAR_CHEAT | FCVA
 ConVar sv_autosave( "sv_autosave", "1", 0, "Set to 1 to autosave game on level transition. Does not affect autosave triggers." );
 ConVar *sv_maxreplay = NULL;
 
+//softcopy:
+ConVar asw_onslaught_force("asw_onslaught_force", "1", FCVAR_CHEAT, "default = 1, set 0 to disable Onslaught force on.");
+ConVar asw_hardcore_ff_force("asw_hardcore_ff_force","0", FCVAR_CHEAT, "default = 0, set 1 to enable hardcoreFF force on.");
+extern ConVar asw_marine_ff_absorption;
+extern ConVar asw_sentry_friendly_fire_scale;
+extern ConVar asw_hordemode;
+
 static ConVar  *g_pcv_commentary = NULL;
 static ConVar *g_pcv_ThreadMode = NULL;
 
@@ -1904,10 +1911,37 @@ void CServerGameDLL::GetMatchmakingTags( char *buf, size_t bufSize )
 	extern ConVar asw_horde_override;
 	extern ConVar asw_wanderer_override;
 	extern ConVar asw_skill;
-
+	
 	char * const bufBase = buf;
 	int len = 0;
 
+	//softcopy: onslaught/hardcoreFF mode cvar control, same as plugin 'asw-exec-skills.smx'
+	char text[128];
+	if ( asw_hardcore_ff_force.GetBool() && !CAlienSwarm::IsHardcoreFF() )
+	{
+		asw_marine_ff_absorption.SetValue( 0 );
+		asw_sentry_friendly_fire_scale.SetValue( 1.0f );
+		Q_snprintf(text, sizeof(text),"Disable hardcore FF is not allowed on this server");
+		UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, text); Msg("%s\n",text);
+	}
+	if ( asw_onslaught_force.GetBool() && CAlienSwarm::IsOnslaught() )
+	{
+		if (  asw_horde_override.GetBool() )	//check asw_horde_override is changed or not
+		{
+			asw_hordemode.SetValue( 1 );
+			asw_wanderer_override.SetValue( 1 );
+		}
+		else
+		{
+			asw_hordemode.SetValue( 1 );
+			asw_horde_override.SetValue( 1 );
+			asw_wanderer_override.SetValue( 1 );    
+			Q_snprintf(text, sizeof(text),"Disabling Onslaught is not allowed on this server");
+			UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, text); Msg("%s\n",text);
+		}
+	}
+
+	
 	// hardcore friendly fire
 	if ( CAlienSwarm::IsHardcoreFF() )
 	{
@@ -1916,7 +1950,7 @@ void CServerGameDLL::GetMatchmakingTags( char *buf, size_t bufSize )
 		buf += len;
 		bufSize -= len;
 	}
-
+	
 	// onslaught
 	if ( CAlienSwarm::IsOnslaught() )
 	{
@@ -1924,7 +1958,7 @@ void CServerGameDLL::GetMatchmakingTags( char *buf, size_t bufSize )
 		len = strlen( buf );
 		buf += len;
 		bufSize -= len;
-	}
+    }
 
 	// difficulty level
 	const char *szSkill = "Normal,";
@@ -2015,7 +2049,6 @@ void CServerGameDLL::GetMatchmakingGameData( char *buf, size_t bufSize )
 void CServerGameDLL::ServerHibernationUpdate( bool bHibernating )
 {
 	m_bIsHibernating = bHibernating;
-
 #ifdef INFESTED_DLL
 	if ( engine && engine->IsDedicatedServer() && m_bIsHibernating && ASWGameRules() )
 	{

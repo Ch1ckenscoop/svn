@@ -14,7 +14,7 @@
 public Plugin:myinfo =
 {
 	name = "AdminCheats",
-	author = "devicenull",
+	author = "devicenull, modified by Softcopy",
 	description = "Allow admins to use cheat commands",
 	version = PLUGIN_VERSION,
 	url = "http://www.sourcemod.net/"

@@ -1,4 +1,4 @@
-//===== Copyright © 1996-2005, Valve Corporation, All rights reserved. ======//
+//===== Copyright (c) 1996-2005, Valve Corporation, All rights reserved. ======//
 //
 // Purpose: Console commands for debugging and manipulating NPCs.
 //
@@ -61,6 +61,10 @@ static ConCommand ai_disable("ai_disable", CC_AI_Disable, "Bi-passes all AI logi
 
 CON_COMMAND_F( ai_setenabled, "Like ai_disable but you manually specify the state (with a 0 or 1) instead of toggling it.", FCVAR_CHEAT )
 {
+	//softcopy: prevent client side non-admin cheating,
+	if ( !UTIL_IsCommandIssuedByServerAdmin() )
+		return;
+
 	if ( args.ArgC() < 2 )
 	{
 		Warning( "ai_setenabled <0 or 1>\n" );

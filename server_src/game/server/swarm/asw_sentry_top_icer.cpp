@@ -33,6 +33,7 @@ extern ConVar asw_difficulty_alien_health_step;
 ConVar asw_sentry_debug_aim("asw_sentry_debug_aim", "0", FCVAR_CHEAT, "Draw debug lines for sentry gun aim");
 ConVar asw_sentry_icer_amount("asw_sentry_icer_amount", "0.4", FCVAR_CHEAT, "Sets the freeze amount for the icer sentry.");
 ConVar asw_sentry_icer_damage("asw_sentry_icer_damage", "1", FCVAR_CHEAT, "Sets the damage of the icer sentry.");
+ConVar asw_sentry_icer_range("asw_sentry_icer_range", "300", FCVAR_CHEAT, "Sets the shoot range of the icer sentry.");	//softcopy:
 
 #define ASW_SENTRY_FIRE_RATE 0.1f		// time in seconds between each shot
 #define ASW_SENTRY_FIRE_ANGLE_THRESHOLD 3
@@ -46,8 +47,10 @@ void CASW_Sentry_Top_Icer::SetTopModel()
 
 CASW_Sentry_Top_Icer::CASW_Sentry_Top_Icer() : CASW_Sentry_Top_Flamer(CASW_Weapon_Flamer::EXTINGUISHER_PROJECTILE_AIR_VELOCITY)
 {
-	m_flShootRange = 300;
-	// increase turn rate until I get better leading code in (so it can actually hit something)
+	//softcopy:
+	//m_flShootRange = 300;
+	m_flShootRange = asw_sentry_icer_range.GetFloat();
+	//increase turn rate until I get better leading code in (so it can actually hit something)
 	m_fTurnRate *= 3.0f;
 }
 
@@ -192,10 +195,11 @@ CAI_BaseNPC * CASW_Sentry_Top_Icer::SelectOptimalEnemy()
 
 		Vector velCross = vBaseForward.Cross(vCandVel); // this encodes also some info on perpendicularity
 		Vector vAimCross = vBaseForward.Cross(vMeToTarget);
-		bool bTargetHeadedOutOfCone = !vCandVel.IsZero() && velCross.z * vAimCross.z >= 0; // true if same sign
+		
 		float flConeLeavingUrgency;
 
 		//Ch1ckensCoop: If an alien is REALLY REALLY close to the edge of the cone, it'll freeze that alien to death while all the other ones rush by.
+		//bool bTargetHeadedOutOfCone = !vCandVel.IsZero() && velCross.z * vAimCross.z >= 0; // true if same sign
 		/*if ( bTargetHeadedOutOfCone )
 		{
 			flConeLeavingUrgency = fabs( velCross.z / vCandVel.Length2D() ); 

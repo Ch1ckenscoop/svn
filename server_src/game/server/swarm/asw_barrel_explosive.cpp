@@ -17,6 +17,14 @@
 ConVar asw_barrel_health_base( "asw_barrel_health_base", "3", FCVAR_CHEAT, "Health of barrel at level 1" );
 ConVar asw_barrel_health_growth( "asw_barrel_health_growth", "0.15", FCVAR_CHEAT, "% change in health per level" );
 
+//softcopy:
+ConVar asw_barrel_color("asw_barrel_color", "255 255 255", FCVAR_NONE, "set the barrel color.");
+ConVar asw_barrel_color2("asw_barrel_color2", "255 255 255", FCVAR_NONE, "set the barrel color2 adjust.");
+ConVar asw_barrel_color2_percent("asw_barrel_color2_percent", "0.0", FCVAR_NONE, "Percentage Adjusts The barrel color2.");
+ConVar asw_barrel_color3("asw_barrel_color3", "255 255 255", FCVAR_NONE, "set the barrel color3.");
+ConVar asw_barrel_color3_percent("asw_barrel_color3_percent", "0.0", FCVAR_NONE, "Percentage Adjusts The barrel color3.");
+ConVar asw_barrel_explosive_damage("asw_barrel_explosive_damage", "200.0f", FCVAR_NONE, "set the barrel explosive damage.");
+ConVar asw_barrel_explosive_radius("asw_barrel_explosive_radius","160.0f", FCVAR_NONE, "set the barrel explosive radius damage.");
 
 LINK_ENTITY_TO_CLASS( asw_barrel_explosive, CASW_Barrel_Explosive );
 
@@ -27,7 +35,9 @@ END_DATADESC()
 
 CASW_Barrel_Explosive::CASW_Barrel_Explosive()
 {
-	m_iExplosionDamage = 200;
+	//softcopy:
+	//m_iExplosionDamage = 200; 
+	m_iExplosionDamage = asw_barrel_explosive_damage.GetFloat();  
 }
 
 void CASW_Barrel_Explosive::Spawn()
@@ -43,6 +53,16 @@ void CASW_Barrel_Explosive::Spawn()
 	InitHealth();
 
 	VisibilityMonitor_AddEntity( this, asw_visrange_generic.GetFloat() * 0.9f, NULL, NULL );
+	
+	//softcopy: barrel colors
+	float randomColor = RandomFloat(0, 1);
+	if (randomColor <= asw_barrel_color2_percent.GetFloat())
+			SetRenderColor(asw_barrel_color2.GetColor().r(), asw_barrel_color2.GetColor().g(), asw_barrel_color2.GetColor().b());
+	else if (randomColor <= (asw_barrel_color2_percent.GetFloat() + asw_barrel_color3_percent.GetFloat()))
+			SetRenderColor(asw_barrel_color3.GetColor().r(), asw_barrel_color3.GetColor().g(), asw_barrel_color3.GetColor().b());
+	else
+			SetRenderColor(asw_barrel_color.GetColor().r(), asw_barrel_color.GetColor().g(), asw_barrel_color.GetColor().b());
+
 }
 
 void CASW_Barrel_Explosive::Precache()
@@ -171,7 +191,9 @@ void CASW_Barrel_Explosive::DoExplosion()
 	// damage to nearby things
 	CTakeDamageInfo info( this, ( m_hAttacker.Get() ? m_hAttacker.Get() : this ), m_iExplosionDamage, DMG_BLAST );
 	info.SetDamageCustom( DAMAGE_FLAG_HALF_FALLOFF );
-	ASWGameRules()->RadiusDamage( info, GetAbsOrigin(), 160.0f, CLASS_NONE, NULL );
+	//softcopy:
+	//ASWGameRules()->RadiusDamage( info, GetAbsOrigin(), 160.0f, CLASS_NONE, NULL );
+	ASWGameRules()->RadiusDamage( info, GetAbsOrigin(), asw_barrel_explosive_radius.GetFloat(), CLASS_NONE, NULL );
 }
 
 void CASW_Barrel_Explosive::OnDifficultyChanged( int iDifficulty )
@@ -186,8 +208,10 @@ void CASW_Barrel_Explosive::InitHealth()
 	const float flHealthGrowth = asw_barrel_health_growth.GetFloat();
 	m_iHealth = m_iHealth + m_iHealth * flHealthGrowth * ( ASWGameRules()->GetMissionDifficulty() - 1 );
 	SetMaxHealth( m_iHealth );
+	//softcopy:
+	//m_iExplosionDamage = 200.0f;
+	m_iExplosionDamage = asw_barrel_explosive_damage.GetFloat();
 
-	m_iExplosionDamage = 200.0f;
 	/*
 	int iExplosiveDamage = 120.0f;
 	m_iExplosionDamage = iExplosiveDamage + iExplosiveDamage * flHealthGrowth * ( ASWGameRules()->GetMissionDifficulty() - 1 );

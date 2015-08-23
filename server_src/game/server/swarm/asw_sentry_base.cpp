@@ -24,6 +24,10 @@ extern int	g_sModelIndexFireball;			// (in combatweapon.cpp) holds the index for
 ConVar asw_sentry_invincible("asw_sentry_invincible", "0", FCVAR_CHEAT, "Make sentry guns invincible");
 ConVar asw_sentry_gun_type("asw_sentry_gun_type", "-1", FCVAR_CHEAT, "Force the type of sentry guns built to this. -1, the default, reads from the marine attributes.");
 ConVar asw_sentry_infinite_ammo( "asw_sentry_infinite_ammo", "0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "Sentry guns have infinite ammo");
+//softcopy: 
+ConVar asw_sentry_assemble_speed("asw_sentry_assemble_speed", "0", FCVAR_CHEAT, "default 0=normal, Sets speed of sentry assemble for all marines.",true,1,true,10);  
+ConVar asw_sentry_disassemble_speed("asw_sentry_disassemble_speed", "2", FCVAR_CHEAT, "default=2, Sets sentry disassemble speed.",true,0,true,2);
+extern ConVar asw_weapon_disassemble_speed;
 
 LINK_ENTITY_TO_CLASS( asw_sentry_base, CASW_Sentry_Base );
 PRECACHE_REGISTER( asw_sentry_base );
@@ -222,6 +226,7 @@ void CASW_Sentry_Base::ActivateUseIcon( CASW_Marine* pMarine, int nHoldType )
 }
 
 #define SENTRY_ASSEMBLE_TIME 7.0f			// was 14.0
+
 void CASW_Sentry_Base::MarineUsing(CASW_Marine* pMarine, float deltatime)
 {
 	if (m_bIsInUse && !m_bAssembled && pMarine)
@@ -241,7 +246,12 @@ void CASW_Sentry_Base::MarineUsing(CASW_Marine* pMarine, float deltatime)
 		}
 		if (fSkillScale < 1.0)
 			fSkillScale = 1.0f;
+
 		float fSetupAmount = (deltatime * (1.0f/SENTRY_ASSEMBLE_TIME)) * fSkillScale;
+		//softcopy: sentry gun assemble time by cvar control.
+		if (asw_sentry_assemble_speed.GetFloat() > 0)
+			fSetupAmount = (deltatime * 1.0f * asw_sentry_assemble_speed.GetFloat());    
+
 		m_fAssembleProgress += fSetupAmount;
 		if (m_fAssembleProgress >= 1.0f)
 		{
@@ -327,6 +337,10 @@ CASW_Sentry_Top* CASW_Sentry_Base::GetSentryTop()
 
 bool CASW_Sentry_Base::IsUsable(CBaseEntity *pUser)
 {
+	//softcopy: get sentry disassemble speed to asw_player_shared
+	if ( m_bAssembled )
+		asw_weapon_disassemble_speed.SetValue(asw_sentry_disassemble_speed.GetFloat());
+	
 	return (pUser && pUser->GetAbsOrigin().DistTo(GetAbsOrigin()) < ASW_MARINE_USE_RADIUS);	// near enough?
 }
 

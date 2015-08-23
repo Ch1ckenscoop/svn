@@ -1,4 +1,4 @@
-//===== Copyright � 1996-2005, Valve Corporation, All rights reserved. ======//
+//===== Copyright (c) 1996-2005, Valve Corporation, All rights reserved. ======//
 //
 // Purpose: Functions dealing with the player.
 //
@@ -109,7 +109,6 @@ ConVar	sv_noclipduringpause( "sv_noclipduringpause", "0", FCVAR_REPLICATED | FCV
 extern ConVar sv_maxunlag;
 extern ConVar sv_turbophysics;
 extern ConVar *sv_maxreplay;
-
 extern CServerGameDLL g_ServerGameDLL;
 
 // TIME BASED DAMAGE AMOUNT
@@ -4869,7 +4868,7 @@ CBaseEntity *CBasePlayer::EntSelectSpawnPoint()
 ReturnSpot:
 	if ( !pSpot  )
 	{
-		Warning( "PutClientInServer: no info_player_start on level\n");
+		//Warning( "PutClientInServer: no info_player_start on level\n");	//softcopy: no use
 		return CBaseEntity::Instance( INDEXENT( 0 ) );
 	}
 
@@ -8274,7 +8273,7 @@ void CBasePlayer::VPhysicsShadowUpdate( IPhysicsObject *pPhysics )
 		if ( trace.allsolid || trace.startsolid )
 		{
 			// STUCK!?!?!
-			//Warning( "Checkstuck failed.  Stuck on %s!!\n", trace.m_pEnt->GetClassname() );
+			//Warning( "Checkstuck failed.  Stuck on %s!!\n", trace.m_pEnt->GetClassname() );   
 			SetAbsOrigin( lastValidPosition );
 		}
 	}

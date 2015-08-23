@@ -1,4 +1,4 @@
-//====== Copyright © 1996-2003, Valve Corporation, All rights reserved. =======
+//====== Copyright (c) 1996-2003, Valve Corporation, All rights reserved. =======
 //
 // Purpose: 
 //
@@ -22,8 +22,11 @@ extern ConVar sv_force_transmit_ents;
 void CServerGameClients::GetPlayerLimits( int& minplayers, int& maxplayers, int &defaultMaxPlayers ) const
 {
 	minplayers = 1; 
-	defaultMaxPlayers = 4;
-	maxplayers = ASW_MAX_PLAYERS;
+	//softcopy:
+	//defaultMaxPlayers = 4;
+	defaultMaxPlayers = 8;
+	maxplayers = ASW_MAX_PLAYERS;	//default=6, changed to 8 in asw_shareddef.h
+
 }
 
 // -------------------------------------------------------------------------------------------- //

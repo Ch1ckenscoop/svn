@@ -12,6 +12,8 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+extern ConVar asw_marine_lobby_ready;	//softcopy:
+
 static char s_szLastLeaderNetworkID[ASW_LEADERID_LEN] = {0};
 
 LINK_ENTITY_TO_CLASS( asw_game_resource, CASW_Game_Resource );
@@ -313,8 +315,9 @@ void CASW_Game_Resource::RemoveAMarineFor(CASW_Player *pPlayer)
 	}
 }
 
-
-bool CASW_Game_Resource::AddMarineResource( CASW_Marine_Resource *m, int nPreferredSlot )
+//softcopy: want to know who add bot
+//bool CASW_Game_Resource::AddMarineResource( CASW_Marine_Resource *m, int nPreferredSlot )
+bool CASW_Game_Resource::AddMarineResource( CASW_Player *pPlayer, CASW_Marine_Resource *m, int nPreferredSlot )  
 {
 	if ( nPreferredSlot != -1 )
 	{
@@ -339,13 +342,13 @@ bool CASW_Game_Resource::AddMarineResource( CASW_Marine_Resource *m, int nPrefer
 		}
 		return true;
 	}
-
+	
 	for (int i=0;i<ASW_MAX_MARINE_RESOURCES;i++)
 	{
 		if (m_MarineResources[i] == NULL)	// found a free slot
 		{
 			m_MarineResources.Set(i, m);
-
+			
 			// the above causes strange cases where the client copy of this networked array is incorrect
 			// so we flag each element dirty to cause a complete update, which seems to fix the problem
 			for (int k=0;k<ASW_MAX_MARINE_RESOURCES;k++)
@@ -355,7 +358,11 @@ bool CASW_Game_Resource::AddMarineResource( CASW_Marine_Resource *m, int nPrefer
 			return true;
 		}
 	}
-	Msg("Couldn't add new marine resource to list as no free slots\n");
+	//softcopy: 
+	//Msg("Couldn't add new marine resource to list as no free slots\n");
+	if ( pPlayer )
+		Msg("\"%s\" couldn't add new marine resource to list as no free slots\n", pPlayer->GetPlayerName());
+	
 	return false;
 }
 
@@ -438,7 +445,12 @@ void CASW_Game_Resource::SetLeader(CASW_Player *pPlayer)
 		// player index is out of range
 		if (iPlayerIndex >= 0 && iPlayerIndex < ASW_MAX_READY_PLAYERS)
 		{
-			m_bPlayerReady.Set(iPlayerIndex, false);
+			//softcopy:
+			//m_bPlayerReady.Set(iPlayerIndex, false);
+			if ( asw_marine_lobby_ready.GetInt() == 2 )
+			    m_bPlayerReady.Set(iPlayerIndex, true); 	//set new/old leader marked as ready on lobby.
+			else 
+			    m_bPlayerReady.Set(iPlayerIndex, false);	//set new/old leader marked as not ready on lobby.
 		}
 	}
 }

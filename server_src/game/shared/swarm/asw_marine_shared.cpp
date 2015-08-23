@@ -63,11 +63,19 @@ extern ConVar asw_melee_debug;
 extern ConVar asw_debug_marine_damage;
 extern ConVar asw_stim_time_scale;
 extern ConVar asw_marine_ff;
+extern ConVar asw_marine_ff_absorption;		//softcopy:
+
 ConVar asw_leadership_radius("asw_leadership_radius", "600", FCVAR_REPLICATED, "Radius of the leadership field around NCOs with the leadership skill");
-ConVar asw_marine_speed_scale_easy("asw_marine_speed_scale_easy", "0.96", FCVAR_REPLICATED);
+//softcopy: prevent client side cheating
+/*ConVar asw_marine_speed_scale_easy("asw_marine_speed_scale_easy", "0.96", FCVAR_REPLICATED);
 ConVar asw_marine_speed_scale_normal("asw_marine_speed_scale_normal", "1.0", FCVAR_REPLICATED);
 ConVar asw_marine_speed_scale_hard("asw_marine_speed_scale_hard", "1.0", FCVAR_REPLICATED);
-ConVar asw_marine_speed_scale_insane("asw_marine_speed_scale_insane", "1.0", FCVAR_REPLICATED);
+ConVar asw_marine_speed_scale_insane("asw_marine_speed_scale_insane", "1.0", FCVAR_REPLICATED); */
+ConVar asw_marine_speed_scale_easy("asw_marine_speed_scale_easy", "0.96", FCVAR_CHEAT);
+ConVar asw_marine_speed_scale_normal("asw_marine_speed_scale_normal", "1.0", FCVAR_CHEAT);
+ConVar asw_marine_speed_scale_hard("asw_marine_speed_scale_hard", "1.0", FCVAR_CHEAT);
+ConVar asw_marine_speed_scale_insane("asw_marine_speed_scale_insane", "1.0", FCVAR_CHEAT);
+
 ConVar asw_marine_box_collision("asw_marine_box_collision", "1", FCVAR_REPLICATED);
 ConVar asw_allow_hull_shots("asw_allow_hull_shots", "1", FCVAR_REPLICATED);
 #ifdef GAME_DLL
@@ -2607,12 +2615,20 @@ void CASW_Marine::Bleed( const CTakeDamageInfo &info, const Vector &vecPos, cons
 	CRecipientFilter filter;
 	filter.AddAllPlayers();
 
+	//softcopy: prevent marine is bleeding with no hurt if shooting by sentry gun.
+	//					marine is bleeding & hurt only if hardcoreFF is ON.
+	if (info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_SENTRY_GUN)
+	{
+		if (!CAlienSwarm::IsHardcoreFF( ) && asw_marine_ff_absorption.GetInt() != 0)
+			return;
+	}
+	
 	// if we've been shot by another marine...
 	if ( info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_MARINE )
 	{
 		if ( asw_marine_ff.GetInt() == 0 )
 			return;
-
+		
 		UserMessageBegin( filter, "ASWMarineHitByFF" );	
 		WRITE_SHORT( entindex() );
 		WRITE_FLOAT( vecDamagePos.x );

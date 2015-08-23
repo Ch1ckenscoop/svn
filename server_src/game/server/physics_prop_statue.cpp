@@ -44,7 +44,9 @@ ConVarRef *s_vcollide_wireframe = NULL;
 
 CStatueProp::CStatueProp( void )
 {
-	static ConVarRef vcollide_wireframe( "vcollide_wireframe" );
+	//softcopy: ConVarRef vcollide_wireframe doesn't point to an existing ConVar' in landingbay_01 
+	//static ConVarRef vcollide_wireframe( "vcollide_wireframe" );
+	static ConVarRef vcollide_wireframe( "vcollide_wireframe", FCVAR_CHEAT );	//ConcreteChunks shatter effect 
 	s_vcollide_wireframe = &vcollide_wireframe;
 	m_pInitOBBs = NULL;
 }

@@ -8,6 +8,8 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+ConVar asw_skill_mines_fires_gap("asw_skill_mines_fires_gap", "38.0f", FCVAR_CHEAT, "Sets the firewall spacing gap.");	//softcopy:
+
 LINK_ENTITY_TO_CLASS( asw_firewall_piece, CASW_Firewall_Piece );
 PRECACHE_REGISTER( asw_firewall_piece );
 //---------------------------------------------------------
@@ -46,7 +48,7 @@ CASW_Firewall_Piece::~CASW_Firewall_Piece()
 }
 
 #define ASW_FIREWALL_SPREAD_TIME 0.2f
-#define ASW_FIREWALL_SPACING 38.0f
+//#define ASW_FIREWALL_SPACING 38.0f	//softcopy:
 
 //-----------------------------------------------------------------------------
 // Purpose: 
@@ -164,7 +166,9 @@ CASW_Firewall_Piece* CASW_Firewall_Piece::CreateAnotherPiece(bool bRight)
 	else
 		ang.y-=90;
 	AngleVectors(ang, &offset);
-	offset *= ASW_FIREWALL_SPACING;
+	//softcopy: firewall_spacing gap var
+	//offset *= ASW_FIREWALL_SPACING;
+	offset *= asw_skill_mines_fires_gap.GetFloat();
 	Vector start = GetAbsOrigin() + Vector(0,0,20);
 	Vector dest = start + offset;
 	//todo: trace from abs to dest

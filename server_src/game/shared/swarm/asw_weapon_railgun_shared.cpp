@@ -67,6 +67,7 @@ PRECACHE_WEAPON_REGISTER(asw_weapon_railgun);
 
 extern ConVar asw_weapon_max_shooting_distance;
 ConVar asw_railgun_force_scale("asw_railgun_force_scale", "60.0f", FCVAR_REPLICATED, "Force of railgun shots");
+ConVar asw_railgun_fire_rate("asw_railgun_fire_rate", "0.6f", FCVAR_CHEAT, "rail gun fire rate."); 		//softcopy:
 
 #ifndef CLIENT_DLL
 extern ConVar asw_debug_marine_damage;
@@ -496,7 +497,8 @@ bool CASW_Weapon_Railgun::Reload()
 	bool bReloaded = ASWReload( GetMaxClip1(), GetMaxClip2(), ACT_VM_RELOAD );
 
 	// skip reload chatter on the railgun, since it reloads after every shot
-	/*
+	
+	// softcopy: re-enable reload chatter on railgun, since ammo control by var 
 	if (bReloaded)
 	{
 #ifdef GAME_DLL
@@ -515,7 +517,7 @@ bool CASW_Weapon_Railgun::Reload()
 		}
 #endif
 	}
-	*/
+
 	return bReloaded;
 }
 
@@ -700,7 +702,7 @@ void CASW_Weapon_Railgun::SecondaryAttack()
 		fGrenadeRadius,
 		vecSrc, angGrenFacing, vecThrow, AngularImpulse(0,0,0), pMarine );
 	*/
-	const int num_rockets = 5;
+	const int num_rockets = 5;  
 	const int fan_spread = 90;
 	for (int i=0;i<num_rockets;i++)
 	{
@@ -731,9 +733,12 @@ void CASW_Weapon_Railgun::SecondaryAttack()
 float CASW_Weapon_Railgun::GetFireRate()
 {
 	//float flRate = 0.1f;
-	float flRate = GetWeaponInfo()->m_flFireRate;
+	//float flRate = GetWeaponInfo()->m_flFireRate;		//softcopy:
 
 	//CALL_ATTRIB_HOOK_FLOAT( flRate, mod_fire_rate );
+	
+	//softcopy:
+	//return flRate;
+	return asw_railgun_fire_rate.GetFloat();
 
-	return flRate;
 }

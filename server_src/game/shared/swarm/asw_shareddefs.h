@@ -49,8 +49,9 @@ enum ASW_Skill_Slot
 #define ASW_SKILL_POINTS_PER_MISSION 2
 
 #define ENGINEERING_AURA_RADIUS 300
-
-#define ASW_MAX_PLAYERS 6			// currently limiting the game to 6 players, more than that feels chaotic
+//softcopy: more spectators.
+//#define ASW_MAX_PLAYERS 6		// currently limiting the game to 6 players, more than that feels chaotic
+#define ASW_MAX_PLAYERS 8
 
 #define ASW_MAX_READY_PLAYERS 8		// max number of slots for ready players in the game resource
 
@@ -152,13 +153,13 @@ enum
 	ASW_LIGHT_INDEX_FIRES = 0x64000000,
 };
 
-#define	SWARM_DRONE_MODEL		"models/swarm/drone/Drone.mdl"
-#define	SWARM_NEW_DRONE_MODEL	"models/aliens/drone/drone.mdl"
-#define	SWARM_HARVESTER_MODEL	"models/swarm/harvester/Harvester.mdl"
-#define	SWARM_SHIELDBUG_MODEL	"models/swarm/Shieldbug/Shieldbug.mdl"
-#define	SWARM_NEW_SHIELDBUG_MODEL	"models/aliens/Shieldbug/Shieldbug.mdl"
-#define SWARM_MORTARBUG_MODEL	"models/aliens/mortar/mortar.mdl"
-#define	SWARM_NEW_HARVESTER_MODEL	"models/aliens/harvester/harvester.mdl"
+#define	SWARM_DRONE_MODEL			"models/swarm/drone/Drone.mdl"
+#define	SWARM_NEW_DRONE_MODEL		"models/aliens/drone/drone.mdl"
+#define SWARM_HARVESTER_MODEL		"models/swarm/harvester/Harvester.mdl"
+#define SWARM_SHIELDBUG_MODEL		"models/swarm/Shieldbug/Shieldbug.mdl"
+#define SWARM_NEW_SHIELDBUG_MODEL	"models/aliens/Shieldbug/Shieldbug.mdl"
+#define SWARM_MORTARBUG_MODEL		"models/aliens/mortar/mortar.mdl"
+#define SWARM_NEW_HARVESTER_MODEL	"models/aliens/harvester/harvester.mdl"
 
 #define ASW_BLIP_SPEECH_INTERVAL 10.0f
 
