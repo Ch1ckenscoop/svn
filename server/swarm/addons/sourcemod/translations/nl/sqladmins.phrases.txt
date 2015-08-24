@@ -5,11 +5,6 @@
 		"nl"		"Een groep met succes toegevoegd aan de beheerder."
 	}
 
-	"Added groups to user"
-	{
-		"nl"		"Groep {1} met succes toegevoegd aan de beheerder."
-	}
-
 	"Invalid authtype"
 	{
 		"nl"		"Auth type moet een 'steam','naam', of 'ip' zijn."
@@ -28,11 +23,6 @@
 	"SQL Admin already exists"
 	{
 		"nl"		"Een beheerder met de gegeven waardes bestaat al."
-	}
-
-	"SQL Admin deleted"
-	{
-		"nl"		"Beheerder met succes verwijdert van de database."
 	}
 
 	"SQL Admin groups reset"
@@ -65,14 +55,24 @@
 		"nl"		"Een groep met deze naam bestaat al."
 	}
 
-	"SQL Group deleted"
-	{
-		"nl"		"Groep met succes verwijdert uit de database."
-	}
-
 	"SQL Group not found"
 	{
 		"nl"		"Geen groep met de gegeven naam gevonden."
+	}
+
+	"Added groups to user"
+	{
+		"nl"		"{1} groepen met succes aan de beheerder toegevoegd."
+	}
+
+	"SQL Admin deleted"
+	{
+		"nl"		"Beheerder met succes van de database verwijderd."
+	}
+
+	"SQL Group deleted"
+	{
+		"nl"		"Groep met succes uit de database verwijderd."
 	}
 
 }

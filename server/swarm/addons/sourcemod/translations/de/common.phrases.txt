@@ -1,10 +1,5 @@
 "Phrases"
 {
-	"Map was not found"
-	{
-		"de"		"Karte {1} wurde nicht gefunden."
-	}
-
 	"Unable to target"
 	{
 		"de"		" Du kannst diesen Spieler nicht erfassen."
@@ -30,11 +25,6 @@
 		"de"		"Konfiguration  \"{1}\" ausgeführt."
 	}
 
-	"Admin cache refreshed"
-	{
-		"de"		"Admin-Zwischenspeicher wurde aktualisiert."
-	}
-
 	"Vote Delay Minutes"
 	{
 		"de"		"Du musst {1} Minuten warten, bis eine andere Abstimmung gestartet werden kann."
@@ -58,11 +48,6 @@
 	"Kick player"
 	{
 		"de"		"Spieler kicken"
-	}
-
-	"Kicked by admin"
-	{
-		"de"		"Gekickt durch Administrator"
 	}
 
 	"Name"
@@ -125,11 +110,6 @@
 		"de"		"Du kannst an dieser Abstimmung nicht teilnehmen."
 	}
 
-	"Changing map"
-	{
-		"de"		"Kartenwechsel zu {1}..."
-	}
-
 	"Command is in-game only"
 	{
 		"de"		"Dieser Befehl kann nur im Spiel verwendet werden."
@@ -138,16 +118,6 @@
 	"Failed to query database"
 	{
 		"de"		"Datenbankabfrage fehlgeschlagen."
-	}
-
-	"Invalid SteamID specified"
-	{
-		"de"		"Du hast eine ungültige SteamID angegeben (muss mit 'STEAM_' anfangen)."
-	}
-
-	"More than one client matched"
-	{
-		"de"		"Mehr als ein Spieler passte zum gegebenen Kriterium."
 	}
 
 	"More than one client matches"
@@ -163,11 +133,6 @@
 	"No matching clients"
 	{
 		"de"		"Es wurden keine passenden Spieler gefunden."
-	}
-
-	"Reload admins"
-	{
-		"de"		"Administratoren aktualisieren"
 	}
 
 	"See console for output"
@@ -248,6 +213,41 @@
 	"Target is not in game"
 	{
 		"de"		"Der ausgewählte Spieler ist noch nicht im Spiel. "
+	}
+
+	"Admin cache refreshed"
+	{
+		"de"		"Admin-Cache wurde aktualisiert."
+	}
+
+	"Changing map"
+	{
+		"de"		"Ändere Map zu {1}..."
+	}
+
+	"Invalid SteamID specified"
+	{
+		"de"		"Du hast eine ungültige SteamID angegeben (muss mit 'STEAM_' beginnen)."
+	}
+
+	"Kicked by admin"
+	{
+		"de"		"Gekickt vom Administrator"
+	}
+
+	"Map was not found"
+	{
+		"de"		"Map {1} wurde nicht gefunden."
+	}
+
+	"More than one client matched"
+	{
+		"de"		"Mehr als ein Spieler passte zum eingegebenen Kriterium."
+	}
+
+	"Reload admins"
+	{
+		"de"		"Admins aktualisieren "
 	}
 
 }

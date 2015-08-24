@@ -15,11 +15,6 @@
 		"pt"		"Nenhum resultado encontrado"
 	}
 
-	"SM help commands"
-	{
-		"pt"		"Ajuda do SourceMod: Informações sobre comando "
-	}
-
 	"Type sm_help to see more"
 	{
 		"pt"		"Digite sm_help {1} para ver mais comandos"
@@ -28,6 +23,11 @@
 	"Entries n - m in page k"
 	{
 		"pt"		"Itens {1} - {2} na página {3}"
+	}
+
+	"SM help commands"
+	{
+		"pt"		"Ajuda do SourceMod: Informações sobre comandos"
 	}
 
 }

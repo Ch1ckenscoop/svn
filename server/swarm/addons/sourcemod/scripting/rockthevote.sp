@@ -46,12 +46,12 @@ public Plugin:myinfo =
 	url = "http://www.sourcemod.net/"
 };
 
-new Handle:g_Cvar_Needed = INVALID_HANDLE;
-new Handle:g_Cvar_MinPlayers = INVALID_HANDLE;
-new Handle:g_Cvar_InitialDelay = INVALID_HANDLE;
-new Handle:g_Cvar_Interval = INVALID_HANDLE;
-new Handle:g_Cvar_ChangeTime = INVALID_HANDLE;
-new Handle:g_Cvar_RTVPostVoteAction = INVALID_HANDLE;
+ConVar g_Cvar_Needed;
+ConVar g_Cvar_MinPlayers;
+ConVar g_Cvar_InitialDelay;
+ConVar g_Cvar_Interval;
+ConVar g_Cvar_ChangeTime;
+ConVar g_Cvar_RTVPostVoteAction;
 
 new bool:g_CanRTV = false;		// True if RTV loaded maps and is active.
 new bool:g_RTVAllowed = false;	// True if RTV is available to players. Used to delay rtv votes.
@@ -73,9 +73,6 @@ public OnPluginStart()
 	g_Cvar_Interval = CreateConVar("sm_rtv_interval", "240.0", "Time (in seconds) after a failed RTV before another can be held", 0, true, 0.00);
 	g_Cvar_ChangeTime = CreateConVar("sm_rtv_changetime", "0", "When to change the map after a succesful RTV: 0 - Instant, 1 - RoundEnd, 2 - MapEnd", _, true, 0.0, true, 2.0);
 	g_Cvar_RTVPostVoteAction = CreateConVar("sm_rtv_postvoteaction", "0", "What to do with RTV's after a mapvote has completed. 0 - Allow, success = instant change, 1 - Deny", _, true, 0.0, true, 1.0);
-	
-	RegConsoleCmd("say", Command_Say);
-	RegConsoleCmd("say_team", Command_Say);
 	
 	RegConsoleCmd("sm_rtv", Command_RTV);
 	
@@ -109,7 +106,7 @@ public OnConfigsExecuted()
 {	
 	g_CanRTV = true;
 	g_RTVAllowed = false;
-	CreateTimer(GetConVarFloat(g_Cvar_InitialDelay), Timer_DelayRTV, _, TIMER_FLAG_NO_MAPCHANGE);
+	CreateTimer(g_Cvar_InitialDelay.FloatValue, Timer_DelayRTV, _, TIMER_FLAG_NO_MAPCHANGE);
 }
 
 public OnClientConnected(client)
@@ -120,7 +117,7 @@ public OnClientConnected(client)
 	g_Voted[client] = false;
 
 	g_Voters++;
-	g_VotesNeeded = RoundToFloor(float(g_Voters) * GetConVarFloat(g_Cvar_Needed));
+	g_VotesNeeded = RoundToFloor(float(g_Voters) * g_Cvar_Needed.FloatValue);
 	
 	return;
 }
@@ -137,7 +134,7 @@ public OnClientDisconnect(client)
 	
 	g_Voters--;
 	
-	g_VotesNeeded = RoundToFloor(float(g_Voters) * GetConVarFloat(g_Cvar_Needed));
+	g_VotesNeeded = RoundToFloor(float(g_Voters) * g_Cvar_Needed.FloatValue);
 	
 	if (!g_CanRTV)
 	{
@@ -149,13 +146,30 @@ public OnClientDisconnect(client)
 		g_Votes >= g_VotesNeeded && 
 		g_RTVAllowed ) 
 	{
-		if (GetConVarInt(g_Cvar_RTVPostVoteAction) == 1 && HasEndOfMapVoteFinished())
+		if (g_Cvar_RTVPostVoteAction.IntValue == 1 && HasEndOfMapVoteFinished())
 		{
 			return;
 		}
 		
 		StartRTV();
 	}	
+}
+
+public OnClientSayCommand_Post(client, const String:command[], const String:sArgs[])
+{
+	if (!g_CanRTV || !client)
+	{
+		return;
+	}
+	
+	if (strcmp(sArgs, "rtv", false) == 0 || strcmp(sArgs, "rockthevote", false) == 0)
+	{
+		new ReplySource:old = SetCmdReplySource(SM_REPLY_TO_CHAT);
+		
+		AttemptRTV(client);
+		
+		SetCmdReplySource(old);
+	}
 }
 
 public Action:Command_RTV(client, args)
@@ -170,41 +184,9 @@ public Action:Command_RTV(client, args)
 	return Plugin_Handled;
 }
 
-public Action:Command_Say(client, args)
-{
-	if (!g_CanRTV || !client)
-	{
-		return Plugin_Continue;
-	}
-	
-	decl String:text[192];
-	if (!GetCmdArgString(text, sizeof(text)))
-	{
-		return Plugin_Continue;
-	}
-	
-	new startidx = 0;
-	if(text[strlen(text)-1] == '"')
-	{
-		text[strlen(text)-1] = '\0';
-		startidx = 1;
-	}
-	
-	new ReplySource:old = SetCmdReplySource(SM_REPLY_TO_CHAT);
-	
-	if (strcmp(text[startidx], "rtv", false) == 0 || strcmp(text[startidx], "rockthevote", false) == 0)
-	{
-		AttemptRTV(client);
-	}
-	
-	SetCmdReplySource(old);
-	
-	return Plugin_Continue;	
-}
-
 AttemptRTV(client)
 {
-	if (!g_RTVAllowed  || (GetConVarInt(g_Cvar_RTVPostVoteAction) == 1 && HasEndOfMapVoteFinished()))
+	if (!g_RTVAllowed  || (g_Cvar_RTVPostVoteAction.IntValue == 1 && HasEndOfMapVoteFinished()))
 	{
 		ReplyToCommand(client, "[SM] %t", "RTV Not Allowed");
 		return;
@@ -216,7 +198,7 @@ AttemptRTV(client)
 		return;
 	}
 	
-	if (GetClientCount(true) < GetConVarInt(g_Cvar_MinPlayers))
+	if (GetClientCount(true) < g_Cvar_MinPlayers.IntValue)
 	{
 		ReplyToCommand(client, "[SM] %t", "Minimal Players Not Met");
 		return;			
@@ -273,13 +255,13 @@ StartRTV()
 	
 	if (CanMapChooserStartVote())
 	{
-		new MapChange:when = MapChange:GetConVarInt(g_Cvar_ChangeTime);
+		new MapChange:when = MapChange:g_Cvar_ChangeTime.IntValue;
 		InitiateMapChooserVote(when);
 		
 		ResetRTV();
 		
 		g_RTVAllowed = false;
-		CreateTimer(GetConVarFloat(g_Cvar_Interval), Timer_DelayRTV, _, TIMER_FLAG_NO_MAPCHANGE);
+		CreateTimer(g_Cvar_Interval.FloatValue, Timer_DelayRTV, _, TIMER_FLAG_NO_MAPCHANGE);
 	}
 }
 

@@ -27,7 +27,7 @@
 
 	"Entries n - m in page k"
 	{
-		"nl"		"Entries {1} - {2} in page {3}"
+		"nl"		"Data {1} - {2} op pagina {3}"
 	}
 
 }

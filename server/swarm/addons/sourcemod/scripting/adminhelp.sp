@@ -82,7 +82,7 @@ public Action:HelpCmd(client, args)
 	new Flags;
 	new Handle:CmdIter = GetCommandIterator();
 
-	FormatEx(NoDesc, sizeof(NoDesc), "%t", "No description available");
+	FormatEx(NoDesc, sizeof(NoDesc), "%T", "No description available", client);
 
 	if (DoSearch)
 	{
@@ -118,7 +118,7 @@ public Action:HelpCmd(client, args)
 			if (i == 0)
 			{
 				PrintToConsole(client, "%t", "No commands available");
-				CloseHandle(CmdIter);
+				delete CmdIter;
 				return Plugin_Handled;
 			}
 		}
@@ -149,7 +149,7 @@ public Action:HelpCmd(client, args)
 		}
 	}
 
-	CloseHandle(CmdIter);
+	delete CmdIter;
 
 	return Plugin_Handled;
 }

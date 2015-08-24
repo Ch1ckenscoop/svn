@@ -15,11 +15,6 @@
 		"de"		"Der Wert von {1} ist {2}"
 	}
 
-	"Cookie List"
-	{
-		"de"		"SourceMod Cookie Liste"
-	}
-
 	"Choose Option"
 	{
 		"de"		"Wähle Option"
@@ -43,6 +38,11 @@
 	"Protected Cookie"
 	{
 		"de"		"Der Wert des geschützten Cookie \"{1}\" kann nicht geändert werden "
+	}
+
+	"Cookie List"
+	{
+		"de"		"SourceMod-Cookie-Liste"
 	}
 
 }

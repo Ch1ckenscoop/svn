@@ -49,25 +49,23 @@ public Plugin:myinfo =
 new String:g_ColorNames[13][10] = {"White", "Red", "Green", "Blue", "Yellow", "Purple", "Cyan", "Orange", "Pink", "Olive", "Lime", "Violet", "Lightblue"};
 new g_Colors[13][3] = {{255,255,255},{255,0,0},{0,255,0},{0,0,255},{255,255,0},{255,0,255},{0,255,255},{255,128,0},{255,0,128},{128,255,0},{0,255,128},{128,0,255},{0,128,255}};
 
-new Handle:g_Cvar_Chatmode = INVALID_HANDLE;
+ConVar g_Cvar_Chatmode;
 
-new g_GameEngine = SOURCE_SDK_UNKNOWN;
+new EngineVersion:g_GameEngine = Engine_Unknown;
 
 public OnPluginStart()
 {
 	LoadTranslations("common.phrases");
 	
-	g_GameEngine = GuessSDKVersion();
+	g_GameEngine = GetEngineVersion();
 
 	g_Cvar_Chatmode = CreateConVar("sm_chat_mode", "1", "Allows player's to send messages to admin chat.", 0, true, 0.0, true, 1.0);
 
-	RegConsoleCmd("say", Command_SayChat);
-	RegConsoleCmd("say_team", Command_SayAdmin);		
 	RegAdminCmd("sm_say", Command_SmSay, ADMFLAG_CHAT, "sm_say <message> - sends message to all players");
 	RegAdminCmd("sm_csay", Command_SmCsay, ADMFLAG_CHAT, "sm_csay <message> - sends centered message to all players");
 	
 	/* HintText does not work on Dark Messiah */
-	if (g_GameEngine != SOURCE_SDK_DARKMESSIAH)
+	if (g_GameEngine != Engine_DarkMessiah)
 	{
 		RegAdminCmd("sm_hsay", Command_SmHsay, ADMFLAG_CHAT, "sm_hsay <message> - sends hint message to all players");	
 	}
@@ -78,98 +76,78 @@ public OnPluginStart()
 	RegAdminCmd("sm_msay", Command_SmMsay, ADMFLAG_CHAT, "sm_msay <message> - sends message as a menu panel");
 }
 
-public Action:Command_SayChat(client, args)
-{	
-	decl String:text[192];
-	if (IsChatTrigger() || GetCmdArgString(text, sizeof(text)) < 1)
-	{
-		return Plugin_Continue;
-	}
-	
-	new startidx;
-	if (text[strlen(text)-1] == '"')
-	{
-		text[strlen(text)-1] = '\0';
-		startidx = 1;
-	}
-	
-	if (text[startidx] != CHAT_SYMBOL)
-		return Plugin_Continue;
-	
-	new msgStart = 1;
-	
-	if (text[startidx+1] == CHAT_SYMBOL)
-	{
-		msgStart = 2;
-		
-		if (text[startidx+2] == CHAT_SYMBOL)
-			msgStart = 3;
-	}
-	
-	decl String:message[192];
-	strcopy(message, 192, text[startidx+msgStart]);
-	
-	if (msgStart == 1 && CheckCommandAccess(client, "sm_say", ADMFLAG_CHAT)) // sm_say alias
-	{
-		SendChatToAll(client, message);
-		LogAction(client, -1, "\"%L\" triggered sm_say (text %s)", client, message);
-	}
-	else if (msgStart == 3 && CheckCommandAccess(client, "sm_csay", ADMFLAG_CHAT)) // sm_csay alias
-	{
-		DisplayCenterTextToAll(client, message);
-		LogAction(client, -1, "\"%L\" triggered sm_csay (text %s)", client, text);		
-	}	
-	else if (msgStart == 2 && CheckCommandAccess(client, "sm_psay", ADMFLAG_CHAT)) // sm_psay alias
-	{
-		decl String:arg[64];
-	
-		new len = BreakString(message, arg, sizeof(arg));
-		new target = FindTarget(client, arg, true, false);
-		
-		if (target == -1 || len == -1)
-			return Plugin_Handled;
-	
-		PrintToChat(client, "\x04(Private to %N) %N: \x01%s", target, client, message[len]);
-		PrintToChat(target, "\x04(Private to %N) %N: \x01%s", target, client, message[len]);
-
-		LogAction(client, -1, "\"%L\" triggered sm_psay to \"%L\" (text %s)", client, target, message);		
-	}
-	else
-		return Plugin_Continue;
-	
-	return Plugin_Handled;	
-}
-
-public Action:Command_SayAdmin(client, args)
+public Action:OnClientSayCommand(client, const String:command[], const String:sArgs[])
 {
-	if (!CheckCommandAccess(client, "sm_chat", ADMFLAG_CHAT) && !GetConVarBool(g_Cvar_Chatmode))
-	{
-		return Plugin_Continue;	
-	}
-	
-	decl String:text[192];
-	if (IsChatTrigger() || GetCmdArgString(text, sizeof(text)) < 1)
-	{
-		return Plugin_Continue;
-	}
-	
 	new startidx;
-	if (text[strlen(text)-1] == '"')
-	{
-		text[strlen(text)-1] = '\0';
-		startidx = 1;
-	}
-	
-	if (text[startidx] != CHAT_SYMBOL)
+	if (sArgs[startidx] != CHAT_SYMBOL)
 		return Plugin_Continue;
 	
-	decl String:message[192];
-	strcopy(message, 192, text[startidx+1]);
-
-	SendChatToAdmins(client, message);
-	LogAction(client, -1, "\"%L\" triggered sm_chat (text %s)", client, message);
+	startidx++;
 	
-	return Plugin_Handled;	
+	if (strcmp(command, "say", false) == 0)
+	{
+		if (sArgs[startidx] != CHAT_SYMBOL) // sm_say alias
+		{
+			if (!CheckCommandAccess(client, "sm_say", ADMFLAG_CHAT))
+			{
+				return Plugin_Continue;
+			}
+			
+			SendChatToAll(client, sArgs[startidx]);
+			LogAction(client, -1, "\"%L\" triggered sm_say (text %s)", client, sArgs[startidx]);
+			
+			return Plugin_Stop;
+		}
+		
+		startidx++;
+
+		if (sArgs[startidx] != CHAT_SYMBOL) // sm_psay alias
+		{
+			if (!CheckCommandAccess(client, "sm_psay", ADMFLAG_CHAT))
+			{
+				return Plugin_Continue;
+			}
+			
+			decl String:arg[64];
+			
+			new len = BreakString(sArgs[startidx], arg, sizeof(arg));
+			new target = FindTarget(client, arg, true, false);
+			
+			if (target == -1 || len == -1)
+				return Plugin_Stop;
+			
+			SendPrivateChat(client, target, sArgs[startidx+len]);
+			
+			return Plugin_Stop;
+		}
+		
+		startidx++;
+		
+		// sm_csay alias
+		if (!CheckCommandAccess(client, "sm_csay", ADMFLAG_CHAT))
+		{
+			return Plugin_Continue;
+		}
+		
+		DisplayCenterTextToAll(client, sArgs[startidx]);
+		LogAction(client, -1, "\"%L\" triggered sm_csay (text %s)", client, sArgs[startidx]);
+		
+		return Plugin_Stop;
+	}
+	else if (strcmp(command, "say_team", false) == 0 || strcmp(command, "say_squad", false) == 0)
+	{
+		if (!CheckCommandAccess(client, "sm_chat", ADMFLAG_CHAT) && !g_Cvar_Chatmode.BoolValue)
+		{
+			return Plugin_Continue;
+		}
+		
+		SendChatToAdmins(client, sArgs[startidx]);
+		LogAction(client, -1, "\"%L\" triggered sm_chat (text %s)", client, sArgs[startidx]);
+		
+		return Plugin_Stop;
+	}
+	
+	return Plugin_Continue;
 }
 
 public Action:Command_SmSay(client, args)
@@ -307,29 +285,8 @@ public Action:Command_SmPsay(client, args)
 		
 	if (target == -1)
 		return Plugin_Handled;	
-		
-	decl String:name[64];
-
-	if (client == 0)
-	{
-		name = "Console";
-	}
-	else
-	{
-		GetClientName(client, name, sizeof(name));
-	}
-
-	if (client == 0)
-	{
-		PrintToServer("(Private: %N) %s: %s", target, name, message);
-	}
-	else
-	{
-		PrintToChat(client, "\x04(Private: %N) %s: \x01%s", target, name, message);
-	}
-
-	PrintToChat(target, "\x04(Private: %N) %s: \x01%s", target, name, message);
-	LogAction(client, -1, "\"%L\" triggered sm_psay to \"%L\" (text %s)", client, target, message);
+	
+	SendPrivateChat(client, target, message);
 	
 	return Plugin_Handled;	
 }
@@ -363,7 +320,7 @@ FindColor(String:color[])
 	return -1;
 }
 
-SendChatToAll(client, String:message[])
+SendChatToAll(client, const String:message[])
 {
 	new String:nameBuf[MAX_NAME_LENGTH];
 	
@@ -379,7 +336,7 @@ SendChatToAll(client, String:message[])
 	}
 }
 
-DisplayCenterTextToAll(client, String:message[])
+DisplayCenterTextToAll(client, const String:message[])
 {
 	new String:nameBuf[MAX_NAME_LENGTH];
 	
@@ -394,7 +351,7 @@ DisplayCenterTextToAll(client, String:message[])
 	}
 }
 
-SendChatToAdmins(from, String:message[])
+SendChatToAdmins(from, const String:message[])
 {
 	new fromAdmin = CheckCommandAccess(from, "sm_chat", ADMFLAG_CHAT);
 	for (new i = 1; i <= MaxClients; i++)
@@ -406,30 +363,45 @@ SendChatToAdmins(from, String:message[])
 	}
 }
 
-SendDialogToOne(client, color, String:text[], any:...)
+SendDialogToOne(client, color, const String:text[], any:...)
 {
 	new String:message[100];
 	VFormat(message, sizeof(message), text, 4);	
 	
-	new Handle:kv = CreateKeyValues("Stuff", "title", message);
-	KvSetColor(kv, "color", g_Colors[color][0], g_Colors[color][1], g_Colors[color][2], 255);
-	KvSetNum(kv, "level", 1);
-	KvSetNum(kv, "time", 10);
+	KeyValues kv = new KeyValues("Stuff", "title", message);
+	kv.SetColor("color", g_Colors[color][0], g_Colors[color][1], g_Colors[color][2], 255);
+	kv.SetNum("level", 1);
+	kv.SetNum("time", 10);
 	
 	CreateDialog(client, kv, DialogType_Msg);
-	
-	CloseHandle(kv);	
+
+	delete kv;
 }
 
-SendPanelToAll(from, String:message[])
+SendPrivateChat(client, target, const String:message[])
 {
-	decl String:title[100];
+	if (!client)
+	{
+		PrintToServer("(Private to %N) %N: %s", target, client, message);
+	}
+	else if (target != client)
+	{
+		PrintToChat(client, "\x04(Private to %N) %N: \x01%s", target, client, message);
+	}
+
+	PrintToChat(target, "\x04(Private to %N) %N: \x01%s", target, client, message);
+	LogAction(client, -1, "\"%L\" triggered sm_psay to \"%L\" (text %s)", client, target, message);
+}
+
+void SendPanelToAll(int from, char[] message)
+{
+	char title[100];
 	Format(title, 64, "%N:", from);
 	
 	ReplaceString(message, 192, "\\n", "\n");
 	
-	new Handle:mSayPanel = CreatePanel();
-	SetPanelTitle(mSayPanel, title);
+	Panel mSayPanel = CreatePanel();
+	mSayPanel.SetTitle(title);
 	DrawPanelItem(mSayPanel, "", ITEMDRAW_SPACER);
 	DrawPanelText(mSayPanel, message);
 	DrawPanelItem(mSayPanel, "", ITEMDRAW_SPACER);
@@ -445,10 +417,10 @@ SendPanelToAll(from, String:message[])
 		}
 	}
 
-	CloseHandle(mSayPanel);
+	delete mSayPanel;
 }
 
-public Handler_DoNothing(Handle:menu, MenuAction:action, param1, param2)
+public Handler_DoNothing(Menu menu, MenuAction action, int param1, int param2)
 {
 	/* Do nothing */
 }

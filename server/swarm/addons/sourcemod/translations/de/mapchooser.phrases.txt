@@ -40,4 +40,9 @@
 		"de"		"Die aktuelle Karte wurde verlängert. ({1}%% von {2} Stimmen erhalten) "
 	}
 
+	"Starting Runoff"
+	{
+		"de"		"Keine Karte kam über {1}%% Stimmen ({2} [{3}%%] & {4} [{5}%%]), starte Stichwahl"
+	}
+
 }

@@ -80,4 +80,14 @@
 		"zho"		"投票封鎖玩家"
 	}
 
+	"Please select a map"
+	{
+		"zho"		"請選擇地圖"
+	}
+
+	"Start the Vote"
+	{
+		"zho"		"發起投票"
+	}
+
 }

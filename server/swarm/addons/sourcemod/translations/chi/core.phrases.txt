@@ -80,4 +80,9 @@
 		"chi"		"无投票"
 	}
 
+	"Name Reserved"
+	{
+		"chi"		"你所用名称已由 SourceMod 保留; 请输入相应密码启用."
+	}
+
 }

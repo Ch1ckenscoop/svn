@@ -10,21 +10,6 @@
 		"fi"		"Admin-välimuisti uudistettu."
 	}
 
-	"Ban added"
-	{
-		"fi"		"Banni lisätty."
-	}
-
-	"Banned player"
-	{
-		"fi"		"Bannattiin pelaaja \"{1}\" {2} minuutiksi."
-	}
-
-	"Banned player reason"
-	{
-		"fi"		"Bannattiin pelaaja \"{1}\" {2} minuutiksi (syy: {3})."
-	}
-
 	"Choose Map"
 	{
 		"fi"		"Valitse kartta"
@@ -55,16 +40,6 @@
 		"fi"		"Potkittiin {1}."
 	}
 
-	"Permabanned player"
-	{
-		"fi"		"Bannattiin pysyvästi pelaaja \"{1}\"."
-	}
-
-	"Permabanned player reason"
-	{
-		"fi"		"Bannattiin pysyvästi pelaaja \"{1}\" (syy: {2})."
-	}
-
 	"Player is an admin"
 	{
 		"fi"		"\"{1}\" on admin."
@@ -73,11 +48,6 @@
 	"Player is not an admin"
 	{
 		"fi"		"\"{1}\" ei ole admin."
-	}
-
-	"Removed bans matching"
-	{
-		"fi"		"Poistettiin bannit jotka vastaavat suodatusta: {1}"
 	}
 
 	"Username"
@@ -123,6 +93,36 @@
 	"Kicked target reason"
 	{
 		"fi"		"Erotettiin pelaaja {1} (Syy: {2})"
+	}
+
+	"Ban added"
+	{
+		"fi"		"Porttikielto lisätty."
+	}
+
+	"Banned player"
+	{
+		"fi"		"Annettiin porttikielto pelaajalle \"{1}\" {2} minuutiksi."
+	}
+
+	"Banned player reason"
+	{
+		"fi"		"Annettiin porttikielto pelaajalle \"{1}\" {2} minuutiksi (syy: {3})."
+	}
+
+	"Permabanned player"
+	{
+		"fi"		"Annettiin pysyvä porttikielto pelaajalle \"{1}\"."
+	}
+
+	"Permabanned player reason"
+	{
+		"fi"		"Annettiin pysyvä porttikielto pelaajalle \"{1}\" (syy: {3})."
+	}
+
+	"Removed bans matching"
+	{
+		"fi"		"Poistettiin porttikiellot, jotka vastaavat suodatusta: {1}"
 	}
 
 }

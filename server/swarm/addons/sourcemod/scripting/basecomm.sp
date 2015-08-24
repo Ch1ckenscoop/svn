@@ -50,16 +50,17 @@ public Plugin:myinfo =
 new bool:g_Muted[MAXPLAYERS+1];		// Is the player muted?
 new bool:g_Gagged[MAXPLAYERS+1];	// Is the player gagged?
 
-new Handle:g_Cvar_Deadtalk = INVALID_HANDLE;	// Holds the handle for sm_deadtalk
-new Handle:g_Cvar_Alltalk = INVALID_HANDLE;	// Holds the handle for sv_alltalk
+ConVar g_Cvar_Deadtalk;				// Holds the handle for sm_deadtalk
+ConVar g_Cvar_Alltalk;				// Holds the handle for sv_alltalk
 new bool:g_Hooked = false;			// Tracks if we've hooked events for deadtalk
 
-new Handle:hTopMenu = INVALID_HANDLE;
+TopMenu hTopMenu;
 
 new g_GagTarget[MAXPLAYERS+1];
 
 #include "basecomm/gag.sp"
 #include "basecomm/natives.sp"
+#include "basecomm/forwards.sp"
 
 public APLRes:AskPluginLoad2(Handle:myself, bool:late, String:error[], err_max)
 {
@@ -80,9 +81,6 @@ public OnPluginStart()
 	g_Cvar_Deadtalk = CreateConVar("sm_deadtalk", "0", "Controls how dead communicate. 0 - Off. 1 - Dead players ignore teams. 2 - Dead players talk to living teammates.", 0, true, 0.0, true, 2.0);
 	g_Cvar_Alltalk = FindConVar("sv_alltalk");
 	
-	AddCommandListener(Command_Say, "say");
-	AddCommandListener(Command_Say, "say_team");
-	
 	RegAdminCmd("sm_mute", Command_Mute, ADMFLAG_CHAT, "sm_mute <player> - Removes a player's ability to use voice.");
 	RegAdminCmd("sm_gag", Command_Gag, ADMFLAG_CHAT, "sm_gag <player> - Removes a player's ability to use chat.");
 	RegAdminCmd("sm_silence", Command_Silence, ADMFLAG_CHAT, "sm_silence <player> - Removes a player's ability to use voice or chat.");
@@ -91,19 +89,21 @@ public OnPluginStart()
 	RegAdminCmd("sm_ungag", Command_Ungag, ADMFLAG_CHAT, "sm_ungag <player> - Restores a player's ability to use chat.");
 	RegAdminCmd("sm_unsilence", Command_Unsilence, ADMFLAG_CHAT, "sm_unsilence <player> - Restores a player's ability to use voice and chat.");	
 	
-	HookConVarChange(g_Cvar_Deadtalk, ConVarChange_Deadtalk);
-	HookConVarChange(g_Cvar_Alltalk, ConVarChange_Alltalk);
+	g_Cvar_Deadtalk.AddChangeHook(ConVarChange_Deadtalk);
+	g_Cvar_Alltalk.AddChangeHook(ConVarChange_Alltalk);
 	
 	/* Account for late loading */
-	new Handle:topmenu;
-	if (LibraryExists("adminmenu") && ((topmenu = GetAdminTopMenu()) != INVALID_HANDLE))
+	TopMenu topmenu;
+	if (LibraryExists("adminmenu") && ((topmenu = GetAdminTopMenu()) != null))
 	{
 		OnAdminMenuReady(topmenu);
 	}
 }
 
-public OnAdminMenuReady(Handle:topmenu)
+public OnAdminMenuReady(Handle aTopMenu)
 {
+	TopMenu topmenu = TopMenu.FromHandle(aTopMenu);
+
 	/* Block us from being called twice */
 	if (topmenu == hTopMenu)
 	{
@@ -114,23 +114,17 @@ public OnAdminMenuReady(Handle:topmenu)
 	hTopMenu = topmenu;
 	
 	/* Build the "Player Commands" category */
-	new TopMenuObject:player_commands = FindTopMenuCategory(hTopMenu, ADMINMENU_PLAYERCOMMANDS);
+	TopMenuObject player_commands = hTopMenu.FindCategory(ADMINMENU_PLAYERCOMMANDS);
 	
 	if (player_commands != INVALID_TOPMENUOBJECT)
 	{
-		AddToTopMenu(hTopMenu, 
-			"sm_gag",
-			TopMenuObject_Item,
-			AdminMenu_Gag,
-			player_commands,
-			"sm_gag",
-			ADMFLAG_CHAT);
+		hTopMenu.AddItem("sm_gag", AdminMenu_Gag, player_commands, "sm_gag", ADMFLAG_CHAT);
 	}
 }
 
 public ConVarChange_Deadtalk(Handle:convar, const String:oldValue[], const String:newValue[])
 {
-	if (GetConVarInt(g_Cvar_Deadtalk))
+	if (g_Cvar_Deadtalk.IntValue)
 	{
 		HookEvent("player_spawn", Event_PlayerSpawn, EventHookMode_Post);
 		HookEvent("player_death", Event_PlayerDeath, EventHookMode_Post);
@@ -153,24 +147,21 @@ public bool:OnClientConnect(client, String:rejectmsg[], maxlen)
 	return true;
 }
 
-public Action:Command_Say(client, const String:command[], args)
+public Action:OnClientSayCommand(client, const String:command[], const String:sArgs[])
 {
-	if (client)
+	if (client && g_Gagged[client])
 	{
-		if (g_Gagged[client])
-		{
-			return Plugin_Handled;		
-		}
+		return Plugin_Stop;
 	}
 	
 	return Plugin_Continue;
 }
 
-public ConVarChange_Alltalk(Handle:convar, const String:oldValue[], const String:newValue[])
+public void ConVarChange_Alltalk(ConVar convar, const char[] oldValue, const char[] newValue)
 {
-	new mode = GetConVarInt(g_Cvar_Deadtalk);
+	int mode = g_Cvar_Deadtalk.IntValue;
 	
-	for (new i = 1; i <= MaxClients; i++)
+	for (int i = 1; i <= MaxClients; i++)
 	{
 		if (!IsClientInGame(i))
 		{
@@ -181,7 +172,7 @@ public ConVarChange_Alltalk(Handle:convar, const String:oldValue[], const String
 		{
 			SetClientListeningFlags(i, VOICE_MUTED);
 		}
-		else if (GetConVarBool(g_Cvar_Alltalk))
+		else if (g_Cvar_Alltalk.BoolValue)
 		{
 			SetClientListeningFlags(i, VOICE_NORMAL);
 		}
@@ -199,9 +190,9 @@ public ConVarChange_Alltalk(Handle:convar, const String:oldValue[], const String
 	}
 }
 
-public Event_PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
+public Event_PlayerSpawn(Event event, const String:name[], bool:dontBroadcast)
 {
-	new client = GetClientOfUserId(GetEventInt(event, "userid"));
+	new client = GetClientOfUserId(event.GetInt("userid"));
 	
 	if (!client)
 	{
@@ -218,9 +209,9 @@ public Event_PlayerSpawn(Handle:event, const String:name[], bool:dontBroadcast)
 	}
 }
 
-public Event_PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
+public Event_PlayerDeath(Event event, const String:name[], bool:dontBroadcast)
 {
-	new client = GetClientOfUserId(GetEventInt(event, "userid"));
+	int client = GetClientOfUserId(event.GetInt("userid"));
 	
 	if (!client)
 	{
@@ -233,13 +224,13 @@ public Event_PlayerDeath(Handle:event, const String:name[], bool:dontBroadcast)
 		return;
 	}
 	
-	if (GetConVarBool(g_Cvar_Alltalk))
+	if (g_Cvar_Alltalk.BoolValue)
 	{
 		SetClientListeningFlags(client, VOICE_NORMAL);
 		return;
 	}
 	
-	new mode = GetConVarInt(g_Cvar_Deadtalk);
+	int mode = g_Cvar_Deadtalk.IntValue;
 	if (mode == 1)
 	{
 		SetClientListeningFlags(client, VOICE_LISTENALL);

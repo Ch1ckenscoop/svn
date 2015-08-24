@@ -80,4 +80,9 @@
 		"zho"		"沒有投票"
 	}
 
+	"Name Reserved"
+	{
+		"zho"		"你你名稱已被Sourcemod保留，請設定密碼以使用這個名稱"
+	}
+
 }

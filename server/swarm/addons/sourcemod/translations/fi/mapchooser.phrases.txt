@@ -40,4 +40,9 @@
 		"fi"		"Karttaäänestys päättyi. Seuraavaksi kartaksi valittiin {1}. (Saatiin {2}%% {3} äänestä)"
 	}
 
+	"Starting Runoff"
+	{
+		"fi"		"Yksikään kartoista ei saanut yli {1}%% äänistä ({2} [{3}%%] & {4} [{5}%%]), aloitetaan lisä-äänestys"
+	}
+
 }

@@ -80,4 +80,9 @@
 		"fi"		"kaikki katsojat"
 	}
 
+	"Name Reserved"
+	{
+		"fi"		"SourceMod on varannut nimesi, kirjoita salasanasi jatkaaksesi."
+	}
+
 }

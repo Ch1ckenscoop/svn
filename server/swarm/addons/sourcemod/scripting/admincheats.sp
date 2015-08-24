@@ -8,14 +8,16 @@
 //fixed the wrong statement
 //#define PLUGIN_VERSION "0.2.2"
 //shorten the console information
-#define PLUGIN_VERSION "0.2.3"
-//added send the cheat command status to player who issued the command
-
+//#define PLUGIN_VERSION "0.2.3"
+//added send the cheat status to player who has issued the cheat command
+#define PLUGIN_VERSION "0.2.4"
+//modified for sourcemod 1.7.2
+ 
 public Plugin:myinfo =
 {
 	name = "AdminCheats",
 	author = "devicenull, modified by Softcopy",
-	description = "Allow admins to use cheat commands",
+	description = "Allow admins to use cheat commands for SourceMod v1.7.2",
 	version = PLUGIN_VERSION,
 	url = "http://www.sourcemod.net/"
 };
@@ -31,8 +33,8 @@ public OnPluginStart()
 {
 	cCheatOverride = CreateConVar("sm_admin_cheats_level","z","Level required to execute cheat commands",FCVAR_PLUGIN);
 	CreateConVar("sm_admin_cheats_version",PLUGIN_VERSION,"Version Information",FCVAR_REPLICATED);
-	ccheatalert = CreateConVar("sm_admin_cheats_alert", "0", "Set 1, notify player who issued the cheat command success or not.");	//softcopy:
-	
+	ccheatalert = CreateConVar("sm_admin_cheats_alert", "1", "default=1, notify the cheat command success or not.");	//softcopy:
+
 	new String:cmdname[128];
 	new bool:iscmd, cmdflags;
 	new Handle:cmds = FindFirstConCommand(cmdname,128,iscmd,cmdflags);
@@ -66,32 +68,42 @@ public OnPluginEnd()
 
 public Action:cheatcommand(client, args)
 {
+	//softcopy:
+	new String:name[128];
+	GetClientName(client,name,128);
+	new String:steamid[64];
+
 	new String:access[8];
 	GetConVarString(cCheatOverride,access,8);
 	new String:argstring[256];
 	GetCmdArg(0,argstring,256);
 	if (client == 0)
 	{
-		LogAction(0,-1,"CONSOLE ran cheat command '%s'",argstring);
+		LogAction(0,-1,"CONSOLE ran cheat command '%s' success!",argstring);
 		return Plugin_Continue;
 	}
+	
+	//softcopy:
+	GetClientAuthId(client, AuthId_Steam2, steamid, sizeof(steamid));
+
 	if (GetUserFlagBits(client)&ReadFlagString(access) > 0 || GetUserFlagBits(client)&ADMFLAG_ROOT > 0)
 	{
-		LogClient(client,"ran cheat command '%s'",argstring);
-		for (new i=1;i<MaxClients;i++)
+		LogClient(client,"ran cheat command '%s' success!",argstring);
+		//softcopy: doesn't work on SourceMod v1.7.2
+		//for (new i=1;i<MaxClients;i++)
+		//{
+		//	if (IsClientConnected(i) && IsClientInGame(i) && !IsFakeClient(i))
+		//	{
+		//		//PrintToConsole(i,"%s <%s> ran cheat command '%s'",argstring);
+		//	}
+		//}
+		//PrintToServer("%s ran cheat command '%s' success!", name, argstring);
+		if (GetConVarInt(ccheatalert) == 1)
 		{
-			if (IsClientConnected(i) && IsClientInGame(i) && !IsFakeClient(i))
-			{
-				//softcopy: 
-				//PrintToConsole(i,"%s <%s> ran cheat command '%s'",argstring);
-				PrintToConsole(i,"ran cheat command '%s'",argstring);			//fixed the wrong statement
-				if (GetConVarInt(ccheatalert) == 1)
-				{
-					PrintToChat(client,"You ran cheat command '%s' success!",argstring);
-				}
-					
-			}
+			PrintToChat(client,"You ran cheat command '%s' success!",argstring);
 		}
+		PrintToServer("%s <%s> ran cheat command '%s' success!", name, steamid, argstring);
+
 		return Plugin_Continue;
 	}
 	//softcopy: 
@@ -101,7 +113,8 @@ public Action:cheatcommand(client, args)
 	{
 		PrintToChat(client,"You were denied to run cheat command '%s'",argstring);
 	}
-	
+	PrintToServer("%s <%s> was denied to run cheat command '%s'", name, steamid, argstring);
+
 	return Plugin_Handled;
 }
 
@@ -111,13 +124,14 @@ public LogClient(client,String:format[], any:...)
 	VFormat(buffer,512,format,3);
 	new String:name[128];
 	new String:steamid[64];
-	new String:ip[32];
-	
+	//new String:ip[32];	//softcopy:
+
 	GetClientName(client,name,128);
-	GetClientAuthString(client,steamid,64);
-	GetClientIP(client,ip,32);
-	
-	//softcopy:
+
+	//softcopy: deprecated command
+	//GetClientAuthString(client,steamid,64);
+	//GetClientIP(client,ip,32);
 	//LogAction(client,-1,"<%s><%s><%s> %s",name,steamid,ip,buffer);
-	LogAction(client,-1,"%s %s",name,buffer);		//short the information 
+	GetClientAuthId(client, AuthId_Steam2, steamid, sizeof(steamid));
+	LogAction(client,-1,"%s <%s> %s",name, steamid, buffer);
 }

@@ -55,11 +55,6 @@
 		"nl"		"Het antwoord op {1} is: {2}."
 	}
 
-	"Vote Failed"
-	{
-		"nl"		"Stemmen mislukt. {1}%% stemmen nodig. (Ontvangen: {2}%% van de {3} stemmen)"
-	}
-
 	"Vote Successful"
 	{
 		"nl"		"Stemmen gelukt. (Ontvangen: {1}%% van {2} stemmen)"
@@ -78,6 +73,21 @@
 	"Map Vote In Use"
 	{
 		"nl"		"Een andere admin is bezig met het map vote menu."
+	}
+
+	"Start the Vote"
+	{
+		"nl"		"Start de Stemming"
+	}
+
+	"Please select a map"
+	{
+		"nl"		"Selecteer aub een map"
+	}
+
+	"Vote Failed"
+	{
+		"nl"		"Stemmen mislukt. {1}%% stemmen nodig. ({2}%% van de {3} stemmen ontvangen)"
 	}
 
 }

@@ -40,4 +40,34 @@
 		"cze"		"Hrac {1} se muze znovu projevovat."
 	}
 
+	"Gag Player"
+	{
+		"cze"		"Odstrihnout hrace od chatu"
+	}
+
+	"Mute Player"
+	{
+		"cze"		"Utisit hrace"
+	}
+
+	"Silence Player"
+	{
+		"cze"		"Umlcet hrace"
+	}
+
+	"UnMute Player"
+	{
+		"cze"		"Povolit hraci mluvit"
+	}
+
+	"UnSilence Player"
+	{
+		"cze"		"Povolit hraci mluvit a psat"
+	}
+
+	"UnGag Player"
+	{
+		"cze"		"Povolit hraci psat"
+	}
+
 }

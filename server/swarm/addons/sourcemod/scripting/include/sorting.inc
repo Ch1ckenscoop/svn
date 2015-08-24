@@ -84,7 +84,7 @@ native SortFloats(Float:array[], array_size, SortOrder:order = Sort_Ascending);
  * @param order			Sorting order to use.
  * @noreturn
  */
-native SortStrings(String:array[][], num_strings, SortOrder:order = Sort_Ascending);
+native SortStrings(String:array[][], array_size, SortOrder:order = Sort_Ascending);
 
 /**
  * Sort comparison function for 1D array elements.
@@ -98,7 +98,7 @@ native SortStrings(String:array[][], num_strings, SortOrder:order = Sort_Ascendi
  *						0 if first is equal to second
  *						1 if first should go after second
  */
-functag public SortFunc1D(elem1, elem2, const array[], Handle:hndl);
+typedef SortFunc1D = function int (int elem1, int elem2, const int[] array, Handle hndl);
 
 /** 
  * Sorts a custom 1D array.  You must pass in a comparison function.
@@ -123,10 +123,10 @@ native SortCustom1D(array[], array_size, SortFunc1D:sortfunc, Handle:hndl=INVALI
  *						0 if first is equal to second
  *						1 if first should go after second
  */
-funcenum SortFunc2D
+typeset SortFunc2D
 {
-	public(array[], array[], const array[][], Handle:hndl),
-	public(String:array[], String:array[], const String:array[][], Handle:hndl),
+	function int (int[] elem1, int[] elem2, const int[][] array, Handle hndl);
+	function int (char[] elem1, char[] elem2, const char[][] array, Handle hndl);
 };
 
 /** 
@@ -163,7 +163,7 @@ native SortADTArray(Handle:array, SortOrder:order, SortType:type);
  *					0 if first is equal to second
  *					1 if first should go after second
  */
-functag public SortFuncADTArray(index1, index2, Handle:array, Handle:hndl);
+typedef SortFuncADTArray = function int (int index1, int index2, Handle array, Handle hndl);
 
 /**
  * Custom sorts an ADT Array. You must pass in a comparison function.

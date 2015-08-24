@@ -5,29 +5,9 @@
 		"sk"		"{1}"
 	}
 
-	"Back"
-	{
-		"sk"		"Naspäť"
-	}
-
-	"Exit"
-	{
-		"sk"		"Exit"
-	}
-
-	"Next"
-	{
-		"sk"		"Ďalej"
-	}
-
 	"No Access"
 	{
 		"sk"		"Nemáš prístup k tejto funkcii"
-	}
-
-	"Previous"
-	{
-		"sk"		"Naspeť"
 	}
 
 	"all alive players"
@@ -40,11 +20,6 @@
 		"sk"		"všetkých botov"
 	}
 
-	"all dead players"
-	{
-		"sk"		"všetkých mŕtvych"
-	}
-
 	"all humans"
 	{
 		"sk"		"všetkých ľudí"
@@ -55,29 +30,59 @@
 		"sk"		"všetkých hráčov"
 	}
 
-	"Changed Vote"
-	{
-		"sk"		"{1} zmenil hlas na {2}"
-	}
-
 	"Vote Count"
 	{
 		"sk"		"Hlasov: {1}/{2}, {3}s zostáva"
 	}
 
+	"No Vote"
+	{
+		"sk"		"Žiadne hlasovanie"
+	}
+
+	"Back"
+	{
+		"sk"		"Späť"
+	}
+
+	"Changed Vote"
+	{
+		"sk"		"{1} zmenil/a svoj hlas na {2} "
+	}
+
+	"Exit"
+	{
+		"sk"		"Koniec"
+	}
+
+	"Next"
+	{
+		"sk"		"Ďalší/a"
+	}
+
+	"Previous"
+	{
+		"sk"		"Predchádzajúci"
+	}
+
 	"Voted For"
 	{
-		"sk"		"{1} hlasoval pre {2}"
+		"sk"		"{1} hlasoval za {2} "
+	}
+
+	"all dead players"
+	{
+		"sk"		"všetkých mŕtvych hráčov "
 	}
 
 	"all spectators"
 	{
-		"sk"		"všetci spectatori"
+		"sk"		"všetkých divákov"
 	}
 
-	"No Vote"
+	"Name Reserved"
 	{
-		"sk"		"Žiadne hlasovanie"
+		"sk"		"Tvoje meno je rezervované; nastav si heslo aby si ho mohol použiť."
 	}
 
 }

@@ -2,7 +2,7 @@
 {
 	"Flooding the server"
 	{
-		"sk"		"Spamuješ server !"
+		"sk"		"Zahlcuješ server!"
 	}
 
 }

@@ -119,7 +119,7 @@ stock bool:StrEqual(const String:str1[], const String:str2[], bool:caseSensitive
  *       destination will be truncated.
  *
  * @param dest			Destination string buffer to copy to.
- * @param destlen		Destination buffer length (includes null terminator).
+ * @param destLen		Destination buffer length (includes null terminator).
  * @param source		Source string buffer to copy from.
  * @return				Number of cells written.
  */
@@ -323,7 +323,7 @@ native GetCharBytes(const String:source[]);
  *
  * @note Multi-byte characters will always return false.
  *
- * @param char			Character to test.
+ * @param chr			Character to test.
  * @return				True if character is alphabetical, otherwise false.
  */
 native bool:IsCharAlpha(chr);
@@ -333,7 +333,7 @@ native bool:IsCharAlpha(chr);
  *
  * @note Multi-byte characters will always return false.
  *
- * @param char			Character to test.
+ * @param chr			Character to test.
  * @return				True if character is numeric, otherwise false.
  */
 native bool:IsCharNumeric(chr);
@@ -343,7 +343,7 @@ native bool:IsCharNumeric(chr);
  *
  * @note Multi-byte characters will always return false.
  *
- * @param char			Character to test.
+ * @param chr			Character to test.
  * @return				True if character is whitespace, otherwise false.
  */
 native bool:IsCharSpace(chr);
@@ -351,7 +351,7 @@ native bool:IsCharSpace(chr);
 /**
  * Returns if a character is multi-byte or not.
  *
- * @param char			Character to test.
+ * @param chr			Character to test.
  * @return				0 for a normal 7-bit ASCII character,
  *						otherwise number of bytes in multi-byte character.
  */
@@ -362,7 +362,7 @@ native IsCharMB(chr);
  *
  * @note Multi-byte characters will always return false.
  *
- * @param char			Character to test.
+ * @param chr			Character to test.
  * @return				True if character is uppercase, otherwise false.
  */
 native bool:IsCharUpper(chr);
@@ -372,7 +372,7 @@ native bool:IsCharUpper(chr);
  *
  * @note Multi-byte characters will always return false.
  *
- * @param char			Character to test.
+ * @param chr			Character to test.
  * @return				True if character is lowercase, otherwise false.
  */
 native bool:IsCharLower(chr);
@@ -433,30 +433,19 @@ stock CharToLower(chr)
  * @return				The index of the first occurrence of the character 
  * 						in the string, or -1 if the character was not found.
  */
-stock FindCharInString(const String:str[], c, bool:reverse = false)
+stock int FindCharInString(const char[] str, char c, bool reverse = false)
 {
-	new i, len
-
-	len = strlen(str);
+	int len = strlen(str);
 	
-	if (!reverse)
-	{
-		for (i = 0; i < len; i++)
-		{
+	if (!reverse) {
+		for (int i = 0; i < len; i++) {
 			if (str[i] == c)
-			{
 				return i;
-			}
 		}
-	}
-	else
-	{
-		for (i = len - 1; i >= 0; i--)
-		{
+	} else {
+		for (int i = len - 1; i >= 0; i--) {
 			if (str[i] == c)
-			{
 				return i;
-			}
 		}
 	}
 

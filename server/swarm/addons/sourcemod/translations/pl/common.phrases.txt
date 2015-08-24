@@ -10,24 +10,9 @@
 		"pl"		"Głosowanie już trwa."
 	}
 
-	"Vote Select"
-	{
-		"pl"		"{1} wybrał {2}"
-	}
-
 	"Vote Not In Progress"
 	{
 		"pl"		"Brak głosowań w toku."
-	}
-
-	"Vote Delay Seconds"
-	{
-		"pl"		"Musisz poczekać {1} sekund(y) przed rozpoczęciem kolejnego głosowania."
-	}
-
-	"Vote Delay Minutes"
-	{
-		"pl"		"Musisz poczekać {1} minut(y) przed rozpoczęciem kolejnego głosowania. "
 	}
 
 	"Access"
@@ -63,11 +48,6 @@
 	"Changing map"
 	{
 		"pl"		"Zmiana mapy na {1}..."
-	}
-
-	"Command is in-game only"
-	{
-		"pl"		"Ta komenda możne być używana tylko w grze."
 	}
 
 	"Could not connect to database"
@@ -118,11 +98,6 @@
 	"Config not found"
 	{
 		"pl"		"Plik konfiguracyjny \"{1}\" nie został odnaleziony."
-	}
-
-	"Cvar changed"
-	{
-		"pl"		"Zmieniono zmienną \"{1}\" na \"{2}\". "
 	}
 
 	"Executed config"
@@ -180,11 +155,6 @@
 		"pl"		" Akcja nie możne być wykonana, ponieważ gracz nie żyje."
 	}
 
-	"Player no longer available"
-	{
-		"pl"		"Gracz którego wskazałeś nie jest już dostępny."
-	}
-
 	"Reload admins"
 	{
 		"pl"		"Przeładuj konta administracyjne"
@@ -225,6 +195,11 @@
 		"pl"		"Wartość zmiennej \"{1}\": \"{2}\""
 	}
 
+	"Cvar changed"
+	{
+		"pl"		"Ustawiono wartość zmiennej \"{1}\" na \"{2}\". "
+	}
+
 	"Cannot change vote"
 	{
 		"pl"		"Nie możesz zmienić swojego wyboru w tym głosowaniu."
@@ -247,7 +222,32 @@
 
 	"Invalid SteamID specified"
 	{
-		"pl"		" Określiłeś niepoprawny Steam ID (musi zaczynać się od 'STEAM_')."
+		"pl"		"Podano niepoprawny Steam ID (musi zaczynać się od 'STEAM_')."
+	}
+
+	"Command is in-game only"
+	{
+		"pl"		"Ta komenda może być używana tylko w grze."
+	}
+
+	"Player no longer available"
+	{
+		"pl"		"Wskazany gracz nie jest już dostępny."
+	}
+
+	"Vote Delay Minutes"
+	{
+		"pl"		"Musisz poczekać {1} min. przed rozpoczęciem kolejnego głosowania."
+	}
+
+	"Vote Delay Seconds"
+	{
+		"pl"		"Musisz poczekać {1} sek. przed rozpoczęciem kolejnego głosowania."
+	}
+
+	"Vote Select"
+	{
+		"pl"		"Gracz {1} wybrał {2}"
 	}
 
 }

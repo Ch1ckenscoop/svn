@@ -1,23 +1,23 @@
 "Phrases"
 {
-	"Voting Commands"
+	"Admin Menu"
 	{
-		"no"		"Avstemnings-kommandoer"
-	}
-
-	"Server Commands"
-	{
-		"no"		"Server-kommandoer"
+		"no"		"Admin meny"
 	}
 
 	"Player Commands"
 	{
-		"no"		"Spiller-kommandoer"
+		"no"		"Spiller kommandoer"
 	}
 
-	"Admin Menu"
+	"Server Commands"
 	{
-		"no"		"Admin-meny"
+		"no"		"Server kommandoer"
+	}
+
+	"Voting Commands"
+	{
+		"no"		"Avstemmnings komandoer"
 	}
 
 }

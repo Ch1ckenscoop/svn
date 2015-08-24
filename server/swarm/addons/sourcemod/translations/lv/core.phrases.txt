@@ -80,4 +80,9 @@
 		"lv"		"Nav balsojuma"
 	}
 
+	"Name Reserved"
+	{
+		"lv"		"Tavs vārds ir rezervēts iekš SourceMod; ievadi paroli lai to izmantotu."
+	}
+
 }

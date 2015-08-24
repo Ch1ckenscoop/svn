@@ -1,5 +1,5 @@
 /**
- * vim: set ts=4 :
+ * vim: set ts=4 sw=4 tw=99 noet :
  * =============================================================================
  * SourceMod Basecommands Plugin
  * Provides exec cfg functionality
@@ -31,7 +31,7 @@
  * Version: $Id$
  */
 
-new Handle:g_ConfigMenu = INVALID_HANDLE;
+Menu g_ConfigMenu = null;
 
 PerformExec(client, String:path[])
 {
@@ -61,26 +61,32 @@ public AdminMenu_ExecCFG(Handle:topmenu,
 	}
 	else if (action == TopMenuAction_SelectOption)
 	{
-		DisplayMenu(g_ConfigMenu, param, MENU_TIME_FOREVER);
+		g_ConfigMenu.Display(param, MENU_TIME_FOREVER);
 	}
 }
 
-public MenuHandler_ExecCFG(Handle:menu, MenuAction:action, param1, param2)
+public MenuHandler_ExecCFG(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Cancel)
 	{
-		if (param2 == MenuCancel_ExitBack && hTopMenu != INVALID_HANDLE)
+		if (param2 == MenuCancel_ExitBack && hTopMenu)
 		{
-			DisplayTopMenu(hTopMenu, param1, TopMenuPosition_LastCategory);
+			hTopMenu.Display(param1, TopMenuPosition_LastCategory);
 		}
 	}
 	else if (action == MenuAction_Select)
 	{
 		decl String:path[256];
 		
-		GetMenuItem(menu, param2, path, sizeof(path));
+		menu.GetItem(param2, path, sizeof(path));
 	
 		PerformExec(param1, path);
+	}
+	else if (action == MenuAction_Display)
+	{
+		decl String:title[128];
+		Format(title, sizeof(title), "%T", "Choose Config", param1);
+		SetPanelTitle(Handle:param2, title);
 	}
 }
 
@@ -100,24 +106,24 @@ public Action:Command_ExecCfg(client, args)
 	return Plugin_Handled;
 }
 
-new Handle:config_parser = INVALID_HANDLE;
+SMCParser config_parser;
 ParseConfigs()
 {
-	if (config_parser == INVALID_HANDLE)
+	if (!config_parser)
+		config_parser = new SMCParser();
+	
+	config_parser.OnEnterSection = NewSection;
+	config_parser.OnLeaveSection = EndSection;
+	config_parser.OnKeyValue = KeyValue;
+	
+	if (g_ConfigMenu != null)
 	{
-		config_parser = SMC_CreateParser();
+		delete g_ConfigMenu;
 	}
 	
-	SMC_SetReaders(config_parser, NewSection, KeyValue, EndSection);
-	
-	if (g_ConfigMenu != INVALID_HANDLE)
-	{
-		CloseHandle(g_ConfigMenu);
-	}
-	
-	g_ConfigMenu = CreateMenu(MenuHandler_ExecCFG);
-	SetMenuTitle(g_ConfigMenu, "Choose Config");
-	SetMenuExitBackButton(g_ConfigMenu, true);
+	g_ConfigMenu = CreateMenu(MenuHandler_ExecCFG, MenuAction_Display);
+	g_ConfigMenu.SetTitle("%T", "Choose Config", LANG_SERVER);
+	g_ConfigMenu.ExitBackButton = true;
 	
 	decl String:configPath[256];
 	BuildPath(Path_SM, configPath, sizeof(configPath), "configs/adminmenu_cfgs.txt");
@@ -129,8 +135,8 @@ ParseConfigs()
 		return;		
 	}
 	
-	new line;
-	new SMCError:err = SMC_ParseFile(config_parser, configPath, line);
+	int line;
+	SMCError err = config_parser.ParseFile(configPath, line);
 	if (err != SMCError_Okay)
 	{
 		decl String:error[256];
@@ -142,17 +148,17 @@ ParseConfigs()
 	return;
 }
 
-public SMCResult:NewSection(Handle:smc, const String:name[], bool:opt_quotes)
+public SMCResult NewSection(SMCParser smc, const char[] name, bool opt_quotes)
 {
 
 }
 
-public SMCResult:KeyValue(Handle:smc, const String:key[], const String:value[], bool:key_quotes, bool:value_quotes)
+public SMCResult KeyValue(SMCParser smc, const char[] key, const char[] value, bool key_quotes, bool value_quotes)
 {
-	AddMenuItem(g_ConfigMenu, key, value);
+	g_ConfigMenu.AddItem(key, value);
 }
 
-public SMCResult:EndSection(Handle:smc)
+public SMCResult EndSection(SMCParser smc)
 {
 	
 }

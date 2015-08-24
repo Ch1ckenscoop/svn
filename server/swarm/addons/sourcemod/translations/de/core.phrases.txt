@@ -45,11 +45,6 @@
 		"de"		"Verlassen"
 	}
 
-	"No Access"
-	{
-		"de"		"Du hast keinen Zugriff auf diesen Befehl!"
-	}
-
 	"Back"
 	{
 		"de"		"Zurück "
@@ -58,11 +53,6 @@
 	"Changed Vote"
 	{
 		"de"		"{1} änderte seine Abstimmung zu {2}"
-	}
-
-	"Vote Count"
-	{
-		"de"		"Stimmen: {1}/{2}, {3} übrig "
 	}
 
 	"Voted For"
@@ -75,9 +65,24 @@
 		"de"		"alle Zuschauer"
 	}
 
+	"Name Reserved"
+	{
+		"de"		"Dein Name ist durch SourceMod reserviert; setze Dein Passwort um ihn zu nutzen."
+	}
+
+	"No Access"
+	{
+		"de"		"Du hast keinen Zugriff auf diesen Befehl"
+	}
+
 	"No Vote"
 	{
-		"de"		"Keine Stimme"
+		"de"		"Nicht abstimmen"
+	}
+
+	"Vote Count"
+	{
+		"de"		"Stimmen: {1}/{2}, {3} Sekunden übrig."
 	}
 
 }

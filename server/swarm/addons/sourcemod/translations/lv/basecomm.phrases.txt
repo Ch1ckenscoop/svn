@@ -40,4 +40,34 @@
 		"lv"		"Runas/Rakstīšanas aizliegumi"
 	}
 
+	"UnSilence Player"
+	{
+		"lv"		"Noņemt saziņas aizliegumus"
+	}
+
+	"UnMute Player"
+	{
+		"lv"		"Noņemt rakstīšanas aizliegumu"
+	}
+
+	"UnGag Player"
+	{
+		"lv"		"Noņemt runāšanas aizliegumu"
+	}
+
+	"Silence Player"
+	{
+		"lv"		"Apklusināt spēlētaju"
+	}
+
+	"Mute Player"
+	{
+		"lv"		"Aizliegt runāt"
+	}
+
+	"Gag Player"
+	{
+		"lv"		"Aizliegt rakstīt"
+	}
+
 }

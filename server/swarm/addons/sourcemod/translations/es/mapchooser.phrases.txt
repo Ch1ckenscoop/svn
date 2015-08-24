@@ -40,4 +40,9 @@
 		"es"		"Vota por el siguiente mapa!"
 	}
 
+	"Starting Runoff"
+	{
+		"es"		"No hay ningún mapa que superase el {1}%% de los votos ({2} [{3}%%] & {4} [{5}%%]), comenzando segunda votación"
+	}
+
 }

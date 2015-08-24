@@ -40,4 +40,34 @@
 		"tr"		"{1} sessizleştirildi."
 	}
 
+	"UnSilence Player"
+	{
+		"tr"		"Oyuncuyu Sessizleştirme"
+	}
+
+	"UnMute Player"
+	{
+		"tr"		"Oyuncuyu Susturma"
+	}
+
+	"UnGag Player"
+	{
+		"tr"		"Oyuncunun Ağzını Tıkama"
+	}
+
+	"Silence Player"
+	{
+		"tr"		"Oyuncuyu Sessizleştir"
+	}
+
+	"Mute Player"
+	{
+		"tr"		"Oyuncuyu Sustur"
+	}
+
+	"Gag Player"
+	{
+		"tr"		"Oyuncunun Ağzını Tıka"
+	}
+
 }

@@ -15,29 +15,9 @@
 		"pt"		"{1} escolheu {2}"
 	}
 
-	"Vote Not In Progress"
-	{
-		"pt"		"Não há nenhuma votação em andamento neste momento."
-	}
-
-	"Vote Delay Seconds"
-	{
-		"pt"		"Você deve esperar {1} segundo(s) antes de iniciar outra votação."
-	}
-
-	"Vote Delay Minutes"
-	{
-		"pt"		"Você deve esperar {1} minutos antes de iniciar outra votação."
-	}
-
 	"Value of cvar"
 	{
 		"pt"		"Valor da cvar \"{1}\": \"{2}\""
-	}
-
-	"Unable to target"
-	{
-		"pt"		"Você não pode atingir esse jogador."
 	}
 
 	"Unable to find cvar"
@@ -53,16 +33,6 @@
 	"Target must be alive"
 	{
 		"pt"		"Esse comando só pode ser usado em jogadores vivos."
-	}
-
-	"Target is not in game"
-	{
-		"pt"		"O jogador selecionado não está totalmente conectado ainda."
-	}
-
-	"Slapped player"
-	{
-		"pt"		"estapeou jogador '{1}'"
 	}
 
 	"See console for output"
@@ -130,11 +100,6 @@
 		"pt"		"Mapa {1} não encontrado"
 	}
 
-	"Kicked player"
-	{
-		"pt"		"Jogador '{1}' foi expulso"
-	}
-
 	"Kicked by admin"
 	{
 		"pt"		"Expulso pelo adminstrador"
@@ -143,11 +108,6 @@
 	"Kick player"
 	{
 		"pt"		"Expulsar jogador"
-	}
-
-	"Invalid Amount"
-	{
-		"pt"		"Quantidade invalida especificada."
 	}
 
 	"Failed to query database"
@@ -165,29 +125,14 @@
 		"pt"		"Cvar \"{1}\" alterada para \"{2}\""
 	}
 
-	"Config not found"
-	{
-		"pt"		"Arquivo de configuração \"{1}\" não encontrado."
-	}
-
 	"Command is in-game only"
 	{
 		"pt"		"Esse comando só pode ser usado dentro do jogo."
 	}
 
-	"Changing map"
-	{
-		"pt"		"Mudando mapa para {1}..."
-	}
-
 	"Cannot target bot"
 	{
 		"pt"		"Esse comando não pode ser aplicado em um bot."
-	}
-
-	"Cannot be performed on dead"
-	{
-		"pt"		"Essa açao não pode ser aplicada em um jogador morto \"{1}\""
 	}
 
 	"Cancelled Vote"
@@ -208,11 +153,6 @@
 	"Access"
 	{
 		"pt"		"Acesso"
-	}
-
-	"Cannot change vote"
-	{
-		"pt"		"Você não pode mudar sua escolha nesta votação."
 	}
 
 	"Cannot participate in vote"
@@ -237,17 +177,77 @@
 
 	"Slayed player"
 	{
-		"pt"		"Jogador assassinado '{1}' "
+		"pt"		"'{1}' foi assassinado(a)"
 	}
 
 	"Invalid SteamID specified"
 	{
-		"pt"		"Você especificou um SteamID inválido (deve começar com 'STEAM_:'). "
+		"pt"		"Você especificou um SteamID inválido (precisa começar com 'STEAM_:')."
 	}
 
 	"Could not connect to database"
 	{
-		"pt"		" Não foi possível conectar-se ao banco de dados. "
+		"pt"		"Não foi possível conectar-se ao banco de dados."
+	}
+
+	"Vote Not In Progress"
+	{
+		"pt"		"Não há nenhuma votação em andamento no momento."
+	}
+
+	"Vote Delay Seconds"
+	{
+		"pt"		"Você precisa esperar {1} segundo(s) antes de iniciar outra votação."
+	}
+
+	"Vote Delay Minutes"
+	{
+		"pt"		"Você precisa esperar {1} minutos antes de iniciar outra votação."
+	}
+
+	"Unable to target"
+	{
+		"pt"		"Você não pode ter esse jogador como alvo."
+	}
+
+	"Target is not in game"
+	{
+		"pt"		"O jogador selecionado ainda não está totalmente conectado."
+	}
+
+	"Kicked player"
+	{
+		"pt"		"'{1}' foi expulso(a)"
+	}
+
+	"Slapped player"
+	{
+		"pt"		"'{1}' foi estapeado(a)"
+	}
+
+	"Invalid Amount"
+	{
+		"pt"		"Quantidade inválida especificada."
+	}
+
+	"Config not found"
+	{
+		"pt"		"Arquivo de configurações \"{1}\" não encontrado."
+	}
+
+	"Changing map"
+	{
+		"pt"		"Alterando mapa para {1}... "
+	}
+
+	"Cannot be performed on dead"
+	{
+		"pt"		"Essa ação não pode ser aplicada no jogador morto \"{1}\""
+	}
+
+	"Cannot change vote"
+	{
+		"pt"		"Você não pode alterar a sua escolha nesta votação."
 	}
 
 }

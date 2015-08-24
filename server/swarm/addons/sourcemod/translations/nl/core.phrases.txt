@@ -55,11 +55,6 @@
 		"nl"		"alle spelers"
 	}
 
-	"Voted For"
-	{
-		"nl"		"{1} heeft gestemd op {2}"
-	}
-
 	"Vote Count"
 	{
 		"nl"		"{1}/{2}, {3}s over"
@@ -78,6 +73,16 @@
 	"No Vote"
 	{
 		"nl"		"Geen Vote"
+	}
+
+	"Voted For"
+	{
+		"nl"		"{1} heeft gestemd op {2}"
+	}
+
+	"Name Reserved"
+	{
+		"nl"		"Jouw naam is gereserveerd door SourceMod; stel je wachtwoord in om het te gebruiken."
 	}
 
 }

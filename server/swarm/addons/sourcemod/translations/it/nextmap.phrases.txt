@@ -15,21 +15,6 @@
 		"it"		"[Motivo della fine]"
 	}
 
-	"Played Time"
-	{
-		"it"		"[Tempo Giocato]"
-	}
-
-	"Next Map"
-	{
-		"it"		"Mappa Successiva: {1}  "
-	}
-
-	"Map History"
-	{
-		"it"		"Cronologia Mappa"
-	}
-
 	"Map"
 	{
 		"it"		"[Mappa]"
@@ -37,7 +22,22 @@
 
 	"Current Map"
 	{
-		"it"		"Mappa Attuale"
+		"it"		"Mappa attuale"
+	}
+
+	"Map History"
+	{
+		"it"		"Cronologia delle mappe"
+	}
+
+	"Next Map"
+	{
+		"it"		"Mappa successiva: {1}"
+	}
+
+	"Played Time"
+	{
+		"it"		"[Tempo di gioco]"
 	}
 
 }

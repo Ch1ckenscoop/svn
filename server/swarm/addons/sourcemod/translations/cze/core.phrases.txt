@@ -80,4 +80,9 @@
 		"cze"		"Zadny hlas"
 	}
 
+	"Name Reserved"
+	{
+		"cze"		"Tvuj nick je rezervovan SourceModem; nastav sve heslo, abys ho mohl pouzivat."
+	}
+
 }

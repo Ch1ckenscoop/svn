@@ -40,4 +40,34 @@
 		"fr"		"{1} n'est plus muet."
 	}
 
+	"Gag Player"
+	{
+		"fr"		"Bloquer les écrits d'un joueur"
+	}
+
+	"Mute Player"
+	{
+		"fr"		"Bloquer la voix d'un joueur"
+	}
+
+	"Silence Player"
+	{
+		"fr"		"Bloquer les écrits et la voix d'un joueur"
+	}
+
+	"UnGag Player"
+	{
+		"fr"		"Rétablir l'écriture d'un joueur"
+	}
+
+	"UnMute Player"
+	{
+		"fr"		"Rétablir la parole à un joueur"
+	}
+
+	"UnSilence Player"
+	{
+		"fr"		"rétablir les écrits et la parole à un joueur"
+	}
+
 }

@@ -40,4 +40,9 @@
 		"fr"		"Map suivante changée pour \"{1}\"."
 	}
 
+	"Starting Runoff"
+	{
+		"fr"		"Aucune map n'a reçu plus de {1}%% des votes ({2} [{3}%%] & {4} [{5}%%]), un vote direct est lancé."
+	}
+
 }

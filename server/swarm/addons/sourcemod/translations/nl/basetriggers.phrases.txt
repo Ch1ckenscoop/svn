@@ -20,11 +20,6 @@
 		"nl"		"De huidige servertijd is {1}."
 	}
 
-	"Timeleft"
-	{
-		"nl"		"Tijd over voor de map:"
-	}
-
 	"FragLimit"
 	{
 		"nl"		"De map verandert nadat een speler een frag heeft gemaakt"
@@ -103,6 +98,11 @@
 	"MaxRounds"
 	{
 		"nl"		"Map verandert na een ronde"
+	}
+
+	"Timeleft"
+	{
+		"nl"		"Resterende tijd voor de map:"
 	}
 
 }

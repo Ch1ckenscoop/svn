@@ -2,7 +2,7 @@
 {
 	"Flooding the server"
 	{
-		"da"		"Du drukner serveren!"
+		"da"		"Du overbelaster serveren!"
 	}
 
 }

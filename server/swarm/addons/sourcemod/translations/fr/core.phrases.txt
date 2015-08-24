@@ -80,4 +80,9 @@
 		"fr"		"Pas de vote"
 	}
 
+	"Name Reserved"
+	{
+		"fr"		"Votre nom a été reservé par SourceMod; Définissez votre mot de passe pour l'utiliser."
+	}
+
 }

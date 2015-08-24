@@ -20,11 +20,6 @@
 		"no"		"Satte/fjernet en tidsinnstilt bombe på {1}."
 	}
 
-	"Toggled FreezeBomb on target"
-	{
-		"no"		"Satte/fjernet en kald bombe på {1}."
-	}
-
 	"Toggled FireBomb on target"
 	{
 		"no"		"Satte/fjernet en brannbombe på {1}."
@@ -70,11 +65,6 @@
 		"no"		"Halvblind"
 	}
 
-	"Gravity player"
-	{
-		"no"		"Justér spillerens tyngdekraft."
-	}
-
 	"Gravity amount"
 	{
 		"no"		"Tyngdekraft?"
@@ -113,11 +103,6 @@
 	"Froze target"
 	{
 		"no"		"Frøs {1}."
-	}
-
-	"FreezeBomb player"
-	{
-		"no"		"Send en kald bombe på spilleren."
 	}
 
 	"Freeze player"
@@ -163,6 +148,21 @@
 	"Unfrozen"
 	{
 		"no"		"Du er ikke lenger fryst."
+	}
+
+	"FreezeBomb player"
+	{
+		"no"		"Send en frys bombe på spilleren."
+	}
+
+	"Gravity player"
+	{
+		"no"		"Juster spillerens tyngdekraft. "
+	}
+
+	"Toggled FreezeBomb on target"
+	{
+		"no"		"Satte/fjernet en frys bombe på {1}. "
 	}
 
 }

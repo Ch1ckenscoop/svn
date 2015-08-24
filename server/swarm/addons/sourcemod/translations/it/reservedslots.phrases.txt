@@ -2,7 +2,7 @@
 {
 	"Slot reserved"
 	{
-		"it"		"Droppato per uso di uno slot riservato"
+		"it"		"Disconnesso per l'uso di uno slot riservato"
 	}
 
 }

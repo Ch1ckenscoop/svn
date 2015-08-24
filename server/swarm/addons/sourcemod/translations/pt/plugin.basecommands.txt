@@ -5,16 +5,6 @@
 		"pt"		"Acesso administrativo "
 	}
 
-	"Admin cache refreshed"
-	{
-		"pt"		"A lista de administradores foi atualizada. "
-	}
-
-	"Admin logged in anon"
-	{
-		"pt"		"\"{1}\" tem acesso: {2} "
-	}
-
 	"Admin logged in as"
 	{
 		"pt"		"\"{1}\" está autenticado como \"{2}\" com acesso: {3}"
@@ -23,36 +13,6 @@
 	"Ban added"
 	{
 		"pt"		"O banimento foi adicionado."
-	}
-
-	"Banned player"
-	{
-		"pt"		"Baniu jogador \"{1}\" por {2} minuto(s)."
-	}
-
-	"Banned player reason"
-	{
-		"pt"		"Baniu jogador \"{1}\" por {2} minuto(s) (motivo: {3})."
-	}
-
-	"Choose Map"
-	{
-		"pt"		"Escolher Mapa"
-	}
-
-	"Config not found"
-	{
-		"pt"		"Arquivo de configuração {1} não encontrado"
-	}
-
-	"Cvar changed"
-	{
-		"pt"		"Alterou cvar \"{1}\" para \"{2}\"."
-	}
-
-	"Cvar is now protected"
-	{
-		"pt"		"Cvar {1} agora está protegida."
 	}
 
 	"Exec CFG"
@@ -65,11 +25,6 @@
 		"pt"		"Executou configuração \"{1}\"."
 	}
 
-	"Identify player"
-	{
-		"pt"		"Indentificar jogador"
-	}
-
 	"No access to cvar"
 	{
 		"pt"		"Você não tem acesso a essa cvar."
@@ -78,16 +33,6 @@
 	"Kicked target"
 	{
 		"pt"		"Expulsou {1}"
-	}
-
-	"Permabanned player"
-	{
-		"pt"		"Baniu jogador \"{1}\" permanentemente."
-	}
-
-	"Permabanned player reason"
-	{
-		"pt"		"Baniu jogador \"{1}\" permanentemente.(motivo: {2})."
 	}
 
 	"Player is an admin"
@@ -105,11 +50,6 @@
 		"pt"		"Removeu banimentos correspondentes ao filtro: {1}"
 	}
 
-	"Unable to find cvar"
-	{
-		"pt"		"Cvar {1} não foi encontrada."
-	}
-
 	"Username"
 	{
 		"pt"		"Usuário"
@@ -123,6 +63,66 @@
 	"Kicked target reason"
 	{
 		"pt"		"Expulsou {1} (Motivo: {2})"
+	}
+
+	"Admin cache refreshed"
+	{
+		"pt"		"A lista de administradores foi atualizada."
+	}
+
+	"Admin logged in anon"
+	{
+		"pt"		"\"{1}\" possui acesso: {2}"
+	}
+
+	"Banned player"
+	{
+		"pt"		"Baniu \"{1}\" por {2} minuto(s)."
+	}
+
+	"Banned player reason"
+	{
+		"pt"		"Baniu \"{1}\" por {2} minuto(s) (motivo: {3})."
+	}
+
+	"Choose Map"
+	{
+		"pt"		"Escolher mapa"
+	}
+
+	"Config not found"
+	{
+		"pt"		"Arquivo de configurações {1} não encontrado"
+	}
+
+	"Cvar changed"
+	{
+		"pt"		"A cvar \"{1}\" foi alterada para \"{2}\"."
+	}
+
+	"Cvar is now protected"
+	{
+		"pt"		"A cvar {1} agora está protegida."
+	}
+
+	"Identify player"
+	{
+		"pt"		"Identificar jogador "
+	}
+
+	"Permabanned player"
+	{
+		"pt"		"Baniu \"{1}\" permanentemente."
+	}
+
+	"Permabanned player reason"
+	{
+		"pt"		"Baniu \"{1}\" permanentemente.(motivo: {2})."
+	}
+
+	"Unable to find cvar"
+	{
+		"pt"		"A cvar {1} não foi encontrada."
 	}
 
 }

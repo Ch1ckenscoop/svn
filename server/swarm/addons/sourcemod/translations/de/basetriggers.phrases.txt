@@ -5,104 +5,104 @@
 		"de"		"Die aktuelle Serverzeit ist {1}"
 	}
 
-	"Friendly Fire On"
-	{
-		"de"		"Teambeschuss ist aktiviert."
-	}
-
-	"Friendly Fire Off"
-	{
-		"de"		"Teambeschuss ist deaktiviert."
-	}
-
-	"Current Map"
-	{
-		"de"		"Die aktuelle Karte ist {1}."
-	}
-
-	"LastRound"
-	{
-		"de"		"Dies ist die letzte Runde!!"
-	}
-
-	"Next Map"
-	{
-		"de"		"Nächste Karte: {1}"
-	}
-
-	"NoTimelimit"
-	{
-		"de"		"Kein Zeitlimit für diese Karte"
-	}
-
 	"Pending Vote"
 	{
 		"de"		"Ausstehende Abstimmung"
 	}
 
+	"Current Map"
+	{
+		"de"		"Die aktuelle Map ist {1}."
+	}
+
 	"FragLimit"
 	{
-		"de"		"Karte wechselt, nachdem ein Spieler einen Abschuss erlangt hat "
+		"de"		"Die Map wechselt, nachdem ein Spieler einen Kill erlangt hat "
 	}
 
 	"FragLimitAppend"
 	{
-		"de"		", oder Karte wechseln nachdem ein Spieler einen Abschuss erlangt "
+		"de"		", oder Map wechseln nachdem ein Spieler einen Kill erlangt "
 	}
 
 	"FragLimitAppendPlural"
 	{
-		"de"		", oder Karte wechseln nachdem ein Spieler {1} Abschüsse erlangt "
+		"de"		", oder Map wechseln nachdem ein Spieler {1} Kills erlangt hat "
 	}
 
 	"FragLimitPlural"
 	{
-		"de"		"Karte wechselt nachdem ein Spieler {1} Abschüsse erlangt "
+		"de"		"Map wechselt, nachdem ein Spieler {1} Kills erlangt hat "
+	}
+
+	"Friendly Fire Off"
+	{
+		"de"		"Friendly Fire ist deaktiviert."
+	}
+
+	"Friendly Fire On"
+	{
+		"de"		"Friendly Fire ist aktiviert."
+	}
+
+	"LastRound"
+	{
+		"de"		"Dies ist die letzte Runde!"
 	}
 
 	"MaxRounds"
 	{
-		"de"		"Karte wechselt nach einer weiteren Runde"
+		"de"		"Map wechselt nach einer weiteren Runde "
 	}
 
 	"MaxRoundsAppend"
 	{
-		"de"		", oder Karte nach einer weiteren Runde wechseln "
+		"de"		", oder Map nach einer weiteren Runde wechseln "
 	}
 
 	"MaxRoundsAppendPlural"
 	{
-		"de"		",  oder Kartenwechsel nach {1} weiteren Runden "
+		"de"		", oder Map-Change nach {1} weiteren Runden "
 	}
 
 	"MaxRoundsPlural"
 	{
-		"de"		"Karte wechselt nach {1} weiteren Runden"
+		"de"		"Map wechselt nach {1} weiteren Runden "
 	}
 
-	"WinLimit"
+	"Next Map"
 	{
-		"de"		" Karte wechselt nachdem ein Team eine Runde gewinnt "
+		"de"		"Nächste Map: {1}"
 	}
 
-	"WinLimitAppend"
+	"NoTimelimit"
 	{
-		"de"		",  oder Karte wechseln nachdem ein Team eine Runde gewinnt "
-	}
-
-	"WinLimitAppendPlural"
-	{
-		"de"		",  oder Karte wechseln nachdem ein Team {1} Runden gewinnt "
-	}
-
-	"WinLimitPlural"
-	{
-		"de"		"Karte wechselt nachdem ein Team {1} Runden gewinnt "
+		"de"		"Kein Zeitlimit für diese Map"
 	}
 
 	"Timeleft"
 	{
-		"de"		"Verbleibende Zeit für diese Karte: "
+		"de"		"Verbleibende Zeit für diese Map: "
+	}
+
+	"WinLimit"
+	{
+		"de"		"Map wechselt, nachdem ein Team eine Runde gewinnt "
+	}
+
+	"WinLimitAppend"
+	{
+		"de"		", oder Map wechselt, nachdem ein Team eine Runde gewinnt "
+	}
+
+	"WinLimitAppendPlural"
+	{
+		"de"		", oder Map wechselt, nachdem ein Team {1} Runden gewinnt "
+	}
+
+	"WinLimitPlural"
+	{
+		"de"		"Map wechselt, nachdem ein Team {1} Runden gewinnt "
 	}
 
 }

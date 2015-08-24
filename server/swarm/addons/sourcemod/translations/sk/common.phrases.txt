@@ -10,11 +10,6 @@
 		"sk"		"Prístup"
 	}
 
-	"Admin cache refreshed"
-	{
-		"sk"		"Admini boli obnovený."
-	}
-
 	"Cancel vote"
 	{
 		"sk"		"Zrušiť hlasovanie"
@@ -28,31 +23,6 @@
 	"Cannot be performed on dead"
 	{
 		"sk"		"Akcia na nedá aplikovať na mŕtveho hráča \"{1}\" "
-	}
-
-	"Cannot target bot"
-	{
-		"sk"		"Akcia sa nedá aplikovať na bota."
-	}
-
-	"Changing map"
-	{
-		"sk"		"Mení sa mapa na {1}... "
-	}
-
-	"Command is in-game only"
-	{
-		"sk"		"Tento príkaz može byt pouzitý iba v hre."
-	}
-
-	"Config not found"
-	{
-		"sk"		"Config  \"{1}\" nebol nájdený. "
-	}
-
-	"Could not connect to database"
-	{
-		"sk"		"Nedá sa spojiť s databázou."
 	}
 
 	"Cvar changed"
@@ -75,19 +45,9 @@
 		"sk"		"Nedal sa vykonať dotaz v databázi."
 	}
 
-	"Invalid SteamID specified"
-	{
-		"sk"		"Nesprávne zadané Steam ID (Musí začínat s 'STEAM_0:')"
-	}
-
 	"Kick player"
 	{
 		"sk"		"Vyhodiť hráča"
-	}
-
-	"Kicked by admin"
-	{
-		"sk"		"Vyhodený adminom."
 	}
 
 	"Kicked player"
@@ -100,16 +60,6 @@
 		"sk"		"Mapa {1} nebola nájdená. "
 	}
 
-	"More than one client matched"
-	{
-		"sk"		"Viac ako jeden admin bol nájdený pre zadané kritéria."
-	}
-
-	"More than one client matches"
-	{
-		"sk"		"Viac ako jeden admin bol nájdený pre zadané kritéria \"{1}\" "
-	}
-
 	"Name"
 	{
 		"sk"		"Meno"
@@ -120,24 +70,9 @@
 		"sk"		"Nie"
 	}
 
-	"No Votes Cast"
-	{
-		"sk"		"Žiadne hlasovanie"
-	}
-
 	"No access to cvar"
 	{
 		"sk"		"Nemáte prístup k tomuto cvaru."
-	}
-
-	"No matching client"
-	{
-		"sk"		"Žiadna zhoda"
-	}
-
-	"No matching clients"
-	{
-		"sk"		"Žiadna zhoda"
 	}
 
 	"Off"
@@ -148,16 +83,6 @@
 	"On"
 	{
 		"sk"		"Zapnúť"
-	}
-
-	"Player has since died"
-	{
-		"sk"		"Akcia nemôže byt vykonaná, pretože hráč uz zomrel."
-	}
-
-	"Player no longer available"
-	{
-		"sk"		"Vybraný hráč už odišiel."
 	}
 
 	"See console for output"
@@ -178,16 +103,6 @@
 	"Vote Not In Progress"
 	{
 		"sk"		"Hlasovanie ešte nebolo spustené."
-	}
-
-	"Vote Delay Seconds"
-	{
-		"sk"		"Musíš čakat {1} sekúnd pred ďalším hlasovaním."
-	}
-
-	"Vote Delay Minutes"
-	{
-		"sk"		"Musíš čakat {1} minút pred ďalším hlasovaním."
 	}
 
 	"Value of cvar"
@@ -225,29 +140,114 @@
 		"sk"		"Zabitý hráč '{1}' "
 	}
 
-	"Reload admins"
-	{
-		"sk"		"Znovunačítať adminov."
-	}
-
 	"Played Sound"
 	{
 		"sk"		"Pustil zvuk hráčovi '{1}'  "
 	}
 
+	"Slapped player"
+	{
+		"sk"		"Slapnutý hráč '{1}' "
+	}
+
 	"Cannot change vote"
 	{
-		"sk"		"Nedá sa zmeniť výber pre toto hlasovanie."
+		"sk"		"Nemôžeš zmeniť svoj výber pre toto hlasovanie."
 	}
 
 	"Cannot participate in vote"
 	{
-		"sk"		"Nemôžte hlasovať."
+		"sk"		"Nemôžeš sa zúčastniť tohto hlasovania."
 	}
 
-	"Slapped player"
+	"Cannot target bot"
 	{
-		"sk"		"Slapnutý hráč '{1}' "
+		"sk"		"Nie je možné vykonať tento príkaz na botovi."
+	}
+
+	"Changing map"
+	{
+		"sk"		"Mapa sa mení na {1}..."
+	}
+
+	"Command is in-game only"
+	{
+		"sk"		"Tento príkaz može byt použitý iba v hre. "
+	}
+
+	"Admin cache refreshed"
+	{
+		"sk"		"Admin cache bol obnovený."
+	}
+
+	"Config not found"
+	{
+		"sk"		"Konfiguračný súbor \"{1}\" nebol nájdený. "
+	}
+
+	"Could not connect to database"
+	{
+		"sk"		"Nebolo možné sa pripojiť k databáze."
+	}
+
+	"Kicked by admin"
+	{
+		"sk"		"Vyhodený administrátorom"
+	}
+
+	"More than one client matched"
+	{
+		"sk"		"Viac ako jeden klient vyhovoval kritériám."
+	}
+
+	"More than one client matches"
+	{
+		"sk"		"Viac ako jeden klient vyhovuje kritériám \"{1}\""
+	}
+
+	"Player has since died"
+	{
+		"sk"		"Akcia nemôže byť vykonaná, pretože hráč už zomrel. "
+	}
+
+	"Invalid SteamID specified"
+	{
+		"sk"		"	Nesprávne zadané Steam ID (Musí začínat s 'STEAM_') "
+	}
+
+	"No Votes Cast"
+	{
+		"sk"		"Nikto nehlasoval."
+	}
+
+	"No matching client"
+	{
+		"sk"		"Žiadna zhoda s hráčom nebola nájdená."
+	}
+
+	"No matching clients"
+	{
+		"sk"		"Žiadna zhoda s hráčmi nebola nájdená."
+	}
+
+	"Reload admins"
+	{
+		"sk"		"Znovunačítať adminov"
+	}
+
+	"Vote Delay Minutes"
+	{
+		"sk"		"Musíš počkať {1} minút pred ďalším hlasovaním. "
+	}
+
+	"Vote Delay Seconds"
+	{
+		"sk"		"Musíš počkať {1} sekúnd pred ďalším hlasovaním. "
+	}
+
+	"Player no longer available"
+	{
+		"sk"		"Vybraný hráč už nie je dostupný."
 	}
 
 }

@@ -1,10 +1,5 @@
 "Phrases"
 {
-	"Current Map Extended"
-	{
-		"nl"		"De huidige map is verlengd."
-	}
-
 	"Extend Map"
 	{
 		"nl"		"Verleng huidige map"
@@ -25,19 +20,29 @@
 		"nl"		"Stem voor de volgende map!"
 	}
 
+	"Dont Change"
+	{
+		"nl"		"Niet veranderen"
+	}
+
+	"Starting Runoff"
+	{
+		"nl"		"Geen map kreeg meer dan {1}%% stemmen ({2} [{3}%%] & {4} [{5}%%]), alternatieve stemming wordt gestart"
+	}
+
 	"Changed Next Map"
 	{
-		"nl"		"Volgende map verandert naar \"{1}\"."
+		"nl"		"Volgende map veranderd naar \"{1}\"."
+	}
+
+	"Current Map Extended"
+	{
+		"nl"		"De huidige map is verlengd. ({1}%% van de {2} stemmen ontvangen)"
 	}
 
 	"Current Map Stays"
 	{
-		"nl"		"Huidige map gaat verder! De Stem heeft gesproken! (Ontvangen {1}%% van de {2} stemmen)"
-	}
-
-	"Dont Change"
-	{
-		"nl"		"Niet veranderen"
+		"nl"		"Huidige map gaat verder! De Stem heeft gesproken! ({1}%% van de {2} stemmen ontvangen)"
 	}
 
 }

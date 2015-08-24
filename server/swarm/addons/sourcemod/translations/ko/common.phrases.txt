@@ -52,7 +52,7 @@
 
 	"Could not connect to database"
 	{
-		"ko"		"데이터베이스에 연결할 수 없었습니다."
+		"ko"		"데이터베이스에 연결할 수 없습니다."
 	}
 
 	"Cvar changed"
@@ -90,6 +90,16 @@
 		"ko"		"맵 {1} 을 찾을 수 없습니다."
 	}
 
+	"More than one client matched"
+	{
+		"ko"		"주어진 양식에 두 명 이상의 클라이언트가 일치합니다."
+	}
+
+	"More than one client matches"
+	{
+		"ko"		"양식 \"{1}\" 에 두 명 이상의 클라이언트가 일치합니다."
+	}
+
 	"Name"
 	{
 		"ko"		"이름"
@@ -102,7 +112,7 @@
 
 	"No access to cvar"
 	{
-		"ko"		"당신은 이 설정변수에 대한 권한이 없습니다"
+		"ko"		"당신은 이 설정변수에 대한 권한이 없습니다."
 	}
 
 	"No matching client"
@@ -147,7 +157,7 @@
 
 	"Slapped player"
 	{
-		"ko"		"플레이어 '{1}' 에게 데미지를 주었습니다"
+		"ko"		"플레이어 '{1}' 에게 피해를 주었습니다"
 	}
 
 	"Slayed player"
@@ -210,11 +220,6 @@
 		"ko"		"다른 투표를 시작하기 전에 {1} 초 동안 기다려야 합니다."
 	}
 
-	"Vote Not In Progress"
-	{
-		"ko"		"지금은 투표가 진행되지 않습니다."
-	}
-
 	"Access"
 	{
 		"ko"		"권한"
@@ -230,16 +235,6 @@
 		"ko"		"플레이어 추방하기"
 	}
 
-	"More than one client matched"
-	{
-		"ko"		"클라이언트 검색 결과가 2명 이상입니다."
-	}
-
-	"More than one client matches"
-	{
-		"ko"		"클라이언트 검색 결과(검색어 : \"{1}\") 가 2명 이상입니다."
-	}
-
 	"No"
 	{
 		"ko"		"아니오"
@@ -248,6 +243,11 @@
 	"Reload admins"
 	{
 		"ko"		"관리자 목록 새로고침"
+	}
+
+	"Vote Not In Progress"
+	{
+		"ko"		"지금은 투표가 진행되고 있지 않는 중입니다."
 	}
 
 }

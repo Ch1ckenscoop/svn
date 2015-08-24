@@ -27,7 +27,7 @@
 
 	"Name changed"
 	{
-		"pl"		"Admin zmienił Twój nick"
+		"pl"		"Admin zmienił twój nick"
 	}
 
 	"Rename player"
@@ -37,12 +37,12 @@
 
 	"Renamed target"
 	{
-		"pl"		"Zmieniono nicka {1}.  "
+		"pl"		"Zmieniono nick graczowi {1}."
 	}
 
 	"Dead Player Rename"
 	{
-		"pl"		"Nick {1} zostanie zmieniony w następnej rundzie."
+		"pl"		"Nick gracza {1} zostanie zmieniony w następnej rundzie."
 	}
 
 }

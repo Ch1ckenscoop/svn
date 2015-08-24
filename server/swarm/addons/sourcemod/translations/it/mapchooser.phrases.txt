@@ -1,43 +1,48 @@
 "Phrases"
 {
+	"Vote Nextmap"
+	{
+		"it"		"Vota per la prossima mappa!"
+	}
+
 	"Changed Next Map"
 	{
-		"it"		"Cambiata la prossima mappa con \"{1}\".  "
+		"it"		"La prossima mappa è stata cambiata in \"{1}\"."
 	}
 
 	"Current Map Extended"
 	{
-		"it"		"La mappa attuale è stata estesa. (Ricevuti l' {1}%% su {2} voti)  "
+		"it"		"La mappa attuale è stata estesa. (Voti ricevuti: {1}%% di {2}) "
 	}
 
 	"Current Map Stays"
 	{
-		"it"		"La mappa attuale continua! il volto è stato scelto! (Ricevuti l' {1}%% su {2} voti)  "
+		"it"		"La mappa attuale continua! La votazione ha deciso! (Voti ricevuti: {1}%% di {2}) "
 	}
 
 	"Dont Change"
 	{
-		"it"		"Non Cambiare"
+		"it"		"Non cambiare"
 	}
 
 	"Extend Map"
 	{
-		"it"		"Estendi Mappa Attuale"
+		"it"		"Estendi la mappa attuale"
 	}
 
 	"Nextmap Voting Finished"
 	{
-		"it"		"Voto mappa terminato. La prossima mappa sarà {1}. (Ricevuti {2}%% su {3} voti)  "
+		"it"		"La votazione è terminata. La prossima mappa sarà {1}. (Voti ricevuti: {2}%% di {3}) "
 	}
 
 	"Nextmap Voting Started"
 	{
-		"it"		"Voto per la prossima mappa avviato."
+		"it"		"La votazione per la prossima mappa è iniziata."
 	}
 
-	"Vote Nextmap"
+	"Starting Runoff"
 	{
-		"it"		"Vota per la prossima mappa!"
+		"it"		"Nessuna mappa ha superato la percentuale di voti richiesti: {1}%% ({2} [{3}%%] e {4} [{5}%%]), inizio della votazione di spareggio"
 	}
 
 }

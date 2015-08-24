@@ -38,23 +38,41 @@ PerformBlind(client, target, amount)
 	new targets[2];
 	targets[0] = target;
 	
-	new Handle:message = StartMessageEx(g_FadeUserMsgId, targets, 1);
-	BfWriteShort(message, 1536);
-	BfWriteShort(message, 1536);
-	
+	new duration = 1536;
+	new holdtime = 1536;
+	new flags;
 	if (amount == 0)
 	{
-		BfWriteShort(message, (0x0001 | 0x0010));
+		flags = (0x0001 | 0x0010);
 	}
 	else
 	{
-		BfWriteShort(message, (0x0002 | 0x0008));
+		flags = (0x0002 | 0x0008);
 	}
 	
-	BfWriteByte(message, 0);
-	BfWriteByte(message, 0);
-	BfWriteByte(message, 0);
-	BfWriteByte(message, amount);
+	new color[4] = { 0, 0, 0, 0 };
+	color[3] = amount;
+	
+	Handle message = StartMessageEx(g_FadeUserMsgId, targets, 1);
+	if (GetUserMessageType() == UM_Protobuf)
+	{
+		Protobuf pb = UserMessageToProtobuf(message);
+		pb.SetInt("duration", duration);
+		pb.SetInt("hold_time", holdtime);
+		pb.SetInt("flags", flags);
+		pb.SetColor("clr", color);
+	}
+	else
+	{
+		BfWrite bf = UserMessageToBfWrite(message);
+		bf.WriteShort(duration);
+		bf.WriteShort(holdtime);
+		bf.WriteShort(flags);		
+		bf.WriteByte(color[0]);
+		bf.WriteByte(color[1]);
+		bf.WriteByte(color[2]);
+		bf.WriteByte(color[3]);
+	}
 	
 	EndMessage();
 
@@ -85,45 +103,45 @@ public AdminMenu_Blind(Handle:topmenu,
 
 DisplayBlindMenu(client)
 {
-	new Handle:menu = CreateMenu(MenuHandler_Blind);
+	Menu menu = CreateMenu(MenuHandler_Blind);
 	
 	decl String:title[100];
 	Format(title, sizeof(title), "%T:", "Blind player", client);
-	SetMenuTitle(menu, title);
-	SetMenuExitBackButton(menu, true);
+	menu.SetTitle(title);
+	menu.ExitBackButton = true;
 	
 	AddTargetsToMenu(menu, client, true, true);
 	
-	DisplayMenu(menu, client, MENU_TIME_FOREVER);
+	menu.Display(client, MENU_TIME_FOREVER);
 }
 
 DisplayAmountMenu(client)
 {
-	new Handle:menu = CreateMenu(MenuHandler_Amount);
+	Menu menu = CreateMenu(MenuHandler_Amount);
 	
 	decl String:title[100];
 	Format(title, sizeof(title), "%T: %N", "Blind amount", client, GetClientOfUserId(g_BlindTarget[client]));
-	SetMenuTitle(menu, title);
-	SetMenuExitBackButton(menu, true);
+	menu.SetTitle(title);
+	menu.ExitBackButton = true;
 	
-	AddMenuItem(menu, "255", "Fully blind");
-	AddMenuItem(menu, "240", "Half blind");
-	AddMenuItem(menu, "0", "No blind");
+	AddTranslatedMenuItem(menu, "255", "Fully blind", client);
+	AddTranslatedMenuItem(menu, "240", "Half blind", client);
+	AddTranslatedMenuItem(menu, "0", "No blind", client);
 	
-	DisplayMenu(menu, client, MENU_TIME_FOREVER);
+	menu.Display(client, MENU_TIME_FOREVER);
 }
 
-public MenuHandler_Blind(Handle:menu, MenuAction:action, param1, param2)
+public MenuHandler_Blind(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_End)
 	{
-		CloseHandle(menu);
+		delete menu;
 	}
 	else if (action == MenuAction_Cancel)
 	{
-		if (param2 == MenuCancel_ExitBack && hTopMenu != INVALID_HANDLE)
+		if (param2 == MenuCancel_ExitBack && hTopMenu)
 		{
-			DisplayTopMenu(hTopMenu, param1, TopMenuPosition_LastCategory);
+			hTopMenu.Display(param1, TopMenuPosition_LastCategory);
 		}
 	}
 	else if (action == MenuAction_Select)
@@ -131,7 +149,7 @@ public MenuHandler_Blind(Handle:menu, MenuAction:action, param1, param2)
 		decl String:info[32];
 		new userid, target;
 		
-		GetMenuItem(menu, param2, info, sizeof(info));
+		menu.GetItem(param2, info, sizeof(info));
 		userid = StringToInt(info);
 
 		if ((target = GetClientOfUserId(userid)) == 0)
@@ -159,17 +177,17 @@ public MenuHandler_Blind(Handle:menu, MenuAction:action, param1, param2)
 	return;
 }
 
-public MenuHandler_Amount(Handle:menu, MenuAction:action, param1, param2)
+public MenuHandler_Amount(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_End)
 	{
-		CloseHandle(menu);
+		delete menu;
 	}
 	else if (action == MenuAction_Cancel)
 	{
-		if (param2 == MenuCancel_ExitBack && hTopMenu != INVALID_HANDLE)
+		if (param2 == MenuCancel_ExitBack && hTopMenu)
 		{
-			DisplayTopMenu(hTopMenu, param1, TopMenuPosition_LastCategory);
+			hTopMenu.Display(param1, TopMenuPosition_LastCategory);
 		}
 	}
 	else if (action == MenuAction_Select)
@@ -177,7 +195,7 @@ public MenuHandler_Amount(Handle:menu, MenuAction:action, param1, param2)
 		decl String:info[32];
 		new amount, target;
 		
-		GetMenuItem(menu, param2, info, sizeof(info));
+		menu.GetItem(param2, info, sizeof(info));
 		amount = StringToInt(info);
 
 		if ((target = GetClientOfUserId(g_BlindTarget[param1])) == 0)

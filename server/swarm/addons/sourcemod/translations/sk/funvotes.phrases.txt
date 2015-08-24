@@ -5,34 +5,14 @@
 		"sk"		"Alltalk hlasovanie"
 	}
 
-	"Burn vote"
-	{
-		"sk"		"Hlasovať na podpálenie"
-	}
-
 	"Change Gravity To"
 	{
 		"sk"		"Zmeniť gravitáciu na {1} ?"
 	}
 
-	"Gravity Vote"
-	{
-		"sk"		"Hlasovanie gravitácie : {1}"
-	}
-
 	"Initiated Vote Alltalk"
 	{
 		"sk"		"Spustené hlasovanie alltalk"
-	}
-
-	"Gravity vote"
-	{
-		"sk"		"Hlasovanie gravitácie"
-	}
-
-	"Initiated Vote Burn"
-	{
-		"sk"		"Spustené hlasovanie na podpal hráča {1}."
 	}
 
 	"Initiated Vote FF"
@@ -48,11 +28,6 @@
 	"Initiated Vote Slay"
 	{
 		"sk"		"Spustené hlasovanie na zabitie hráča {1}."
-	}
-
-	"Slay vote"
-	{
-		"sk"		"Hlasovanie na zabiťie hráča"
 	}
 
 	"Slayed player"
@@ -93,6 +68,31 @@
 	"Voteslay Player"
 	{
 		"sk"		"Zabiť hráča {1}?"
+	}
+
+	"Burn vote"
+	{
+		"sk"		"Hlasovať za podpálenie"
+	}
+
+	"Gravity vote"
+	{
+		"sk"		"Hlasovanie o zmenu gravitácie"
+	}
+
+	"Gravity Vote"
+	{
+		"sk"		"Hlasovanie o zmenu gravitácie: {1}"
+	}
+
+	"Initiated Vote Burn"
+	{
+		"sk"		"Spustené hlasovanie na podpálenie hráča {1}."
+	}
+
+	"Slay vote"
+	{
+		"sk"		"Hlasovanie za zabitie hráča "
 	}
 
 }

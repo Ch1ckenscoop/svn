@@ -45,4 +45,19 @@
 		"fr"		"Le ban a été ajouté"
 	}
 
+	"AbortBan applied successfully"
+	{
+		"fr"		"Ban annulé"
+	}
+
+	"Custom ban reason explanation"
+	{
+		"fr"		"Saisissez la raison du ban dans un message. {1} pour annuler."
+	}
+
+	"AbortBan not waiting for custom reason"
+	{
+		"fr"		"Aucun besoin de motif pour le ban, rien à annuler."
+	}
+
 }

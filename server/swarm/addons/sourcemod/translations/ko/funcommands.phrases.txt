@@ -117,7 +117,7 @@
 
 	"Till Explodes"
 	{
-		"ko"		"{1} 님이 폭발하기까지 {2} 초"
+		"ko"		"{1} 님이 폭발하기까지 {2} 초."
 	}
 
 	"TimeBomb player"
@@ -132,12 +132,12 @@
 
 	"Unfrozen"
 	{
-		"ko"		"이제 해동되었습니다"
+		"ko"		"이제 해동되었습니다."
 	}
 
 	"You will be unfrozen"
 	{
-		"ko"		"{1} 초 후 해동될 것입니다"
+		"ko"		"{1} 초 후 해동될 것입니다."
 	}
 
 	"Toggled FireBomb on target"

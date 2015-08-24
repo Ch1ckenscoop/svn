@@ -67,17 +67,22 @@
 
 	"Vote Count"
 	{
-		"sv"		"{1}/{1}, {3} kvar"
-	}
-
-	"Changed Vote"
-	{
-		"sv"		"{1} ändrade deras röst till {2}"
+		"sv"		"{1}/{2}, {3} kvar"
 	}
 
 	"No Vote"
 	{
 		"sv"		"Ingen röst"
+	}
+
+	"Changed Vote"
+	{
+		"sv"		"{1} ändrade sin röst till {2}"
+	}
+
+	"Name Reserved"
+	{
+		"sv"		"Ditt namn är reserverat av SourceMod; ställ in ditt lösenord för att använda namnet."
 	}
 
 }

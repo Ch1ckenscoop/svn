@@ -1,18 +1,8 @@
 "Phrases"
 {
-	"Already Nominated"
-	{
-		"pl"		"Już nominowałeś mapę."
-	}
-
 	"Map Already In Vote"
 	{
 		"pl"		"Mapa '{1}' znajduje się już na liście nominacji."
-	}
-
-	"Map Already Nominated"
-	{
-		"pl"		"Mapa którą wybrałeś została już nominowana."
 	}
 
 	"Map Inserted"
@@ -20,49 +10,59 @@
 		"pl"		"Mapa '{1}' została dodana na listę nominacji."
 	}
 
-	"Map Nominated"
-	{
-		"pl"		"{1} nominował {2}."
-	}
-
-	"Map Nomination Changed"
-	{
-		"pl"		"{1} zmienił swoją nominację na {2}."
-	}
-
-	"Nominate Title"
-	{
-		"pl"		"Nominuj Mapę:"
-	}
-
-	"Current Map"
-	{
-		"pl"		"Aktualna Mapa"
-	}
-
 	"Nominated"
 	{
 		"pl"		"Nominowana"
 	}
 
-	"Recently Played"
+	"Max Nominations"
 	{
-		"pl"		"Ostatnio Grana"
+		"pl"		"Maksymalna dozwolona liczba nominacji została osiągnięta."
 	}
 
-	"Map in Exclude List"
+	"Current Map"
 	{
-		"pl"		"Mapa którą wybrałeś była ostatnio grana i nie możne być nominowana."
+		"pl"		"Aktualna mapa"
+	}
+
+	"Map Nominated"
+	{
+		"pl"		"{1} nominuje {2}."
+	}
+
+	"Map Nomination Changed"
+	{
+		"pl"		"{1} zmienia swoją nominację na {2}. "
+	}
+
+	"Nominate Title"
+	{
+		"pl"		"Nominuj mapę:"
+	}
+
+	"Recently Played"
+	{
+		"pl"		"Ostatnio grana"
+	}
+
+	"Already Nominated"
+	{
+		"pl"		"Ta mapa została już przez ciebie nominowana."
 	}
 
 	"Can't Nominate Current Map"
 	{
-		"pl"		"Mapa którą wybrałeś jest aktualnie grana i nie możne być nominowana."
+		"pl"		"Ta mapa jest obecnie grana i nie możesz jej nominować."
 	}
 
-	"Max Nominations"
+	"Map Already Nominated"
 	{
-		"pl"		"Maksymalna dozwolona liczba nominacji została osiągnięta."
+		"pl"		"Wybrana przez ciebie mapa została już wcześniej nominowana."
+	}
+
+	"Map in Exclude List"
+	{
+		"pl"		"Wybrana przez ciebie mapa była ostatnio grana i nie możne zostać nominowana."
 	}
 
 }

@@ -40,4 +40,9 @@
 		"hu"		"\"{1}\" lesz a kovetkezo palya"
 	}
 
+	"Starting Runoff"
+	{
+		"hu"		"Egy pálya se kapot legalább {1}%%t  ({2} [{3}%%] & {4} [{5}%%]), végső szavazás indítása."
+	}
+
 }

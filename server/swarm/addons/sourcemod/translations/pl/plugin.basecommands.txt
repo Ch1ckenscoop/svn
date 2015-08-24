@@ -10,29 +10,9 @@
 		"pl"		"Konta administracyjne zostały odświeżone."
 	}
 
-	"Admin logged in anon"
-	{
-		"pl"		"{1}\" posiada dostęp: {2} "
-	}
-
-	"Admin logged in as"
-	{
-		"pl"		"\"{1}\" jest zalogowany jako \"{2}\" z dostępem: {3}"
-	}
-
 	"Ban added"
 	{
 		"pl"		"Ban został dodany."
-	}
-
-	"Banned player"
-	{
-		"pl"		"Zbanowano gracza \"{1}\" na {2} minut(y)."
-	}
-
-	"Choose Map"
-	{
-		"pl"		"Wybierz Mapę "
 	}
 
 	"Cvar changed"
@@ -105,9 +85,14 @@
 		"pl"		"Plik konfiguracyjny \"{1}\" nie został odnaleziony."
 	}
 
+	"Admin logged in as"
+	{
+		"pl"		"Gracz \"{1}\" jest zalogowany jako \"{2}\" z dostępem: {3}"
+	}
+
 	"Banned player reason"
 	{
-		"pl"		"Zbanowano gracza \"{1}\" na {2} minut(y) (powód: {3}).  "
+		"pl"		"Zbanowano gracza \"{1}\" na {2} min. (powód: {3})."
 	}
 
 	"Permabanned player reason"
@@ -123,6 +108,21 @@
 	"Kicked target"
 	{
 		"pl"		"Wykopano {1}"
+	}
+
+	"Banned player"
+	{
+		"pl"		"Zbanowano gracza \"{1}\" na {2} min."
+	}
+
+	"Choose Map"
+	{
+		"pl"		"Wybierz mapę"
+	}
+
+	"Admin logged in anon"
+	{
+		"pl"		"\"{1}\" posiada dostęp: {2}"
 	}
 
 }

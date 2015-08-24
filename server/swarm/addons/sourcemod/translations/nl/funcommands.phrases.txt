@@ -125,36 +125,6 @@
 		"nl"		"Maak speler tijdbom"
 	}
 
-	"Toggled FireBomb on target"
-	{
-		"nl"		"tijdbom verandert voor {1}."
-	}
-
-	"Toggled FreezeBomb on target"
-	{
-		"nl"		"vriesbom verandert voor {1}."
-	}
-
-	"Toggled TimeBomb on target"
-	{
-		"nl"		"tijdbom verandert voor {1}."
-	}
-
-	"Toggled beacon on target"
-	{
-		"nl"		"beacon verandert voor {1}."
-	}
-
-	"Toggled drug on target"
-	{
-		"nl"		"drugs verandert voor {1}."
-	}
-
-	"Toggled noclip on target"
-	{
-		"nl"		"noclip verandert voor {1}."
-	}
-
 	"Unfrozen"
 	{
 		"nl"		"Je bent nu bevroren."
@@ -163,6 +133,36 @@
 	"You will be unfrozen"
 	{
 		"nl"		"Je zult ontdooien in {1} seconden."
+	}
+
+	"Toggled FireBomb on target"
+	{
+		"nl"		"tijdbom veranderd voor {1}."
+	}
+
+	"Toggled FreezeBomb on target"
+	{
+		"nl"		"vriesbom veranderd voor {1}."
+	}
+
+	"Toggled TimeBomb on target"
+	{
+		"nl"		"tijdbom veranderd voor {2}."
+	}
+
+	"Toggled beacon on target"
+	{
+		"nl"		"beacon veranderd voor {1}."
+	}
+
+	"Toggled drug on target"
+	{
+		"nl"		"drugs veranderd voor {1}."
+	}
+
+	"Toggled noclip on target"
+	{
+		"nl"		"noclip veranderd voor {1}."
 	}
 
 }

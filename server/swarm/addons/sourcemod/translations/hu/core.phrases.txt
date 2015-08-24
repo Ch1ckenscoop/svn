@@ -80,4 +80,9 @@
 		"hu"		"Tartózkodom"
 	}
 
+	"Name Reserved"
+	{
+		"hu"		"A neved a SourceMod védi ezen a szerveren, használathoz állítsd be a jelszavad."
+	}
+
 }

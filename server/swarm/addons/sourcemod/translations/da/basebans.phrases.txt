@@ -45,4 +45,19 @@
 		"da"		"Bandlysningen er blevet tilføjet. "
 	}
 
+	"AbortBan applied successfully"
+	{
+		"da"		"Bandlysning afbrudt."
+	}
+
+	"Custom ban reason explanation"
+	{
+		"da"		"Skriv årsag som en chat besked. Brug {1} for at afbryde dette."
+	}
+
+	"AbortBan not waiting for custom reason"
+	{
+		"da"		"Venter ikke på at en bandlysnings årsag bliver skrevet ind, ingen bandlysning til at afbryde."
+	}
+
 }

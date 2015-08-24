@@ -30,16 +30,6 @@
 		"nl"		"Map '{1}' is toegevoegd aan de nominatie lijst."
 	}
 
-	"Map Nominated"
-	{
-		"nl"		"{1} is genomineerd {2}."
-	}
-
-	"Map Nomination Changed"
-	{
-		"nl"		"{1} heeft zijn nominatie verandert naar {2}."
-	}
-
 	"Map in Exclude List"
 	{
 		"nl"		"De map die je hebt gekozen is recentelijk gespeeld en kan niet genomineerd worden"
@@ -63,6 +53,16 @@
 	"Recently Played"
 	{
 		"nl"		"Recentelijk gespeeld"
+	}
+
+	"Map Nominated"
+	{
+		"nl"		"{1} heeft {2} genomineerd."
+	}
+
+	"Map Nomination Changed"
+	{
+		"nl"		"{1} heeft zjin nominatie veranderd naar {2}."
 	}
 
 }

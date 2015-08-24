@@ -45,4 +45,19 @@
 		"jp"		"BANを追加しました。"
 	}
 
+	"AbortBan applied successfully"
+	{
+		"jp"		"BANをキャンセルしました。"
+	}
+
+	"AbortBan not waiting for custom reason"
+	{
+		"jp"		"BANの理由の入力を待っていないため、BANをキャンセルできません。"
+	}
+
+	"Custom ban reason explanation"
+	{
+		"jp"		"BANの理由をチャットで入力してください。キャンセルするには{1}を利用します。"
+	}
+
 }

@@ -15,11 +15,6 @@
 		"sk"		"Slapnúť hráča"
 	}
 
-	"Slap damage"
-	{
-		"sk"		"Slapnúť X života"
-	}
-
 	"Slapped target"
 	{
 		"sk"		"Slapnutý {1}. "
@@ -42,7 +37,12 @@
 
 	"Dead Player Rename"
 	{
-		"sk"		"{1} bude premenovaný ďalšie kolo."
+		"sk"		"{1} bude premenovaný v ďalšom kole. "
+	}
+
+	"Slap damage"
+	{
+		"sk"		"Sila slapu"
 	}
 
 }

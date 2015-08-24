@@ -1,15 +1,5 @@
 "Phrases"
 {
-	"Choose Option"
-	{
-		"pl"		"Wybierz Opcje"
-	}
-
-	"Client Settings"
-	{
-		"pl"		"Ustawienia Klienta"
-	}
-
 	"Cookie Changed Value"
 	{
 		"pl"		"Zmieniono wartość ciasteczka \"{1}\" na \"{2}\""
@@ -30,11 +20,6 @@
 		"pl"		"Nie można wyświetlić menu ustawień w konsoli"
 	}
 
-	"Printing Cookie List"
-	{
-		"pl"		"Drukowanie listy ciasteczek do konsoli"
-	}
-
 	"Protected Cookie"
 	{
 		"pl"		"Nie można zmienić wartości zabezpieczonego ciasteczka \"{1}\""
@@ -42,7 +27,22 @@
 
 	"Cookie List"
 	{
-		"pl"		"Lista ciasteczek SourceMod'a"
+		"pl"		"Lista ciasteczek SourceModa "
+	}
+
+	"Choose Option"
+	{
+		"pl"		"Wybierz opcję"
+	}
+
+	"Client Settings"
+	{
+		"pl"		"Ustawienia klienta"
+	}
+
+	"Printing Cookie List"
+	{
+		"pl"		"Wyświetlanie listy ciasteczek w konsoli"
 	}
 
 }

@@ -40,4 +40,34 @@
 		"da"		"{1} kan tale igen."
 	}
 
+	"Gag Player"
+	{
+		"da"		"Gør spiller tavs"
+	}
+
+	"Mute Player"
+	{
+		"da"		"Gør spiller stum"
+	}
+
+	"Silence Player"
+	{
+		"da"		"Gør spiller stum og tavs "
+	}
+
+	"UnGag Player"
+	{
+		"da"		"Fjern tavshed fra spiller"
+	}
+
+	"UnMute Player"
+	{
+		"da"		"Fjern stumhed fra spiller "
+	}
+
+	"UnSilence Player"
+	{
+		"da"		"Fjern stumhed og tavshed fra spiller"
+	}
+
 }

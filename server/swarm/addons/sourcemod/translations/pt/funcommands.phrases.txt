@@ -30,29 +30,14 @@
 		"pt"		"alterou bomba de fogo em {1}."
 	}
 
-	"TimeBomb player"
-	{
-		"pt"		"Bomba Relógio no jogador"
-	}
-
 	"Till Explodes"
 	{
 		"pt"		"{2} segundos até que {1} exploda."
 	}
 
-	"Set target on fire"
-	{
-		"pt"		"Colocou fogo em {1}."
-	}
-
 	"Set blind on target"
 	{
 		"pt"		"cegou {1}."
-	}
-
-	"NoClip player"
-	{
-		"pt"		"NoClip do jogador"
 	}
 
 	"No blind"
@@ -65,49 +50,14 @@
 		"pt"		"Gravidade do jogador"
 	}
 
-	"Half blind"
-	{
-		"pt"		"Parcialmente Cego"
-	}
-
-	"Gravity Very Low"
-	{
-		"pt"		"Gravidade Muito Baixa"
-	}
-
 	"Gravity amount"
 	{
 		"pt"		"Gravidade?"
 	}
 
-	"Gravity Very High"
-	{
-		"pt"		"Gravidade Muito Alta"
-	}
-
-	"Gravity Normal"
-	{
-		"pt"		"Gravidade Normal"
-	}
-
-	"Gravity Low"
-	{
-		"pt"		"Gravidade Baixa"
-	}
-
 	"Fully blind"
 	{
 		"pt"		"Completamente cego"
-	}
-
-	"Froze target"
-	{
-		"pt"		"{1} congelado."
-	}
-
-	"Gravity High"
-	{
-		"pt"		"Gravidade Alta "
 	}
 
 	"FreezeBomb player"
@@ -147,7 +97,7 @@
 
 	"Set gravity on target"
 	{
-		"pt"		" mudou a gravidade de {1}. "
+		"pt"		"alterou a gravidade de {1}. "
 	}
 
 	"Blind amount"
@@ -163,6 +113,56 @@
 	"You will be unfrozen"
 	{
 		"pt"		"Você será descongelado em {1} segundos."
+	}
+
+	"TimeBomb player"
+	{
+		"pt"		"Bomba relógio no jogador"
+	}
+
+	"Set target on fire"
+	{
+		"pt"		"Ateou fogo em {1}."
+	}
+
+	"NoClip player"
+	{
+		"pt"		"Alterar NoClip em jogador"
+	}
+
+	"Half blind"
+	{
+		"pt"		"Parcialmente cego"
+	}
+
+	"Gravity High"
+	{
+		"pt"		"Gravidade alta "
+	}
+
+	"Gravity Low"
+	{
+		"pt"		"Gravidade baixa "
+	}
+
+	"Gravity Normal"
+	{
+		"pt"		"Gravidade normal "
+	}
+
+	"Gravity Very High"
+	{
+		"pt"		"Gravidade muito alta"
+	}
+
+	"Gravity Very Low"
+	{
+		"pt"		"Gravidade muito baixa"
+	}
+
+	"Froze target"
+	{
+		"pt"		"{1} foi congelado(a)."
 	}
 
 }

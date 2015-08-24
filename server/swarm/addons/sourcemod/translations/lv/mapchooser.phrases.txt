@@ -40,4 +40,9 @@
 		"lv"		"Nomainīja nākamo karti uz \"{1}\"."
 	}
 
+	"Starting Runoff"
+	{
+		"lv"		"Neviena karte nesaņēma vairāk par {1}%% balsīm ({2} [{3}%%] & {4} [{5}%%]), tiks uzsākta jauna aptauja"
+	}
+
 }

@@ -55,29 +55,34 @@
 		"pl"		"wszyscy ludzie"
 	}
 
-	"Voted For"
-	{
-		"pl"		"{1} zagłosował na {2}"
-	}
-
 	"all spectators"
 	{
 		"pl"		"wszyscy obserwatorzy"
 	}
 
+	"No Vote"
+	{
+		"pl"		"Brak głosowania"
+	}
+
+	"Name Reserved"
+	{
+		"pl"		"Twój nick jest zarezerwowany przez SourceModa; ustaw swoje hasło, aby go użyć."
+	}
+
 	"Vote Count"
 	{
-		"pl"		"Głosy: {1}/{2}, {3} pozostało(y)"
+		"pl"		"Głosy: {1}/{2}, pozostało {3}"
+	}
+
+	"Voted For"
+	{
+		"pl"		"{1} głosuje na {2}"
 	}
 
 	"Changed Vote"
 	{
 		"pl"		"{1} zmienił swój głos na {2}"
-	}
-
-	"No Vote"
-	{
-		"pl"		"Brak Głosowania"
 	}
 
 }

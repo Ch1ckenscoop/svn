@@ -49,8 +49,7 @@ PrepareBan(client, target, time, const String:reason[])
 		return;
 	}
 
-	decl String:authid[64], String:name[32];
-	GetClientAuthString(target, authid, sizeof(authid));
+	new String:name[32];
 	GetClientName(target, name, sizeof(name));
 
 	if (!time)
@@ -84,64 +83,70 @@ PrepareBan(client, target, time, const String:reason[])
 
 DisplayBanTargetMenu(client)
 {
-	new Handle:menu = CreateMenu(MenuHandler_BanPlayerList);
+	Menu menu = CreateMenu(MenuHandler_BanPlayerList);
 
 	decl String:title[100];
 	Format(title, sizeof(title), "%T:", "Ban player", client);
-	SetMenuTitle(menu, title);
-	SetMenuExitBackButton(menu, true);
+	menu.SetTitle(title);
+	menu.ExitBackButton = true;
 
 	AddTargetsToMenu2(menu, client, COMMAND_FILTER_NO_BOTS|COMMAND_FILTER_CONNECTED);
 
-	DisplayMenu(menu, client, MENU_TIME_FOREVER);
+	menu.Display(client, MENU_TIME_FOREVER);
 }
 
 DisplayBanTimeMenu(client)
 {
-	new Handle:menu = CreateMenu(MenuHandler_BanTimeList);
+	Menu menu = CreateMenu(MenuHandler_BanTimeList);
 
 	decl String:title[100];
 	Format(title, sizeof(title), "%T: %N", "Ban player", client, g_BanTarget[client]);
-	SetMenuTitle(menu, title);
-	SetMenuExitBackButton(menu, true);
+	menu.SetTitle(title);
+	menu.ExitBackButton = true;
 
-	AddMenuItem(menu, "0", "Permanent");
-	AddMenuItem(menu, "10", "10 Minutes");
-	AddMenuItem(menu, "30", "30 Minutes");
-	AddMenuItem(menu, "60", "1 Hour");
-	AddMenuItem(menu, "240", "4 Hours");
-	AddMenuItem(menu, "1440", "1 Day");
-	AddMenuItem(menu, "10080", "1 Week");
+	menu.AddItem("0", "Permanent");
+	menu.AddItem("10", "10 Minutes");
+	menu.AddItem("30", "30 Minutes");
+	menu.AddItem("60", "1 Hour");
+	menu.AddItem("240", "4 Hours");
+	menu.AddItem("1440", "1 Day");
+	menu.AddItem("10080", "1 Week");
 
-	DisplayMenu(menu, client, MENU_TIME_FOREVER);
+	menu.Display(client, MENU_TIME_FOREVER);
 }
 
 DisplayBanReasonMenu(client)
 {
-	new Handle:menu = CreateMenu(MenuHandler_BanReasonList);
+	Menu menu = CreateMenu(MenuHandler_BanReasonList);
 
 	decl String:title[100];
 	Format(title, sizeof(title), "%T: %N", "Ban reason", client, g_BanTarget[client]);
-	SetMenuTitle(menu, title);
-	SetMenuExitBackButton(menu, true);
+	menu.SetTitle(title);
+	menu.ExitBackButton = true;
+	
+	//Add custom chat reason entry first
+	menu.AddItem("", "Custom reason (type in chat)");
+	
+	//Loading configurable entries from the kv-file
+	decl String:reasonName[100];
+	decl String:reasonFull[255];
+	
+	//Iterate through the kv-file
+	g_hKvBanReasons.GotoFirstSubKey(false);
+	do
+	{
+		g_hKvBanReasons.GetSectionName(reasonName, sizeof(reasonName));
+		g_hKvBanReasons.GetString(NULL_STRING, reasonFull, sizeof(reasonFull));
+		
+		//Add entry
+		menu.AddItem(reasonFull, reasonName);
+		
+	} while (g_hKvBanReasons.GotoNextKey(false));
+	
+	//Reset kvHandle
+	g_hKvBanReasons.Rewind();
 
-	/* :TODO: we should either remove this or make it configurable */
-
-	AddMenuItem(menu, "Abusive", "Abusive");
-	AddMenuItem(menu, "Racism", "Racism");
-	AddMenuItem(menu, "General cheating/exploits", "General cheating/exploits");
-	AddMenuItem(menu, "Wallhack", "Wallhack");
-	AddMenuItem(menu, "Aimbot", "Aimbot");
-	AddMenuItem(menu, "Speedhacking", "Speedhacking");
-	AddMenuItem(menu, "Mic spamming", "Mic spamming");
-	AddMenuItem(menu, "Admin disrespect", "Admin disrespect");
-	AddMenuItem(menu, "Camping", "Camping");
-	AddMenuItem(menu, "Team killing", "Team killing");
-	AddMenuItem(menu, "Unacceptable Spray", "Unacceptable Spray");
-	AddMenuItem(menu, "Breaking Server Rules", "Breaking Server Rules");
-	AddMenuItem(menu, "Other", "Other");
-
-	DisplayMenu(menu, client, MENU_TIME_FOREVER);
+	menu.Display(client, MENU_TIME_FOREVER);
 }
 
 public AdminMenu_Ban(Handle:topmenu,
@@ -151,6 +156,9 @@ public AdminMenu_Ban(Handle:topmenu,
 							  String:buffer[],
 							  maxlength)
 {
+	//Reset chat reason first
+	g_IsWaitingForChatReason[param] = false;
+	
 	if (action == TopMenuAction_DisplayOption)
 	{
 		Format(buffer, maxlength, "%T", "Ban player", param);
@@ -161,40 +169,49 @@ public AdminMenu_Ban(Handle:topmenu,
 	}
 }
 
-public MenuHandler_BanReasonList(Handle:menu, MenuAction:action, param1, param2)
+public MenuHandler_BanReasonList(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_End)
 	{
-		CloseHandle(menu);
+		delete menu;
 	}
 	else if (action == MenuAction_Cancel)
 	{
-		if (param2 == MenuCancel_ExitBack && hTopMenu != INVALID_HANDLE)
+		if (param2 == MenuCancel_ExitBack && hTopMenu)
 		{
-			DisplayTopMenu(hTopMenu, param1, TopMenuPosition_LastCategory);
+			hTopMenu.Display(param1, TopMenuPosition_LastCategory);
 		}
 	}
 	else if (action == MenuAction_Select)
 	{
-		decl String:info[64];
-
-		GetMenuItem(menu, param2, info, sizeof(info));
-
-		PrepareBan(param1, g_BanTarget[param1], g_BanTime[param1], info);
+		if(param2 == 0)
+		{
+			//Chat reason
+			g_IsWaitingForChatReason[param1] = true;
+			PrintToChat(param1, "[SM] %t", "Custom ban reason explanation", "sm_abortban");
+		}
+		else
+		{
+			decl String:info[64];
+			
+			menu.GetItem(param2, info, sizeof(info));
+			
+			PrepareBan(param1, g_BanTarget[param1], g_BanTime[param1], info);
+		}
 	}
 }
 
-public MenuHandler_BanPlayerList(Handle:menu, MenuAction:action, param1, param2)
+public MenuHandler_BanPlayerList(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_End)
 	{
-		CloseHandle(menu);
+		delete menu;
 	}
 	else if (action == MenuAction_Cancel)
 	{
-		if (param2 == MenuCancel_ExitBack && hTopMenu != INVALID_HANDLE)
+		if (param2 == MenuCancel_ExitBack && hTopMenu)
 		{
-			DisplayTopMenu(hTopMenu, param1, TopMenuPosition_LastCategory);
+			hTopMenu.Display(param1, TopMenuPosition_LastCategory);
 		}
 	}
 	else if (action == MenuAction_Select)
@@ -202,7 +219,7 @@ public MenuHandler_BanPlayerList(Handle:menu, MenuAction:action, param1, param2)
 		decl String:info[32], String:name[32];
 		new userid, target;
 
-		GetMenuItem(menu, param2, info, sizeof(info), _, name, sizeof(name));
+		menu.GetItem(param2, info, sizeof(info), _, name, sizeof(name));
 		userid = StringToInt(info);
 
 		if ((target = GetClientOfUserId(userid)) == 0)
@@ -222,24 +239,24 @@ public MenuHandler_BanPlayerList(Handle:menu, MenuAction:action, param1, param2)
 	}
 }
 
-public MenuHandler_BanTimeList(Handle:menu, MenuAction:action, param1, param2)
+public MenuHandler_BanTimeList(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_End)
 	{
-		CloseHandle(menu);
+		delete menu;
 	}
 	else if (action == MenuAction_Cancel)
 	{
-		if (param2 == MenuCancel_ExitBack && hTopMenu != INVALID_HANDLE)
+		if (param2 == MenuCancel_ExitBack && hTopMenu)
 		{
-			DisplayTopMenu(hTopMenu, param1, TopMenuPosition_LastCategory);
+			hTopMenu.Display(param1, TopMenuPosition_LastCategory);
 		}
 	}
 	else if (action == MenuAction_Select)
 	{
 		decl String:info[32];
 
-		GetMenuItem(menu, param2, info, sizeof(info));
+		menu.GetItem(param2, info, sizeof(info));
 		g_BanTime[param1] = StringToInt(info);
 
 		DisplayBanReasonMenu(param1);

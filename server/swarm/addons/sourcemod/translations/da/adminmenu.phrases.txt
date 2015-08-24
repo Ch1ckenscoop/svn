@@ -2,22 +2,22 @@
 {
 	"Admin Menu"
 	{
-		"da"		"Administrator Menu"
+		"da"		"Administrator menu"
 	}
 
 	"Player Commands"
 	{
-		"da"		"Spiller Kommandoer"
+		"da"		"Spiller kommandoer"
 	}
 
 	"Server Commands"
 	{
-		"da"		"Server Kommandoer"
+		"da"		"Server kommandoer"
 	}
 
 	"Voting Commands"
 	{
-		"da"		"Afstemning Kommandoer"
+		"da"		"Afstemnings kommandoer"
 	}
 
 }

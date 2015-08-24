@@ -157,12 +157,12 @@
 
 	"Unfrozen"
 	{
-		"lv"		"Tu tagad esi atsaldēts."
+		"lv"		"Tu tagad esi atkausēts. "
 	}
 
 	"You will be unfrozen"
 	{
-		"lv"		"Tu tiksi sasaldēts pēc {1} sekundēm."
+		"lv"		"Tu tiksi atkausēts pēc {1} sekundēm. "
 	}
 
 }

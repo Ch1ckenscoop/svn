@@ -1,33 +1,8 @@
 "Phrases"
 {
-	"Current Map"
-	{
-		"no"		"Gjeldende kart"
-	}
-
-	"Map"
-	{
-		"no"		"[Kart]"
-	}
-
-	"Map History"
-	{
-		"no"		"Kart-historikk"
-	}
-
-	"Next Map"
-	{
-		"no"		"Neste kart: {1}"
-	}
-
 	"Played Time"
 	{
 		"no"		"[Spilt tid]"
-	}
-
-	"Reason"
-	{
-		"no"		"[Grunn for slutt]"
 	}
 
 	"Started"
@@ -38,6 +13,31 @@
 	"ago"
 	{
 		"no"		"siden"
+	}
+
+	"Current Map"
+	{
+		"no"		"Gjellende bane"
+	}
+
+	"Map"
+	{
+		"no"		"[BANE]"
+	}
+
+	"Map History"
+	{
+		"no"		"Bane Historikk"
+	}
+
+	"Next Map"
+	{
+		"no"		"Neste bane: {1} "
+	}
+
+	"Reason"
+	{
+		"no"		"[Grunn for avsluttning]"
 	}
 
 }

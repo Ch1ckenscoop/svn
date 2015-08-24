@@ -80,4 +80,14 @@
 		"fi"		"Erota {1}?"
 	}
 
+	"Please select a map"
+	{
+		"fi"		"Valitse kartta"
+	}
+
+	"Start the Vote"
+	{
+		"fi"		"Aloita äänestys"
+	}
+
 }

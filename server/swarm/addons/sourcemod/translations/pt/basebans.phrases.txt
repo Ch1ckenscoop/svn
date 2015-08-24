@@ -15,34 +15,49 @@
 		"pt"		"Motivo do banimento"
 	}
 
-	"Banned player"
-	{
-		"pt"		"Jogador \"{1}\" foi banido por {2} minutos."
-	}
-
-	"Banned player reason"
-	{
-		"pt"		"Jogador \"{1}\" foi banido por {2} minutos (motivo: {3})."
-	}
-
 	"Cannot ban that IP"
 	{
 		"pt"		"Você não pode banir esse endereço IP."
 	}
 
+	"Banned player"
+	{
+		"pt"		"\"{1}\" foi banido(a) por {2} minutos."
+	}
+
+	"Banned player reason"
+	{
+		"pt"		"\"{1}\" foi banido(a) por {2} minutos (motivo: {3}). "
+	}
+
 	"Permabanned player"
 	{
-		"pt"		"Jogador \"{1}\" banido permanentemente."
+		"pt"		"\"{1}\" banido(a) permanentemente. "
 	}
 
 	"Permabanned player reason"
 	{
-		"pt"		"Jogador \"{1}\" banido permanentemente (motivo: {2})."
+		"pt"		"\"{1}\" banido(a) permanentemente (motivo: {2}). "
 	}
 
 	"Removed bans matching"
 	{
-		"pt"		"Banimentos correspondentes ao filtro: {1} removidos"
+		"pt"		"Banimentos correspondentes ao filtro \"{1}\" foram removidos "
+	}
+
+	"AbortBan applied successfully"
+	{
+		"pt"		"Banimento cancelado."
+	}
+
+	"AbortBan not waiting for custom reason"
+	{
+		"pt"		"Não há banimento em progresso para ser cancelado."
+	}
+
+	"Custom ban reason explanation"
+	{
+		"pt"		"Digite o motivo do banimento no chat. Use {1} para cancelar."
 	}
 
 }

@@ -2,7 +2,7 @@
 {
 	"Slot reserved"
 	{
-		"nl"		"Verwijdert door reserve slot"
+		"nl"		"Verwijderd door reserve slot"
 	}
 
 }

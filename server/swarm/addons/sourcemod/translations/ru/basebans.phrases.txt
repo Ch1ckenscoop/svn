@@ -45,4 +45,19 @@
 		"ru"		"Удалены баны по фильтру: {1}"
 	}
 
+	"Custom ban reason explanation"
+	{
+		"ru"		"Введите в чате причину бана или {1} чтобы отменить бан"
+	}
+
+	"AbortBan applied successfully"
+	{
+		"ru"		"Бан отменен"
+	}
+
+	"AbortBan not waiting for custom reason"
+	{
+		"ru"		"Не ожидается ввод причины бана, отмена бана не выполнена"
+	}
+
 }

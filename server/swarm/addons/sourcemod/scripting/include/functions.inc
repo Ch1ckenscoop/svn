@@ -318,10 +318,10 @@ native Call_PushString(const String:value[]);
  * @param value				String to push.
  * @param length			Length of string buffer.
  * @param szflags			Flags determining how string should be handled.
- *							See SP_PARAM_STRING_* constants for details.
+ *							See SM_PARAM_STRING_* constants for details.
  *							The default (0) is to push ASCII.
  * @param cpflags			Whether or not changes should be copied back to the input array.
- *							See SP_PARAM_* constants for details.		
+ *							See SM_PARAM_* constants for details.		
  * @noreturn
  * @error					Called before a call has been started.
  */
@@ -357,7 +357,7 @@ native Call_Cancel();
  * @param numParams			Number of parameters passed to the native.
  * @return 					Value for the native call to return.
  */
-functag public NativeCall(Handle:plugin, numParams);
+typedef NativeCall = function int (Handle plugin, int numParams);
 
 /**
  * Creates a dynamic native.  This should only be called in AskPluginLoad(), or 
@@ -429,6 +429,15 @@ native SetNativeString(param, const String:source[], maxlength, bool:utf8=true, 
 native any:GetNativeCell(param);
 
 /**
+ * Gets a function pointer from a native parameter.
+ *
+ * @param param             Parameter number, starting from 1.
+ * @return                  Function pointer at the given parameter number.
+ * @error                   Invalid parameter number, or calling from a non-native function.
+ */
+native Function GetNativeFunction(param);
+
+/**
  * Gets a cell from a native parameter, by reference.
  *
  * @param param				Parameter number, starting from 1.
@@ -492,3 +501,20 @@ native FormatNativeString(out_param,
 						  &written=0,
 						  String:out_string[]="",
 						  const String:fmt_string[]="");
+
+/**
+ * Defines a RequestFrame Callback.
+ *
+ * @param data			Data passed to the RequestFrame native.
+ * @noreturn
+ */
+typedef RequestFrameCallback = function void (any data);
+
+/**
+ * Creates a single use Next Frame hook.
+ *
+ * @param Function	Function to call on the next frame.
+ * @param data			Value to be passed on the invocation of the Function.
+ * @noreturn
+ */
+native RequestFrame(RequestFrameCallback:Function, any:data=0);

@@ -2,12 +2,7 @@
 {
 	"Next Map"
 	{
-		"pl"		"Następna Mapa: {1}"
-	}
-
-	"Current Map"
-	{
-		"pl"		"Aktualna Mapa"
+		"pl"		"Następna mapa: {1}"
 	}
 
 	"Map"
@@ -20,16 +15,6 @@
 		"pl"		"temu"
 	}
 
-	"Map History"
-	{
-		"pl"		"Historia Map"
-	}
-
-	"Played Time"
-	{
-		"pl"		"[Czas Gry]"
-	}
-
 	"Reason"
 	{
 		"pl"		"[Powód zakończenia]"
@@ -38,6 +23,21 @@
 	"Started"
 	{
 		"pl"		"[Rozpoczęto]"
+	}
+
+	"Map History"
+	{
+		"pl"		"Historia map"
+	}
+
+	"Played Time"
+	{
+		"pl"		"[Czas gry]"
+	}
+
+	"Current Map"
+	{
+		"pl"		"Aktualna mapa"
 	}
 
 }

@@ -2,7 +2,7 @@
 {
 	"Slot reserved"
 	{
-		"sk"		"Nemaš práva na rezervovaný slot"
+		"sk"		"Vyhodený kvôli rezervovanému slotu"
 	}
 
 }

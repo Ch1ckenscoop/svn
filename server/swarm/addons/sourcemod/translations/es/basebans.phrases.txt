@@ -45,4 +45,19 @@
 		"es"		"\"{1}\" baneado permanentemente (Razón: {2})."
 	}
 
+	"Custom ban reason explanation"
+	{
+		"es"		"Introduzca la razón como un mensaje de chat. Usa {1} para abortar esto."
+	}
+
+	"AbortBan not waiting for custom reason"
+	{
+		"es"		"No se espera una razón de ban para que sea escrita, no hay ban que abortar."
+	}
+
+	"AbortBan applied successfully"
+	{
+		"es"		"Ban abortado."
+	}
+
 }

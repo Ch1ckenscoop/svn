@@ -18,7 +18,6 @@
 		{
 			"game"		"dod"
 			"game"		"tf"
-			"game"		"cstrike"
 			"game"		"garrysmod"
 			"game"		"hl2mp"
 		}
@@ -52,6 +51,11 @@
 				"linux"		"@gEntList"
 				"mac"		"@gEntList"
 			}
+		}
+		
+		"Keys"
+		{
+			"UseInvalidUniverseInSteam2IDs"		"1"
 		}
 	}
 }

@@ -55,21 +55,6 @@
 		"pt"		"Voltar"
 	}
 
-	"Changed Vote"
-	{
-		"pt"		"{1} trocou seu voto para {2}"
-	}
-
-	"Vote Count"
-	{
-		"pt"		"Votos: {1}/{2}, {3}s restando"
-	}
-
-	"Voted For"
-	{
-		"pt"		"{1} votou para {2}"
-	}
-
 	"all spectators"
 	{
 		"pt"		"todos os espectadores"
@@ -78,6 +63,26 @@
 	"No Vote"
 	{
 		"pt"		"Sem votos"
+	}
+
+	"Changed Vote"
+	{
+		"pt"		"{1} trocou o seu voto para {2} "
+	}
+
+	"Vote Count"
+	{
+		"pt"		"Votos: {1}/{2}, {3}s restantes"
+	}
+
+	"Voted For"
+	{
+		"pt"		"{1} votou em {2}"
+	}
+
+	"Name Reserved"
+	{
+		"pt"		"Seu nome é reservado pelo SourceMod, configure sua senha para usá-lo."
 	}
 
 }

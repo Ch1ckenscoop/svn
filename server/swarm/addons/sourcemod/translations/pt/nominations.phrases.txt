@@ -1,10 +1,5 @@
 "Phrases"
 {
-	"Nominate Title"
-	{
-		"pt"		"Sugerir Mapa:"
-	}
-
 	"Max Nominations"
 	{
 		"pt"		"O número máximo de sugestões já foi atingido."
@@ -50,11 +45,6 @@
 		"pt"		"Sugerido"
 	}
 
-	"Recently Played"
-	{
-		"pt"		"Jogado Recentemente"
-	}
-
 	"Current Map"
 	{
 		"pt"		"Mapa atual"
@@ -63,6 +53,16 @@
 	"Can't Nominate Current Map"
 	{
 		"pt"		"O mapa que você escolheu já está em jogo e não pode ser sugerido"
+	}
+
+	"Recently Played"
+	{
+		"pt"		"Jogado recentemente"
+	}
+
+	"Nominate Title"
+	{
+		"pt"		"Sugerir mapa:"
 	}
 
 }

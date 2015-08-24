@@ -1,23 +1,23 @@
 "Phrases"
 {
-	"Voting Commands"
+	"Admin Menu"
 	{
-		"it"		"Comandi Votazione"
-	}
-
-	"Server Commands"
-	{
-		"it"		"Comandi Server"
+		"it"		"Menu da amministratore"
 	}
 
 	"Player Commands"
 	{
-		"it"		"Comandi Giocatore"
+		"it"		"Comandi per giocatori"
 	}
 
-	"Admin Menu"
+	"Server Commands"
 	{
-		"it"		"Menu Admin"
+		"it"		"Comandi per server"
+	}
+
+	"Voting Commands"
+	{
+		"it"		"Comandi per votazioni"
 	}
 
 }

@@ -42,7 +42,7 @@
 
 	"Dead Player Rename"
 	{
-		"da"		"{1} vil blive navngivet i næste runde"
+		"da"		"{1} bliver omdøbt i næste runde."
 	}
 
 }

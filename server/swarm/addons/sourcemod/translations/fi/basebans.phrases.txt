@@ -1,48 +1,63 @@
 "Phrases"
 {
-	"Ban added"
-	{
-		"fi"		"Banni lisätty"
-	}
-
 	"Ban player"
 	{
-		"fi"		"Bannaa pelaaja"
+		"fi"		"Anna porttikielto"
 	}
 
 	"Ban reason"
 	{
-		"fi"		"Bannin syy"
+		"fi"		"Porttikiellon syy"
 	}
 
 	"Banned player"
 	{
-		"fi"		"Bannattiin pelaaja \"{1}\" {2} minuutiksi."
+		"fi"		"Annettiin {2} minuutin porttikielto pelaajalle \"{1}\"."
 	}
 
 	"Banned player reason"
 	{
-		"fi"		"Bannattiin pelaaja \"{1}\" {2} minuutiksi (syy: {3})."
+		"fi"		"Annettiin {2} minuutin porttikielto pelaajalle \"{1}\" (syy: {3})."
 	}
 
 	"Cannot ban that IP"
 	{
-		"fi"		"Et voi bannata kyseistä IP-osoitetta."
+		"fi"		"Et voi antaa porttikieltoa tälle IP-osoitteelle."
 	}
 
 	"Permabanned player"
 	{
-		"fi"		"Bannattiin pysyvästi pelaaja \"{1}\"."
+		"fi"		"Annettiin pysyvä porttikielto pelaajalle \"{1}\"."
 	}
 
 	"Permabanned player reason"
 	{
-		"fi"		"Bannattiin pysyvästi pelaaja \"{1}\" (syy: {2})."
+		"fi"		"Annettiin pysyvä porttikielto pelaajalle \"{1}\" (syy: {2})."
 	}
 
 	"Removed bans matching"
 	{
-		"fi"		"Poistettiin bannit jotka vastaavat suodatusta: {1}"
+		"fi"		"Poistettiin porttikiellot, jotka vastasivat suodatusta: {1} "
+	}
+
+	"Ban added"
+	{
+		"fi"		"Porttikielto lisätty"
+	}
+
+	"Custom ban reason explanation"
+	{
+		"fi"		"Kirjoita syy chattiin. Käytä {1} keskeyttääksesi porttikiellon."
+	}
+
+	"AbortBan applied successfully"
+	{
+		"fi"		"Porttikielto keskeytetty."
+	}
+
+	"AbortBan not waiting for custom reason"
+	{
+		"fi"		"Porttikiellolle ei annettu syytä ajoissa, porttikielto keskeytetty."
 	}
 
 }

@@ -20,16 +20,6 @@
 		"pl"		"Rozpoczęto głosowanie: {1}"
 	}
 
-	"Initiated Vote Ban"
-	{
-		"pl"		"Rozpoczęto głosowanie aby zbanować {1}."
-	}
-
-	"Initiated Vote Kick"
-	{
-		"pl"		"Rozpoczęto głosowanie aby wykopać {1}."
-	}
-
 	"Initiated Vote Map"
 	{
 		"pl"		"Rozpoczęto głosowanie na mapę."
@@ -78,6 +68,26 @@
 	"Map Vote In Use"
 	{
 		"pl"		"Inny administrator aktualnie używa menu głosowań na mapę."
+	}
+
+	"Please select a map"
+	{
+		"pl"		"Proszę wybrać mapę"
+	}
+
+	"Start the Vote"
+	{
+		"pl"		"Rozpocznij głosowanie"
+	}
+
+	"Initiated Vote Ban"
+	{
+		"pl"		"Rozpoczęto głosowanie, aby zbanować {1}."
+	}
+
+	"Initiated Vote Kick"
+	{
+		"pl"		"Rozpoczęto głosowanie, aby wykopać {1}."
 	}
 
 }

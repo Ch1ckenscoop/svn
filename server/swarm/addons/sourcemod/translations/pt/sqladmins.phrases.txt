@@ -45,19 +45,9 @@
 		"pt"		"Um administrador com as credenciais especificadas já existe."
 	}
 
-	"SQL Admin added"
-	{
-		"pt"		"Administrador adicionado com sucesso à base de dados."
-	}
-
 	"Invalid immunity"
 	{
 		"pt"		"A imunidade deve ser um número inteiro positivo."
-	}
-
-	"Invalid authtype"
-	{
-		"pt"		"O tipo de autenticação deve ser 'steam','name', ou 'ip'. "
 	}
 
 	"SQL Group not found"
@@ -65,14 +55,24 @@
 		"pt"		"Nenhum grupo com o nome especificado foi encontrado."
 	}
 
-	"Added groups to user"
-	{
-		"pt"		"{1} grupos adicionados com sucesso ao admistrador especificado. "
-	}
-
 	"Added group to user"
 	{
-		"pt"		"Grupo adicionado com sucesso ao admistrador especificado."
+		"pt"		"Grupo adicionado com sucesso ao administrador especificado."
+	}
+
+	"Added groups to user"
+	{
+		"pt"		"{1} grupos adicionados com sucesso ao administrador especificado. "
+	}
+
+	"Invalid authtype"
+	{
+		"pt"		"O tipo de autenticação deve ser 'steam', 'name' ou 'ip'."
+	}
+
+	"SQL Admin added"
+	{
+		"pt"		"Administrador adicionado com sucesso à base de dados. "
 	}
 
 }

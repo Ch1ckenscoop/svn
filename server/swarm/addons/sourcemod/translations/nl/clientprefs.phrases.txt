@@ -10,11 +10,6 @@
 		"nl"		"Client instellingen"
 	}
 
-	"Cookie Changed Value"
-	{
-		"nl"		"Verandert de waarde van cookie \"{1}\" naar \"{2}\""
-	}
-
 	"Cookie List"
 	{
 		"nl"		"Sourcemod Cookie lijst"
@@ -43,6 +38,11 @@
 	"Protected Cookie"
 	{
 		"nl"		"Kan de waarde van de beveiligde cookie \"{1}\" niet aanpassen"
+	}
+
+	"Cookie Changed Value"
+	{
+		"nl"		"De waarde van cookie \"{1}\" is naar \"{2}\" veranderd"
 	}
 
 }

@@ -20,11 +20,6 @@
 		"nl"		"Vote is gestopt."
 	}
 
-	"Cannot be performed on dead"
-	{
-		"nl"		"Deze aktie is niet mogelijk voor speler \"{1}\""
-	}
-
 	"Cannot target bot"
 	{
 		"nl"		"Onmogelijk om dit commando voor een bot te gebruiken. "
@@ -40,24 +35,9 @@
 		"nl"		"Dit commando kan alleen in het spel gebruikt worden."
 	}
 
-	"Config not found"
-	{
-		"nl"		"Config bestan \"{1}\" niet gevonden."
-	}
-
 	"Could not connect to database"
 	{
 		"nl"		"Kan niet verbinden met de database."
-	}
-
-	"Cvar changed"
-	{
-		"nl"		"cvar \"{1}\" verandert naar \"{2}\"."
-	}
-
-	"Executed config"
-	{
-		"nl"		"Config bestand \"{1}\" uitgevoert."
 	}
 
 	"Failed to query database"
@@ -70,24 +50,9 @@
 		"nl"		"Verkeerd getal ingevuld"
 	}
 
-	"Invalid SteamID specified"
-	{
-		"nl"		"Je hebt een verkeerd Steam ID ingevuld (moet beginnen met 'STEAM_0:')."
-	}
-
 	"Kick player"
 	{
 		"nl"		"Verwijder speler"
-	}
-
-	"Kicked by admin"
-	{
-		"nl"		"Verwijdert door beheerder"
-	}
-
-	"Kicked player"
-	{
-		"nl"		"Speler '{1}' verwijdert"
 	}
 
 	"Map was not found"
@@ -140,11 +105,6 @@
 		"nl"		"Geluid afgespeeld voor speler '{1}'"
 	}
 
-	"Player has since died"
-	{
-		"nl"		"Aktie kan niet worden uitgevoerd omdat de speler dood is."
-	}
-
 	"Player no longer available"
 	{
 		"nl"		"De speler die je hebt geselecteerd is niet langer beschikbaar."
@@ -155,19 +115,9 @@
 		"nl"		"Beheerders opnieuw laden"
 	}
 
-	"See console for output"
-	{
-		"nl"		"Controlleer console voor het resultaat."
-	}
-
 	"Slapped player"
 	{
 		"nl"		"Speler '{1}' geslagen"
-	}
-
-	"Slayed player"
-	{
-		"nl"		"Speler '{1}' slayed"
 	}
 
 	"Target is not in game"
@@ -248,6 +198,56 @@
 	"On"
 	{
 		"nl"		"Aan"
+	}
+
+	"Cannot be performed on dead"
+	{
+		"nl"		"Deze actie kan niet op dode speler \"{1}\" uitgevoerd worden"
+	}
+
+	"Config not found"
+	{
+		"nl"		"Config bestand \"{1}\" niet gevonden."
+	}
+
+	"Cvar changed"
+	{
+		"nl"		"Cvar \"{1}\" naar \"{2}\" veranderd."
+	}
+
+	"Executed config"
+	{
+		"nl"		"Config bestand \"{1}\" uitgevoerd."
+	}
+
+	"Invalid SteamID specified"
+	{
+		"nl"		"Je hebt een verkeerde Steam ID ingevuld (moet beginnen met 'STEAM_')."
+	}
+
+	"Kicked by admin"
+	{
+		"nl"		"Verwijderd door beheerder"
+	}
+
+	"Kicked player"
+	{
+		"nl"		"Speler '{1}' verwijderd"
+	}
+
+	"Player has since died"
+	{
+		"nl"		"Actie kan niet uitgevoerd worden omdat de speler dood is."
+	}
+
+	"See console for output"
+	{
+		"nl"		"Controleer console voor het resultaat."
+	}
+
+	"Slayed player"
+	{
+		"nl"		"Speler '{1}' geslayed"
 	}
 
 }

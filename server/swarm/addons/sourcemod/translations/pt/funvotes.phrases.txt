@@ -5,31 +5,6 @@
 		"pt"		"Assassinar {1}?"
 	}
 
-	"Voteff On"
-	{
-		"pt"		"Ligar fogo amigo? {1}"
-	}
-
-	"Voteff Off"
-	{
-		"pt"		"Desligar fogo amigo? {1}"
-	}
-
-	"Voteburn player"
-	{
-		"pt"		"Colocar fogo em {1}?"
-	}
-
-	"Votealltalk On"
-	{
-		"pt"		"Ligar AllTalk? {1}"
-	}
-
-	"Votealltalk Off"
-	{
-		"pt"		"Desligar AllTalk? {1}"
-	}
-
 	"Vote FF"
 	{
 		"pt"		"Votação para fogo amigo"
@@ -45,54 +20,79 @@
 		"pt"		"Iniciou uma votação para assassinar {1}."
 	}
 
+	"Alltalk vote"
+	{
+		"pt"		"Votação para alterar a fala aberta (AllTalk)"
+	}
+
+	"Votealltalk Off"
+	{
+		"pt"		"Desativar fala aberta (AllTalk)? {1}"
+	}
+
+	"Votealltalk On"
+	{
+		"pt"		"Ativar fala aberta (AllTalk)? {1}"
+	}
+
+	"Voteff Off"
+	{
+		"pt"		"Desativar fogo amigo? {1}"
+	}
+
+	"Voteff On"
+	{
+		"pt"		"Ativar fogo amigo? {1}"
+	}
+
+	"Voteburn player"
+	{
+		"pt"		"Atear fogo em {1}?"
+	}
+
 	"Initiated Vote Gravity"
 	{
-		"pt"		"Iniciou uma votação para gravidade."
+		"pt"		"Iniciou uma votação para alterar a gravidade."
 	}
 
 	"Initiated Vote FF"
 	{
-		"pt"		"Iniciou uma votação para fogo amigo."
-	}
-
-	"Initiated Vote Burn"
-	{
-		"pt"		"Iniciou uma votação para colocar fogo em {1}."
-	}
-
-	"Initiated Vote Alltalk"
-	{
-		"pt"		"Iniciou uma votação para alltalk."
-	}
-
-	"Gravity vote"
-	{
-		"pt"		"Votação para gravidade"
-	}
-
-	"Gravity Vote"
-	{
-		"pt"		"Votação para gravidade: {1}"
-	}
-
-	"Change Gravity To"
-	{
-		"pt"		"Mudar gravidade para {1}?"
+		"pt"		"Iniciou uma votação para alterar o fogo amigo."
 	}
 
 	"Burn vote"
 	{
-		"pt"		"Votação para colocar fogo"
+		"pt"		"Votação para atear fogo"
 	}
 
-	"Alltalk vote"
+	"Initiated Vote Burn"
 	{
-		"pt"		"Votação para AllTalk"
+		"pt"		"Iniciou uma votação para atear fogo em {1}."
+	}
+
+	"Initiated Vote Alltalk"
+	{
+		"pt"		"Iniciou uma votação para alterar a fala aberta (AllTalk)."
+	}
+
+	"Gravity vote"
+	{
+		"pt"		"Votação para alterar a gravidade"
+	}
+
+	"Gravity Vote"
+	{
+		"pt"		"Votação para alterar a gravidade: {1}"
+	}
+
+	"Change Gravity To"
+	{
+		"pt"		"Alterar a gravidade para {1}?"
 	}
 
 	"Slayed player"
 	{
-		"pt"		"Assassinou o jogador '{1}'"
+		"pt"		"Assassinou '{1}'"
 	}
 
 }

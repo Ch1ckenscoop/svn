@@ -40,4 +40,34 @@
 		"fi"		"Tukittiin pelaajan {1} suu."
 	}
 
+	"Gag Player"
+	{
+		"fi"		"Tuki Pelaaja"
+	}
+
+	"Mute Player"
+	{
+		"fi"		"Hiljennä Pelaaja"
+	}
+
+	"Silence Player"
+	{
+		"fi"		"Vaienna Pelaaja"
+	}
+
+	"UnGag Player"
+	{
+		"fi"		"Poista Pelaajan Tukinta"
+	}
+
+	"UnSilence Player"
+	{
+		"fi"		"Poista Pelaajan Vaiennus"
+	}
+
+	"UnMute Player"
+	{
+		"fi"		"Poista Pelaajan Mykistys"
+	}
+
 }

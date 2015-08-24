@@ -25,6 +25,11 @@
 		"engine"	"left4dead2"
 	}
 	
+	"engine.contagion.txt"
+	{
+		"engine"	"contagion"
+	}
+	
 	"engine.swarm.txt"
 	{
 		"engine"	"alienswarm"
@@ -38,6 +43,16 @@
 	"engine.ep2valve.txt"
 	{
 		"engine"	"orangebox_valve"
+	}
+	
+	"engine.sdk2013.txt"
+	{
+		"engine"	"sdk2013"
+	}
+	
+	"engine.css.txt"
+	{
+		"engine"	"css"
 	}
 	
 	"engine.ep1.txt"
@@ -58,6 +73,26 @@
 	"engine.eye.txt"
 	{
 		"engine"	"eye"
+	}
+	
+	"engine.csgo.txt"
+	{
+		"engine"	"csgo"
+	}
+	
+	"engine.dota.txt"
+	{
+		"engine"	"dota"
+	}
+	
+	"engine.blade.txt"
+	{
+		"engine"	"blade"
+	}
+	
+	"engine.insurgency.txt"
+	{
+		"engine"	"insurgency"
 	}
 	
 	"game.tf.txt"
@@ -92,7 +127,7 @@
 	
 	"game.insurgency.txt"
 	{
-		"game"		"insurgency"
+		"game"		"$Insurgency"
 	}
 	
 	"game.pvkii.txt"
@@ -175,7 +210,7 @@
 	}
 	"game.fof.txt"
 	{
-		"game"		"fistful_of_frags"
+		"game"		"fof"
 	}
 	"game.alienswarm.txt"
 	{

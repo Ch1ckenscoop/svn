@@ -17,17 +17,17 @@
 
 	"Slap damage"
 	{
-		"ko"		"입힐 데미지"
+		"ko"		"입힐 피해"
 	}
 
 	"Slap player"
 	{
-		"ko"		"플레이어에게 데미지 주기"
+		"ko"		"플레이어에게 피해 주기"
 	}
 
 	"Slapped target"
 	{
-		"ko"		"{1} 님에게 데미지를 주었습니다."
+		"ko"		"{1} 님에게 피해를 주었습니다."
 	}
 
 	"Slay player"

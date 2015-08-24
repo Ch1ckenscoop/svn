@@ -1,28 +1,8 @@
 "Phrases"
 {
-	"Added group to user"
-	{
-		"sk"		"Úspešne priradená skupina ku vybranému adminovi."
-	}
-
-	"Added groups to user"
-	{
-		"sk"		"Úspešne priradené {1} skupiny ku vybranému adminovi."
-	}
-
 	"Invalid authtype"
 	{
 		"sk"		"Overovacie metódy musia byt 'steam', 'name', alebo 'ip'. "
-	}
-
-	"Invalid immunity"
-	{
-		"sk"		"Imunita musí byt pozitívna číslica."
-	}
-
-	"SQL Admin added"
-	{
-		"sk"		"Admin úspešne pridaný do databáze."
 	}
 
 	"SQL Admin already exists"
@@ -30,49 +10,69 @@
 		"sk"		"Podľa zadaných kritérií už takýto admin existuje."
 	}
 
-	"SQL Admin deleted"
-	{
-		"sk"		"Admin úspešne vymazaný z databáze."
-	}
-
-	"SQL Admin groups reset"
-	{
-		"sk"		"Adminská skupina bola uspesne resetnutá."
-	}
-
 	"SQL Admin not found"
 	{
 		"sk"		"Podľa zadaných kritérií nebol najdený admin."
 	}
 
-	"SQL Group X failed to bind"
+	"Added groups to user"
 	{
-		"sk"		"Nesprávne nabindovaná skupina: \"{1}\" "
+		"sk"		"Úspešne priradených {1} skupín k vybranému adminovi."
 	}
 
-	"SQL Group deleted"
+	"Added group to user"
 	{
-		"sk"		"Skupina úspešne vymazaná z databáze."
+		"sk"		"Úspešne priradená skupina k vybranému adminovi. "
 	}
 
-	"SQL Group already exists"
+	"Invalid immunity"
 	{
-		"sk"		"Skupina s takým nazvom už existuje."
+		"sk"		"Imunita musí byť kladné číslo. "
 	}
 
-	"SQL Group added"
+	"SQL Admin added"
 	{
-		"sk"		"Skupina úspešne pridaná do databáze."
+		"sk"		"Admin úspešne pridaný do databázy. "
+	}
+
+	"SQL Admin deleted"
+	{
+		"sk"		"Admin úspešne vymazaný z databázy. "
+	}
+
+	"SQL Admin groups reset"
+	{
+		"sk"		"Administrátorské skupiny boli úspešne resetované."
 	}
 
 	"SQL Group X not found"
 	{
-		"sk"		"Nedá sa nájsť skupina: \"{1}\" "
+		"sk"		"Nebolo možné nájsť skupinu: \"{1}\" "
+	}
+
+	"SQL Group added"
+	{
+		"sk"		"Skupina úspešne pridaná do databázy. "
+	}
+
+	"SQL Group already exists"
+	{
+		"sk"		"Skupina s týmto názvom už existuje. "
+	}
+
+	"SQL Group deleted"
+	{
+		"sk"		"Skupina úspešne vymazaná z databázy. "
 	}
 
 	"SQL Group not found"
 	{
-		"sk"		"Skupina s takým názvom nenájdená."
+		"sk"		"Skupina s daným názvom nebola nájdená."
+	}
+
+	"SQL Group X failed to bind"
+	{
+		"sk"		"Skupina sa zlyhala naviazať: \"{1}\" "
 	}
 
 }

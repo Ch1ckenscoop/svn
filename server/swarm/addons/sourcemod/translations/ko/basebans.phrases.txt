@@ -17,12 +17,12 @@
 
 	"Permabanned player reason"
 	{
-		"ko"		"\"{1}\" 님을 영구히 차단하였습니다. (이유: {2}). "
+		"ko"		"\"{1}\" 님을 영구히 차단하였습니다. (이유 : {2})."
 	}
 
 	"Banned player reason"
 	{
-		"ko"		"\"{1}\" 님을 {2} 분 차단하였습니다. (이유: {3})."
+		"ko"		"\"{1}\" 님을 {2} 분 차단하였습니다. (이유 : {3})."
 	}
 
 	"Banned player"
@@ -43,6 +43,21 @@
 	"Removed bans matching"
 	{
 		"ko"		"{1} 과 일치하는 차단 필터를 제거합니다"
+	}
+
+	"Custom ban reason explanation"
+	{
+		"ko"		"이유를 대화 메세지로 입력하세요. 중단하려면 {1} 을(를) 사용하세요."
+	}
+
+	"AbortBan applied successfully"
+	{
+		"ko"		"차단이 보류되었습니다."
+	}
+
+	"AbortBan not waiting for custom reason"
+	{
+		"ko"		"차단 이유의 입력을 기다리는 중이 아니므로, 보류할 차단이 없습니다."
 	}
 
 }

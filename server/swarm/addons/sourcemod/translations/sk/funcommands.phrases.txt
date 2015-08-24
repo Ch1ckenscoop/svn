@@ -65,16 +65,6 @@
 		"sk"		"Oslepiť na 50%"
 	}
 
-	"No blind"
-	{
-		"sk"		"Zrušit oslepnutie"
-	}
-
-	"NoClip player"
-	{
-		"sk"		"NoClipvoať hráča"
-	}
-
 	"Set blind on target"
 	{
 		"sk"		"oslepil {1}. "
@@ -145,11 +135,6 @@
 		"sk"		"Zvýrazniť hráča"
 	}
 
-	"Set gravity on target"
-	{
-		"sk"		"nastavená {1} gravitácia."
-	}
-
 	"Toggled beacon on target"
 	{
 		"sk"		"aplikované zvýraznenie na hráča {1}."
@@ -163,6 +148,21 @@
 	"You will be unfrozen"
 	{
 		"sk"		"Budeš odmrazený za {1} sekúnd."
+	}
+
+	"NoClip player"
+	{
+		"sk"		"Zapnúť NoClip pre hráča"
+	}
+
+	"Set gravity on target"
+	{
+		"sk"		"Nastavená gravitácia hráča {1}."
+	}
+
+	"No blind"
+	{
+		"sk"		"Zrušiť oslepenie"
 	}
 
 }

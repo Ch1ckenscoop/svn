@@ -12,12 +12,12 @@
 
 	"Map History"
 	{
-		"ko"		"지난 맵"
+		"ko"		"맵 기록"
 	}
 
 	"Played Time"
 	{
-		"ko"		"[플레이한 시간]"
+		"ko"		"[했던 시간]"
 	}
 
 	"Reason"

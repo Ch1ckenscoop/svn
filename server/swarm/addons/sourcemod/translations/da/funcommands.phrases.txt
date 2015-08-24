@@ -100,11 +100,6 @@
 		"da"		"{1} er blevet blind."
 	}
 
-	"Set gravity on target"
-	{
-		"da"		"har ændret {1}'s tyngde."
-	}
-
 	"TimeBomb player"
 	{
 		"da"		"Tidsbombe"
@@ -123,11 +118,6 @@
 	"Toggled TimeBomb on target"
 	{
 		"da"		"har sat en tidsbombe på {1}."
-	}
-
-	"Set target on fire"
-	{
-		"da"		"Der er gået ild i {1}."
 	}
 
 	"Till Explodes"
@@ -155,14 +145,24 @@
 		"da"		"Brænd spiller"
 	}
 
-	"Unfrozen"
-	{
-		"da"		"Du er nu ikke frossen."
-	}
-
 	"You will be unfrozen"
 	{
 		"da"		"Du vill ikke være frossen om {1} sekunder"
+	}
+
+	"Set gravity on target"
+	{
+		"da"		"	har ændret {1}s tyngde. "
+	}
+
+	"Set target on fire"
+	{
+		"da"		"Tænd ild i {1}"
+	}
+
+	"Unfrozen"
+	{
+		"da"		"Du er blevet tøet op."
 	}
 
 }

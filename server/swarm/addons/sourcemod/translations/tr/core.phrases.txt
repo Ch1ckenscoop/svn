@@ -80,4 +80,9 @@
 		"tr"		"Oy Yok"
 	}
 
+	"Name Reserved"
+	{
+		"tr"		"Adınız SourceMod tarafından ayırtılmış, kullanmak için parolanızı ayarlayın."
+	}
+
 }

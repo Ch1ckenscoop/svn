@@ -45,4 +45,19 @@
 		"lv"		"Noņēma banus kas atbilst filtram: {1}"
 	}
 
+	"AbortBan applied successfully"
+	{
+		"lv"		"Bans atcelts."
+	}
+
+	"AbortBan not waiting for custom reason"
+	{
+		"lv"		"Negaida uz bana iemesla ievadi, abns atclets."
+	}
+
+	"Custom ban reason explanation"
+	{
+		"lv"		"Ievadi iemeslu kā čata ziņu. Izmanto {1} lai atcletu šo."
+	}
+
 }

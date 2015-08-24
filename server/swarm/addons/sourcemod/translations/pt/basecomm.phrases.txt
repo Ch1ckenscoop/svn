@@ -40,4 +40,34 @@
 		"pt"		"Amordaçar/Emudecer jogador"
 	}
 
+	"Gag Player"
+	{
+		"pt"		"Amordaçar jogador"
+	}
+
+	"Mute Player"
+	{
+		"pt"		"Emudecer jogador"
+	}
+
+	"Silence Player"
+	{
+		"pt"		"Silenciar jogador"
+	}
+
+	"UnGag Player"
+	{
+		"pt"		"Desamordaçar jogador"
+	}
+
+	"UnMute Player"
+	{
+		"pt"		"Desemudecer jogador"
+	}
+
+	"UnSilence Player"
+	{
+		"pt"		"Desilenciar jogador"
+	}
+
 }

@@ -40,4 +40,34 @@
 		"jp"		"{1}のギャグを外しました。"
 	}
 
+	"UnSilence Player"
+	{
+		"jp"		"沈黙を解除"
+	}
+
+	"UnMute Player"
+	{
+		"jp"		"ミュートを解除"
+	}
+
+	"UnGag Player"
+	{
+		"jp"		"ギャグを外す"
+	}
+
+	"Silence Player"
+	{
+		"jp"		"沈黙させる"
+	}
+
+	"Mute Player"
+	{
+		"jp"		"ミュートする"
+	}
+
+	"Gag Player"
+	{
+		"jp"		"ギャグを付ける"
+	}
+
 }

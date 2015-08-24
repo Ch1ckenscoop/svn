@@ -1,78 +1,78 @@
 "Phrases"
 {
-	"SQL Group not found"
-	{
-		"it"		"Nessun gruppo con il nome dato è stato trovato."
-	}
-
-	"SQL Group deleted"
-	{
-		"it"		"Gruppo eliminato con successo dal database."
-	}
-
-	"SQL Group already exists"
-	{
-		"it"		"Un gruppo con questo nome esiste già."
-	}
-
-	"SQL Group added"
-	{
-		"it"		"Gruppo aggiunto con successo al database."
-	}
-
 	"SQL Group X not found"
 	{
 		"it"		"Impossibile trovare il gruppo: \"{1}\"  "
 	}
 
-	"SQL Group X failed to bind"
+	"SQL Group already exists"
 	{
-		"it"		"Gruppo fallito nell'aggiunta: \"{1}\"  "
-	}
-
-	"SQL Admin not found"
-	{
-		"it"		"Nessun amministratore con le credenziali di dare è stato trovato."
-	}
-
-	"SQL Admin groups reset"
-	{
-		"it"		"Il Gruppo amministratori è stato resettato con successo."
-	}
-
-	"SQL Admin deleted"
-	{
-		"it"		"Amministratore eliminato con successo dal database."
+		"it"		"Esiste già un gruppo con questo nome."
 	}
 
 	"SQL Admin already exists"
 	{
-		"it"		"Un amministratore con le credenziali di dare esiste gia."
+		"it"		"Esiste già un amministratore con le credenziali specificate."
 	}
 
-	"SQL Admin added"
+	"SQL Admin groups reset"
 	{
-		"it"		"Amministratore  aggiunto con successo al database."
+		"it"		"I gruppi dell'amministratore sono stati reimpostati."
 	}
 
-	"Invalid immunity"
+	"SQL Admin not found"
 	{
-		"it"		"l'immunità deve avere un valore positivo."
+		"it"		"Non è stato trovato nessun amministratore con le credenziali specificate."
 	}
 
-	"Invalid authtype"
+	"SQL Group not found"
 	{
-		"it"		"Il tipo di Auth deve essere per 'steam', 'name', o 'ip'.  "
+		"it"		"Non è stato trovato nessun gruppo con il nome specificato."
 	}
 
 	"Added group to user"
 	{
-		"it"		"Aggiunto con successo un gruppo  amministratore del dare."
+		"it"		"1 gruppo aggiunto all'amministratore specificato."
 	}
 
 	"Added groups to user"
 	{
-		"it"		"Aggiunto con successo {1} gruppi agli amministratori del dare."
+		"it"		"{1} gruppi aggiunti all'amministratore specificato."
+	}
+
+	"Invalid immunity"
+	{
+		"it"		"L'immunità deve essere un intero positivo."
+	}
+
+	"Invalid authtype"
+	{
+		"it"		"Il tipo di autenticazione deve essere tramite \"Steam\", \"nome\" o \"IP\""
+	}
+
+	"SQL Group X failed to bind"
+	{
+		"it"		"Impossibile associare il gruppo: \"{1}\""
+	}
+
+	"SQL Admin added"
+	{
+		"it"		"Amministratore aggiunto al database. "
+	}
+
+	"SQL Admin deleted"
+	{
+		"it"		"Amministratore eliminato dal database."
+	}
+
+	"SQL Group added"
+	{
+		"it"		"Gruppo aggiunto al database."
+	}
+
+	"SQL Group deleted"
+	{
+		"it"		"Gruppo eliminato dal database."
 	}
 
 }

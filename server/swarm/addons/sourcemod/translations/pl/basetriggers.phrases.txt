@@ -30,19 +30,9 @@
 		"pl"		"To jest ostatnia runda!"
 	}
 
-	"Next Map"
-	{
-		"pl"		" Następna Mapa:  {1}"
-	}
-
 	"NoTimelimit"
 	{
 		"pl"		"Brak limitu czasu dla mapy"
-	}
-
-	"Pending Vote"
-	{
-		"pl"		"Oczekujące Głosowanie"
 	}
 
 	"FragLimit"
@@ -92,7 +82,7 @@
 
 	"WinLimit"
 	{
-		"pl"		"Mapa zmieni się gdy drużyna wygra jedną rundę "
+		"pl"		"Mapa zmieni się, gdy drużyna wygra jedną rundę"
 	}
 
 	"WinLimitAppend"
@@ -102,7 +92,17 @@
 
 	"WinLimitPlural"
 	{
-		"pl"		"Mapa zmieni się gdy drużyna wygra {1} rund"
+		"pl"		"Mapa zmieni się, gdy drużyna wygra {1} rund"
+	}
+
+	"Next Map"
+	{
+		"pl"		"Następna mapa: {1} "
+	}
+
+	"Pending Vote"
+	{
+		"pl"		"Oczekujące głosowanie"
 	}
 
 }

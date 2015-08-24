@@ -65,16 +65,6 @@
 		"ko"		"아군 공격 설정 투표"
 	}
 
-	"Votealltalk Off"
-	{
-		"ko"		"팀 구분 없는 음성을 끌까요? {1}"
-	}
-
-	"Votealltalk On"
-	{
-		"ko"		"팀 구분 없는 음성을 켤까요? {1}"
-	}
-
 	"Voteburn player"
 	{
 		"ko"		"{1} 님을 태울까요?"
@@ -93,6 +83,16 @@
 	"Voteslay Player"
 	{
 		"ko"		"{1} 님을 죽일까요?"
+	}
+
+	"Votealltalk On"
+	{
+		"ko"		"팀 구분 없는 음성통신을 켤까요? {1} "
+	}
+
+	"Votealltalk Off"
+	{
+		"ko"		"팀 구분 없는 음성통신을 끌까요? {1}"
 	}
 
 }

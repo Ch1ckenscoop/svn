@@ -10,11 +10,6 @@
 		"da"		"Forlæng bane"
 	}
 
-	"Nextmap Voting Finished"
-	{
-		"da"		"Bane afstemning er fuldført. Den næste bane vil være {1}. (Modtog {2}%% af {3} stemmer) "
-	}
-
 	"Nextmap Voting Started"
 	{
 		"da"		"Afstemning for næste bane er begyndt."
@@ -38,6 +33,16 @@
 	"Dont Change"
 	{
 		"da"		"Skift ikke!"
+	}
+
+	"Starting Runoff"
+	{
+		"da"		"Intet map fik over {1}%% stemmer ({2} [{3}%%] & {4} [{5}%%]), starter afstemning om omvalg "
+	}
+
+	"Nextmap Voting Finished"
+	{
+		"da"		"Bane afstemning er fuldført. Den næste bane bliver {1}. (Modtog {2}%% af {3} stemmer) "
 	}
 
 }

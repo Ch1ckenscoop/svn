@@ -35,12 +35,8 @@ new g_GravityTarget[MAXPLAYERS+1];
 
 PerformGravity(client, target, Float:amount)
 {
-	new offset = FindDataMapOffs(client, "m_flGravity");
-	new Float:temp = GetEntDataFloat(client, offset);
-	PrintToChatAll("Gravity check %f", temp);
-	
 	SetEntityGravity(target, amount);
-	LogAction(client, target, "\"%L\" set gravity on \"%L\" to %d.", client, target, amount);
+	LogAction(client, target, "\"%L\" set gravity on \"%L\" to %f.", client, target, amount);
 }
 
 public AdminMenu_Gravity(Handle:topmenu, 
@@ -62,47 +58,47 @@ public AdminMenu_Gravity(Handle:topmenu,
 
 DisplayGravityMenu(client)
 {
-	new Handle:menu = CreateMenu(MenuHandler_Gravity);
+	Menu menu = CreateMenu(MenuHandler_Gravity);
 	
 	decl String:title[100];
 	Format(title, sizeof(title), "%T:", "Gravity player", client);
-	SetMenuTitle(menu, title);
-	SetMenuExitBackButton(menu, true);
+	menu.SetTitle(title);
+	menu.ExitBackButton = true;
 	
 	AddTargetsToMenu(menu, client, true, true);
 	
-	DisplayMenu(menu, client, MENU_TIME_FOREVER);
+	menu.Display(client, MENU_TIME_FOREVER);
 }
 
 DisplayGravityAmountMenu(client)
 {
-	new Handle:menu = CreateMenu(MenuHandler_GravityAmount);
+	Menu menu = CreateMenu(MenuHandler_GravityAmount);
 	
 	decl String:title[100];
 	Format(title, sizeof(title), "%T: %N", "Gravity amount", client, GetClientOfUserId(g_GravityTarget[client]));
-	SetMenuTitle(menu, title);
-	SetMenuExitBackButton(menu, true);
+	menu.SetTitle(title);
+	menu.ExitBackButton = true;
 	
-	AddMenuItem(menu, "4.0", "Gravity Very High");
-	AddMenuItem(menu, "2.0", "Gravity High");
-	AddMenuItem(menu, "1.0", "Gravity Normal");
-	AddMenuItem(menu, "0.5", "Gravity Low");
-	AddMenuItem(menu, "0.1", "Gravity Very Low");
+	AddTranslatedMenuItem(menu, "4.0", "Gravity Very High", client);
+	AddTranslatedMenuItem(menu, "2.0", "Gravity High", client);
+	AddTranslatedMenuItem(menu, "1.0", "Gravity Normal", client);
+	AddTranslatedMenuItem(menu, "0.5", "Gravity Low", client);
+	AddTranslatedMenuItem(menu, "0.1", "Gravity Very Low", client);
 	
-	DisplayMenu(menu, client, MENU_TIME_FOREVER);
+	menu.Display(client, MENU_TIME_FOREVER);
 }
 
-public MenuHandler_Gravity(Handle:menu, MenuAction:action, param1, param2)
+public MenuHandler_Gravity(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_End)
 	{
-		CloseHandle(menu);
+		delete menu;
 	}
 	else if (action == MenuAction_Cancel)
 	{
-		if (param2 == MenuCancel_ExitBack && hTopMenu != INVALID_HANDLE)
+		if (param2 == MenuCancel_ExitBack && hTopMenu)
 		{
-			DisplayTopMenu(hTopMenu, param1, TopMenuPosition_LastCategory);
+			hTopMenu.Display(param1, TopMenuPosition_LastCategory);
 		}
 	}
 	else if (action == MenuAction_Select)
@@ -110,7 +106,7 @@ public MenuHandler_Gravity(Handle:menu, MenuAction:action, param1, param2)
 		decl String:info[32];
 		new userid, target;
 		
-		GetMenuItem(menu, param2, info, sizeof(info));
+		menu.GetItem(param2, info, sizeof(info));
 		userid = StringToInt(info);
 
 		if ((target = GetClientOfUserId(userid)) == 0)
@@ -138,17 +134,17 @@ public MenuHandler_Gravity(Handle:menu, MenuAction:action, param1, param2)
 	return;
 }
 
-public MenuHandler_GravityAmount(Handle:menu, MenuAction:action, param1, param2)
+public MenuHandler_GravityAmount(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_End)
 	{
-		CloseHandle(menu);
+		delete menu;
 	}
 	else if (action == MenuAction_Cancel)
 	{
-		if (param2 == MenuCancel_ExitBack && hTopMenu != INVALID_HANDLE)
+		if (param2 == MenuCancel_ExitBack && hTopMenu)
 		{
-			DisplayTopMenu(hTopMenu, param1, TopMenuPosition_LastCategory);
+			hTopMenu.Display(param1, TopMenuPosition_LastCategory);
 		}
 	}
 	else if (action == MenuAction_Select)
@@ -156,7 +152,7 @@ public MenuHandler_GravityAmount(Handle:menu, MenuAction:action, param1, param2)
 		decl String:info[32];
 		new Float:amount, target;
 		
-		GetMenuItem(menu, param2, info, sizeof(info));
+		menu.GetItem(param2, info, sizeof(info));
 		amount = StringToFloat(info);
 
 		if ((target = GetClientOfUserId(g_GravityTarget[param1])) == 0)

@@ -25,11 +25,6 @@
 		"sk"		"[Herný čas]  "
 	}
 
-	"Map History"
-	{
-		"sk"		"História zmien map"
-	}
-
 	"Map"
 	{
 		"sk"		"[Mapa]"
@@ -38,6 +33,11 @@
 	"Current Map"
 	{
 		"sk"		"Aktuálna mapa"
+	}
+
+	"Map History"
+	{
+		"sk"		"História zmien máp"
 	}
 
 }

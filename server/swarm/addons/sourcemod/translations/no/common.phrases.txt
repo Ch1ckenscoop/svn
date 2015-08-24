@@ -40,11 +40,6 @@
 		"no"		"Du kan ikke bruke dette på denne spilleren."
 	}
 
-	"Unable to find cvar"
-	{
-		"no"		"Umulig å finne kommandoen: {1}"
-	}
-
 	"Target must be dead"
 	{
 		"no"		"Denne kommandoen kan kun brukes på døde spillere."
@@ -55,29 +50,14 @@
 		"no"		"Denne kommandoen kan kun brukes på levende spillere."
 	}
 
-	"Slayed player"
-	{
-		"no"		"Slayet spilleren '{1}'."
-	}
-
 	"Target is not in game"
 	{
 		"no"		"Den gitte spilleren er ikke helt med i spillet enda."
 	}
 
-	"Slapped player"
-	{
-		"no"		"Slappet spilleren '{1}'."
-	}
-
 	"See console for output"
 	{
 		"no"		"Se resultatet i consolen."
-	}
-
-	"Reload admins"
-	{
-		"no"		"Gjenlad admins."
 	}
 
 	"Player no longer available"
@@ -90,11 +70,6 @@
 		"no"		"Handlingen kan ikke bli utført da spilleren er død."
 	}
 
-	"Played Sound"
-	{
-		"no"		"Spillet melodi for spilleren '{1}'"
-	}
-
 	"On"
 	{
 		"no"		"På"
@@ -103,11 +78,6 @@
 	"Off"
 	{
 		"no"		"Av"
-	}
-
-	"No matching clients"
-	{
-		"no"		"Fant ingen klient som samsvarer med verdien du skrev inn."
 	}
 
 	"No matching client"
@@ -145,41 +115,6 @@
 		"no"		"Mer enn én klient samsvarer med den gitte verdien."
 	}
 
-	"Map was not found"
-	{
-		"no"		"Kartet '{1}' ble ikke funnet."
-	}
-
-	"Kicked player"
-	{
-		"no"		"Kicket spilleren '{1}'."
-	}
-
-	"Kicked by admin"
-	{
-		"no"		"Kicket av administrator"
-	}
-
-	"Kick player"
-	{
-		"no"		"Kick spilleren"
-	}
-
-	"Invalid SteamID specified"
-	{
-		"no"		" Du har spesifisert en ugyldig Steam_ID - som må starte med 'STEAM_:'. "
-	}
-
-	"Invalid Amount"
-	{
-		"no"		"Ugyldig spesifisert mengde."
-	}
-
-	"Failed to query database"
-	{
-		"no"		"Database-spørringen var mislykket."
-	}
-
 	"Executed config"
 	{
 		"no"		"Kjørte konfigureringsfilen \"{1}\"."
@@ -205,11 +140,6 @@
 		"no"		"Denne kommandoen kan kun brukes i spillet."
 	}
 
-	"Changing map"
-	{
-		"no"		"Bytter kart til {1}..."
-	}
-
 	"Cannot target bot"
 	{
 		"no"		"Kan ikke utføre denne kommandoen på en bot."
@@ -225,11 +155,6 @@
 		"no"		"Du kan ikke endre valget ditt for denne avstemningen."
 	}
 
-	"Cannot be performed on dead"
-	{
-		"no"		"Denne handlingen kan ikke bli gjennomført på den døde klienten \"{1}\""
-	}
-
 	"Cancelled Vote"
 	{
 		"no"		"Avbrøt avstemningen."
@@ -240,14 +165,89 @@
 		"no"		"Avbryt avstemning."
 	}
 
-	"Admin cache refreshed"
-	{
-		"no"		"Admin-cachen ble oppdatert."
-	}
-
 	"Access"
 	{
 		"no"		"Tilgang"
+	}
+
+	"Admin cache refreshed"
+	{
+		"no"		"Admin hurtigbufferen ble oppdatert"
+	}
+
+	"Cannot be performed on dead"
+	{
+		"no"		"Denne handlingen kan ikke bli gjennomført på en død klient \"{1}"
+	}
+
+	"Changing map"
+	{
+		"no"		"Bytter bane til {1}..."
+	}
+
+	"Failed to query database"
+	{
+		"no"		"Database forespørselen var mislykket.  "
+	}
+
+	"Invalid Amount"
+	{
+		"no"		"Mengden spesifisert er ugyldig"
+	}
+
+	"Invalid SteamID specified"
+	{
+		"no"		"Du har spesifisert en ugyldig Steam ID ( Den må starte med 'STEAM_')."
+	}
+
+	"Kick player"
+	{
+		"no"		"Kast ut spiller"
+	}
+
+	"Kicked by admin"
+	{
+		"no"		"Kastet ut av administrator"
+	}
+
+	"Kicked player"
+	{
+		"no"		"Kastet ut spiller '{1}' "
+	}
+
+	"Map was not found"
+	{
+		"no"		"Banen {1} ble ikke funnet."
+	}
+
+	"No matching clients"
+	{
+		"no"		" Fant ingen klienter som samsvarer med verdien du skrev inn."
+	}
+
+	"Played Sound"
+	{
+		"no"		"Spilte lydfil til spiller '{1}' "
+	}
+
+	"Reload admins"
+	{
+		"no"		"Last om admins"
+	}
+
+	"Slapped player"
+	{
+		"no"		"Klasket spiller '{1}'"
+	}
+
+	"Slayed player"
+	{
+		"no"		"Slo I hjel spiller '{1}'"
+	}
+
+	"Unable to find cvar"
+	{
+		"no"		"Klarte ikke å finne kommandoen: {1}"
 	}
 
 }

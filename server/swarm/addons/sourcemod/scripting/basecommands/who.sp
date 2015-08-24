@@ -89,16 +89,16 @@ PerformWho(client, target, ReplySource:reply, bool:is_admin)
 
 DisplayWhoMenu(client)
 {
-	new Handle:menu = CreateMenu(MenuHandler_Who);
+	Menu menu = CreateMenu(MenuHandler_Who);
 	
 	decl String:title[100];
 	Format(title, sizeof(title), "%T:", "Identify player", client);
-	SetMenuTitle(menu, title);
-	SetMenuExitBackButton(menu, true);
+	menu.SetTitle(title);
+	menu.ExitBackButton = true;
 	
 	AddTargetsToMenu2(menu, 0, COMMAND_FILTER_CONNECTED);
 	
-	DisplayMenu(menu, client, MENU_TIME_FOREVER);
+	menu.Display(client, MENU_TIME_FOREVER);
 }
 
 public AdminMenu_Who(Handle:topmenu, 
@@ -118,17 +118,17 @@ public AdminMenu_Who(Handle:topmenu,
 	}
 }
 
-public MenuHandler_Who(Handle:menu, MenuAction:action, param1, param2)
+public MenuHandler_Who(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_End)
 	{
-		CloseHandle(menu);
+		delete menu;
 	}
 	else if (action == MenuAction_Cancel)
 	{
-		if (param2 == MenuCancel_ExitBack && hTopMenu != INVALID_HANDLE)
+		if (param2 == MenuCancel_ExitBack && hTopMenu)
 		{
-			DisplayTopMenu(hTopMenu, param1, TopMenuPosition_LastCategory);
+			hTopMenu.Display(param1, TopMenuPosition_LastCategory);
 		}
 	}
 	else if (action == MenuAction_Select)
@@ -136,7 +136,7 @@ public MenuHandler_Who(Handle:menu, MenuAction:action, param1, param2)
 		decl String:info[32];
 		new userid, target;
 		
-		GetMenuItem(menu, param2, info, sizeof(info));
+		menu.GetItem(param2, info, sizeof(info));
 		userid = StringToInt(info);
 
 		if ((target = GetClientOfUserId(userid)) == 0)
@@ -175,9 +175,9 @@ public Action:Command_Who(client, args)
 	{
 		/* Display header */
 		decl String:t_access[16], String:t_name[16], String:t_username[16];
-		Format(t_access, sizeof(t_access), "%t", "Admin access", client);
-		Format(t_name, sizeof(t_name), "%t", "Name", client);
-		Format(t_username, sizeof(t_username), "%t", "Username", client);
+		Format(t_access, sizeof(t_access), "%T", "Admin access", client);
+		Format(t_name, sizeof(t_name), "%T", "Name", client);
+		Format(t_username, sizeof(t_username), "%T", "Username", client);
 
 		if (is_admin)
 		{

@@ -15,11 +15,6 @@
 		"pl"		"Nie znaleziono pasujących rezultatów"
 	}
 
-	"Type sm_help to see more"
-	{
-		"pl"		"Wpisz sm_help {1} aby zobaczyć więcej komend "
-	}
-
 	"SM help commands"
 	{
 		"pl"		" Pomoc SourceMod: Informacje o komendach "
@@ -28,6 +23,11 @@
 	"Entries n - m in page k"
 	{
 		"pl"		"Wpisy {1} - {2} na stronie {3}"
+	}
+
+	"Type sm_help to see more"
+	{
+		"pl"		"Wpisz sm_help {1}, aby zobaczyć więcej komend"
 	}
 
 }

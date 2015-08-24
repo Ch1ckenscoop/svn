@@ -45,4 +45,19 @@
 		"zho"		"移除符合條件: {1} 的封鎖"
 	}
 
+	"AbortBan applied successfully"
+	{
+		"zho"		"封鎖已中止"
+	}
+
+	"AbortBan not waiting for custom reason"
+	{
+		"zho"		"不等待封鎖原因被輸入,封鎖無法被中止"
+	}
+
+	"Custom ban reason explanation"
+	{
+		"zho"		"以聊天信息方式輸入封鎖理由,按{1} 則中止"
+	}
+
 }

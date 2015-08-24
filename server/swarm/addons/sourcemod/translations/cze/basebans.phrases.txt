@@ -1,5 +1,20 @@
 "Phrases"
 {
+	"Custom ban reason explanation"
+	{
+		"cze"		"Zadejte duvod zpravou do chatu. Pouzijte {1} pro zruseni."
+	}
+
+	"AbortBan not waiting for custom reason"
+	{
+		"cze"		"Neceka se na zadani duvodu banu, zadny ban na zruseni."
+	}
+
+	"AbortBan applied successfully"
+	{
+		"cze"		"Ban zrusen."
+	}
+
 	"Ban added"
 	{
 		"cze"		"Ban byl pridan."

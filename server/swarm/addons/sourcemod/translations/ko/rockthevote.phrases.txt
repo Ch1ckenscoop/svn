@@ -17,7 +17,7 @@
 
 	"Selected Map"
 	{
-		"ko"		"{1} 님이 {2} 를 선택했습니다"
+		"ko"		"{1} 님이 {2} 을(를) 선택했습니다"
 	}
 
 	"Rock The Vote"
@@ -27,7 +27,7 @@
 
 	"RTV Started"
 	{
-		"ko"		"맵 투표가 이미 시작되었습니다"
+		"ko"		"맵 투표가 이미 시작되었습니다."
 	}
 
 	"Current Map Stays"
@@ -57,7 +57,7 @@
 
 	"Map Nominated"
 	{
-		"ko"		"{1} 님이 {2} 를 맵투표에 추천하셨습니다."
+		"ko"		"{1} 님이 {2} 를 맵 투표에 추천하셨습니다."
 	}
 
 	"Max Nominations"

@@ -15,11 +15,6 @@
 		"da"		"[Startede]"
 	}
 
-	"Reason"
-	{
-		"da"		"[Årsagen til at slutte]"
-	}
-
 	"Played Time"
 	{
 		"da"		"[Spillet tid]"
@@ -38,6 +33,11 @@
 	"Map"
 	{
 		"da"		"[Bane]"
+	}
+
+	"Reason"
+	{
+		"da"		"[Afslutningsårsag]"
 	}
 
 }

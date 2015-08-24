@@ -48,16 +48,12 @@ new g_adminCount = 0;
 new bool:g_isAdmin[MAXPLAYERS+1];
 
 /* Handles to convars used by plugin */
-new Handle:sm_reserved_slots;
-new Handle:sm_hide_slots;
-new Handle:sv_visiblemaxplayers;
-new Handle:sm_reserve_type;
-new Handle:sm_reserve_maxadmins;
-new Handle:sm_reserve_kicktype;
-
-new g_SDKVersion;
-new g_SourceTV = -1;
-new g_Replay = -1;
+ConVar sm_reserved_slots;
+ConVar sm_hide_slots;
+ConVar sv_visiblemaxplayers;
+ConVar sm_reserve_type;
+ConVar sm_reserve_maxadmins;
+ConVar sm_reserve_kicktype;
 
 enum KickType
 {
@@ -77,28 +73,8 @@ public OnPluginStart()
 	sm_reserve_maxadmins = CreateConVar("sm_reserve_maxadmins", "1", "Maximum amount of admins to let in the server with reserve type 2", 0, true, 0.0);
 	sm_reserve_kicktype = CreateConVar("sm_reserve_kicktype", "0", "How to select a client to kick (if appropriate)", 0, true, 0.0, true, 2.0);
 	
-	HookConVarChange(sm_reserved_slots, SlotCountChanged);
-	HookConVarChange(sm_hide_slots, SlotHideChanged);
-	
-	g_SDKVersion = GuessSDKVersion();
-	
-	if (g_SDKVersion == SOURCE_SDK_EPISODE2VALVE)
-	{
-		for (new i = 1; i <= MaxClients; i++)
-		{
-			if (!IsClientConnected(i))
-				continue;
-			
-			if (IsClientSourceTV(i))
-			{
-				g_SourceTV = i;
-			}
-			else if (IsClientReplay(i))
-			{
-				g_Replay = i;
-			}
-		}
-	}
+	sm_reserved_slots.AddChangeHook(SlotCountChanged);
+	sm_hide_slots.AddChangeHook(SlotHideChanged);
 }
 
 public OnPluginEnd()
@@ -109,17 +85,17 @@ public OnPluginEnd()
 
 public OnMapStart()
 {
-	if (GetConVarBool(sm_hide_slots))
-	{		
-		SetVisibleMaxSlots(GetClientCount(false), MaxClients - GetConVarInt(sm_reserved_slots));
+	if (sm_hide_slots.BoolValue)
+	{
+		SetVisibleMaxSlots(GetClientCount(false), GetMaxHumanPlayers() - sm_reserved_slots.IntValue);
 	}
 }
 
 public OnConfigsExecuted()
 {
-	if (GetConVarBool(sm_hide_slots))
+	if (sm_hide_slots.BoolValue)
 	{
-		SetVisibleMaxSlots(GetClientCount(false), MaxClients - GetConVarInt(sm_reserved_slots));
+		SetVisibleMaxSlots(GetClientCount(false), GetMaxHumanPlayers() - sm_reserved_slots.IntValue);
 	}	
 }
 
@@ -132,9 +108,9 @@ public Action:OnTimedKick(Handle:timer, any:client)
 	
 	KickClient(client, "%T", "Slot reserved", client);
 	
-	if (GetConVarBool(sm_hide_slots))
+	if (sm_hide_slots.BoolValue)
 	{				
-		SetVisibleMaxSlots(GetClientCount(false), MaxClients - GetConVarInt(sm_reserved_slots));
+		SetVisibleMaxSlots(GetClientCount(false), GetMaxHumanPlayers() - sm_reserved_slots.IntValue);
 	}
 	
 	return Plugin_Handled;
@@ -142,33 +118,21 @@ public Action:OnTimedKick(Handle:timer, any:client)
 
 public OnClientPostAdminCheck(client)
 {
-	if (g_SDKVersion == SOURCE_SDK_EPISODE2VALVE)
-	{
-		if (IsClientSourceTV(client))
-		{
-			g_SourceTV = client;
-		}
-		else if (IsClientReplay(client))
-		{
-			g_Replay = client;
-		}
-	}
-	
-	new reserved = GetConVarInt(sm_reserved_slots);
+	new reserved = sm_reserved_slots.IntValue;
 
 	if (reserved > 0)
 	{
 		new clients = GetClientCount(false);
-		new limit = MaxClients - reserved;
+		new limit = GetMaxHumanPlayers() - reserved;
 		new flags = GetUserFlagBits(client);
 		
-		new type = GetConVarInt(sm_reserve_type);
+		new type = sm_reserve_type.IntValue;
 		
 		if (type == 0)
 		{
 			if (clients <= limit || IsFakeClient(client) || flags & ADMFLAG_ROOT || flags & ADMFLAG_RESERVATION)
 			{
-				if (GetConVarBool(sm_hide_slots))
+				if (sm_hide_slots.BoolValue)
 				{
 					SetVisibleMaxSlots(clients, limit);
 				}
@@ -208,7 +172,7 @@ public OnClientPostAdminCheck(client)
 				g_isAdmin[client] = true;
 			}
 			
-			if (clients > limit && g_adminCount < GetConVarInt(sm_reserve_maxadmins))
+			if (clients > limit && g_adminCount < sm_reserve_maxadmins.IntValue)
 			{
 				/* Server is full, reserved slots aren't and client doesn't have reserved slots access */
 				
@@ -234,21 +198,9 @@ public OnClientPostAdminCheck(client)
 
 public OnClientDisconnect_Post(client)
 {
-	if (g_SDKVersion == SOURCE_SDK_EPISODE2VALVE)
-	{
-		if (client == g_SourceTV)
-		{
-			g_SourceTV = -1;
-		}
-		else if (client == g_Replay)
-		{
-			g_Replay = -1;
-		}
-	}
-	
-	if (GetConVarBool(sm_hide_slots))
+	if (sm_hide_slots.BoolValue)
 	{		
-		SetVisibleMaxSlots(GetClientCount(false), MaxClients - GetConVarInt(sm_reserved_slots));
+		SetVisibleMaxSlots(GetClientCount(false), GetMaxHumanPlayers() - sm_reserved_slots.IntValue);
 	}
 	
 	if (g_isAdmin[client])
@@ -258,30 +210,30 @@ public OnClientDisconnect_Post(client)
 	}
 }
 
-public SlotCountChanged(Handle:convar, const String:oldValue[], const String:newValue[])
+public SlotCountChanged(ConVar convar, const String:oldValue[], const String:newValue[])
 {
 	/* Reserved slots or hidden slots have been disabled - reset sv_visiblemaxplayers */
-	new slotcount = GetConVarInt(convar);
+	new slotcount = convar.IntValue;
 	if (slotcount == 0)
 	{
 		ResetVisibleMax();
 	}
-	else if (GetConVarBool(sm_hide_slots))
+	else if (sm_hide_slots.BoolValue)
 	{
-		SetVisibleMaxSlots(GetClientCount(false), MaxClients - slotcount);
+		SetVisibleMaxSlots(GetClientCount(false), GetMaxHumanPlayers() - slotcount);
 	}
 }
 
-public SlotHideChanged(Handle:convar, const String:oldValue[], const String:newValue[])
+public SlotHideChanged(ConVar convar, const String:oldValue[], const String:newValue[])
 {
 	/* Reserved slots or hidden slots have been disabled - reset sv_visiblemaxplayers */
-	if (!GetConVarBool(convar))
+	if (!convar.BoolValue)
 	{
 		ResetVisibleMax();
 	}
 	else
 	{
-		SetVisibleMaxSlots(GetClientCount(false), MaxClients - GetConVarInt(sm_reserved_slots));
+		SetVisibleMaxSlots(GetClientCount(false), GetMaxHumanPlayers() - sm_reserved_slots.IntValue);
 	}
 }
 
@@ -289,37 +241,24 @@ SetVisibleMaxSlots(clients, limit)
 {
 	new num = clients;
 	
-	if (clients == MaxClients)
+	if (clients == GetMaxHumanPlayers())
 	{
-		num = MaxClients;
+		num = GetMaxHumanPlayers();
 	} else if (clients < limit) {
 		num = limit;
 	}
 	
-	if (g_SDKVersion == SOURCE_SDK_EPISODE2VALVE)
-	{
-		if (g_SourceTV > -1)
-		{
-			--num;
-		}
-		
-		if (g_Replay > -1)
-		{
-			--num;
-		}
-	}
-	
-	SetConVarInt(sv_visiblemaxplayers, num);
+	sv_visiblemaxplayers.IntValue = num;
 }
 
 ResetVisibleMax()
 {
-	SetConVarInt(sv_visiblemaxplayers, -1);
+	sv_visiblemaxplayers.IntValue = -1;
 }
 
 SelectKickClient()
 {
-	new KickType:type = KickType:GetConVarInt(sm_reserve_kicktype);
+	new KickType:type = KickType:sm_reserve_kicktype.IntValue;
 	
 	new Float:highestValue;
 	new highestValueId;
@@ -340,7 +279,7 @@ SelectKickClient()
 	
 		new flags = GetUserFlagBits(i);
 		
-		if (IsFakeClient(i) || flags & ADMFLAG_ROOT || flags & ADMFLAG_RESERVATION || CheckCommandAccess(i, "sm_reskick_immunity", ADMFLAG_RESERVATION, false))
+		if (IsFakeClient(i) || flags & ADMFLAG_ROOT || flags & ADMFLAG_RESERVATION || CheckCommandAccess(i, "sm_reskick_immunity", ADMFLAG_RESERVATION, true))
 		{
 			continue;
 		}

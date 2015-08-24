@@ -70,11 +70,6 @@
 		"nl"		"Identificeer speler"
 	}
 
-	"Kicked target"
-	{
-		"nl"		"{1} verwijdert."
-	}
-
 	"No access to cvar"
 	{
 		"nl"		"Je hebt geen toegang tot deze cvar."
@@ -100,11 +95,6 @@
 		"nl"		"\"{1}\" is geen beheerder."
 	}
 
-	"Removed bans matching"
-	{
-		"nl"		"Bans verwijdert die voldoen aan filter: {1}"
-	}
-
 	"Unable to find cvar"
 	{
 		"nl"		"Onmogelijk om cvar: {1} te vinden"
@@ -120,9 +110,19 @@
 		"nl"		"Waarde van cvar \"{1}\": \"{2}\""
 	}
 
+	"Kicked target"
+	{
+		"nl"		"{1} verwijderd."
+	}
+
 	"Kicked target reason"
 	{
-		"nl"		"Verwijdert {1} (Reden: {2})"
+		"nl"		"{1} verwijderd (Reden: {2})"
+	}
+
+	"Removed bans matching"
+	{
+		"nl"		"Bans verwijderd die voldoen aan filter: {1}"
 	}
 
 }

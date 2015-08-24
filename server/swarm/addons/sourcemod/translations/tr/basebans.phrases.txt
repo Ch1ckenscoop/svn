@@ -45,4 +45,19 @@
 		"tr"		"\"{1}\" adlı oyuncu {2} dakikalığına yasaklandı."
 	}
 
+	"AbortBan not waiting for custom reason"
+	{
+		"tr"		"Bir yasak nedeninin yazılması beklenmiyor, iptal edilecek yasak yok."
+	}
+
+	"AbortBan applied successfully"
+	{
+		"tr"		"Yasaklama iptal edildi."
+	}
+
+	"Custom ban reason explanation"
+	{
+		"tr"		"Nedeni bir sohbet mesajı olarak girin. İptal etmek için {1} kullanın."
+	}
+
 }

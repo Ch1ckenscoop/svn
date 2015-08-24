@@ -2,7 +2,7 @@
 {
 	"Flooding the server"
 	{
-		"pt"		"Você está entupindo o servidor!"
+		"pt"		"Você está enviando mensagens demais!"
 	}
 
 }

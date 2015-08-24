@@ -5,39 +5,69 @@
 		"sk"		"Vyberte typ"
 	}
 
-	"Muted target"
+	"Mute Player"
 	{
-		"sk"		"Umlčaný (Mikrofón) {1}."
+		"sk"		"Stlmiť hráčovi mikrofón"
 	}
 
-	"Gagged target"
+	"Gag Player"
 	{
-		"sk"		"Umlčaný (Text) {1}."
+		"sk"		"Zakázať hráčovi chat"
+	}
+
+	"Silence Player"
+	{
+		"sk"		"Zakázať hráčovi chat aj mikrofón"
+	}
+
+	"UnGag Player"
+	{
+		"sk"		"Povoliť hráčovi chat"
+	}
+
+	"UnMute Player"
+	{
+		"sk"		"Zrušiť stlmenie mikrofónu hráča"
 	}
 
 	"Gag/Mute player"
 	{
-		"sk"		"Umlčat Text/Mikr. hráčovi"
+		"sk"		"Zakázať chat/mikrofón hráčovi"
+	}
+
+	"Gagged target"
+	{
+		"sk"		"Zakázaný chat pre {1}. "
+	}
+
+	"Muted target"
+	{
+		"sk"		"Mikrofón stlmený pre {1}. "
 	}
 
 	"Silenced target"
 	{
-		"sk"		"Úplne umlčaný hráč {1}."
-	}
-
-	"Ungagged target"
-	{
-		"sk"		"Odmlčaný hrač (text) {1}."
-	}
-
-	"Unmuted target"
-	{
-		"sk"		"Odmlčaný hrač (mikrofón) {1}."
+		"sk"		"Zakázaný chat aj mikrofón pre {1}. "
 	}
 
 	"Unsilenced target"
 	{
-		"sk"		"Odmlčaný hrác {1}."
+		"sk"		"Povolený chat aj mikrofón pre {1}. "
+	}
+
+	"UnSilence Player"
+	{
+		"sk"		"Povoliť hráčovi chat aj mikrofón"
+	}
+
+	"Ungagged target"
+	{
+		"sk"		"Povolený chat pre {1}. "
+	}
+
+	"Unmuted target"
+	{
+		"sk"		"Zrušené stlmenie mikrofónu pre {1}. "
 	}
 
 }

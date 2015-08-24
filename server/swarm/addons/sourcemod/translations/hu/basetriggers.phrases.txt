@@ -10,44 +10,14 @@
 		"hu"		"Jelenlegi idő: {1}"
 	}
 
-	"Friendly Fire On"
-	{
-		"hu"		"FF bekapcsolva"
-	}
-
-	"Friendly Fire Off"
-	{
-		"hu"		"FF kikapcsolva"
-	}
-
 	"Current Map"
 	{
 		"hu"		"{1} a jelenlegi pálya"
 	}
 
-	"WinLimitAppend"
-	{
-		"hu"		", or change map after a team wins {1} round{2}"
-	}
-
-	"WinLimit"
-	{
-		"hu"		"Map will change after a team wins {1} round{2}"
-	}
-
 	"MaxRoundsAppend"
 	{
 		"hu"		", or change map after {1} round{2}"
-	}
-
-	"MaxRounds"
-	{
-		"hu"		"Map will change after {1} round{2}"
-	}
-
-	"FragLimit"
-	{
-		"hu"		"Map will change after a player reaches {1} frag{2}"
 	}
 
 	"LastRound"
@@ -103,6 +73,36 @@
 	"FragLimitPlural"
 	{
 		"hu"		"{1} játékospontszám elérése után pályaváltás lesz."
+	}
+
+	"Friendly Fire Off"
+	{
+		"hu"		"Csapattárs sebzés kikapcsolva."
+	}
+
+	"Friendly Fire On"
+	{
+		"hu"		"Csapattárs sebzés bekapcsolva."
+	}
+
+	"WinLimitAppend"
+	{
+		"hu"		"vagy amint az egyik csapat pontot szerez"
+	}
+
+	"WinLimit"
+	{
+		"hu"		"Pályaváltás amint egy az egyik csapat pontot szerez"
+	}
+
+	"MaxRounds"
+	{
+		"hu"		"Pályaváltás egy kör múlva"
+	}
+
+	"FragLimit"
+	{
+		"hu"		"Pályaváltás amint egy játékos megöl valakit"
 	}
 
 }

@@ -48,15 +48,15 @@ public Plugin:myinfo =
 	url = "http://www.sourcemod.net/"
 };
 
-new Handle:g_Cvar_TriggerShow = INVALID_HANDLE;
-new Handle:g_Cvar_TimeleftInterval = INVALID_HANDLE;
-new Handle:g_Cvar_FriendlyFire = INVALID_HANDLE;
+ConVar g_Cvar_TriggerShow;
+ConVar g_Cvar_TimeleftInterval;
+ConVar g_Cvar_FriendlyFire;
 
-new Handle:g_Timer_TimeShow = INVALID_HANDLE;
+Handle g_Timer_TimeShow = null;
 
-new Handle:g_Cvar_WinLimit = INVALID_HANDLE;
-new Handle:g_Cvar_FragLimit = INVALID_HANDLE;
-new Handle:g_Cvar_MaxRounds = INVALID_HANDLE;
+ConVar g_Cvar_WinLimit;
+ConVar g_Cvar_FragLimit;
+ConVar g_Cvar_MaxRounds;
 
 #define TIMELEFT_ALL_ALWAYS		0		/* Print to all players */
 #define TIMELEFT_ALL_MAYBE		1		/* Print to all players if sm_trigger_show allows */
@@ -71,19 +71,16 @@ public OnPluginStart()
 	LoadTranslations("common.phrases");
 	LoadTranslations("basetriggers.phrases");
 	
-	g_Cvar_TriggerShow = CreateConVar("sm_trigger_show", "1", "Display triggers message to all players? (0 off, 1 on, def. 1)", 0, true, 0.0, true, 1.0);	
+	g_Cvar_TriggerShow = CreateConVar("sm_trigger_show", "0", "Display triggers message to all players? (0 off, 1 on, def. 0)", 0, true, 0.0, true, 1.0);	
 	g_Cvar_TimeleftInterval = CreateConVar("sm_timeleft_interval", "0.0", "Display timeleft every x seconds. Default 0.", 0, true, 0.0, true, 1800.0);
 	g_Cvar_FriendlyFire = FindConVar("mp_friendlyfire");
-	
-	AddCommandListener(Command_Say, "say");
-	AddCommandListener(Command_Say, "say2");
-	AddCommandListener(Command_Say, "say_team");
 	
 	RegConsoleCmd("timeleft", Command_Timeleft);
 	RegConsoleCmd("nextmap", Command_Nextmap);
 	RegConsoleCmd("motd", Command_Motd);
+	RegConsoleCmd("ff", Command_FriendlyFire);
 	
-	HookConVarChange(g_Cvar_TimeleftInterval, ConVarChange_TimeleftInterval);
+	g_Cvar_TimeleftInterval.AddChangeHook(ConVarChange_TimeleftInterval);
 
 	decl String:folder[64];   	 
    	GetGameFolderName(folder, sizeof(folder));
@@ -135,9 +132,9 @@ public Event_GameStart(Handle:event, const String:name[], bool:dontBroadcast)
 	g_TotalRounds = 0;	
 }
 
-public Event_TeamPlayWinPanel(Handle:event, const String:name[], bool:dontBroadcast)
+public Event_TeamPlayWinPanel(Event event, const String:name[], bool:dontBroadcast)
 {
-	if(GetEventInt(event, "round_complete") == 1 || StrEqual(name, "arena_win_panel"))
+	if (event.GetInt("round_complete") == 1 || StrEqual(name, "arena_win_panel"))
 	{
 		g_TotalRounds++;
 	}
@@ -170,7 +167,7 @@ public ConVarChange_TimeleftInterval(Handle:convar, const String:oldValue[], con
 	
 	if (newval < 1.0)
 	{
-		if (g_Timer_TimeShow != INVALID_HANDLE)
+		if (g_Timer_TimeShow != null)
 		{
 			KillTimer(g_Timer_TimeShow);		
 		}
@@ -178,7 +175,7 @@ public ConVarChange_TimeleftInterval(Handle:convar, const String:oldValue[], con
 		return;
 	}
 	
-	if (g_Timer_TimeShow != INVALID_HANDLE)
+	if (g_Timer_TimeShow != null)
 	{
 		KillTimer(g_Timer_TimeShow);
 		g_Timer_TimeShow = CreateTimer(newval, Timer_DisplayTimeleft, _, TIMER_REPEAT);
@@ -201,6 +198,9 @@ public Action:Command_Timeleft(client, args)
 
 public Action:Command_Nextmap(client, args)
 {
+	if (client && !IsClientInGame(client))
+		return Plugin_Handled;
+	
 	decl String:map[64];
 	
 	GetNextMap(map, sizeof(map));
@@ -225,39 +225,42 @@ public Action:Command_Motd(client, args)
 		return Plugin_Handled;
 	}
 
+	if (!IsClientInGame(client))
+		return Plugin_Handled;
+	
 	ShowMOTDPanel(client, "Message Of The Day", "motd", MOTDPANEL_TYPE_INDEX);
 
 	return Plugin_Handled;
 }
 
-public Action:Command_Say(client, const String:command[], argc)
+public Action:Command_FriendlyFire(client, args)
 {
-	decl String:text[192];
-	new startidx = 0;
-	if (GetCmdArgString(text, sizeof(text)) < 1)
+	if (client == 0)
 	{
-		return Plugin_Continue;
+		ReplyToCommand(client, "[SM] %t", "Command is in-game only");
+		return Plugin_Handled;
 	}
+
+	if (!IsClientInGame(client))
+		return Plugin_Handled;
 	
-	if (text[strlen(text)-1] == '"')
-	{
-		text[strlen(text)-1] = '\0';
-		startidx = 1;
-	}
+	ShowFriendlyFire(client);
 
-	if (strcmp(command, "say2", false) == 0)
-		startidx += 4;
+	return Plugin_Handled;
+}
 
-	if (strcmp(text[startidx], "timeleft", false) == 0)
+public OnClientSayCommand_Post(client, const String:command[], const String:sArgs[])
+{
+	if (strcmp(sArgs, "timeleft", false) == 0)
 	{
 		ShowTimeLeft(client, TIMELEFT_ALL_MAYBE);
 	}
-	else if (strcmp(text[startidx], "thetime", false) == 0)
+	else if (strcmp(sArgs, "thetime", false) == 0)
 	{
-		decl String:ctime[64];
+		char ctime[64];
 		FormatTime(ctime, 64, NULL_STRING);
 		
-		if(GetConVarInt(g_Cvar_TriggerShow))
+		if (g_Cvar_TriggerShow.IntValue)
 		{
 			PrintToChatAll("[SM] %t", "Thetime", ctime);
 		}
@@ -266,36 +269,16 @@ public Action:Command_Say(client, const String:command[], argc)
 			PrintToChat(client,"[SM] %t", "Thetime", ctime);
 		}
 	}
-	else if (strcmp(text[startidx], "ff", false) == 0 || strcmp(text[startidx], "/ff", false) == 0)
+	else if (strcmp(sArgs, "ff", false) == 0)
 	{
-		if (g_Cvar_FriendlyFire != INVALID_HANDLE)
-		{
-			decl String:phrase[24];
-			if (GetConVarBool(g_Cvar_FriendlyFire))
-			{
-				strcopy(phrase, sizeof(phrase), "Friendly Fire On");
-			}
-			else
-			{
-				strcopy(phrase, sizeof(phrase), "Friendly Fire Off");
-			}
-		
-			if(GetConVarInt(g_Cvar_TriggerShow))
-			{
-				PrintToChatAll("[SM] %t", phrase);
-			}
-			else
-			{
-				PrintToChat(client,"[SM] %t", phrase);
-			}
-		}
+		ShowFriendlyFire(client);
 	}
-	else if (strcmp(text[startidx], "currentmap", false) == 0)
+	else if (strcmp(sArgs, "currentmap", false) == 0)
 	{
-		decl String:map[64];
+		char map[64];
 		GetCurrentMap(map, sizeof(map));
 		
-		if(GetConVarInt(g_Cvar_TriggerShow))
+		if (g_Cvar_TriggerShow.IntValue)
 		{
 			PrintToChatAll("[SM] %t", "Current Map", map);
 		}
@@ -304,12 +287,12 @@ public Action:Command_Say(client, const String:command[], argc)
 			PrintToChat(client,"[SM] %t", "Current Map", map);
 		}
 	}
-	else if (strcmp(text[startidx], "nextmap", false) == 0)
+	else if (strcmp(sArgs, "nextmap", false) == 0)
 	{
-		decl String:map[32];
+		char map[32];
 		GetNextMap(map, sizeof(map));
 			
-		if(GetConVarInt(g_Cvar_TriggerShow))
+		if (g_Cvar_TriggerShow.IntValue)
 		{
 			if (mapchooser && EndOfMapVoteEnabled() && !HasEndOfMapVoteFinished())
 			{
@@ -332,25 +315,22 @@ public Action:Command_Say(client, const String:command[], argc)
 			}
 		}
 	}
-	else if (strcmp(text[startidx], "motd", false) == 0)
+	else if (strcmp(sArgs, "motd", false) == 0)
 	{
 		ShowMOTDPanel(client, "Message Of The Day", "motd", MOTDPANEL_TYPE_INDEX);
 	}
-	
-	return Plugin_Continue;
 }
 
 ShowTimeLeft(client, who)
 {
-	new bool:lastround = false;
-	new bool:written = false;
-	new bool:notimelimit = false;
+	bool lastround = false;
+	bool written = false;
+	bool notimelimit = false;
 	
-	decl String:finalOutput[1024];
-	finalOutput[0] = 0;
+	char finalOutput[1024];
 	
 	if (who == TIMELEFT_ALL_ALWAYS
-		|| (who == TIMELEFT_ALL_MAYBE && GetConVarInt(g_Cvar_TriggerShow)))
+		|| (who == TIMELEFT_ALL_MAYBE && g_Cvar_TriggerShow.IntValue))
 	{
 		client = 0;	
 	}
@@ -381,9 +361,9 @@ ShowTimeLeft(client, who)
 	
 	if (!lastround)
 	{
-		if (g_Cvar_WinLimit != INVALID_HANDLE)
+		if (g_Cvar_WinLimit)
 		{
-			new winlimit = GetConVarInt(g_Cvar_WinLimit);
+			int winlimit = g_Cvar_WinLimit.IntValue;
 			
 			if (winlimit > 0)
 			{
@@ -418,9 +398,9 @@ ShowTimeLeft(client, who)
 			}
 		}
 		
-		if (g_Cvar_FragLimit != INVALID_HANDLE)
+		if (g_Cvar_FragLimit)
 		{
-			new fraglimit = GetConVarInt(g_Cvar_FragLimit);
+			int fraglimit = g_Cvar_FragLimit.IntValue;
 			
 			if (fraglimit > 0)
 			{
@@ -455,9 +435,9 @@ ShowTimeLeft(client, who)
 			}
 		}
 		
-		if (g_Cvar_MaxRounds != INVALID_HANDLE)
+		if (g_Cvar_MaxRounds)
 		{
-			new maxrounds = GetConVarInt(g_Cvar_MaxRounds);
+			int maxrounds = g_Cvar_MaxRounds.IntValue;
 			
 			if (maxrounds > 0)
 			{
@@ -505,11 +485,11 @@ ShowTimeLeft(client, who)
 	}
 
 	if (who == TIMELEFT_ALL_ALWAYS
-		|| (who == TIMELEFT_ALL_MAYBE && GetConVarInt(g_Cvar_TriggerShow)))
+		|| (who == TIMELEFT_ALL_MAYBE && g_Cvar_TriggerShow.IntValue))
 	{
 		PrintToChatAll("[SM] %s", finalOutput);
 	}
-	else if (client != 0)
+	else if (client != 0 && IsClientInGame(client))
 	{
 		PrintToChat(client, "[SM] %s", finalOutput);
 	}
@@ -517,5 +497,30 @@ ShowTimeLeft(client, who)
 	if (client == 0)
 	{
 		PrintToServer("[SM] %s", finalOutput);
+	}
+}
+
+ShowFriendlyFire(client)
+{
+	if (g_Cvar_FriendlyFire)
+	{
+		char phrase[24];
+		if (g_Cvar_FriendlyFire.BoolValue)
+		{
+			strcopy(phrase, sizeof(phrase), "Friendly Fire On");
+		}
+		else
+		{
+			strcopy(phrase, sizeof(phrase), "Friendly Fire Off");
+		}
+	
+		if (g_Cvar_TriggerShow.IntValue)
+		{
+			PrintToChatAll("[SM] %t", phrase);
+		}
+		else
+		{
+			PrintToChat(client,"[SM] %t", phrase);
+		}
 	}
 }

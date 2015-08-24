@@ -5,29 +5,29 @@
 		"it"		"Nessuna descrizione disponibile"
 	}
 
-	"No matching results found"
-	{
-		"it"		"Nessun risultato trovato"
-	}
-
-	"No commands available"
-	{
-		"it"		"Nessun commando disponibile"
-	}
-
 	"Type sm_help to see more"
 	{
 		"it"		"Usa sm_help {1} per vedere ulteriori comandi"
 	}
 
-	"SM help commands"
-	{
-		"it"		"Aiuto SourceMod: Informazioni Comandi"
-	}
-
 	"Entries n - m in page k"
 	{
-		"it"		"Voci {1} - {2} nella pagina {3}  "
+		"it"		"Voci: {1} di {2} nella pagina {3}"
+	}
+
+	"No commands available"
+	{
+		"it"		"Nessun comando disponibile"
+	}
+
+	"No matching results found"
+	{
+		"it"		"Non è stato trovato nessun risultato corrispondente"
+	}
+
+	"SM help commands"
+	{
+		"it"		"Aiuto per SourceMod: Informazioni sui comandi"
 	}
 
 }

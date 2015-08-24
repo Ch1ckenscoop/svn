@@ -1,10 +1,5 @@
 "Phrases"
 {
-	"Permabanned player reason"
-	{
-		"hu"		"{1} véglegesen bannolva"
-	}
-
 	"Permabanned player"
 	{
 		"hu"		"{1} véglegesen bannolva"
@@ -90,11 +85,6 @@
 		"hu"		"Admin jogosultság"
 	}
 
-	"Value of cvar"
-	{
-		"hu"		"{1} szerverváltozó értéke {2}"
-	}
-
 	"Username"
 	{
 		"hu"		"Felhasználónév"
@@ -123,6 +113,16 @@
 	"Kicked target reason"
 	{
 		"hu"		"{1} kirúgva (Oka: {2})"
+	}
+
+	"Permabanned player reason"
+	{
+		"hu"		"{1} végleg kitiltásra került a következő indokkal: {2}."
+	}
+
+	"Value of cvar"
+	{
+		"hu"		"{1} változó értéke: {2}"
 	}
 
 }

@@ -15,24 +15,9 @@
 		"it"		"Esci"
 	}
 
-	"Next"
-	{
-		"it"		"Successivo"
-	}
-
-	"No Access"
-	{
-		"it"		"Non hai accesso a questo comado"
-	}
-
 	"Previous"
 	{
 		"it"		"Precedente"
-	}
-
-	"all alive players"
-	{
-		"it"		"Tutti i giocatori vivi"
 	}
 
 	"all bots"
@@ -55,11 +40,6 @@
 		"it"		"tutti i giocatori"
 	}
 
-	"all spectators"
-	{
-		"it"		"Tutti gli spettatori"
-	}
-
 	"Voted For"
 	{
 		"it"		"{1} ha votato per {2}"
@@ -70,14 +50,39 @@
 		"it"		"Voti:  {1}/{2}, {3} rimasti"
 	}
 
-	"Changed Vote"
+	"No Access"
 	{
-		"it"		"{1} ha cambiato il proprio voto con {2}  "
+		"it"		"Non hai accesso a questo comando"
 	}
 
 	"No Vote"
 	{
-		"it"		"Nessun Voto"
+		"it"		"Nessun voto"
+	}
+
+	"all alive players"
+	{
+		"it"		"tutti i giocatori in vita"
+	}
+
+	"all spectators"
+	{
+		"it"		"tutti gli spettatori"
+	}
+
+	"Name Reserved"
+	{
+		"it"		"Il tuo nome è stato riservato da SourceMod; imposta la tua password per utilizzarlo."
+	}
+
+	"Next"
+	{
+		"it"		"Successiva"
+	}
+
+	"Changed Vote"
+	{
+		"it"		"{1} ha cambiato il proprio voto in {2}"
 	}
 
 }

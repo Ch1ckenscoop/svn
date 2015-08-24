@@ -1,48 +1,48 @@
 "Phrases"
 {
-	"Slayed target"
+	"Dead Player Rename"
 	{
-		"it"		"Slayato {1}.  "
-	}
-
-	"Slay player"
-	{
-		"it"		"Slaya giocatore"
-	}
-
-	"Slap player"
-	{
-		"it"		"Colpisci giocatore"
-	}
-
-	"Slap damage"
-	{
-		"it"		"Danni colpo"
-	}
-
-	"Slapped target"
-	{
-		"it"		"Colpito {1}.  "
-	}
-
-	"Renamed target"
-	{
-		"it"		"Rinominato {1}"
-	}
-
-	"Rename player"
-	{
-		"it"		"Rinomina giocatore"
+		"it"		"{1} verrà rinominato il prossimo round."
 	}
 
 	"Name changed"
 	{
-		"it"		"Un Admin ha cambiato il tuo nome"
+		"it"		"Un amministratore ha cambiato il tuo nome"
 	}
 
-	"Dead Player Rename"
+	"Rename player"
 	{
-		"it"		"{1} sarà rinominato nel prossimo round"
+		"it"		"Rinomina un giocatore"
+	}
+
+	"Renamed target"
+	{
+		"it"		"{1} è stato rinominato."
+	}
+
+	"Slap damage"
+	{
+		"it"		"Danno del colpo"
+	}
+
+	"Slap player"
+	{
+		"it"		"Colpisci un giocatore"
+	}
+
+	"Slapped target"
+	{
+		"it"		"{1} è stato colpito."
+	}
+
+	"Slay player"
+	{
+		"it"		"Giustizia un giocatore"
+	}
+
+	"Slayed target"
+	{
+		"it"		"{1} è stato giustiziato."
 	}
 
 }

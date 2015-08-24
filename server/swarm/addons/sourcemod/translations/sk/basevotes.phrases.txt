@@ -35,16 +35,6 @@
 		"sk"		"Hlasovanie úspešné. (Získaných {1}%% z {2} hlasov)  "
 	}
 
-	"Vote Failed"
-	{
-		"sk"		"Hlasovanie neuspešné. {1}%% potrebných hlasov. (Získaných {2}%% z {3} hlasov)  "
-	}
-
-	"Vote End"
-	{
-		"sk"		"Odpoveďpre {1} je: {2}.  "
-	}
-
 	"Map vote"
 	{
 		"sk"		"Hlasovanie mapy"
@@ -75,9 +65,29 @@
 		"sk"		"Spustené hlasovanie o zabanovanie hráča {1}. "
 	}
 
+	"Start the Vote"
+	{
+		"sk"		"Začiatok hlasovania"
+	}
+
+	"Vote End"
+	{
+		"sk"		"Odpoveď na {1} je: {2}. "
+	}
+
+	"Vote Failed"
+	{
+		"sk"		"Hlasovanie zlyhalo. {1}%% potrebných hlasov. (Získaných {2}%% z {3} hlasov) "
+	}
+
+	"Please select a map"
+	{
+		"sk"		"Prosím vyberte mapu"
+	}
+
 	"Map Vote In Use"
 	{
-		"sk"		"Iný admin používa menu pre výber mapy."
+		"sk"		"Iný admin práve používa menu hlasovania mapy."
 	}
 
 }

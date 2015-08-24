@@ -20,11 +20,6 @@
 		"da"		"Tilbage"
 	}
 
-	"all alive players"
-	{
-		"da"		"alle levne spillere"
-	}
-
 	"all bots"
 	{
 		"da"		"alle robotter"
@@ -55,16 +50,6 @@
 		"da"		"Tilbage"
 	}
 
-	"all spectators"
-	{
-		"da"		"All tilskuere "
-	}
-
-	"Voted For"
-	{
-		"da"		"{1} Stemte for {2}"
-	}
-
 	"Changed Vote"
 	{
 		"da"		"{1} skiftede deres stemme til {2}"
@@ -75,9 +60,29 @@
 		"da"		"Jeg ønsker ikke at stemme"
 	}
 
+	"Name Reserved"
+	{
+		"da"		"Dit navn er reserveret af SourceMod; sæt dit password for at benytte det."
+	}
+
 	"Vote Count"
 	{
-		"da"		"Stemmer: {1}/{2}, {3}sekunder tilbage"
+		"da"		"Stemmer: {1}/{2}, {3} sekunder tilbage "
+	}
+
+	"Voted For"
+	{
+		"da"		"{1} stemte på {2} "
+	}
+
+	"all alive players"
+	{
+		"da"		"alle levende spillere"
+	}
+
+	"all spectators"
+	{
+		"da"		"alle tilskuere"
 	}
 
 }

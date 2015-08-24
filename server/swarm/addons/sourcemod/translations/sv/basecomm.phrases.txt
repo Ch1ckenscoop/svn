@@ -15,29 +15,59 @@
 		"sv"		"Dämpade {1}."
 	}
 
-	"Gagged target"
+	"Gag Player"
 	{
-		"sv"		"Satte munkavel på {1}"
+		"sv"		"Sätt munkavle på spelare"
 	}
 
-	"Ungagged target"
+	"Mute Player"
 	{
-		"sv"		"Tog bort munkavel på {1}"
+		"sv"		"Dämpa spelare"
+	}
+
+	"Silence Player"
+	{
+		"sv"		"Tysta spelare"
+	}
+
+	"UnMute Player"
+	{
+		"sv"		"Odämpa spelare"
+	}
+
+	"UnSilence Player"
+	{
+		"sv"		"Otysta spelare"
 	}
 
 	"Gag/Mute player"
 	{
-		"sv"		"Sätt munkavel på/dämpa spelare"
+		"sv"		"Sätt munkavle på/dämpa spelare"
+	}
+
+	"Gagged target"
+	{
+		"sv"		"Satte munkavle på {1}."
+	}
+
+	"Ungagged target"
+	{
+		"sv"		"Tog bort munkavle på {1}."
 	}
 
 	"Unmuted target"
 	{
-		"sv"		"Odämpade spelare {1}"
+		"sv"		"Odämpade spelare {1}."
 	}
 
 	"Unsilenced target"
 	{
-		"sv"		"Otystade spelare {1}"
+		"sv"		"Otystade spelare {1}."
+	}
+
+	"UnGag Player"
+	{
+		"sv"		"Ta bort munkavle på spelare"
 	}
 
 }

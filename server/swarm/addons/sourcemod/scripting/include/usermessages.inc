@@ -44,6 +44,15 @@ enum UserMsg
 };
 
 /**
+ * UserMsg message serialization formats
+ */
+enum UserMessageType
+{
+	UM_BitBuf = 0,
+	UM_Protobuf,
+};
+
+/**
  * @section Message Flags.
  */
 #define USERMSG_RELIABLE		(1<<2)		/**< Message will be set on the reliable stream */
@@ -53,6 +62,36 @@ enum UserMsg
 /**
  * @endsection
  */
+
+/**
+ * Returns usermessage serialization type used for the current engine
+ *
+ * @return				The supported usermessage type.
+ */
+native UserMessageType:GetUserMessageType();
+
+stock Protobuf UserMessageToProtobuf(Handle msg)
+{
+	if (GetUserMessageType() != UM_Protobuf)
+		return null;
+	return Protobuf:msg;
+}
+
+// Make sure to only call this on writable buffers (eg from StartMessage).
+stock BfWrite UserMessageToBfWrite(Handle msg)
+{
+	if (GetUserMessageType() == UM_Protobuf)
+		return null;
+	return BfWrite:msg;
+}
+
+// Make sure to only call this on readable buffers (eg from a message hook).
+stock BfWrite UserMessageToBfRead(Handle msg)
+{
+	if (GetUserMessageType() == UM_Protobuf)
+		return null;
+	return BfRead:msg;
+}
 
 /**
  * Returns the ID of a given message, or -1 on failure.
@@ -112,27 +151,48 @@ native Handle:StartMessageEx(UserMsg:msg, clients[], numClients, flags=0);
 native EndMessage();
 
 /**
- * Called when a message is hooked
- *
- * @param msg_id		Message index.
- * @param bf			Handle to the input bit buffer of the message.
- * @param players		Array containing player indexes.
- * @param playersNum	Number of players in the array.
- * @param reliable		True if message is reliable, false otherwise.
- * @param init			True if message is an initmsg, false otherwise.
- * @return				Ignored for normal hooks.  For intercept hooks, Plugin_Handled 
- *						blocks the message from being sent, and Plugin_Continue 
- *						resumes normal functionality.
- */
-functag public Action:MsgHook(UserMsg:msg_id, Handle:bf, const players[], playersNum, bool:reliable, bool:init);
+ * Hook function types for user messages.
+*/
+typeset MsgHook
+{
+	/**
+	 * Called when a bit buffer based usermessage is hooked
+	 *
+	 * @param msg_id		Message index.
+	 * @param msg			Handle to the input bit buffer.
+	 * @param players		Array containing player indexes.
+	 * @param playersNum	Number of players in the array.
+	 * @param reliable		True if message is reliable, false otherwise.
+	 * @param init			True if message is an initmsg, false otherwise.
+	 * @return				Ignored for normal hooks.  For intercept hooks, Plugin_Handled 
+	 *						blocks the message from being sent, and Plugin_Continue 
+	 *						resumes normal functionality.
+	 */
+	function Action (UserMsg msg_id, BfRead msg, const int[] players, int playersNum, bool reliable, bool init);
+	/**
+	 * Called when a protobuf based usermessage is hooked
+	 *
+	 * @param msg_id		Message index.
+	 * @param msg			Handle to the input protobuf.
+	 * @param players		Array containing player indexes.
+	 * @param playersNum	Number of players in the array.
+	 * @param reliable		True if message is reliable, false otherwise.
+	 * @param init			True if message is an initmsg, false otherwise.
+	 * @return				Ignored for normal hooks.  For intercept hooks, Plugin_Handled 
+	 *						blocks the message from being sent, and Plugin_Continue 
+	 *						resumes normal functionality.
+	 */
+	function Action (UserMsg msg_id, Protobuf msg, const int[] players, int playersNum, bool reliable, bool init);
+};
 
 /**
  * Called when a message hook has completed.
  *
  * @param msg_id		Message index.
  * @param sent			True if message was sent, false if blocked.
+ * @noreturn
  */
-functag public MsgPostHook(UserMsg:msg_id, bool:sent);
+typedef MsgPostHook = function void (UserMsg msg_id, bool sent);
 
 /**
  * Hooks a user message.
@@ -142,11 +202,11 @@ functag public MsgPostHook(UserMsg:msg_id, bool:sent);
  * @param intercept		If intercept is true, message will be fully intercepted,
  * 						allowing the user to block the message.  Otherwise,
  *						the hook is normal and ignores the return value.
- * @param notify		Notification function.
+ * @param post		Notification function.
  * @noreturn
  * @error				Invalid message index.
  */
-native HookUserMessage(UserMsg:msg_id, MsgHook:hook, bool:intercept=false, MsgPostHook:post=MsgPostHook:-1);
+native HookUserMessage(UserMsg:msg_id, MsgHook:hook, bool:intercept=false, MsgPostHook:post=INVALID_FUNCTION);
 
 /**
  * Removes one usermessage hook.

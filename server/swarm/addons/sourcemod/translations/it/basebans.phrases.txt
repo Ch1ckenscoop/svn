@@ -2,47 +2,62 @@
 {
 	"Ban added"
 	{
-		"it"		"Il Ban e' stato aggiunto"
+		"it"		"Il ban è stato aggiunto"
 	}
 
 	"Ban player"
 	{
-		"it"		"Banna Giocatore"
+		"it"		"Bandisci un giocatore"
 	}
 
 	"Ban reason"
 	{
-		"it"		"Motivo del Ban"
-	}
-
-	"Cannot ban that IP"
-	{
-		"it"		"Non puoi bannare questo IP"
+		"it"		"Motivo del ban"
 	}
 
 	"Banned player"
 	{
-		"it"		"Giocatore Bannato"
+		"it"		"Il giocatore \"{1}\" è stato bandito per {2} minuti."
 	}
 
 	"Banned player reason"
 	{
-		"it"		"Motivazione del Ban"
+		"it"		"Il giocatore \"{1}\" è stato bandito per {2} minuti (motivo: {3})."
 	}
 
-	"Permabanned player reason"
+	"Cannot ban that IP"
 	{
-		"it"		"Giocatore permanentemente bannato \"{1}\" (motivo: {2}).    "
+		"it"		"Non puoi bandire questo indirizzo IP."
 	}
 
 	"Permabanned player"
 	{
-		"it"		"Giocatore permanentemente bannato \"{1}\".  "
+		"it"		"Il giocatore \"{1}\" è stato bandito permanentemente."
+	}
+
+	"Permabanned player reason"
+	{
+		"it"		"Il giocatore \"{1}\" è stato bandito permanentemente (motivo: {2})."
 	}
 
 	"Removed bans matching"
 	{
-		"it"		"rimossi i ban di corrispondenza al filtro: {1}  "
+		"it"		"Rimossi i ban corrispondenti al filtro: {1}"
+	}
+
+	"AbortBan applied successfully"
+	{
+		"it"		"Ban annullato."
+	}
+
+	"Custom ban reason explanation"
+	{
+		"it"		"Inserisci la ragione come messaggio nella chat. Usa {1} per annullare."
+	}
+
+	"AbortBan not waiting for custom reason"
+	{
+		"it"		"Non in attesa di un motivo del ban, nessun ban da annullare."
 	}
 
 }

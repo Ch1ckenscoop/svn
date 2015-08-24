@@ -2,7 +2,7 @@
 {
 	"Played sound to target"
 	{
-		"it"		"Avviato il suono a {1}  "
+		"it"		"Avviato un suono per {1}"
 	}
 
 }

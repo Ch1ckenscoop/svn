@@ -40,4 +40,9 @@
 		"tr"		"Değiştirme"
 	}
 
+	"Starting Runoff"
+	{
+		"tr"		"Hiçbir harita %%{1} oyun üzerine çıkamadı ({2} [%%{3}] & {4} [%%{5}]), balotaj oylaması başlatılıyor"
+	}
+
 }

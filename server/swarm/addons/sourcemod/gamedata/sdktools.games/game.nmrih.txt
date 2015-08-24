@@ -11,126 +11,213 @@
 
 "Games"
 {
-	/* No More Room in Hell 1.05 */
+	/* General Temp Entities */
+	"#default"
+	{
+		"Offsets"
+		{
+			/* Offset into CBaseTempEntity constructor */
+			"s_pTempEntities"
+			{
+				"windows"	"16"
+			}
+			"GetTEName"
+			{
+				"windows"	"4"
+				"linux"		"4"
+				"mac"		"4"
+			}
+			"GetTENext"
+			{
+				"windows"	"8"
+				"linux"		"8"
+				"mac"		"8"
+			}
+			"TE_GetServerClass"
+			{
+				"windows"	"0"
+				"linux"		"0"
+				"mac"		"0"
+			}
+		}
+
+		"Signatures"
+		{
+			"CBaseTempEntity"
+			{
+				"library"	"server"
+				"windows"	"\x55\x8B\xEC\x8B\x45\x08\x89\x41\x04\xC7\x01\x2A\x2A\x2A\x2A\xA1"
+			}
+			"s_pTempEntities"
+			{
+				"library"	"server"
+				"linux"		"@_ZN15CBaseTempEntity15s_pTempEntitiesE"
+				"mac"		"@_ZN15CBaseTempEntity15s_pTempEntitiesE"
+			}
+		}
+	}
+	
+	/* CGlobalEntityList */
+	"#default"
+	{
+		"Signatures"
+		{
+			/* Functions in CGlobalEntityList */
+			"FindEntityByClassname"
+			{
+				"library"	"server"
+				"windows"	"\x55\x8B\xEC\x53\x56\x57\x8B\xF9\x8B\x4D\x08\x85\xC9\x74\x15"
+				"linux"		"@_ZN17CGlobalEntityList21FindEntityByClassnameEP11CBaseEntityPKc"
+				"mac"		"@_ZN17CGlobalEntityList21FindEntityByClassnameEP11CBaseEntityPKc"
+			}
+		}
+	}
+	
+	/* General GameRules */
+	"#default"
+	{
+		"Offsets"
+		{
+			/* Offset into CreateGameRulesObject */
+			"g_pGameRules"
+			{
+				"windows"	"5"
+			}
+		}
+		
+		"Signatures"
+		{
+			/* This signature sometimes has multiple matches, but this
+			 * does not matter as g_pGameRules is involved in all of them.
+			 * The same g_pGameRules offset applies to each match.
+			 *
+			 * Sometimes this block of bytes is at the beginning of the static
+			 * CreateGameRulesObject function and sometimes it is in the middle
+			 * of an entirely different function. This depends on the game.
+			 */
+			"CreateGameRulesObject"
+			{
+				"library"	"server"
+				"windows"	"\x55\x8B\xEC\x8B\x0D\x2A\x2A\x2A\x2A\x85\xC9\x74\x07"
+			}
+			"g_pGameRules"
+			{
+				"library"	"server"
+				"linux"		"@g_pGameRules"
+				"mac"		"@g_pGameRules"
+			}
+		}
+	}
+	
+	/* CBaseEntityOutput::FireOutput */
+	"#default"
+	{
+		"Signatures"
+		{
+			"FireOutput"
+			{
+				"library"	"server"
+				"windows"	"\x55\x8B\xEC\x81\xEC\x2A\x2A\x2A\x2A\xA1\x2A\x2A\x2A\x2A\x33\xC5\x89\x45\xFC\x53\x8B\x5D\x20\x8B\xC1\x8B\x4D\x1C\x56\x57\x8B"
+				"linux"		"@_ZN17CBaseEntityOutput10FireOutputE9variant_tP11CBaseEntityS2_f"
+				"mac"		"@_ZN17CBaseEntityOutput10FireOutputE9variant_tP11CBaseEntityS2_f"
+			}
+		}
+	}
+	
+	/* No More Room in Hell */
 	"nmrih"
 	{
 		"Offsets"
 		{
 			"GiveNamedItem"
 			{
-				"windows"	"362"
-				"linux"		"363"
+				"windows"	"414"
+				"linux"		"415"
+				"mac"		"415"
 			}
 			"RemovePlayerItem"
 			{
-				"windows"	"241"
-				"linux"		"242"
+				"windows"	"272"
+				"linux"		"273"
+				"mac"		"273"
 			}
 			"Weapon_GetSlot"
 			{
-				"windows"	"239"
-				"linux"		"240"
+				"windows"	"270"
+				"linux"		"271"
+				"mac"		"271"
 			}
 			"Ignite"
 			{
-				"windows"	"195"
-				"linux"		"196"
+				"windows"	"210"
+				"linux"		"211"
+				"mac"		"211"
 			}
 			"Extinguish"
 			{
-				"windows"	"199"
-				"linux"		"200"
+				"windows"	"214"
+				"linux"		"215"
+				"mac"		"215"
 			}
 			"Teleport"
 			{
-				"windows"	"102"
-				"linux"		"103"
+				"windows"	"110"
+				"linux"		"111"
+				"mac"		"111"
 			}
 			"CommitSuicide"
 			{
-				"windows"	"403"
-				"linux"		"403"
+				"windows"	"453"
+				"linux"		"453"
+				"mac"		"453"
 			}
 			"GetVelocity"
 			{
-				"windows"	"132"
-				"linux"		"133"
+				"windows"	"142"
+				"linux"		"143"
+				"mac"		"143"
 			}
 			"EyeAngles"
 			{
-				"windows"	"124"
-				"linux"		"125"
+				"windows"	"133"
+				"linux"		"134"
+				"mac"		"134"
 			}
 			"AcceptInput"
 			{
-				"windows"	"34"
-				"linux"		"35"
+				"windows"	"36"
+				"linux"		"37"
+				"mac"		"37"
 			}
 			"SetEntityModel"
 			{
-				"windows"	"23"
-				"linux"		"24"
+				"windows"	"24"
+				"linux"		"25"
+				"mac"		"25"
 			}
 			"WeaponEquip"
 			{
-				"windows"	"232"
-				"linux"		"233"
+				"windows"	"263"
+				"linux"		"264"
+				"mac"		"264"
 			}
 			"Activate"
 			{
-				"windows"	"31"
-				"linux"		"32"
+				"windows"	"33"
+				"linux"		"34"
+				"mac"		"34"
 			}
 			"PlayerRunCmd"
 			{
-				"windows"	"382"
-				"linux"		"383"
+				"windows"	"432"
+				"linux"		"433"
+				"mac"		"433"
 			}
-			
-			/* Offset into CBaseTempEntity constructor (vs2010 moved it!) */
-			"s_pTempEntities"
+			"GiveAmmo"
 			{
-				"windows"	"19"
-			}
-			"GetTEName"
-			{
-				"windows"	"4"
-				"linux"		"4"
-			}
-			"GetTENext"
-			{
-				"windows"	"8"
-				"linux"		"8"
-			}
-			"TE_GetServerClass"
-			{
-				"windows"	"0"
-				"linux"		"0"
-			}
-		}
-		"Signatures"
-		{
-			"CBaseTempEntity"
-			{
-				"library"	"server"
-				"windows"	"\x55\x8B\xEC\x8B\xC1\x8B\x2A\x2A\xC7\x2A\x2A\x2A\x2A\x2A\x89\x2A\x2A\x8B\x15\x2A\x2A\x2A\x2A\x89"
-			}
-			"s_pTempEntities"
-			{
-				"library"	"server"
-				"linux"		"@_ZN15CBaseTempEntity15s_pTempEntitiesE"
-			}
-			"FindEntityByClassname"
-			{
-				"library"	"server"
-				"windows"	"\x55\x8B\xEC\x53\x56\x8B\xF1\x8B\x2A\x2A\x57\x85\xC9\x74\x2A\x8B\x01\x8B\x50\x2A\xFF\xD2\x8B\x00\x25\x2A\x2A\x2A\x2A\x40\x03\xC0\x8B\x3C\xC6\xEB\x2A\x8B\xBE\x2A\x2A\x2A\x2A\x85\xFF\x74"
-				"linux"		"@_ZN17CGlobalEntityList21FindEntityByClassnameEP11CBaseEntityPKc"
-			}
-			"FireOutput"
-			{
-				"library"	"server"
-				"windows"	"\x55\x8B\xEC\x81\xEC\x2A\x2A\x2A\x2A\x53\x56\x8B\x2A\x2A\x57\x89"
-				"linux"		"@_ZN17CBaseEntityOutput10FireOutputE9variant_tP11CBaseEntityS2_f"
+				"windows"	"254"
+				"linux"		"255"
+				"mac"		"255"
 			}
 		}
 	}
