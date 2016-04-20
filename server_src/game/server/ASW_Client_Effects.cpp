@@ -16,6 +16,7 @@ ConVar asw_cfx_lce_max("asw_cfx_lce_max", "1.0", FCVAR_CHEAT, "Maximum intensity
 ConVar asw_cfx_lce_deadzone("asw_cfx_lce_deadzone", "0.2", FCVAR_CHEAT, "'Dead zone' where we don't worry about a client's cvar being off by this much.");
 ConVar asw_cfx_lce_hurt("asw_cfx_lce_hurt", "35", FCVAR_CHEAT, "Threshold of marine health at which LCE effects start to show.");
 ConVar asw_cfx_lce_forceupdate("asw_cfx_lce_forceupdate", "10.0", FCVAR_CHEAT, "After this number of seconds, force an update of the client's cvar whether it needs it or not.");
+extern ConVar asw_lobby_player_select;	//softcopy:
 
 // Some defines so we don't have to type out full convar names everywhere.
 
@@ -134,8 +135,9 @@ bool CASW_Client_Effects::PlayerAdd(CASW_Player *pPlayer)
 			if (asw_cfx_debug.GetBool())
 			{
 				Msg("Added player '%s' to CFX array. Contents:\n", pPlayer->GetPlayerName());
-
-				for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
+				//softcopy:
+				//for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
+				for (int i = 0; i < asw_lobby_player_select.GetInt(); i++)
 				{
 					CASW_Player *pPlayer2 = m_PlayerInfoArray[i].m_hPlayer;
 					if (pPlayer2)
@@ -196,8 +198,9 @@ void CASW_Client_Effects::PlayerRemove(CASW_Player *pPlayer)
 
 			if (asw_cfx_debug.GetBool())
 				Msg("Removing player '%s' from CFX array.\n", pPlayer->GetPlayerName());
-
-			for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
+			//softcopy:
+			//for (int i = 0; i < ASW_PLAYERINFO_SIZE; i++)
+			for (int i = 0; i < asw_lobby_player_select.GetInt(); i++)
 			{
 				CASW_Player *pPlayer2 = m_PlayerInfoArray[i].m_hPlayer;
 				if (pPlayer2)

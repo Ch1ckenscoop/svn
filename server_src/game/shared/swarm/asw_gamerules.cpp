@@ -118,11 +118,12 @@ extern ConVar old_radius_damage;
 bool bReadyclicked = false;
 int playreadyclicked = 0;
 int skill_default_level = 2;
-ConVar asw_autokick_player_enable("asw_autokick_player_enable", "0", FCVAR_NONE, "sets 1 = enable auto kick players.");
-ConVar asw_autokick_player_promotion_level("asw_autokick_player_promotion_level", "0", FCVAR_NONE, "sets 0-3 promotion level, if below this level will be autokicked.");
-ConVar asw_autokick_player_experience_level("asw_autokick_player_experience_level", "10800", FCVAR_NONE, "sets player below the skill point will be autokicked.");
-ConVar asw_marine_lobby_ready("asw_marine_lobby_ready", "1", FCVAR_NONE, "set 0=All lobby marked not ready,1=ClientConnected lobby not ready,2=All ready");
-ConVar asw_level_lock("asw_level_lock","0", FCVAR_CHEAT, "default = 0, set 1 - 5 to enable what skill level lock on.");
+ConVar asw_autokick_player_enable("asw_autokick_player_enable", "0", FCVAR_CHEAT, "sets 1 = enable auto kick players.");
+ConVar asw_autokick_player_promotion_level("asw_autokick_player_promotion_level", "0", FCVAR_CHEAT, "sets 0-3 promotion level, if below this level will be autokicked.",true,0,true,3);
+ConVar asw_autokick_player_experience_level("asw_autokick_player_experience_level", "10800", FCVAR_CHEAT, "sets player below the skill point will be autokicked.");
+ConVar asw_marine_lobby_ready("asw_marine_lobby_ready", "1", FCVAR_CHEAT, "set 0=All lobby marked not ready,1=ClientConnected lobby not ready,2=All ready");
+ConVar asw_lobby_player_select("asw_lobby_player_select", "4", FCVAR_CHEAT, "max players selectable in lobby, instablity timeout if changed.", true,4, true,6);
+ConVar asw_level_lock("asw_level_lock","0", FCVAR_CHEAT, "default = 0, set 1 - 5 to enable what skill level lock on.", true,0, true,5);
 ConVar asw_infest_damage_easy("asw_infest_damage_easy","175", FCVAR_CHEAT, "sets infest damage on easy level.");
 ConVar asw_infest_damage_normal("asw_infest_damage_normal","225", FCVAR_CHEAT, "sets infest damage on normal level.");
 ConVar asw_infest_damage_hard("asw_infest_damage_hard","270", FCVAR_CHEAT, "sets infest damage on hard level.");
@@ -816,11 +817,11 @@ CAlienSwarm::CAlienSwarm()
 	
 	//softcopy:
 	playreadyclicked = asw_marine_lobby_ready.GetInt();
-    if ( (playreadyclicked >= 1) && (playreadyclicked <= 2) )
-	     bReadyclicked = true;		//set for matchmaking marked as ready.
+	if ( (playreadyclicked >= 1) && (playreadyclicked <= 2) )
+		bReadyclicked = true;		//set for matchmaking marked as ready.
 	else if ( playreadyclicked == 0 )
-         bReadyclicked = false;		//set for matchmaking marked as not ready.
-	
+		bReadyclicked = false;		//set for matchmaking marked as not ready.
+
 }
 
 CAlienSwarm::~CAlienSwarm()
@@ -5902,7 +5903,7 @@ void CAlienSwarm::SetKickVote(CASW_Player *pPlayer, int iPlayerIndex)
 	}
 	//softcopy: more meaning words.
 	//Msg("Players %d, Votes %d, Votes needed %d\n", iPlayers, iVotes, iVotesNeeded);
-	Msg( "Players %d, Votes %d, Votes needed %d for a kick vote\n", iPlayers, iVotes, iVotesNeeded );
+	Msg( "%s start vote, Players %d, Votes %d, Votes needed %d for a kick vote\n", pPlayer->GetPlayerName(), iPlayers, iVotes, iVotesNeeded );
 	if (iPlayerIndex > 0 && iVotes >= iVotesNeeded)
 	{
 		// kick this player
@@ -7231,9 +7232,13 @@ void asw_list_version(const CCommand &args)
 	char text[36];
 	Q_snprintf( text, sizeof(text), "Ch1ckenscoop version %s", SERVER_DLL_VERSION );	//var defined in 'asw_version.h'
 	if (pPlayer)
+	{
 		UTIL_SayText( text, pPlayer );
+		Msg("%s has checked %s\n", pPlayer->GetPlayerName(), text);
+	}
 	else
 		Msg("%s\n",text);
 }
 ConCommand asw_version("asw_version", asw_list_version , "Display the version of server.dll.");
+ConCommand ver("ver", asw_list_version , "Display the version of server.dll.");
 #endif

@@ -121,7 +121,7 @@ CASW_Shieldbug::CASW_Shieldbug( void )
 	}
 	m_bLastShouldDefend = false;  
 	m_nDeathStyle = kDIE_FANCY;
-	
+
 	m_fLastTouchHurtTime = 0;	//softcopy:
 }
 
@@ -175,9 +175,9 @@ void CASW_Shieldbug::Spawn( void )
 		alienLabel = "shieldbug_beta";
 		SetColorScale( alienLabel );
 		m_bDefending = true;	//fix beta shieldbug no defending after hurt
-	}	
+	}
 	else
-{
+	{
 		alienLabel = "shieldbug";
 		SetColorScale( alienLabel );
 	}
@@ -207,7 +207,6 @@ void CASW_Shieldbug::Precache( void )
 	PrecacheScriptSound( "ASW_Drone.DeathFireSizzle" );
 	PrecacheScriptSound( "BaseExplosionEffect.Sound" );
 	PrecacheScriptSound( "ASW_T75.Explode" );
-	PrecacheScriptSound( "Crash.Dead0" );
 	PrecacheParticleSystem( "explosion_barrel" );
 	// fix late precache 
 	PrecacheModel( SWARM_NEW_SHIELDBUG_MODEL );   
@@ -797,7 +796,7 @@ void CASW_Shieldbug::MeleeAttack( float distance, float damage, QAngle &viewPunc
 			vecForceDir += Vector( 0, 0, asw_shieldbug_knockdown_lift.GetFloat() );
 			pMarine->Knockdown( this, vecForceDir  );
 			
-			//softcopy: ignited/exploded marine by shieldbug knockdown, 1=melee, 2=touch, 3=All
+			//softcopy: ignite/explode marine by shieldbug knockdown, 1=melee, 2=touch, 3=All
 			m_TouchExplosionDamage = asw_shieldbug_touch_damage.GetInt();
 			CTakeDamageInfo info( this, this, m_TouchExplosionDamage, DMG_SLASH );
 			damageTypes = "knockdown";
@@ -805,7 +804,7 @@ void CASW_Shieldbug::MeleeAttack( float distance, float damage, QAngle &viewPunc
 				MarineIgnite(pMarine, info, alienLabel, damageTypes);
 			if ((asw_shieldbug_explode.GetInt()==1 || asw_shieldbug_explode.GetInt()==3) && m_TouchExplosionDamage > 0)
 				MarineExplode(pMarine, alienLabel, damageTypes);
-			EmitSound( "Crash.Dead0" );
+			pMarine->GetMarineSpeech()->ForceChatter(CHATTER_PAIN_LARGE, ASW_CHATTER_TIMER_NONE);
 		}
 	}
 }

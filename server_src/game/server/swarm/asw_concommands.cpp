@@ -1788,4 +1788,20 @@ void ASW_SetLeader_t( const CCommand &command )
 		ASWGameResource()->SetLeader(pPlayer);
 	}
 }
+void ASW_Help_t( const CCommand &command )	//softcopy: list some server status
+{
+		CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(UTIL_GetCommandClient());
+		CRecipientFilter filter;
+		filter.AddRecipient(pPlayer);
+		UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "add bots: http://forums.blackcatgames.com/showthread.php?t=12996");
+		UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, " ");	
+		UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "Developer Console Commands:");
+		UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "status (list players status in server)");
+		UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "ver  or  asw_version (check ch1ckenscoop version)");
+		UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "sm plugins (list server plugins running)");
+	
+		if (pPlayer)
+			Msg("%s ran '/help' in chatmode\n", pPlayer->GetPlayerName());
+}
 ChatCommand ASW_SetLeader("/setleader", ASW_SetLeader_t);
+ChatCommand ASW_Help("/help", ASW_Help_t);	//softcopy:

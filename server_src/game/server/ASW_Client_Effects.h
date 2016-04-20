@@ -2,8 +2,9 @@
 
 #include "asw_player.h"
 #include "asw_marine.h"
-
-#define ASW_PLAYERINFO_SIZE ASW_MAX_MARINE_RESOURCES
+//softcopy: cvar max player in lobby can be 6, sets Client_Effects to match with it.  
+//#define ASW_PLAYERINFO_SIZE ASW_MAX_MARINE_RESOURCES
+#define ASW_PLAYERINFO_SIZE ASW_MAX_MARINE_RESOURCES+1
 
 class CASW_Client_Effects : public CAutoGameSystemPerFrame
 {

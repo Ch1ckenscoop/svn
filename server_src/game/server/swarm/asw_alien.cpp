@@ -35,6 +35,7 @@
 #include "asw_game_resource.h"
 #include "asw_marine_resource.h"
 #include "asw_weapon.h"
+#include "particle_parse.h"		//softcopy:
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -52,10 +53,16 @@ extern ConVar asw_draw_awake_ai;
 extern ConVar asw_alien_debug_death_style;
 // asw - how much extra damage to do to burning aliens
 ConVar asw_fire_alien_damage_scale("asw_fire_alien_damage_scale", "3.0", FCVAR_CHEAT );
-ConVar asw_alien_speed_scale_easy("asw_alien_speed_scale_easy", "0");
-ConVar asw_alien_speed_scale_normal("asw_alien_speed_scale_normal", "0");
-ConVar asw_alien_speed_scale_hard("asw_alien_speed_scale_hard", "0");
-ConVar asw_alien_speed_scale_insane("asw_alien_speed_scale_insane", "0");
+//softcopy: why alien speed default = 0 ? they need initialize to work.
+//ConVar asw_alien_speed_scale_easy("asw_alien_speed_scale_easy", "0");
+//ConVar asw_alien_speed_scale_normal("asw_alien_speed_scale_normal", "0");
+//ConVar asw_alien_speed_scale_hard("asw_alien_speed_scale_hard", "0");
+//ConVar asw_alien_speed_scale_insane("asw_alien_speed_scale_insane", "0");
+ConVar asw_alien_speed_scale_easy("asw_alien_speed_scale_easy", "0.7");
+ConVar asw_alien_speed_scale_normal("asw_alien_speed_scale_normal", "1.0");
+ConVar asw_alien_speed_scale_hard("asw_alien_speed_scale_hard", "1.1");
+ConVar asw_alien_speed_scale_insane("asw_alien_speed_scale_insane", "1.2");
+
 ConVar asw_alien_hurt_speed( "asw_alien_hurt_speed", "0.5", FCVAR_CHEAT, "Fraction of speed to use when the alien is hurt after being shot" );
 ConVar asw_alien_stunned_speed( "asw_alien_stunned_speed", "0.3", FCVAR_CHEAT, "Fraction of speed to use when the alien is electrostunned" );
 ConVar asw_drop_money("asw_drop_money", "1", FCVAR_CHEAT, "Do aliens drop money?");
@@ -237,13 +244,12 @@ int	CASW_Alien::ShouldTransmit( const CCheckTransmitInfo *pInfo )
 				{
 					//softcopy:test prevent crashes on "marineEdicts[i].playerEdict = pMarineResource->GetCommander()->edict()"
 					//marineEdicts[i].playerEdict = pMarineResource->GetCommander()->edict();
+					//marineEdicts[i].fl_MarineDist = pMarine->GetAbsOrigin().DistTo(this->GetAbsOrigin());
 					if (pMarineResource->GetCommander())
 					{
 						marineEdicts[i].playerEdict = pMarineResource->GetCommander()->edict();
 						marineEdicts[i].fl_MarineDist = pMarine->GetAbsOrigin().DistTo(this->GetAbsOrigin());
 					}
-					else
-						Msg("******** Debug: pMarineResource->GetCommander()->edict() not True, Skipped it ********\n");
 				}
 				else
 				{
@@ -725,6 +731,7 @@ void CASW_Alien::DoTouchExplosion( CBaseEntity *pMarine )	//alien touch explosio
 	WRITE_FLOAT( vecExplosionPos.z );
 	WRITE_FLOAT( 160.0f );
 	MessageEnd();
+	DispatchParticleEffect( "electrified_armor_burst", pMarine->GetAbsOrigin(), vec3_angle );	//burst effect
 	
 	// hurt the marine
 	CTakeDamageInfo info( this, this, m_TouchExplosionDamage, DMG_BLAST );
@@ -746,7 +753,7 @@ void CASW_Alien::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, 
 			IsIgnited = false;
 		if (pMarine->IsOnFire() && !IsIgnited )
 		{
-			Msg("----- Player %s has ignited  by %s %s -----\n", pMarine->GetPlayerName(), alienLabel, m_damageTypes);
+			MarineDamageDebugInfo(pMarine, "ignited ", alienLabel, damageTypes);
 			IsIgnited = true;
 		}
 	}
@@ -756,7 +763,11 @@ void CASW_Alien::MarineExplode(CBaseEntity *pMarine, const char *alienLabel, con
 	DoTouchExplosion(pMarine);
 
 	if (asw_debug_alien_ignite.GetBool())	//debug marine has exploded
-		Msg("----- Player %s has exploded by %s %s -----\n", pMarine->GetPlayerName(), alienLabel, damageTypes);
+		MarineDamageDebugInfo(pMarine, "exploded", alienLabel, damageTypes);
+}
+void CASW_Alien::MarineDamageDebugInfo(CBaseEntity *pOther, const char *damageInfo, const char *alienLabel, const char *damageTypes)
+{
+	Msg("----- Player %s has %s by %s %s -----\n", pOther->GetPlayerName(), damageInfo, alienLabel, damageTypes);
 }
 void CASW_Alien::SetColorScale(const char *alienLabel)	//set aliens color scale function
 {
@@ -793,6 +804,7 @@ void CASW_Alien::SetColorScale(const char *alienLabel)	//set aliens color scale 
 		SetModelScale(asw_scalemod.GetFloat());
 	*/
 }
+//
 
 bool CASW_Alien::MarineNearby(float radius, bool bCheck3D)
 {

@@ -1060,9 +1060,9 @@ void CASW_Campaign_Save::PlayerDisconnected(CASW_Player *pPlayer)
 	{
 		if ( gpGlobals->maxClients > 1 )
 		{
-			//softcopy:test debug mission can't continue if one of the player disconnected
+			//softcopy: fix mission sometime can't continue if one of the player has disconnected
 			/*if (!m_fVoteEndTime != 0)
-			{	
+			{
 				m_fVoteEndTime = gpGlobals->curtime + 4.0f;
 			}
 			SetThink( &CASW_Campaign_Save::VoteEndThink );
