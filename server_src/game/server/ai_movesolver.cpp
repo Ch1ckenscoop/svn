@@ -15,10 +15,12 @@
 
 //-----------------------------------------------------------------------------
 
-inline float round( float f )
+#if _MSC_VER <= 1700			//softcopy: if use compiler on/above VS2013, will skip this, 
+inline float round( float f )	//as round() function already has a body on/above VS2013.
 {
 	return (float)( (int)( f + 0.5 ) );
 }
+#endif
 
 //-----------------------------------------------------------------------------
 // CAI_MoveSolver

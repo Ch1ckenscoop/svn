@@ -593,7 +593,8 @@ public:
 		V_strncpy(szAuthID, pchSteamID, 63);
 
 		char *szTmp = strtok(szAuthID, ":");
-		while(szTmp = strtok(NULL, ":"))
+		//while(szTmp = strtok(NULL, ":"))			//'warning C4706: assignment within conditional expression'
+		while(szTmp = strtok(NULL, ":"), szTmp)		//softcopy: corrected the conditional expression.
 		{
 			char *szTmp2 = strtok(NULL, ":");
 			if(szTmp2)
