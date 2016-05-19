@@ -1,0 +1,10 @@
+======Sets vindicator # of pellets.======
+= Description =
+
+Controls the number of vindicator pellets in clip.
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `14` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

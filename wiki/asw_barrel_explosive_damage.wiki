@@ -1,0 +1,10 @@
+======Sets explosive damage of the barrel.======
+= Description =
+
+Controls barrel explosive damage to marine or alien.
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `200.0f` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}

@@ -1,0 +1,21 @@
+======Sets player experience checking of the autokick.======
+= Description =
+
+Sets player experience checking. See also [[asw_autokick_player_promotion.wiki|asw_autokick_player_promotion]]. Requires enabling [[asw_autokick_player.wiki|asw_autokick_player]] to work.
+
+For examples:
+
+#server autokick player experience less than 5, sets [[asw_autokick_player_experience.wiki|asw_autokick_player_experience]] to 4300.
+#server autokick player experience less than 10, sets [[asw_autokick_player_experience.wiki|asw_autokick_player_experience]] to 10800.
+
+* level  1=<1000; level  2=1000;  level  3=2050;  level  4=3150;  level  5=4300;  level  6=5500;  level  7=6750;  level  8=8050;  
+* level  9=9400; level 10=10800; level 11=12250; level 12=13750; level 13=15300; level 14=16900; level 15=18550; 
+* level 16=20250; level 17=22000; level 18=23800; level 19=25650; level 20=27550; level 21=29500; level 22=31500; 
+* level 23=33550; level 24=35650; level 25=37800; level 26=40000; level 27=42250
+
+{|
+|| [[asw_version.wiki | Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `4300` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}
+

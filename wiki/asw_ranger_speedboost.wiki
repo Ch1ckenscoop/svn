@@ -1,9 +1,18 @@
+<!--
 #summary Sets the speed scale for rangers.
 #labels D-Cvar
+-->
+======Sets the speed scale for rangers.======
 
 = Description =
 
 Sets the speed scale for rangers.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r259 || `1.0` || [FCVAR_CHEAT] || [Float] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r259 || `1.0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

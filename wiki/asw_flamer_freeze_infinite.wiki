@@ -1,5 +1,8 @@
+<!--
 #summary Enables infinite flamer secondary fire.
 #labels Obsolete,D-Cvar
+-->
+======Enables infinite flamer secondary fire.======
 
 = Description =
-This cvar has been replaced by [asw_flamer_extinguisher_infinite].
+This cvar has been replaced by <!--[asw_flamer_extinguisher_infinite]-->[[asw_flamer_extinguisher_infinite.wiki|asw_flamer_extinguisher_infinite]].

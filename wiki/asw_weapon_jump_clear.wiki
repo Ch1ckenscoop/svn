@@ -1,9 +1,18 @@
+<!--
 #summary Clear reloads on jump.
 #labels D-Cvar
+-->
+======Clear reloads on jump.======
 
 = Description =
 
 If set, reset reloads when marines jump.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r355 || `0` || [FCVAR_CHEAT] || [Bool] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r355 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Bool] 
+|}

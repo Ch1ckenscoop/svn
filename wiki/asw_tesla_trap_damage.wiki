@@ -1,9 +1,18 @@
+<!--
 #summary Sets tesla trap damage.
 #labels D-Cvar
+-->
+======Sets tesla trap damage.======
 
 = Description =
 
 Sets the damage per shock for the tesla trap.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `5.0` || [FCVAR_CHEAT] || [Float] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `5.0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

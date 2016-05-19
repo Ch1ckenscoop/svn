@@ -1,10 +1,19 @@
+<!--
 #summary Controls the fire rate of the autogun.
 #labels D-Cvar
 #sidebar SideBarPage_Convars
-
+-->
+======Controls the fire rate of the autogun.======
+======sidebar [[SideBarPage_Convars.wiki|SideBarPage_Convars]]======
 = Description =
 
 Controls the fire rate of the autogun, and does not affect the minigun. Lower values = faster fire rate. Setting this cvar too low will result in prediction bugs due to differences in normally shared code between the Client and Server.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[OriginalCvarList Original Cvar]* ||
 || r29 || `0.08f` || [FCVAR_CHEAT] || No ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [OriginalCvarList Original Cvar] 
+|-
+|| r29 || `0.08f` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [No] 
+|}

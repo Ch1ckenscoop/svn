@@ -1,9 +1,18 @@
+<!--
 #summary Controls medkit heal amount.
 #labels D-Cvar
+-->
+======Controls medkit heal amount.======
 
 = Description =
 
 Controls the healing amount of medkits for non-medics.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `50` || [FCVAR_CHEAT] || [Int] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `50` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

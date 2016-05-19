@@ -1,17 +1,27 @@
+<!--
 #summary Toggles CFX for a player.
 #labels D-Command
+-->
+======Toggles CFX for a player.======
 
 = Description =
 
 This command toggles client effects for a player. It is intended to be used only by the sourcemod plugin "asw_cfx.smx", but if you need to use it for debugging or something, you can use it too.
 
-`cfx_toggle <player index> <bool on/off>`
+<!--`cfx_toggle <player index> <bool on/off>`-->
+`cfx_toggle [playerIndex] [bool/On/Off]
 
 So for example:
 
 `cfx_toggle 3 0`
 
 would turn off client effects for the 3rd player. You can get player indexes by using the `status` command (hint: it's the second number from the left).
-
+<!--
 || *Revision Added* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r385 || [FCVAR_NONE] || [Int]/[Bool] ||
+-->
+{|
+|| Revision Added || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r385 || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Int]/[Bool] 
+|}

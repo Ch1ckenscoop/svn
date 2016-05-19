@@ -1,10 +1,19 @@
+<!--
 #summary Skips "mission failed" screen.
 #labels D-Cvar
+-->
+======Skips "mission failed" screen.======
 
 = Description =
 
 Skips the mission failed screen when restarting a mission, the tech has died, or all marines have died. NOTE: Players will not receive experience if this cvar is enabled and a quick restart is performed.
 
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `0` || [FCVAR_NONE] || [Bool] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `0` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Bool] 
+|}

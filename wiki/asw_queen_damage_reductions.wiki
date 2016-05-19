@@ -1,5 +1,8 @@
+<!--
 #summary Makes the queen take less damage from some weapons.
 #labels D-Cvar
+-->
+======Makes the queen take less damage from some weapons.======
 
 = Description =
 
@@ -9,6 +12,13 @@ Enables damage reductions for the queen with the following player weapons:
   * Reduces normal shotgun damage by 40%
   * Reduces vindicator damage by 55%
   * Reduces any other damage by 80%
-
+  
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r116 || `1` || [FCVAR_NONE] || [Bool] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r116 || `1` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Bool] 
+|}

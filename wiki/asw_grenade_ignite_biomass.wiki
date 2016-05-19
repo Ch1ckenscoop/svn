@@ -1,0 +1,10 @@
+======Sets grenade ignite biomass.======
+= Description =
+
+Controls explosive grenade to burn biomass.
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `0` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Bool] 
+|}

@@ -118,9 +118,9 @@ extern ConVar old_radius_damage;
 bool bReadyclicked = false;
 int playreadyclicked = 0;
 int skill_default_level = 2;
-ConVar asw_autokick_player_enable("asw_autokick_player_enable", "0", FCVAR_CHEAT, "sets 1 = enable auto kick players.");
-ConVar asw_autokick_player_promotion_level("asw_autokick_player_promotion_level", "0", FCVAR_CHEAT, "sets 0-3 promotion level, if below this level will be autokicked.",true,0,true,3);
-ConVar asw_autokick_player_experience_level("asw_autokick_player_experience_level", "10800", FCVAR_CHEAT, "sets player below the skill point will be autokicked.");
+ConVar asw_autokick_player("asw_autokick_player", "0", FCVAR_CHEAT, "sets 1 = enable auto kick player.");
+ConVar asw_autokick_player_promotion("asw_autokick_player_promotion", "0", FCVAR_CHEAT, "sets 0-3 promotion, if below the promotion will be autokicked.",true,0,true,3);
+ConVar asw_autokick_player_experience("asw_autokick_player_experience", "4300", FCVAR_CHEAT, "sets player below the skill point will be autokicked.");
 ConVar asw_marine_lobby_ready("asw_marine_lobby_ready", "1", FCVAR_CHEAT, "set 0=All lobby marked not ready,1=ClientConnected lobby not ready,2=All ready");
 ConVar asw_lobby_player_select("asw_lobby_player_select", "4", FCVAR_CHEAT, "max players selectable in lobby, instablity timeout if changed.", true,4, true,6);
 ConVar asw_level_lock("asw_level_lock","0", FCVAR_CHEAT, "default = 0, set 1 - 5 to enable what skill level lock on.", true,0, true,5);
@@ -2978,7 +2978,7 @@ ConVar asw_bonus_charges_flamer("asw_bonus_charges_flamer", "40", FCVAR_CHEAT, "
 ConVar asw_bonus_charges_minigun("asw_bonus_charges_minigun", "250", FCVAR_CHEAT, "set ammo in clip of minigun.");
 ConVar asw_bonus_charges_grenade_launcher("asw_bonus_charges_grenade_launcher", "6", FCVAR_CHEAT, "set ammo in clip of grenades in launcher.");
 ConVar asw_bonus_charges_pistol("asw_bonus_charges_pistol", "24", FCVAR_CHEAT, "set ammo in clip of pistol.");
-ConVar asw_bonus_charges_pwd("asw_bonus_charges_pwd", "80", FCVAR_CHEAT, "set ammo in clip of pwd.");
+ConVar asw_bonus_charges_pdw("asw_bonus_charges_pdw", "80", FCVAR_CHEAT, "set ammo in clip of pdw.");
 ConVar asw_bonus_charges_prifle("asw_bonus_charges_prifle", "98", FCVAR_CHEAT, "set ammo in clip of prifle.");
 ConVar asw_bonus_charges_rifle("asw_bonus_charges_rifle", "98", FCVAR_CHEAT, "set ammo in clip of rifle.");
 ConVar asw_bonus_charges_railgun("asw_bonus_charges_railgun", "1", FCVAR_CHEAT, "set ammo in clip of railgun.");
@@ -3074,8 +3074,8 @@ void CAlienSwarm::GiveStartingWeaponToMarine(CASW_Marine* pMarine, int iEquipInd
 		pWeapon->SetClip1(asw_bonus_charges_pistol.GetInt());	
     if ( !stricmp(szWeaponClass, "asw_weapon_prifle") )
 		pWeapon->SetClip1(asw_bonus_charges_prifle.GetInt());
-    if ( !stricmp(szWeaponClass, "asw_weapon_pwd") )
-		pWeapon->SetClip1(asw_bonus_charges_pwd.GetInt());	
+    if ( !stricmp(szWeaponClass, "asw_weapon_pdw") )
+		pWeapon->SetClip1(asw_bonus_charges_pdw.GetInt());	
 	if ( !stricmp(szWeaponClass, "asw_weapon_railgun") )
 		pWeapon->SetClip1(asw_bonus_charges_railgun.GetInt());
 	if ( !stricmp(szWeaponClass, "asw_weapon_rifle") )
@@ -6557,12 +6557,12 @@ void CAlienSwarm::BroadcastSound( const char *sound )
 void CAlienSwarm::OnPlayerFullyJoined( CASW_Player *pPlayer )
 {
 	//softcopy: players below the required entrance level will be auto kicked when logged in.
-	if ( asw_autokick_player_enable.GetBool() &&  pPlayer && pPlayer->entindex() )
+	if ( asw_autokick_player.GetBool() &&  pPlayer && pPlayer->entindex() )
 	{
 		int elevel = 0, islevel = 0, calexp = 0;
 		char text[64], text2[64], text3[128];
-		int iexplevel  = asw_autokick_player_experience_level.GetInt(); //kick player who below experience points value.
-		int ipromlevel = asw_autokick_player_promotion_level.GetInt();  //kick player who below promotion level value(0-3) only, more than that is too harsh.  
+		int iexplevel  = asw_autokick_player_experience.GetInt(); //kick player who below experience points value.
+		int ipromlevel = asw_autokick_player_promotion.GetInt();  //kick player who below promotion value(0-3) only, more than that is too harsh.  
 		if ( ( pPlayer->GetExperience() < iexplevel ) && ( pPlayer->GetPromotion() <= ipromlevel ) )  
 		{ 
 			for (int i=0; i <= 26; i++)

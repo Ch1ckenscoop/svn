@@ -1,0 +1,10 @@
+======Sets radiation leak damage of the buzzer.======
+= Description =
+
+Controls buzzer radiation damage to marine, it is recommended to sets it in the lower value to prevent too high damage. It need [[asw_buzzer_radiation_leak_enable.wiki|asw_buzzer_radiation_leak_enable]] enable
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `0.3f` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}

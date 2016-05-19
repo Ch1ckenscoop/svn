@@ -1,0 +1,14 @@
+======Locks onslaught on server.======
+= Description =
+
+Locks the 'onslaught' mode, player can't off the 'onslaught' mode if enabled.
+
+=====Important Note:=====
+
+* Locks onslaught function as same as plugin 'asw-exec-skills.smx', NO this plugin in your server if enabled, otherwise, your server has onslaught problem
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Bool] 
+|}

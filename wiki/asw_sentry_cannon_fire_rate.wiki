@@ -1,0 +1,10 @@
+======Sets firing rate of the sentry cannon.======
+= Description =
+
+Controls firing rate of the sentry cannon.
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1.75f` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

@@ -1,10 +1,19 @@
+<!--
 #summary Sets uber drones' model scale.
 #labels D-Cvar
+-->
+======Sets uber drones' model scale.======
 
 = Description =
 
 Adjusts the model scale for the uber drones.
 
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `1.0` || [FCVAR_CHEAT] || [Float] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `1.0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

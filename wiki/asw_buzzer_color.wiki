@@ -1,9 +1,130 @@
+<!--
 #summary Sets buzzer color.
 #labels D-Cvar
+-->
+===Sets buzzer/beta buzzer color and scale.===
 
 = Description =
 
+<!--
 Sets the color of buzzers.
 
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r371 || `255 255 255` || [FCVAR_NONE] || [Color255] ||
+-->
+
+Sets buzzers with 3 different colors and percentage of the buzzers you want to give these colors. Also Sets scale of the buzzers and percentage of the buzzers you want to give a custom scale. [[https://github.com/Ch1ckenscoop/svn/blob/master/server/swarm/cfg/colorscale.cfg|colorscale.cfg]] in folder /AlienSwarmServer/swarm/cfg.
+
+==Sets the color of buzzers.== 
+======asw_buzzer_color====== 
+{|
+|| Revision Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r371 || `255 255 255` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Color255] 
+|}
+
+==Sets a second color for buzzers.==
+======asw_buzzer_color2======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `255 255 255` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Color255] 
+|}
+======asw_buzzer_color2_percent======
+Sets the percentage of the buzzers want to give the second color, sets the value in between 0 - 1. 
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `0` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+==Sets a third color for buzzers.==
+======asw_buzzer_color3======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `255 255 255` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Color255] 
+|}
+
+======asw_buzzer_color3_percent======
+Sets the percentage of the buzzers want to give the third color, sets the value in between 0 - 1. 
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `0` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+==Sets the scale of the buzzers.==
+======asw_buzzer_scalemod======
+Sets the scale of the buzzers.
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+======asw_buzzer_scalemod_percent======
+Sets the percentage of the buzzers want to give a custom scale, sets the value in between 0 - 1.
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+
+= Description =
+==Sets the color of beta buzzers.== 
+======asw_buzzer_beta_color====== 
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `255 255 255` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Color255] 
+|}
+
+==Sets a second color for beta buzzers.==
+======asw_buzzer_beta_color2======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `255 255 255` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Color255] 
+|}
+======asw_buzzer_beta_color2_percent======
+Sets the percentage of the beta buzzers want to give the second color, sets the value in between 0 - 1. 
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `0` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+==Sets a third color for beta buzzers.==
+======asw_buzzer_beta_color3======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `255 255 255` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Color255] 
+|}
+
+======asw_buzzer_beta_color3_percent======
+Sets the percentage of the beta buzzers want to give the third color, sets the value in between 0 - 1. 
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `0` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+==Sets the scale of the beta buzzers.==
+======asw_buzzer_beta_scalemod======
+Sets the scale of the beta buzzers.
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+======asw_buzzer_beta_scalemod_percent======
+Sets the percentage of the beta buzzers want to give a custom scale, sets the value in between 0 - 1.
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}

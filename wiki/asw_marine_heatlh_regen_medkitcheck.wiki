@@ -1,11 +1,20 @@
+<!--
 #summary Check if a marine is carrying a medkit before healing them.
 #labels D-Cvar
+-->
+======Check if a marine is carrying a medkit before healing them.======
 
 = Description =
 
 Disables regenerative healing for a marine if he's carrying a medkit.
 
 Set to 0 to disable (ignore whether or not he's carrying a medkit).
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `1` || [FCVAR_NONE] || [Bool] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `1` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Bool] 
+|}

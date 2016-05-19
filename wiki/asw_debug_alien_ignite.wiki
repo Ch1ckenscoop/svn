@@ -1,0 +1,14 @@
+======Displays debug messages for alien ignited/exploded to marine.======
+
+= Description =
+
+Displays a debug message whenever marine has ignited/exploded by alien melee/touch. 
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `0` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Bool] 
+|}
+
+==== Examples: ====
+*Player xxxxx has ignited  by shieldbug knockdown
+*Player xxxxx has exploded by shieldbug knockdown

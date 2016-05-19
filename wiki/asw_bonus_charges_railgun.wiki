@@ -1,0 +1,10 @@
+======Controls railgun # of pellets.======
+= Description =
+
+Sets the number of railgun pellets in clip.
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

@@ -1,10 +1,19 @@
+<!--
 #summary Fixes a bug in the queen's slash attack.
 #labels D-Cvar
+-->
+======Fixes a bug in the queen's slash attack.======
 
 = Description =
 
 This cvar was added to fix a bug in the queen's slash attack. The bug would cause the queen to apply the damage set in asw_queen_slash_damage to whatever it was attack more than once per swipe (usually 5 times per swipe). Setting this to 0 only allows the queen to attack something once per swipe.
 
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `0` || [FCVAR_CHEAT] || [Bool] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Bool] 
+|}

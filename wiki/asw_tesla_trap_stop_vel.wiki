@@ -1,9 +1,18 @@
+<!--
 #summary Adjusts tesla trap movement.
 #labels D-Cvar
+-->
+======Adjusts tesla trap movement.======
 
 = Description =
 
 If tesla trap is moving slower than this value, stop movement and start settling. This cvar is used to combat tesla traps getting stuck in walls or railings when you place them super-close.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r362 || `128.0` || [FCVAR_CHEAT] || [Float] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r362 || `128.0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

@@ -1,9 +1,18 @@
+<!--
 #summary Infinite ammo for flamer secondary fire.
 #labels D-Cvar
+-->
+======Infinite ammo for flamer secondary fire.======
 
 = Description =
 
 Prevents the flamer's secondary fire from using ammo.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `0` || [FCVAR_CHEAT] || [Bool] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Bool] 
+|}

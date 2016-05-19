@@ -1,9 +1,18 @@
+<!--
 #summary Controls queen parasite count.
 #labels D-Cvar
+-->
+======Controls queen parasite count.======
 
 = Description =
 
 Sets the maximum number of live aliens a queen can have.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `5` || [FCVAR_CHEAT] || [Int] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `5` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

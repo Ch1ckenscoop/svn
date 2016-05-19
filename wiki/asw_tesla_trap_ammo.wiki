@@ -1,9 +1,18 @@
+<!--
 #summary Sets tesla trap ammo.
 #labels D-Cvar
+-->
+======Sets tesla trap ammo.======
 
 = Description =
 
-Controls tesla trap ammo (number of shocks before self-destructing). This value is ignored if [asw_tesla_trap_infinite_ammo] is enabled.
-
+Controls tesla trap ammo (number of shocks before self-destructing). This value is ignored if <!--[asw_tesla_trap_infinite_ammo]-->[[asw_tesla_trap_infinite_ammo.wiki|asw_tesla_trap_infinite_ammo]] is enabled.
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `30` || [FCVAR_CHEAT] || [Int] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `30` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

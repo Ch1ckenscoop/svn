@@ -1,5 +1,7 @@
-#summary Randomly creates uber drone spawners.
+<!--#summary Randomly creates uber drone spawners.
 #labels D-Command
+-->
+======Randomly creates uber drone spawners.======
 
 = Description =
 
@@ -10,6 +12,12 @@ Randomly replaces asw_drone spawners with asw_drone_uber spawners.
 `asw_carnage_randomize_uber 0.24`
 
 This give each asw_drone spawner a 24% chance of becoming an asw_drone_uber spawner. Keep in mind that THIS DOES NOT MEAN that exactly 24% of spawners will become asw_drone_uber spawners.
-
+<!--
 || *Revision Added* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || [FCVAR_CHEAT] || [Float] ||
+-->
+{|
+|| Revision Added || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 ||  [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

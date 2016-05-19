@@ -1,10 +1,13 @@
+<!--
 #summary Increases the number of aliens.
 #labels D-Command,Obsolete
+-->
+======Increases the number of aliens.======
 
 = Description =
 
 Increases the number of aliens spawned from asw_spawners. This command has been replaced by the following cvars:
-
+<!--
   *[[asw_carnage_boomer]
   *[[asw_carnage_buzzer]
   *[[asw_carnage_drone]
@@ -17,3 +20,16 @@ Increases the number of aliens spawned from asw_spawners. This command has been 
   *[[asw_carnage_parasite_defanged]
   *[[asw_carnage_ranger]
   *[[asw_carnage_shieldbug]
+-->
+*[[asw_carnage_boomer.wiki|asw_carnage_boomer]]
+*[[asw_carnage_buzzer.wiki|asw_carnage_buzzer]]
+*[[asw_carnage_drone.wiki|asw_carnage_drone]]
+*[[asw_carnage_drone_jumper.wiki|asw_carnage_drone_jumper]]
+*[[asw_carnage_drone_uber.wiki|asw_carnage_drone_uber]]
+*[[asw_carnage_harvester.wiki|asw_carnage_harvester]]
+*[[asw_carnage_min_interval.wiki|asw_carnage_min_interval]]
+*[[asw_carnage_mortar.wiki|asw_carnage_mortar]]
+*[[asw_carnage_parasite.wiki|asw_carnage_parasite]]
+*[[asw_carnage_parasite_defanged.wiki|asw_carnage_parasite_defanged]]
+*[[asw_carnage_ranger.wiki|asw_carnage_ranger]]
+*[[asw_carnage_shieldbug.wiki|asw_carnage_shieldbug]]

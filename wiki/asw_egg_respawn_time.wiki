@@ -1,9 +1,18 @@
+<!--
 #summary Sets parasite respawn time in an egg.
 #labels D-Cvar
+-->
+======Sets parasite respawn time in an egg.======
 
 = Description =
 
-Sets how long for eggs to wait before spawning another parasite. Requires [asw_egg_respawn] 1 to work.
-
+Sets how long for eggs to wait before spawning another parasite. Requires <!--[asw_egg_respawn]-->asw_egg_respawn 1 to work.
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r235 || `20.0` || [FCVAR_CHEAT] || [Float] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r235 || `20.0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

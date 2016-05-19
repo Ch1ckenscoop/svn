@@ -1,11 +1,20 @@
+<!--
 #summary Base pierce chance for shotgun.
 #labels D-Cvar
+-->
+======Base pierce chance for shotgun.======
 
 = Description =
 
 Controls the likelihood of a shotgun pellet piercing an alien.
 
-Requires [asw_shotgun_piercing] to be higher than 0.
-
+Requires <!--[asw_shotgun_piercing]-->[[asw_shotgun_piercing.wiki|asw_shotgun_piercing]] to be higher than 0.
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `0.2` || [FCVAR_CHEAT] || [Float] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `0.2` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

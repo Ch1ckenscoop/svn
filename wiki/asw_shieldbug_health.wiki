@@ -1,9 +1,18 @@
+<!--
 #summary Sets shieldbug health.
 #labels D-Cvar
+-->
+======Sets shieldbug health.======
 
 = Description =
 
 Sets the health of shieldbugs.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `1000` || [FCVAR_CHEAT] || [Int] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `1000` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

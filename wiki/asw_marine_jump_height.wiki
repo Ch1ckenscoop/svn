@@ -1,10 +1,19 @@
+<!--
 #summary Sets marine jump height.
 #labels D-Cvar
+-->
+======Sets marine jump height.======
 
 = Description =
 
 Adjusts the jump height for marines. Note that this will only have an effect if asw_marine_rolls is set to 0.
 
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `70.0` || [FCVAR_CHEAT] || [Float] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `70.0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

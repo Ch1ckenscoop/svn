@@ -1,10 +1,18 @@
+<!--
 #summary Sets the starting number of laser mines.
 #labels D-Cvar
-
+-->
+======Sets the starting number of laser mines.===
 = Description =
 
 Sets the starting number of laser mines.
 
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `1` || [FCVAR_NONE] || [Int] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `1` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Int] 
+|}

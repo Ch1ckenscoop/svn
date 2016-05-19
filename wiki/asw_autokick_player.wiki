@@ -1,0 +1,12 @@
+======Sets auto kick player.======
+= Description =
+
+Controls who can join the server. Player doesn't have enough experience or promotion, player will be auto kicked by server. 
+
+See also [[asw_autokick_player_experience.wiki|asw_autokick_player_experience]] and [[asw_autokick_player_promotion.wiki|asw_autokick_player_promotion]] to work 
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Bool] 
+|}

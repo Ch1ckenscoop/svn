@@ -1,0 +1,10 @@
+======Sets grenades # in grenade launcher.======
+= Description =
+
+Controls the number of grenades in grenade launcher. 
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `6` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

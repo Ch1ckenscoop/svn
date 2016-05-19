@@ -1,5 +1,9 @@
+<!--
 #summary Default cvar flag.
+-->
+======Default cvar flag.======
 
 = Description =
 
-This [CvarFlags flag] is added to a [ConVar cvar] when it has no other flags. This flag has no special properties. 
+This <!--[CvarFlags flag]-->[[CvarFlags.wiki|CvarFlags]] is added to a <!--[ConVar cvar]-->[[ConVar.wiki|ConVar]] when it has no other flags. This flag has no special properties. 
+

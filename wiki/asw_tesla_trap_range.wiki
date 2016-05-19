@@ -1,9 +1,18 @@
+<!--
 #summary Sets the range of the tesla trap.
 #labels D-Cvar
+-->
+======Sets the range of the tesla trap.======
 
 = Description =
 
 Sets the range of the tesla trap's shock.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `200.0` || [FCVAR_CHEAT] || [Float] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `200.0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

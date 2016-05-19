@@ -1,10 +1,19 @@
+<!--
 #summary Fixes removal of queens.
 #labels D-Cvar
+-->
+======Fixes removal of queens.======
 
 = Description =
 
 Forces removal of queens 4 seconds after they are killed.
 
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r116 || `1` || [FCVAR_NONE] || [Bool] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r116 || `1` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Bool] 
+|}

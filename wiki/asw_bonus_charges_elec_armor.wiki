@@ -1,10 +1,19 @@
+<!--
 #summary Controls electrified armor usages.
 #labels D-Cvar
+-->
+======Controls electrified armor usages.======
 
 = Description =
 
 Sets the starting amount of electrified armor usages.
 
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `3` || [FCVAR_CHEAT] || [Int] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `3` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

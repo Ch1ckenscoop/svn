@@ -1,9 +1,18 @@
+<!--
 #summary Increases ammo satchel number.
 #labels D-Cvar
+-->
+======Increases ammo satchel number.======
 
 = Description =
 
 If a marine chooses ammo satchels during mission preparation, the amount he will have in game is this value + the default (3).
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `0` || [FCVAR_CHEAT] || [Int] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

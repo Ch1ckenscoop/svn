@@ -1,0 +1,10 @@
+======Controls skill level when hibernating.======
+= Description =
+
+Controls the skill level default to normal level when server is hibernating. For example: last skill level was on insane level, it defaults to normal level if all players has left server.
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Bool] 
+|}

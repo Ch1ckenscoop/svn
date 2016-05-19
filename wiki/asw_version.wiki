@@ -1,0 +1,22 @@
+<!--
+#summary Check Ch1ckenscoop version.
+#labels D-Command
+-->
+======Check Ch1ckenscoop version.======
+
+= Description =
+
+[[asw_version.wiki|asw_version]] or [[asw_version.wiki|ver]] command to check Ch1ckenscoop version.
+
+Enter one of these two commands [[asw_version.wiki|asw_version]] or [[asw_version.wiki|ver]] on server console or developer console.
+
+Both commands available from r594 or 'Server version 2.0' or latest version.
+<!--
+|| *Revision Added* ||
+|| r594 ||
+-->
+{|
+|| Revision/[[asw_version.wiki|Server Version]] Added 
+|-
+|| r594 / v2.0
+|}

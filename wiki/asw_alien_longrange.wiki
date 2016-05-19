@@ -1,5 +1,8 @@
+<!--
 #summary Allows aliens to see this far.
 #labels D-Cvar
+ -->
+======Allows aliens to see this far.======
 
 = Description =
 
@@ -25,5 +28,14 @@ If you set this value to 3000.0, the properties would be this:
 
 You might try setting this cvar's value to that of your pruning radius, however it might cause lag.
 
+<! --
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r296 || `0` || [FCVAR_CHEAT] || [Float] ||
+-->
+
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r296 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}
+

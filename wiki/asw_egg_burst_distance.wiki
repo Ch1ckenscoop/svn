@@ -1,11 +1,20 @@
+<!--
 #summary Sometimes burst if marines are this close.
 #labels D-Cvar
+-->
+======Sometimes burst if marines are this close.======
 
 = Description =
 
 Every think, there's a 10% chance that the egg will start to burst if marines are this close. Thinks are usually about every 2 seconds.
 
-See also: [asw_egg_always_burst_distance].
-
+See also: <!--[asw_egg_always_burst_distance]-->[[asw_egg_always_burst_distance.wiki|asw_egg_always_burst_distance]].
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r333 || `450.0` || [FCVAR_CHEAT] || [Float] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r333 || `450.0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

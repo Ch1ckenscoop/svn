@@ -1,0 +1,11 @@
+======Sets the starting number of rifle grenades.======
+
+= Description =
+
+Sets the starting number of rifle grenades.
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0  || `5` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

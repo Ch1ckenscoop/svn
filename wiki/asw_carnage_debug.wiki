@@ -1,8 +1,13 @@
+<!--
 #summary Shows debug info for asw_carnage.
 #labels D-Cvar,Obsolete
+-->
+======Shows debug info for asw_carnage.======
 
 = Description =
-
+<!--
 Shows debug info for [asw_carnage].
+-->
+Shows debug info for [[asw_carnage.wiki|asw_carnage]].
 
 This cvar has been removed, and there are no plans to add it again.

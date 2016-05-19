@@ -1,2 +1,4 @@
-#labels Redirect,Deprecated
+<!--#labels Redirect,Deprecated
 See [ConVar]. 
+-->
+See [[ConVar.wiki|ConVar]]

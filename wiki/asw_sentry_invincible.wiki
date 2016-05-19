@@ -1,9 +1,18 @@
+<!--
 #summary Makes sentries invincible.
 #labels D-Cvar
+-->
+======Makes sentries invincible.======
 
 = Description =
 
 Prevents sentries from taking damage from aliens.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `0` || [FCVAR_CHEAT] || [Bool] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Bool] 
+|}

@@ -42,7 +42,7 @@ extern ConVar asw_bonus_charges_flamer;
 extern ConVar asw_bonus_charges_grenade_launcher;
 extern ConVar asw_bonus_charges_minigun;
 extern ConVar asw_bonus_charges_pistol;
-extern ConVar asw_bonus_charges_pwd;
+extern ConVar asw_bonus_charges_pdw;
 extern ConVar asw_bonus_charges_prifle;
 extern ConVar asw_bonus_charges_rifle;
 extern ConVar asw_bonus_charges_railgun;
@@ -347,7 +347,7 @@ int CBaseCombatWeapon::GetMaxClip1( void ) const
 	else if ( !stricmp(GetPrintName(), "#asw_weapon_pistol") )
 	     return asw_bonus_charges_pistol.GetInt();
 	else if ( !stricmp(GetPrintName(), "#asw_weapon_pdw") )
-	     return asw_bonus_charges_pwd.GetInt(); 
+	     return asw_bonus_charges_pdw.GetInt(); 
     else if ( !stricmp(GetPrintName(), "#asw_weapon_prifle") )
 	     return asw_bonus_charges_prifle.GetInt(); 
 	else if ( !stricmp(GetPrintName(), "#asw_weapon_railgun") )

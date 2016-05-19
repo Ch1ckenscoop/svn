@@ -1,9 +1,20 @@
+<!--
 #summary Controls asw_shieldbug spawners.
 #labels D-Cvar
+-->
+======Controls asw_shieldbug spawners.======
 
 = Description =
 
-Looks for any spawners that are set to spawn shieldbugs, and multiplies the set max aliens and set total aliens to spawn by this number. It then divides the set time between spawns by this number. This can be controlled with [asw_carnage_min_interval].
-
+Looks for any spawners that are set to spawn shieldbugs, and multiplies the set max aliens and set total aliens to spawn by this number. It then divides the set time between spawns by this number. This can be controlled with <!--[asw_carnage_min_interval]-->[[asw_carnage_min_interval.wiki|asw_carnage_min_interval]].
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `1` || [FCVAR_CHEAT] || [Float] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `1` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}
+
+

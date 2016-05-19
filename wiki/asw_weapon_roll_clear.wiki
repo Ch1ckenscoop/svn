@@ -1,9 +1,18 @@
+<!--
 #summary Clear reloads on roll.
 #labels D-Cvar
+-->
+======Clear reloads on roll.======
 
 = Description =
 
 If set, reset reloads when marines roll.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r355 || `1` || [FCVAR_CHEAT] || [Bool] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r355 || `1` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Bool] 
+|}

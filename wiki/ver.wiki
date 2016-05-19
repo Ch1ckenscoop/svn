@@ -1,0 +1,4 @@
+======Check Ch1ckenscoop version.======
+
+See [[asw_version.wiki|ver]] detail
+

@@ -1,9 +1,18 @@
+<!--
 #summary Infinite fire extinguisher.
 #labels D-Cvar
+-->
+======Infinite fire extinguisher.======
 
 = Description =
 
 Prevents fire extinguisher from using ammo.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `0` || [FCVAR_CHEAT] || [Bool] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Bool] 
+|}

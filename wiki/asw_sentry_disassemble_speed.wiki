@@ -1,0 +1,10 @@
+======Sets disassemble speed of the sentry.======
+= Description =
+
+Sets the sentry disassemble speed for all marines.
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `2` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

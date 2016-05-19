@@ -1,9 +1,18 @@
+<!--
 #summary How often to heal marines.
 #labels D-Cvar
+-->
+======How often to heal marines.======
 
 = Description =
 
-This cvar sets the delay between heals. Every heal, it adds the value of [asw_marine_health_regen_amount] to each marine's health.
-
+This cvar sets the delay between heals. Every heal, it adds the value of <!--[asw_marine_health_regen_amount]-->[[asw_marine_health_regen_amount.wiki|asw_marine_health_regen_amount]] to each marine's health.
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `0.5` || [FCVAR_CHEAT] || [Float] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `0.5` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

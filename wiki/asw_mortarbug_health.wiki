@@ -1,9 +1,18 @@
+<!--
 #summary Sets mortar bug health.
 #labels D-Cvar
+-->
+======Sets mortar bug health.======
 
 = Description =
 
 Sets the health of mortar bugs.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r259 || `350` || [FCVAR_CHEAT] || [Int] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r259 || `350` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

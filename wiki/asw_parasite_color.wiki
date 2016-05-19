@@ -1,9 +1,130 @@
+<!--
 #summary Sets parasite color.
 #labels D-Cvar
+-->
+===Sets parasite/beta parasite color and scale.===
 
 = Description =
 
+<!--
 Sets the color of regular parasites.
 
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r371 || `255 255 255` || [FCVAR_NONE] || [Color255] ||
+-->
+
+Sets parasites with 3 different colors and percentage of the parasites you want to give these colors. Also Sets scale of the normal  parasites and percentage of the parasites you want to give a custom scale. See [[https://github.com/Ch1ckenscoop/svn/blob/master/server/swarm/cfg/colorscale.cfg|colorscale.cfg]] in folder /AlienSwarmServer/swarm/cfg.
+
+==Sets the color of parasites.== 
+======asw_parasite_color====== 
+{|
+|| Revision Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r371 || `255 255 255` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Color255] 
+|}
+
+==Sets a second color for parasites.==
+======asw_parasite_color2======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `255 255 255` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Color255] 
+|}
+======asw_parasite_color2_percent======
+Sets the percentage of the parasites want to give the second color, sets the value in between 0 - 1. 
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `0` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+==Sets a third color for parasites.==
+======asw_parasite_color3======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `255 255 255` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Color255] 
+|}
+
+======asw_parasite_color3_percent======
+Sets the percentage of the parasites want to give the third color, sets the value in between 0 - 1. 
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `0` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+==Sets the scale of the parasites.==
+======asw_parasite_scalemod======
+Sets the scale of the normal parasites.
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+======asw_parasite_scalemod_percent======
+Sets the percentage of the parasites want to give a custom scale, sets the value in between 0 - 1.
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+
+= Description =
+==Sets the color of beta parasites.== 
+======asw_parasite_beta_color====== 
+{|
+|| Revision Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r371 || `255 255 255` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Color255] 
+|}
+
+==Sets a second color for beta parasites.==
+======asw_parasite_beta_color2======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `255 255 255` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Color255] 
+|}
+======asw_parasite_beta_color2_percent======
+Sets the percentage of the beta parasites want to give the second color, sets the value in between 0 - 1. 
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `0` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+==Sets a third color for beta parasites.==
+======asw_parasite_beta_color3======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `255 255 255` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Color255] 
+|}
+
+======asw_parasite_beta_color3_percent======
+Sets the percentage of the beta parasites want to give the third color, sets the value in between 0 - 1. 
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `0` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+==Sets the scale of the beta parasites.==
+======asw_parasite_beta_scalemod======
+Sets the scale of the beta parasites.
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+======asw_parasite_beta_scalemod_percent======
+Sets the percentage of the beta parasites want to give a custom scale, sets the value in between 0 - 1.
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}

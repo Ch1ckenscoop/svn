@@ -1,0 +1,26 @@
+======Locks the skill level on Server.======
+= Description =
+
+Locks on a skill level of 1 - 5 and 'skill_1.cfg' - 'skill_5.cfg' also will be executed.
+
+* 1 = Easy Level
+* 2 = Normal Level
+* 3 = Hard Level
+* 4 = Insane Level
+* 5 = Brutal Level
+
+For example:
+#locks the skill level on 'Normal Level', player set 'Easy Level' is not allowed on server, player only can sets the skill level on or above 'Normal Level'. Also '[[https://github.com/Ch1ckenscoop/svn/blob/master/server/swarm/cfg/skill_2_example.cfg|skill_2.cfg]]' will be executed for this level settings.
+#locks the skill level on 'Hard Level', player set 'Normal Level' is not allowed on server, player only can sets the skill level on or above 'Hard Level'. Also '[[https://github.com/Ch1ckenscoop/svn/blob/master/server/swarm/cfg/skill_3_example.cfg|skill_3.cfg]]' will be executed for this level settings
+
+It is recommended that you create your own files [[https://github.com/Ch1ckenscoop/svn/blob/master/server/swarm/cfg/skill_1_example.cfg|skill_1.cfg]], [[https://github.com/Ch1ckenscoop/svn/blob/master/server/swarm/cfg/skill_2_example.cfg|skill_2.cfg]], [[https://github.com/Ch1ckenscoop/svn/blob/master/server/swarm/cfg/skill_3_example.cfg|skill_3.cfg]], [[https://github.com/Ch1ckenscoop/svn/blob/master/server/swarm/cfg/skill_4_example.cfg|skill_4.cfg]] & [[https://github.com/Ch1ckenscoop/svn/blob/master/server/swarm/cfg/skill_5_example.cfg|skill_5.cfg]], where you can place any settings you like on each level.
+
+=====Important Note:=====
+
+* This skill level lock function as same as plugin 'asw-exec-skills.smx', NO this plugin in your server if 'asw_level_lock' has enabled, otherwise, your server has skill level problems.
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `2` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

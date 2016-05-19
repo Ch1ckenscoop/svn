@@ -1,9 +1,17 @@
-#summary Adjusts LCE effect threshold.
+<!--#summary Adjusts LCE effect threshold.
 #labels D-Cvar
+-->
+======Adjusts LCE effect threshold.======
 
 = Description =
 
 Threshold of marine health at which local contrast enhancement effects start to show.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r385 || `35` || [FCVAR_CHEAT] || [Int] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r385 || `35` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

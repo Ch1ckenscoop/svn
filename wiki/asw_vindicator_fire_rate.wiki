@@ -1,9 +1,18 @@
+<!--
 #summary Controls vindicator fire rate.
 #labels D-Cvar
+-->
+======Controls vindicator fire rate.======
 
 = Description =
 
 Sets the fire rate of the vindicator. A value of `1.0` would mean 1 shot per second, `0.5` would mean 2 shots per second... etc.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r182 || `0.65` || [FCVAR_CHEAT] || [Float] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r182 || `0.65` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

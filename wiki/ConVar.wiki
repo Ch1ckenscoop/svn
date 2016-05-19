@@ -1,13 +1,17 @@
+<!--
 #summary One-sentence summary of this page.
+-->
+======One-sentence summary of this page.======
 
 = Introduction =
 
 Console variables, also known as ConVars or Cvars, are at the heart of [SourceEngine Source engine] modifications. They are accessed either through the [DevConsole developer console] or by typing in the [DediServer dedicated server]. 
 
-
+<!--
 = Details =
 
 Add your content here.  Format your content with:
   * Text in *bold* or _italic_
   * Headings, paragraphs, and lists
   * Automatic links to other wiki pages
+ -->

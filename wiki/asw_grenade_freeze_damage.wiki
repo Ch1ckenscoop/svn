@@ -1,9 +1,18 @@
+<!--
 #summary Sets freeze grenade damage.
 #labels D-Cvar
+-->
+======Sets freeze grenade damage.======
 
 = Description =
 
 Sets the damage of freeze grenades.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `0` || [FCVAR_CHEAT] || [Int] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

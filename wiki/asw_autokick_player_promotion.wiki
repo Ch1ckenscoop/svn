@@ -1,0 +1,16 @@
+======Sets player promotion checking of the autokick.======
+= Description =
+
+Controls checking player promotion. See also [[asw_autokick_player_experience.wiki|asw_autokick_player_experience]]. Requires enabling [[asw_autokick_player.wiki|asw_autokick_player]] to work.
+
+For examples:
+# server autokick player doesn't have any promotion, sets [[asw_autokick_player_promotion.wiki|asw_autokick_player_promotion]] to 1. 
+# server autokick player doesn't have 2nd promotions, sets [[asw_autokick_player_promotion.wiki|asw_autokick_player_promotion]] to 2.
+
+Note: promotion checking only in between 1st to 3rd promotion. Skipped the 4th to 7th promotions checking.
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

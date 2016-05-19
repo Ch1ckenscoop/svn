@@ -1,11 +1,20 @@
+<!--
 #summary Base pierce chance for vindicator.
 #labels D-Cvar
+-->
+======Base pierce chance for vindicator.======
 
 = Description =
 
 Controls the likelihood of a vindicator pellet piercing an alien.
 
-Requires [asw_vindicator_piercing] to be higher than 0.
-
+Requires <!--[asw_vindicator_piercing]-->[[asw_vindicator_piercing.wiki|asw_vindicator_piercing]] to be higher than 0.
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `0.5` || [FCVAR_CHEAT] || [Float] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `0.5` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

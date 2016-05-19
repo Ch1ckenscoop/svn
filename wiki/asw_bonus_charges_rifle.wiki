@@ -1,0 +1,11 @@
+======Controls rifle # of pellets.======
+= Description =
+
+Sets the number of rifle pellets in clip.
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `98` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}
+

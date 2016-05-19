@@ -1,6 +1,9 @@
+<!--
 #summary Sets the starting number of tesla traps.
 #labels Obsolete,D-Cvar
+-->
+======Sets the starting number of tesla traps.======
 
 = Description =
 
-This cvar has been replaced by [asw_flamer_extinguisher_infinite].
+This cvar has been replaced by <!--[asw_flamer_extinguisher_infinite]-->[[asw_flamer_extinguisher_infinite.wiki|asw_flamer_extinguisher_infinite]].

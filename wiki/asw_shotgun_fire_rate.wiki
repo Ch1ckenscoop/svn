@@ -1,10 +1,19 @@
+<!--
 #summary Sets firing rate of the shotgun.
 #labels D-Cvar
+-->
+======Sets firing rate of the shotgun.===
 
 = Description =
 
 Controls firing rate of the shotgun. This cvar is the delay between shots, so 1.0 = 1 shot/sec, and 0.5 = 2 shots/sec, 0.1 = 10 shots/sec... etc.
 
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r94 || `1.0` || [FCVAR_CHEAT] || [Float] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r94 || `1.0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

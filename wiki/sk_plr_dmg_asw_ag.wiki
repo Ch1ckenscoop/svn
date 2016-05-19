@@ -1,10 +1,19 @@
+<!--
 #summary Sets damage of the autogun.
 #labels D-Cvar
+-->
+======Sets damage of the autogun.======
 
 = Description =
 
 Sets damage of the autogun. Note that this does not affect the minigun.
 
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `12.5` || [FCVAR_CHEAT] || [Float] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `12.5` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

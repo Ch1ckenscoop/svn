@@ -1,11 +1,20 @@
+<!--
 #summary Sets the ranger's firing rate.
 #labels D-Cvar
+-->
+======Sets the ranger's firing rate.======
 
 = Description =
 
 Sets the firing rate for rangers' spit attack. 
 
 Note that even if you set this to 0, the ranger still has to play an animation before it can fire. So this value becomes irrelevant below ~1.5.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r259 || `4.0` || [FCVAR_CHEAT] || [Float] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r259 || `4.0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

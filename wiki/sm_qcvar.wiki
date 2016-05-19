@@ -1,13 +1,23 @@
+<!--
 #summary Silent sm_cvar.
 #labels D-Command
+-->
+======Silent sm_cvar.======
 
 = Description =
 
 Acts exactly like `sm_cvar`, except it doesn't print output to the console on success.
 
 = Usage =
-
+<!--
 `sm_qcvar <cvar> <value>`
 
 || *Revision Added* || *[CvarFlags Flags]* ||
 || r364 || [FCVAR_NONE] ||
+-->
+sm_qcvar Cvar Value
+{|
+|| Revision Added || [[CvarFlags.wiki | CvarFlags]]  
+|-
+|| r364 ||  [[FCVAR_NONE.wiki|FCVAR_NONE]] 
+|}

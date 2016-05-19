@@ -1,9 +1,18 @@
+<!--
 #summary Sets the damage of the ranger.
 #labels D-Cvar
+-->
+======Sets the damage of the ranger.======
 
 = Description =
 
 Sets the damage per shot of the ranger spit.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r259 || `12.0` || [FCVAR_CHEAT] || [Float] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r259 || `12.0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

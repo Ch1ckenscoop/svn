@@ -1,9 +1,72 @@
+<!--
 #summary Sets drone jumper color.
 #labels D-Cvar
+-->
+===Sets drone jumper color and scale.===
 
 = Description =
 
+<!--
 Sets the color of jumping drones.
 
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r371 || `255 255 255` || [FCVAR_NONE] || [Color255] ||
+-->
+
+Sets drone jumpers with 3 different colors and percentage of the drone jumpers you want to give these colors. Also Sets scale of the normal  drone jumpers and percentage of the drone jumpers you want to give a custom scale. See [[https://github.com/Ch1ckenscoop/svn/blob/master/server/swarm/cfg/colorscale.cfg|colorscale.cfg]] in folder /AlienSwarmServer/swarm/cfg.
+
+==Sets the color of jumping drones.== 
+======asw_drone_jumper_color====== 
+{|
+|| Revision Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r371 || `255 255 255` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Color255] 
+|}
+
+==Sets a second color for jumping drones.==
+======asw_drone_jumper_color2======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `255 255 255` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Color255] 
+|}
+======asw_drone_jumper_color2_percent======
+Sets the percentage of the jumping drones want to give the second color, sets the value in between 0 - 1. 
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `0` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+==Sets a third color for jumping drones.==
+======asw_drone_jumper_color3======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `255 255 255` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Color255] 
+|}
+
+======asw_drone_jumper_color3_percent======
+Sets the percentage of the jumping drones want to give the third color, sets the value in between 0 - 1. 
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `0` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+==Sets the scale of the jumping drones.==
+======asw_drone_jumper_scalemod======
+Sets the scale of the normal jumping drones.
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+======asw_drone_jumper_scalemod_percent======
+Sets the percentage of the jumping drones want to give a custom scale, sets the value in between 0 - 1.
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}

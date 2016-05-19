@@ -1,9 +1,18 @@
+<!--
 #summary Limits spawn interval.
 #labels D-Cvar
+-->
+======Limits spawn interval.======
 
 = Description =
 
 Prevents any spawners from spawning aliens faster than this value. `0.5` would mean no more than 2 aliens per second, `1.0` is a maximum of 1 alien per second... etc.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r150 || `0` || [FCVAR_NONE] || [Float] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r150 || `0` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}

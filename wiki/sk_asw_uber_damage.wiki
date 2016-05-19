@@ -1,9 +1,18 @@
+<!--
 #summary Controls uber drone damage.
 #labels D-Cvar
+-->
+======Controls uber drone damage.======
 
 = Description =
 
 Damage inflicted by uber drones per swipe.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `15` || [FCVAR_CHEAT] || [Int] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `15` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

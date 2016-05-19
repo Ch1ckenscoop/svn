@@ -1,9 +1,68 @@
+<!--
 #summary Sets boomer color.
 #labels D-Cvar
-
+-->
+===Sets boomer color and scale.===
 = Description =
-
-Sets the color of boomers.
+<!--
+Sets the color of boomers
 
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r371 || `255 255 255` || [FCVAR_NONE] || [Color255] ||
+-->
+Sets Boomers with 3 different colors and percentage of the boomers you want to give these colors. Also Sets scale of the normal  boomers and percentage of the boomers you want to give a custom scale. See [[https://github.com/Ch1ckenscoop/svn/blob/master/server/swarm/cfg/colorscale.cfg|colorscale.cfg]] in folder /AlienSwarmServer/swarm/cfg.
+==Sets the color of boomers.== 
+======asw_boomer_color====== 
+{|
+|| Revision Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r371 || `255 255 255` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Color255] 
+|}
+
+==Sets a second color for boomers.==
+======asw_boomer_color2======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `255 255 255` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Color255] 
+|}
+======asw_boomer_color2_percent======
+Sets the percentage of the boomers want to give the second color, sets the value in between 0 - 1. 
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `0` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+==Sets a third color for boomers.==
+======asw_boomer_color3======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `255 255 255` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Color255] 
+|}
+
+======asw_boomer_color3_percent======
+Sets the percentage of the boomers want to give the third color, sets the value in between 0 - 1. 
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `0` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+==Sets the scale of the boomers.==
+======asw_boomer_scalemod======
+Sets the scale of the normal boomers.
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+======asw_boomer_scalemod_percent======
+Sets the percentage of the boomers want to give a custom scale, sets the value in between 0 - 1.
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}

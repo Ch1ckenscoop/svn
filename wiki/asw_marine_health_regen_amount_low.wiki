@@ -1,9 +1,18 @@
+<!--
 #summary Low health healing amount.
 #labels D-Cvar
+-->
+======Low health healing amount.======
 
 = Description =
 
-Heals marines by this amount when their health is below the value set in [asw_marine_health_regen_threshold].
-
+Heals marines by this amount when their health is below the value set in <!--[asw_marine_health_regen_threshold]-->[[asw_marine_health_regen_threshold.wiki|asw_marine_health_regen_threshold]].
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `10` || [FCVAR_CHEAT] || [Int] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r7 || `10` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

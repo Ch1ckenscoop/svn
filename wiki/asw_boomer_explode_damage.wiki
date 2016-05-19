@@ -1,0 +1,10 @@
+======Set explode damage of the boomer.======
+= Description =
+
+Sets boomer explode damage of the grenades
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `55` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [String] 
+|}

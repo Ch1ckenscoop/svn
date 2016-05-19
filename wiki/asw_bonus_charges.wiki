@@ -1,12 +1,14 @@
+<!--
 #summary Allows control over how many extras a marine starts out with.
 #labels D-Cvar,Obsolete
-
+-->
+======Allows control over how many extras a marine starts out with.======
 = Description =
 
 This cvar has been replaced with a set of cvars to enable specific control over how many extras a marine will start out with.
 
 See the following commands:
-
+<!--
   *[[asw_bonus_charges_damage_amp]
   *[[asw_bonus_charges_elec_armor]
   *[[asw_bonus_charges_flares]
@@ -18,3 +20,17 @@ See the following commands:
   *[[asw_bonus_charges_smart_bomb]
   *[[asw_bonus_charges_stun_grenade]
   *[[asw_bonus_charges_tesla_trap]
+ -->
+*[[asw_bonus_charges_damage_amp.wiki | asw_bonus_charges_damage_amp]]
+*[[asw_bonus_charges_elec_armor.wiki | asw_bonus_charges_elec_armor]]
+*[[asw_bonus_charges_flares.wiki | asw_bonus_charges_flares]]
+*[[asw_bonus_charges_grenades.wiki | asw_bonus_charges_grenades]]
+*[[asw_bonus_charges_grenades_freeze.wiki | asw_bonus_charges_grenades_freeze]]
+*[[asw_bonus_charges_hornets.wiki | asw_bonus_charges_hornets]]
+*[[asw_bonus_charges_mines_fire.wiki | asw_bonus_charges_mines_fire]]
+*[[asw_bonus_charges_mines_laser.wiki | asw_bonus_charges_mines_laser]]
+*[[asw_bonus_charges_smart_bomb.wiki | asw_bonus_charges_smart_bomb]]
+*[[asw_bonus_charges_stun_grenade.wiki | asw_bonus_charges_stun_grenade]]
+*[[asw_bonus_charges_tesla_trap.wiki | asw_bonus_charges_tesla_trap]]
+*[[asw_bonus_charges_rifle_grenade.wiki | asw_bonus_charges_rifle_grenade]]
+*[[asw_bonus_charges_vindicator_grenade.wiki | asw_bonus_charges_vindicator_grenade]]

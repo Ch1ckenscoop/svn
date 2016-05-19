@@ -1,3 +1,4 @@
+<!--
 #labels Deprecated
 *Alien Cvars*
 
@@ -9,3 +10,12 @@
   * [asw_shotgun_fire_rate]
   * [asw_tesla_trap_fr]
   * [sk_plr_fr_asw_ag]
+-->
+======Gameplay Cvars======
+*[[asw_sentry_invincible.wiki|asw_sentry_invincible]]
+
+======Weapon Cvars======
+*[[asw_flamer_freeze_infinite.wiki|asw_flamer_freeze_infinite]]
+*[[asw_shotgun_fire_rate.wiki|asw_shotgun_fire_rate]]
+*[[asw_tesla_trap_fr.wiki|asw_tesla_trap_fr]]
+*[[sk_plr_fr_asw_ag.wiki|sk_plr_fr_asw_ag]]

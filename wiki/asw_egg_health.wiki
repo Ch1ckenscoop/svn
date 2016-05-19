@@ -1,9 +1,18 @@
+<!--
 #summary Sets egg health.
 #labels D-Cvar
+-->
+======Sets egg health.======
 
 = Description =
 
 Sets the health of eggs.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r333 || `50` || [FCVAR_CHEAT] || [Int] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r333 || `50` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

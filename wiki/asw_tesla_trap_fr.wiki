@@ -1,9 +1,18 @@
+<!--
 #summary Sets the firing rate for the tesla trap.
 #labels D-Cvar
+-->
+======Sets the firing rate for the tesla trap.======
 
 = Description =
 
 Sets the firing rate for the tesla trap. Value set is the delay between fires, so default of 0.3 = 3.3333... fires per second, 0.1 (minimum) would be 10/sec.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r91 || `0.3` || [FCVAR_CHEAT] || [Float] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r91 || `0.3` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

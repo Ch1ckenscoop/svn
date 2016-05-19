@@ -1,9 +1,18 @@
+<!--
 #summary Prevents mining laser from using ammo.
 #labels D-Cvar
+-->
+======Prevents mining laser from using ammo.======
 
 = Description =
 
 Prevents mining laser from using ammo.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r271 || `0` || [FCVAR_CHEAT] || [Bool] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r271 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Bool] 
+|}

@@ -1,0 +1,11 @@
+======Sets firing rate of the railgun.======
+
+= Description =
+
+Controls firing rate of the railgun, don't sets firing rate too low to prevent server crash.
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `0.6f` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

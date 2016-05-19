@@ -1,9 +1,18 @@
+<!--
 #summary Sets sniper rifle fire rate.
 #labels D-Cvar
+-->
+======Sets sniper rifle fire rate.======
 
 = Description =
 
 Sets the sniper rifle fire rate.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r247 || `1.2` || [FCVAR_CHEAT] || [Float] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r247 || `1.2` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

@@ -1,9 +1,18 @@
+<!--
 #summary One-sentence summary of this page.
 #labels D-Cvar
+-->
+======One-sentence summary of this page.======
 
 = Description =
 
 Automatically removes laggy prop_ragdolls on map start. Prop_ragdolls use up a hard amount of network bandwidth and are almost impossible to actually notice in the map.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r413 || `1` || [FCVAR_NONE] || [Bool] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r413 || `1` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Bool] 
+|}

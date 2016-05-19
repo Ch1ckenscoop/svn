@@ -130,10 +130,32 @@ if ERRORLEVEL 1 exit 1
     </Bscmake>
     <PostBuildEvent>
       <Message>Publishing to c:\alienswarmserver\swarm\bin\.</Message>
-      <Command>copy ^"$(TargetDir)$(TargetName).dll^" ^"c:\Temp\Swarm\Release_swarm\$(TargetName).dll^""
-copy ^"$(TargetDir)$(TargetName).pdb^" ^"c:\Temp\Swarm\Release_swarm\$(TargetName).pdb^""
-copy ^"$(TargetDir)$(TargetName).dll^" ^"c:\AlienSwarmServer\swarm\bin\$(TargetName).dll^""
-copy ^"$(TargetDir)$(TargetName).pdb^" ^"c:\AlienSwarmServer\swarm\bin\$(TargetName).pdb^""</Command>
+      <Command>rem if exist "F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\." goto ValveStart
+rem mkdir "F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\."
+rem :ValveStart
+rem copy "$(TargetDir)"$(TargetFileName) "F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.\$(TargetFileName)"
+rem if ERRORLEVEL 1 goto BuildEventFailed
+rem if exist "$(TargetDir)"$(TargetName).map copy "$(TargetDir)"$(TargetName).map "F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.\$(TargetName).map"
+rem copy "$(TargetDir)"$(TargetName).pdb "F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.\$(TargetName).pdb"
+rem if ERRORLEVEL 1 goto BuildEventFailed
+rem goto BuildEventOK
+rem :BuildEventFailed
+rem echo *** ERROR! PostBuildStep FAILED for $(ProjectName)! EXE or DLL is probably running. ***
+rem exit 1
+rem :BuildEventOK
+if not exist "c:\Temp\Swarm\Release_swarm\." goto BuildEventOK
+if exist "c:\Temp\Swarm\Release_swarm\." copy "$(TargetDir)$(TargetFileName)" "c:\Temp\Swarm\Release_swarm\$(TargetFileName)"
+copy "$(TargetDir)$(TargetName).pdb" "c:\Temp\Swarm\Release_swarm\$(TargetName).pdb"
+if ERRORLEVEL 1 goto BuildEventFailed
+if not exist "c:\AlienSwarmServer\Swarm\bin\." goto BuildEventFailed
+if exist "c:\AlienSwarmServer\Swarm\bin\." copy "$(TargetDir)$(TargetFileName)" "c:\AlienSwarmServer\Swarm\bin\$(TargetName)"
+copy "$(TargetDir)$(TargetName).pdb" "c:\AlienSwarmServer\Swarm\bin\$(TargetName).pdb"
+if ERRORLEVEL 1 goto BuildEventFailed
+goto BuildEventOK
+:BuildEventFailed
+	  echo *** ERROR! PostBuildStep FAILED for $(ProjectName)! EXE or DLL is probably running. ***
+	  exit 1
+	  :BuildEventOK</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -215,10 +237,32 @@ if ERRORLEVEL 1 exit 1
     </Bscmake>
     <PostBuildEvent>
       <Message>Publishing to c:AlienSwarmServer\swarm\bin\.</Message>
-      <Command>copy ^"$(TargetDir)$(TargetName).dll^" ^"c:\Temp\Swarm\Release_swarm\$(TargetName).dll^""
-copy ^"$(TargetDir)$(TargetName).pdb^" ^"c:\Temp\Swarm\Release_swarm\$(TargetName).pdb^""
-copy ^"$(TargetDir)$(TargetName).dll^" ^"c:\AlienSwarmServer\swarm\bin\$(TargetName).dll^""
-copy ^"$(TargetDir)$(TargetName).pdb^" ^"c:\AlienSwarmServer\swarm\bin\$(TargetName).pdb^""</Command>
+      <Command>rem if exist "F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\." goto ValveStart
+rem mkdir "F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\."
+rem :ValveStart
+rem copy "$(TargetDir)"$(TargetFileName) "F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.\$(TargetFileName)"
+rem if ERRORLEVEL 1 goto BuildEventFailed
+rem if exist "$(TargetDir)"$(TargetName).map copy "$(TargetDir)"$(TargetName).map "F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.\$(TargetName).map"
+rem copy "$(TargetDir)"$(TargetName).pdb "F:\Steam\SteamApps\sourcemods\ch1ckenscoop\bin\.\$(TargetName).pdb"
+rem if ERRORLEVEL 1 goto BuildEventFailed
+rem goto BuildEventOK
+rem :BuildEventFailed
+rem echo *** ERROR! PostBuildStep FAILED for $(ProjectName)! EXE or DLL is probably running. ***
+rem exit 1
+rem :BuildEventOK
+if not exist "c:\Temp\Swarm\Release_swarm\." goto BuildEventOK
+if exist "c:\Temp\Swarm\Release_swarm\." copy "$(TargetDir)$(TargetFileName)" "c:\Temp\Swarm\Release_swarm\$(TargetFileName)"
+copy "$(TargetDir)$(TargetName).pdb" "c:\Temp\Swarm\Release_swarm\$(TargetName).pdb"
+if ERRORLEVEL 1 goto BuildEventFailed
+if not exist "c:\AlienSwarmServer\Swarm\bin\." goto BuildEventFailed
+if exist "c:\AlienSwarmServer\Swarm\bin\." copy "$(TargetDir)$(TargetFileName)" "c:\AlienSwarmServer\Swarm\bin\$(TargetName)"
+copy "$(TargetDir)$(TargetName).pdb" "c:\AlienSwarmServer\Swarm\bin\$(TargetName).pdb"
+if ERRORLEVEL 1 goto BuildEventFailed
+goto BuildEventOK
+:BuildEventFailed
+	  echo *** ERROR! PostBuildStep FAILED for $(ProjectName)! EXE or DLL is probably running. ***
+	  exit 1
+	  :BuildEventOK</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

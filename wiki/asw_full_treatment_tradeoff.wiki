@@ -1,9 +1,18 @@
+<!--
 #summary Adds more aliens in syntek_hospital.
 #labels D-Cvar
+-->
+======Adds more aliens in syntek_hospital.======
 
 = Description =
 
 Removes all env_sprite entities in Full Treatment to allow for more aliens.
-
+<!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r297 || `1` || [FCVAR_NONE] || [Bool] ||
+-->
+{|
+|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r297 || `1` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Bool] 
+|}

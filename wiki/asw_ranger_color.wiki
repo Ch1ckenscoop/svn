@@ -1,9 +1,74 @@
+<!--
 #summary Sets ranger color.
 #labels D-Cvar
+-->
+===Sets ranger color and scale.===
 
 = Description =
 
-Sets the color of rangers.
+<!--
+Sets the color of ranges.
 
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r371 || `255 255 255` || [FCVAR_NONE] || [Color255] ||
+-->
+
+Sets rangers with 3 different colors and percentage of the rangers you want to give these colors. Also Sets scale of the normal  rangers and percentage of the rangers you want to give a custom scale. See [[https://github.com/Ch1ckenscoop/svn/blob/master/server/swarm/cfg/colorscale.cfg|colorscale.cfg]] in folder /AlienSwarmServer/swarm/cfg.
+
+==Sets the color of rangers.== 
+======asw_ranger_color====== 
+{|
+|| Revision Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| r371 || `255 255 255` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Color255] 
+|}
+
+==Sets a second color for rangers.==
+======asw_ranger_color2======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `255 255 255` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Color255] 
+|}
+======asw_ranger_color2_percent======
+Sets the percentage of the rangers want to give the second color, sets the value in between 0 - 1. 
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `0` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+==Sets a third color for rangers.==
+======asw_ranger_color3======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `255 255 255` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Color255] 
+|}
+
+======asw_ranger_color3_percent======
+Sets the percentage of the rangers want to give the third color, sets the value in between 0 - 1. 
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `0` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+==Sets the scale of the rangers.==
+======asw_ranger_scalemod======
+Sets the scale of the normal rangers.
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+======asw_ranger_scalemod_percent======
+Sets the percentage of the rangers want to give a custom scale, sets the value in between 0 - 1.
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}
+
+

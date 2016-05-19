@@ -1,6 +1,9 @@
+<!--
 #summary Sets the red component of the uber drones' color.
 #labels D-Cvar,Obsolete
+-->
+======Sets the red component of the uber drones' color.======
 
 = Description =
 
-Sets the red component of the uber drones' color. This cvar has been replaced by [asw_drone_uber_color].
+Sets the red component of the uber drones' color. This cvar has been replaced by <!--[asw_drone_uber_color]-->[[asw_drone_uber_color.wiki|asw_drone_uber_color]].

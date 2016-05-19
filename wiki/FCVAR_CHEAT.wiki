@@ -1,3 +1,6 @@
+<!--
 #summary Cheat cvar.
+-->
+======Cheat cvar.======
 
 A cvar that has this flag requires [sv_cheats] 1 or [sm_cvar] to change.
