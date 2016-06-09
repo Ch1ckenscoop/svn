@@ -240,25 +240,38 @@ int	CASW_Alien::ShouldTransmit( const CCheckTransmitInfo *pInfo )
 			if (pMarineResource)
 			{
 				pMarine = pMarineResource->GetMarineEntity();
-				if (pMarine && pMarine->GetHealth() > 0)
+				//softcopy: if one of the marines has left the game or died, network culling would stop working. 
+				//			it caused return FL_EDICT_ALWAYS, and won't run 'marineInfo marineEdict'.
+				//          now alien network culling should work.
+				//if (pMarine && pMarine->GetHealth() > 0)
+				//{
+				//	if (pMarineResource->GetCommander())
+				//	{
+				//		marineEdicts[i].playerEdict = pMarineResource->GetCommander()->edict();
+				//		marineEdicts[i].fl_MarineDist = pMarine->GetAbsOrigin().DistTo(this->GetAbsOrigin());
+				//	}
+				//}
+				//else
+				//{
+				//	return FL_EDICT_ALWAYS;
+				//}
+				if (pMarine)
 				{
-					//softcopy:test prevent crashes on "marineEdicts[i].playerEdict = pMarineResource->GetCommander()->edict()"
-					//marineEdicts[i].playerEdict = pMarineResource->GetCommander()->edict();
-					//marineEdicts[i].fl_MarineDist = pMarine->GetAbsOrigin().DistTo(this->GetAbsOrigin());
-					if (pMarineResource->GetCommander())
+					if (pMarine->GetHealth() > 0)
 					{
 						marineEdicts[i].playerEdict = pMarineResource->GetCommander()->edict();
 						marineEdicts[i].fl_MarineDist = pMarine->GetAbsOrigin().DistTo(this->GetAbsOrigin());
 					}
-				}
-				else
-				{
-					return FL_EDICT_ALWAYS;
+					else
+					{
+						return FL_EDICT_ALWAYS;
+					}
 				}
 			}
 		}
 
 		marineInfo marineEdict;
+		marineEdict.fl_MarineDist = 0;	//softcopy: init for "warning C4701: potentially uninitialized local variable 'marineEdict' used"
 
 		for (int i = 0; i < ASW_MAX_MARINE_RESOURCES; i++)
 		{

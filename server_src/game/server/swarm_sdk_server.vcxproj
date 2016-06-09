@@ -148,7 +148,7 @@ if exist "c:\Temp\Swarm\Release_swarm\." copy "$(TargetDir)$(TargetFileName)" "c
 copy "$(TargetDir)$(TargetName).pdb" "c:\Temp\Swarm\Release_swarm\$(TargetName).pdb"
 if ERRORLEVEL 1 goto BuildEventFailed
 if not exist "c:\AlienSwarmServer\Swarm\bin\." goto BuildEventFailed
-if exist "c:\AlienSwarmServer\Swarm\bin\." copy "$(TargetDir)$(TargetFileName)" "c:\AlienSwarmServer\Swarm\bin\$(TargetName)"
+if exist "c:\AlienSwarmServer\Swarm\bin\." copy "$(TargetDir)$(TargetFileName)" "c:\AlienSwarmServer\Swarm\bin\$(TargetFileName)"
 copy "$(TargetDir)$(TargetName).pdb" "c:\AlienSwarmServer\Swarm\bin\$(TargetName).pdb"
 if ERRORLEVEL 1 goto BuildEventFailed
 goto BuildEventOK
@@ -255,7 +255,7 @@ if exist "c:\Temp\Swarm\Release_swarm\." copy "$(TargetDir)$(TargetFileName)" "c
 copy "$(TargetDir)$(TargetName).pdb" "c:\Temp\Swarm\Release_swarm\$(TargetName).pdb"
 if ERRORLEVEL 1 goto BuildEventFailed
 if not exist "c:\AlienSwarmServer\Swarm\bin\." goto BuildEventFailed
-if exist "c:\AlienSwarmServer\Swarm\bin\." copy "$(TargetDir)$(TargetFileName)" "c:\AlienSwarmServer\Swarm\bin\$(TargetName)"
+if exist "c:\AlienSwarmServer\Swarm\bin\." copy "$(TargetDir)$(TargetFileName)" "c:\AlienSwarmServer\Swarm\bin\$(TargetFileName)"
 copy "$(TargetDir)$(TargetName).pdb" "c:\AlienSwarmServer\Swarm\bin\$(TargetName).pdb"
 if ERRORLEVEL 1 goto BuildEventFailed
 goto BuildEventOK
