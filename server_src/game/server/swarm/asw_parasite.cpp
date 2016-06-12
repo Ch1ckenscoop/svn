@@ -740,7 +740,8 @@ void CASW_Parasite::NormalTouch( CBaseEntity* pOther )
 bool CASW_Parasite::CheckInfestTarget( CBaseEntity *pOther )
 {
 	CASW_Marine* pMarine = CASW_Marine::AsMarine( pOther );
-	if ( pOther )
+	//if ( pOther )		//softcopy: prevent crashes on pMarine->IsElectrifiedArmorActive()
+	if ( pMarine )
 	{
 		// if marine has electrified armour on, that protects him from infestation
 		if ( pMarine->IsElectrifiedArmorActive() )

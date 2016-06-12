@@ -245,11 +245,8 @@ int	CASW_Alien::ShouldTransmit( const CCheckTransmitInfo *pInfo )
 				//          now alien network culling should work.
 				//if (pMarine && pMarine->GetHealth() > 0)
 				//{
-				//	if (pMarineResource->GetCommander())
-				//	{
 				//		marineEdicts[i].playerEdict = pMarineResource->GetCommander()->edict();
 				//		marineEdicts[i].fl_MarineDist = pMarine->GetAbsOrigin().DistTo(this->GetAbsOrigin());
-				//	}
 				//}
 				//else
 				//{
@@ -257,7 +254,8 @@ int	CASW_Alien::ShouldTransmit( const CCheckTransmitInfo *pInfo )
 				//}
 				if (pMarine)
 				{
-					if (pMarine->GetHealth() > 0)
+					//prevent crashes on "marineEdicts[i].playerEdict = pMarineResource->GetCommander()->edict()"
+					if (pMarine->GetHealth() > 0 && pMarineResource->GetCommander())
 					{
 						marineEdicts[i].playerEdict = pMarineResource->GetCommander()->edict();
 						marineEdicts[i].fl_MarineDist = pMarine->GetAbsOrigin().DistTo(this->GetAbsOrigin());
