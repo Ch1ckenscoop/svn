@@ -20,33 +20,29 @@ After the checkout is complete, click OK again.
 Double click steamcmd.exe in the unziped folder, SteamCMD will automatically update and enter you in to a Steam >prompt
   
   * Type 'login yoursteamuserid' at the Steam >prompt. 
-  * Input  yoursteampassword  when password has prompted. 
+  * Enter  yoursteampassword  when prompt for password. 
 
-After successfully logged in, it will prompt to input 'steam guard code' which has sent to you by Steam, check your Steam email account to get the code.
+After successfully logged in, it will prompt for enter 'steam guard code', check your Steam email account to get this code.
 
-Make sure the 'steam guard code' has input correctly, the 'license info...ok' will be prompted.
+Make sure the 'steam guard code' has been entered correctly, the 'license info...ok' will be prompted.
 
 Type the following two commands at the Steam >prompt:
   
   * force_install_dir c:/AlienSwarmServer/   
   * app_update 635 validate
 
-Make sure downloading 100% completion with "Success! App '635' fully installed."
+Make sure downloading 100% completion with message "Success! App '635' fully installed."
   
-  * If any assertion failed or error found, delete AlienSwarmServer folder and steamcmd folder,
-  * create AlienSwarmServer folder and unzip steamcmd.zip again, 
-  * restart from the step "Right click on the folder and select 'SVN Checkout'"
+  * If any assertion failed or error found:
+  *   1.delete AlienSwarmServer folder and steamcmd folder,
+  *   2.create AlienSwarmServer folder and unzip steamcmd.zip again, 
+  *   3.restart from step "Right click on the folder and select 'SVN Checkout'".
 
   * Type 'quit' to exit Steamcmd.
 
 Right click on the AlienSwarmServer folder and click "TortoiseSVN > Revert..."
 
 Tick the box for "Select all" and click OK.
-
-Unzip city17_as.rar(part1-3) in folder '/AlienSwarmServer/swarm/addons/' 
-
-  * copy city17_as.vpk to '/AlienSwarmServer/swarm/addons/'
-
 
 Good job! You've installed the Ch1ckensCoop Alien Swarm Server and 
 can now run it by double-clicking the "Start Server" batch file in your AlienSwarmServer folder.

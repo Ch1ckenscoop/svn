@@ -83,8 +83,11 @@ Flags are as follows:
   * Beta Drone: 8192
   * Beta Shieldbug: 16384
   * Beta Harvester: 32768
+  * Beta Buzzer: 65536
+  * Beta Parasite: 131072
+  * Beta Mortar: 262144
 
-All aliens would be `65535`. So if you wanted to spawn all types of drones and rangers, the equation would be this:
+All aliens would be `524287`. So if you wanted to spawn all types of drones and rangers, the equation would be this:
 
 `1 + 16 + 4096 + 512 = 4625`
 <!--
@@ -92,9 +95,9 @@ All aliens would be `65535`. So if you wanted to spawn all types of drones and r
 || r326 || `65535` || [FCVAR_CHEAT] || [Int] ||
 -->
 {|
-|| Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
 |-
-|| r326 || `65535` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|| 2.0 || `524287` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
 |}
 
 = Alien Health Cvars =
@@ -221,6 +224,22 @@ All cvars in this category do the same thing: Set the minimum or maximum health 
 |}
 ----
 
+== Beta Buzzers ==
+
+====== asw_hordemode_buzzer_beta_health_max ======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `120` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}
+====== asw_hordemode_buzzer_beta_health_min ======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `60` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}
+----
+
 == Parasites ==
 
 ====== asw_hordemode_parasite_health_max ======
@@ -242,6 +261,22 @@ All cvars in this category do the same thing: Set the minimum or maximum health 
 || Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
 |-
 || r326 || `20` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}
+----
+
+== Beta Parasites ==
+
+====== asw_hordemode_parasite_beta_health_max ======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `35` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}
+====== asw_hordemode_parasite_beta_health_min ======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `20` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
 |}
 ----
 
@@ -461,6 +496,22 @@ All cvars in this category do the same thing: Set the minimum or maximum health 
 |}
 ----
 
+== Beta Mortars ==
+
+====== asw_hordemode_mortar_beta_health_max ======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `425` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}
+====== asw_hordemode_mortar_beta_health_min ======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `300` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}
+----
+
 == Shaman ==
 
 ====== asw_hordemode_shaman_health_max ======
@@ -483,6 +534,8 @@ All cvars in this category do the same thing: Set the minimum or maximum health 
 |-
 || r326 || `45` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
 |}
+
+
 = Alien Maximums/Minimums =
 
 All cvars in this category do the same thing: Set the minimum or maximum number of an alien to spawn. The number to spawn is chosen as a random number between these two cvars.
@@ -607,6 +660,22 @@ All cvars in this category do the same thing: Set the minimum or maximum number 
 |}
 ----
 
+== Beta Buzzers ==
+
+====== asw_hordemode_buzzer_beta_max ======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}
+====== asw_hordemode_buzzer_beta_min ======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}
+----
+
 == Parasites ==
 
 ====== asw_hordemode_parasite_max ======
@@ -628,6 +697,22 @@ All cvars in this category do the same thing: Set the minimum or maximum number 
 || Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
 |-
 || r326 || `1` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}
+----
+
+== Beta Parasites ==
+
+====== asw_hordemode_parasite_beta_max ======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}
+====== asw_hordemode_parasite_beta_min ======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
 |}
 ----
 
@@ -844,6 +929,22 @@ All cvars in this category do the same thing: Set the minimum or maximum number 
 || Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
 |-
 || r326 || `1` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}
+----
+
+== Beta Mortars ==
+
+====== asw_hordemode_mortar_beta_max ======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}
+====== asw_hordemode_mortar_beta_min ======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
 |}
 ----
 
