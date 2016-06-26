@@ -27,6 +27,7 @@ ConVar asw_sentry_infinite_ammo( "asw_sentry_infinite_ammo", "0", FCVAR_CHEAT | 
 //softcopy: 
 ConVar asw_sentry_assemble_speed("asw_sentry_assemble_speed", "0", FCVAR_CHEAT, "default 0=normal, Sets speed of sentry assemble for all marines.",true,1,true,10);  
 ConVar asw_sentry_disassemble_speed("asw_sentry_disassemble_speed", "2", FCVAR_CHEAT, "default=2, Sets sentry disassemble speed.",true,0,true,2);
+ConVar asw_weapons_attach("asw_weapons_attach", "0", FCVAR_CHEAT, "Sets 1 to disable ammo/sentry attaching to weapon cheats");
 extern ConVar asw_weapon_disassemble_speed;
 
 LINK_ENTITY_TO_CLASS( asw_sentry_base, CASW_Sentry_Base );
@@ -98,8 +99,14 @@ void CASW_Sentry_Base::Spawn( void )
 
 	// check for attaching to elevators
 	trace_t	tr;
-	UTIL_TraceLine( GetAbsOrigin() + Vector(0, 0, 2),
-					GetAbsOrigin() - Vector(0, 0, 32), MASK_SOLID, this, COLLISION_GROUP_NONE, &tr );
+	//softcopy: controls sentry attaching to weapon cheat
+	//UTIL_TraceLine( GetAbsOrigin() + Vector(0, 0, 2),
+	//				GetAbsOrigin() - Vector(0, 0, 32), MASK_SOLID, this, COLLISION_GROUP_NONE, &tr );
+	int CollideGroup = COLLISION_GROUP_NONE;
+	if (asw_weapons_attach.GetBool())
+		CollideGroup = ASW_COLLISION_GROUP_PASSABLE;
+	UTIL_TraceLine(GetAbsOrigin()+Vector(0,0,2), GetAbsOrigin()-Vector(0,0,32), MASK_SOLID, this, CollideGroup, &tr);
+	
 	if ( tr.fraction < 1.0f && tr.m_pEnt && !tr.m_pEnt->IsWorld() && !tr.m_pEnt->IsNPC() )
 	{
 		SetParent( tr.m_pEnt );

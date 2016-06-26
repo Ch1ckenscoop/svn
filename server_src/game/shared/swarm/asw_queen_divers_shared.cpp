@@ -32,7 +32,7 @@ PRECACHE_WEAPON_REGISTER(asw_queen_divers);
 
 #define ASW_QUEEN_DIVER_MODEL "models/swarm/Queen/QueenDivers.mdl"
 extern ConVar asw_queen_model_scale;	//Ch1ckensCoop: Allow scaling the queen and all of her related stuffs
-
+extern ConVar asw_queen_scalemod;		//softcopy:
 #ifndef CLIENT_DLL
 
 //---------------------------------------------------------
@@ -82,7 +82,14 @@ void CASW_Queen_Divers::Spawn()
 	SetThink( &CASW_Queen_Divers::AnimThink );
 	SetNextThink( gpGlobals->curtime + 0.1f);
 
-	SetModelScale(asw_queen_model_scale.GetFloat(), 0.0f);	//Ch1ckensCoop: Allow scaling the queen and all of her related stuffs
+	//softcopy:
+	//SetModelScale(asw_queen_model_scale.GetFloat(), 0.0f);	//Ch1ckensCoop: Allow scaling the queen and all of her related stuffs
+	//if old entity asw_queen_model_scale is used, new entity asw_queen_scalemod will be overwritten for compatibility
+	if (asw_queen_model_scale.GetFloat() != 1)	
+		SetModelScale(asw_queen_model_scale.GetFloat(), 0.0f);
+	else
+		SetModelScale(asw_queen_scalemod.GetFloat(), 0.0f);
+
 }
 
 void CASW_Queen_Divers::Precache()

@@ -22,6 +22,8 @@
 
 #define AMMO_DROP_MODEL "models/items/Ammobag/AmmoBag.mdl"
 
+extern ConVar asw_weapons_attach;	//softcopy:
+
 LINK_ENTITY_TO_CLASS( asw_ammo_drop, CASW_Ammo_Drop );
 PRECACHE_WEAPON_REGISTER( asw_ammo_drop );
 
@@ -68,13 +70,19 @@ void CASW_Ammo_Drop::Spawn( void )
 
 	// check for attaching to elevators
 	trace_t	tr;
-	UTIL_TraceLine( GetAbsOrigin() + Vector(0, 0, 2),
-					GetAbsOrigin() - Vector(0, 0, 32), MASK_SOLID, this, COLLISION_GROUP_NONE, &tr );
+	//softcopy: controls ammo attaching to weapon cheat
+	//UTIL_TraceLine( GetAbsOrigin() + Vector(0, 0, 2),
+	//				GetAbsOrigin() - Vector(0, 0, 32), MASK_SOLID, this, COLLISION_GROUP_NONE, &tr );
+	int CollideGroup = COLLISION_GROUP_NONE;
+	if (asw_weapons_attach.GetBool())
+		CollideGroup = ASW_COLLISION_GROUP_PASSABLE;
+	UTIL_TraceLine(GetAbsOrigin()+Vector(0,0,2), GetAbsOrigin()-Vector(0,0,32), MASK_SOLID, this, CollideGroup, &tr);
+
 	if ( tr.fraction < 1.0f && tr.m_pEnt && !tr.m_pEnt->IsWorld() && !tr.m_pEnt->IsNPC() )
 	{
 		SetParent( tr.m_pEnt );
 	}
-
+	
 	m_iAmmoUnitsRemaining = DEFAULT_AMMO_DROP_UNITS;
 }
 

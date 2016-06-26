@@ -109,7 +109,7 @@ ConVar asw_queen_force_spit("asw_queen_force_spit", "0", FCVAR_CHEAT, "Set to 1 
 ConVar asw_queen_override_health("asw_queen_override_health", "0", FCVAR_CHEAT, "If non-zero, set queen health to this no matter difficulty level.");	//Used by hordemode.
 
 //Ch1ckensCoop: Smaller queen model
-ConVar asw_queen_model_scale("asw_queen_model_scale", "1.0", FCVAR_CHEAT, "Sets the model scale for the queen.");
+ConVar asw_queen_model_scale("asw_queen_model_scale", "1.0", FCVAR_CHEAT, "Sets the model scale for the queen."); //softcopy: decommission, use asw_queen_scalemod instead 
 //Ch1ckensCoop: Customizable parasite numbers
 ConVar asw_queen_max_parasites("asw_queen_max_parasites", "5", FCVAR_CHEAT, "Sets the maximum number of parasites that a queen can spawn.");
 //Ch1ckensCoop: Fix for queen attacking more than once per swipe. This appears to be intended behavior however, so I'll just make it a cvar.
@@ -120,7 +120,7 @@ ConVar asw_queen_color2("asw_queen_color2", "255 255 255", FCVAR_NONE, "Sets the
 ConVar asw_queen_color2_percent("asw_queen_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the queen you want to give the color",true,0,true,1);
 ConVar asw_queen_color3("asw_queen_color3", "255 255 255", FCVAR_NONE, "Sets the color of parasites.");
 ConVar asw_queen_color3_percent("asw_queen_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the queen you want to give the color",true,0,true,1);
-ConVar asw_queen_scalemod("asw_queen_scalemod", "1.0", FCVAR_NONE, "Sets the scale of normal queens.");
+ConVar asw_queen_scalemod("asw_queen_scalemod", "0.6", FCVAR_NONE, "Sets the scale of normal queens.");
 ConVar asw_queen_scalemod_percent("asw_queen_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal queens you want to scale.",true,0,true,1);
 ConVar asw_queen_touch_damage("asw_queen_touch_damage", "5", FCVAR_CHEAT, "set damage caused by queen on touch.");
 ConVar asw_queen_ignite("asw_queen_ignite", "0", FCVAR_CHEAT, "Sets 1=melee, 2=touch, 3=All, ignite marine on queen melee/touch.");
@@ -202,10 +202,17 @@ void CASW_Queen::Spawn( void )
 		
 	m_hRetreatSpot = gEntList.FindEntityByClassname( NULL, "asw_queen_retreat_spot" );
 	
-	//Ch1ckensCoop: Set model scale
-	float fScale = asw_queen_model_scale.GetFloat();
 	//softcopy: color scale
+	//Ch1ckensCoop: Set model scale
+	//float fScale = asw_queen_model_scale.GetFloat();
 	//SetModelScale(fScale, 0.0f);
+	float fScale = asw_queen_scalemod.GetFloat();
+	//if old entity asw_queen_model_scale is used, new entity asw_queen_scalemod will be overwritten for compatibility
+	if (asw_queen_model_scale.GetFloat() != 1)	
+	{
+		fScale = asw_queen_model_scale.GetFloat();
+		asw_queen_scalemod.SetValue(fScale);
+	}
 	alienLabel = "queen";
 	SetColorScale(alienLabel);
 
@@ -679,27 +686,19 @@ void CASW_Queen::StartTouch( CBaseEntity *pOther )
 		m_fLastTouchHurtTime = gpGlobals->curtime;
 	}
 }
-//softcopy:
 void CASW_Queen::SetColorScale(const char *alienLabel)
 {
 	BaseClass::SetColorScale(alienLabel);
-	
-	//avoid duplicated queen scale entities
-	float fScale = asw_queen_model_scale.GetFloat();
-	if (asw_queen_scalemod.GetFloat() < asw_queen_model_scale.GetFloat())
-		SetModelScale(fScale, 0.0f);
-
 }
-//softcopy:
 void CASW_Queen::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
 {
 	BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);
 }
-//softcopy:
 void CASW_Queen::MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes)
 {
 	BaseClass::MarineExplode(pMarine, alienLabel, damageTypes);
 }
+
 
 bool CASW_Queen::ShouldGib( const CTakeDamageInfo &info )
 {
