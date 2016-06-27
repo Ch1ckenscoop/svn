@@ -71,7 +71,7 @@
 	"10"
 	{
 		"type"		"S"
-		"text"		"Have an idea? Found a bug?\nPost it at ch1ckenscoop.googlecode.com!"
+		"text"		"Have an idea? Found a bug?\nPost it at ch1ckenscoop website"
 	}	
 	"11"
 	{
