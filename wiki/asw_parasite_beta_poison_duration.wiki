@@ -1,0 +1,9 @@
+======Controls beta parasite posion duration ======
+= Description =
+
+Sets beta parasite posion duration to marine.
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.1.8 || `2` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

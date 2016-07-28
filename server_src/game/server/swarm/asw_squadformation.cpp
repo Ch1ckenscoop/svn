@@ -21,6 +21,7 @@ ConVar asw_follow_hint_debug( "asw_follow_hint_debug", "0", FCVAR_CHEAT );
 ConVar asw_follow_velocity_predict( "asw_follow_velocity_predict", "0.3", FCVAR_CHEAT, "Marines travelling in diamond follow formation will predict their leader's movement ahead by this many seconds" );
 ConVar asw_follow_threshold( "asw_follow_threshold", "40", FCVAR_CHEAT, "Marines in diamond formation will move after leader has moved this much" );
 ConVar asw_squad_debug( "asw_squad_debug", "1", FCVAR_CHEAT, "Draw debug overlays for squad movement" );
+extern ConVar asw_boomer_explode_radius;	//softcopy:
 
 #define OUT_OF_BOOMER_BOMB_RANGE FLT_MAX
 
@@ -352,11 +353,12 @@ Vector CASW_SquadFormation::GetLdrAnglMatrix( const Vector &origin, const QAngle
 float GetClosestBoomerBlobDistSqr( const Vector &vecPosition )
 {
 	float flClosestBoomerBlobDistSqr = OUT_OF_BOOMER_BOMB_RANGE;
+	const float flExplosiveRadius = asw_boomer_explode_radius.GetFloat();	//softcopy: match boomer blob radius with cvar
 
 	for( int iBoomerBlob = 0; iBoomerBlob < g_aExplosiveProjectiles.Count(); iBoomerBlob++ )
 	{
  		CBaseEntity *pExplosive = g_aExplosiveProjectiles[ iBoomerBlob ];
-		const float flExplosiveRadius = 240.0f;	// bad hardcoded to match boomer blob radius
+		//const float flExplosiveRadius = 240.0f;	// bad hardcoded to match boomer blob radius	//softcopy:
 
 		float flDistSqr = pExplosive->GetAbsOrigin().DistToSqr( vecPosition );
 		if( flDistSqr < Square( flExplosiveRadius ) && flDistSqr < flClosestBoomerBlobDistSqr )

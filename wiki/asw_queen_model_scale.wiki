@@ -6,7 +6,7 @@
 
 = Description =
 
-Controls the model scale for the queen, and adjusts hull accordingly.
+Controls the model scale for the queen, and adjusts hull accordingly. This cvar has been replaced by [[asw_queen_scalemod.wiki|asw_queen_scalemod]].
 <!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `1.0` || [FCVAR_CHEAT] || [Float] ||

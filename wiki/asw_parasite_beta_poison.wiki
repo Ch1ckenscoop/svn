@@ -1,0 +1,9 @@
+======Enables beta parasite posion ======
+= Description =
+
+Sets beta parasite posion to marine.
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.1.8 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Bool] 
+|}

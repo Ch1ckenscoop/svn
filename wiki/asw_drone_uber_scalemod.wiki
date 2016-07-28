@@ -1,0 +1,11 @@
+======Sets uber drones' model scale.======
+
+= Description =
+
+Adjusts the model scale for the uber drones.
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki|CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [Float] 
+|}

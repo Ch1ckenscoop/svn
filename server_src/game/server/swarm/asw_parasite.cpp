@@ -2,7 +2,7 @@
 
 #include "cbase.h"
 #include "asw_parasite.h"
-#include "asw_shareddefs.h"           //softcopy:
+
 #include "asw_marine.h"
 #include "te_effect_dispatch.h"
 #include "npc_bullseye.h"
@@ -18,6 +18,10 @@
 #include "asw_achievements.h"
 #include "asw_fx_shared.h"
 #include "asw_marine_resource.h"
+//softcopy:
+#include "asw_shareddefs.h"           
+#include "particle_parse.h" 
+
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -62,6 +66,8 @@ ConVar asw_parasite_beta_scalemod_percent("asw_parasite_beta_scalemod_percent", 
 ConVar asw_old_parasite( "asw_old_parasite", "0", FCVAR_CHEAT, "Set 0=parasite, 1=beta parasite, 2=random all.");
 ConVar asw_parasite_ignite("asw_parasite_ignite", "0", FCVAR_CHEAT, "set 1=parasite,2=beta parasite,3=All, ignite marine on touch.");
 ConVar asw_parasite_defanged_ignite("asw_parasite_defanged_ignite", "0", FCVAR_CHEAT, "Ignite marine by defanged parasite.");
+ConVar asw_parasite_beta_poison("asw_parasite_beta_poison", "0", FCVAR_CHEAT, "Set 1 enable poison blur to marine.");
+ConVar asw_parasite_beta_poison_duration("asw_parasite_beta_poison_duration", "2", FCVAR_CHEAT, "Set 1 - 10, poison blur duration.",true,0,true,10);
 extern ConVar asw_debug_alien_ignite;
 
 extern ConVar asw_debug_alien_damage;
@@ -268,8 +274,10 @@ CASW_Parasite::~CASW_Parasite()
 void CASW_Parasite::Precache( void )
 {	
 	
-	PrecacheModel( SWARM_BETA_PARASITE_MODEL );		//softcopy:
 	PrecacheModel( SWARM_PARASITE_MODEL );
+	//softcopy:
+	PrecacheModel( SWARM_BETA_PARASITE_MODEL );		
+	PrecacheParticleSystem( "barrel_rad_gas_jet" );
 
 	PrecacheScriptSound("ASW_Parasite.Death");
 	PrecacheScriptSound("ASW_Parasite.Attack");
@@ -740,6 +748,7 @@ void CASW_Parasite::NormalTouch( CBaseEntity* pOther )
 bool CASW_Parasite::CheckInfestTarget( CBaseEntity *pOther )
 {
 	CASW_Marine* pMarine = CASW_Marine::AsMarine( pOther );
+	
 	//if ( pOther )		//softcopy: prevent crashes on pMarine->IsElectrifiedArmorActive()
 	if ( pMarine )
 	{
@@ -884,6 +893,37 @@ void CASW_Parasite::InfestMarine(CASW_Marine* pMarine)
 			{
 				if (!Q_strcmp(m_pszAlienModelName, SWARM_BETA_PARASITE_MODEL))
 					MarineIgnite(pMarine, info, alienLabel, damageTypes);
+			}
+		}
+		if (asw_parasite_beta_poison.GetBool())	//beta parasite infest & poison blur
+		{
+			CTakeDamageInfo info( this, this, 0, DMG_INFEST | DMG_BLURPOISON );
+			if ((info.GetAttacker() && info.GetAttacker()->Classify() != CLASS_ASW_PARASITE_DEFANGED) && (info.GetAttacker() && info.GetAttacker()->Classify() !=CLASS_ASW_PARASITE))
+			{
+#ifdef GAME_DLL
+				bool bLagComp = false;
+#endif
+				QAngle ang(0,0,0);
+				Vector dir = info.GetDamagePosition() - WorldSpaceCenter();
+				dir.z = 0;
+				VectorNormalize(dir);
+				ang[YAW] = UTIL_VecToYaw(dir);
+				DispatchParticleEffect( "barrel_rad_gas_jet", WorldSpaceCenter(), ang, PATTACH_CUSTOMORIGIN_FOLLOW, this );	//add gas jet effect
+#ifdef GAME_DLL
+				if ( bLagComp )
+					CASW_Lag_Compensation::FinishLagCompensation();	// undo lag compensation if we need to
+#endif
+				float duration = asw_parasite_beta_poison_duration.GetFloat();
+				if ( duration > 0 && duration <= 10)
+				{
+#ifdef GAME_DLL	
+					pMarine->GetMarineSpeech()->ForceChatter( CHATTER_INFESTED, ASW_CHATTER_TIMER_TEAM );
+#endif
+					UTIL_ASW_PoisonBlur( pMarine->GetCommander(), duration );
+					if ( duration > 3 )
+						ClientPrint(pMarine->GetCommander(), HUD_PRINTCENTER, "See  the Map  to survive.");
+					MarineDamageDebugInfo(pMarine, "poisoned", alienLabel, "infest");
+				}
 			}
 		}
 

@@ -109,7 +109,7 @@ ConVar asw_queen_force_spit("asw_queen_force_spit", "0", FCVAR_CHEAT, "Set to 1 
 ConVar asw_queen_override_health("asw_queen_override_health", "0", FCVAR_CHEAT, "If non-zero, set queen health to this no matter difficulty level.");	//Used by hordemode.
 
 //Ch1ckensCoop: Smaller queen model
-ConVar asw_queen_model_scale("asw_queen_model_scale", "1.0", FCVAR_CHEAT, "Sets the model scale for the queen."); //softcopy: decommission, use asw_queen_scalemod instead 
+//ConVar asw_queen_model_scale("asw_queen_model_scale", "1.0", FCVAR_CHEAT, "Sets the model scale for the queen."); //softcopy: obsoleted 
 //Ch1ckensCoop: Customizable parasite numbers
 ConVar asw_queen_max_parasites("asw_queen_max_parasites", "5", FCVAR_CHEAT, "Sets the maximum number of parasites that a queen can spawn.");
 //Ch1ckensCoop: Fix for queen attacking more than once per swipe. This appears to be intended behavior however, so I'll just make it a cvar.
@@ -204,15 +204,9 @@ void CASW_Queen::Spawn( void )
 	
 	//softcopy: color scale
 	//Ch1ckensCoop: Set model scale
-	//float fScale = asw_queen_model_scale.GetFloat();
+	//float fScale = asw_queen_model_scale.GetFloat();	//is replaced by asw_queen_scalemod
 	//SetModelScale(fScale, 0.0f);
 	float fScale = asw_queen_scalemod.GetFloat();
-	//if old entity asw_queen_model_scale is used, new entity asw_queen_scalemod will be overwritten for compatibility
-	if (asw_queen_model_scale.GetFloat() != 1)	
-	{
-		fScale = asw_queen_model_scale.GetFloat();
-		asw_queen_scalemod.SetValue(fScale);
-	}
 	alienLabel = "queen";
 	SetColorScale(alienLabel);
 

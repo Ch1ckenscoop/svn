@@ -272,7 +272,8 @@ void CASW_Computer_Area::ActivateUseIcon( CASW_Marine* pMarine, int nHoldType )
 		}
 		else
 		{
-			Msg("Panel already in use");
+			//Msg("Panel already in use");
+			Msg("Panel already in use\n");	//softcopy:
 		}		
 	}
 	else

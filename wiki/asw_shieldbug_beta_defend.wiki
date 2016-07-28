@@ -1,0 +1,9 @@
+======Controls beta shieldbug defend ======
+= Description =
+
+Sets beta shieldbug keeping on defend & attack, otherwise it randomly defend & attack.
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.0 || `1` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Bool] 
+|}

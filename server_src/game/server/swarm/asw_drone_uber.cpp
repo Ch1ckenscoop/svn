@@ -16,7 +16,7 @@ ConVar asw_drone_uber_color("asw_drone_uber_color", "255 255 255", FCVAR_NONE, "
 //ConVar asw_drone_uber_color_b("asw_drone_uber_color_b", "255", FCVAR_NONE, "Adjusts the blue componant of the Uber drones' color.", true, 0.0f, true, 255.0f);
 // Doesn't change anything - ConVar asw_drone_uber_color("asw_drone_uber_color", "1", FCVAR_NONE, "Enables/disables the Color rendermode for the Uber drones.");
 //softcopy: 
-ConVar asw_drone_uber_scale("asw_drone_uber_scale", "1.0", FCVAR_CHEAT, "Scales the Uber drone model.");	//decommission, use asw_drone_uber_scalemod instead
+ConVar asw_drone_uber_scale("asw_drone_uber_scale", "1.0", FCVAR_CHEAT, "Scales the Uber drone model.");	//obsoleted
 ConVar asw_drone_uber_color2("asw_drone_uber_color2", "255 255 255", FCVAR_NONE, "Sets the color of drone_ubers.");
 ConVar asw_drone_uber_color2_percent("asw_drone_uber_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the drone_ubers you want to give the color",true,0,true,1);
 ConVar asw_drone_uber_color3("asw_drone_uber_color3", "255 255 255", FCVAR_NONE, "Sets the color of drone_ubers.");
@@ -79,7 +79,7 @@ void CASW_Drone_Uber::Spawn( void )
 	//softcopy: set uber colors & scale
 	//Ch1ckensCoop: Made uber drones bigger
 	//SetModelScale(asw_drone_uber_scale.GetFloat(), 0.0f);
-	//if old entity asw_drone_uber_scale is used, new entity asw_drone_uber_scalemod will be overwritten for compatibility
+	//if the obsoleted entity is used, it will overwrite uber scale for compatibility
 	if (asw_drone_uber_scale.GetFloat() != 1)	
 		asw_drone_uber_scalemod.SetValue(asw_drone_uber_scale.GetFloat());
 	alienLabel = "drone_uber";

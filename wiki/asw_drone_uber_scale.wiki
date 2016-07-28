@@ -6,8 +6,8 @@
 
 = Description =
 
-Adjusts the model scale for the uber drones.
-
+Adjusts the model scale for the uber drones. This cvar has been replaced by [[asw_drone_uber_scalemod.wiki|asw_drone_uber_scalemod]].
+ 
 <!--
 || *Revision Added* || *Default* || *[CvarFlags Flags]* || *[ParamType Parameter Type]* ||
 || r7 || `1.0` || [FCVAR_CHEAT] || [Float] ||
