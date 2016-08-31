@@ -155,14 +155,6 @@ void CASW_Drone_Uber::StartTouch( CBaseEntity *pOther )
 		}
 	}
 }
-void CASW_Drone_Uber::SetColorScale(const char *alienLabel)
-{
-	BaseClass::SetColorScale(alienLabel);
-}
-void CASW_Drone_Uber::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
-{
-	BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);
-}
 
 float CASW_Drone_Uber::GetIdealSpeed() const
 {

@@ -1,0 +1,14 @@
+
+======Leave Marine & Get Back Marine from AFK======
+
+= Description =
+
+Sets you AFK when you are in lobby or playing game. If want to join again, press PFkey 1-4.
+
+Enter one of these two commands, [[ asw_afk.wiki | asw_afk ]] in client console or [[asw_afk.wiki | /afk ]] in chat mode.
+
+{|
+|| [[asw_version.wiki|Server Version]] Added 
+|-
+|| v2.1.9
+|}

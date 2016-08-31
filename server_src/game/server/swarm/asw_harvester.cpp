@@ -823,22 +823,6 @@ bool CASW_Harvester::CanBePushedAway()
 	return ( ( gpGlobals->curtime - m_fLastLayTime ) > 2.0f ) && BaseClass::CanBePushedAway();
 }
 
-//softcopy:
-void CASW_Harvester::SetColorScale(const char *alienLabel)	
-{
-	BaseClass::SetColorScale(alienLabel);	
-}
-//softcopy:
-void CASW_Harvester::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
-{
-	BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);
-}
-//softcopy:
-void CASW_Harvester::MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes)
-{
-	BaseClass::MarineExplode(pMarine, alienLabel, damageTypes);
-}
-
 AI_BEGIN_CUSTOM_NPC( asw_harvester, CASW_Harvester )
 
 	// Tasks

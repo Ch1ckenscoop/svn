@@ -1788,20 +1788,59 @@ void ASW_SetLeader_t( const CCommand &command )
 		ASWGameResource()->SetLeader(pPlayer);
 	}
 }
+
 void ASW_Help_t( const CCommand &command )	//softcopy: list some server status
 {
-		CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(UTIL_GetCommandClient());
-		CRecipientFilter filter;
-		filter.AddRecipient(pPlayer);
-		UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "add bots: http://forums.blackcatgames.com/showthread.php?t=12996");
-		UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, " ");	
-		UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "Developer Console Commands:");
-		UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "status (list players status in server)");
-		UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "ver  or  asw_version (check ch1ckenscoop version)");
-		UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "sm plugins (list server plugins running)");
-	
-		if (pPlayer)
-			Msg("%s ran '/help' in chatmode\n", pPlayer->GetPlayerName());
+	CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(UTIL_GetCommandClient());
+	CRecipientFilter filter;
+	filter.AddRecipient(pPlayer);
+	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "/afk          (chat command, leaves marine, sets you as a spectator)");	
+	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "asw_afk       (client console command, same as '/afk')");
+	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "asw_dropextra (client console command, drop your offhand item)");
+	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "ver           (client console command, check ch1ckenscoop version)");
+
+	if (pPlayer)
+		Msg("%s ran '/help' in chatmode\n", pPlayer->GetPlayerName());
 }
+
+//softcopy: AFK, player leave marine & can re-join marine
+void ASW_AFK_t( const CCommand &command )
+{
+	CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(UTIL_GetCommandClient());
+	if (pPlayer && ASWGameResource() && ASWGameRules())
+	{
+		if (ASWGameRules()->GetGameState() == ASW_GS_BRIEFING)
+			ASWGameRules()->RosterDeselectAll(pPlayer);	//Deselect marine from lobby
+		else if	(pPlayer->GetMarine())
+		{
+			pPlayer->LeaveMarines();	//leave marine from game	
+			CRecipientFilter filter; filter.AddRecipient(pPlayer);
+			UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "You have left marine, press F1-F4 to join marine again."); 
+			Msg("%s has left marine from AFK.\n", pPlayer->GetPlayerName());
+		}
+		if (ASWGameResource()->GetLeader() == pPlayer )	//if they're leader, pick another leader
+		{
+			CASW_Game_Resource::s_bLeaderGivenDifficultySuggestion = false;
+			int iPlayerEntIndex = pPlayer->entindex();
+			CASW_Player *pBestPlayer = NULL;
+			for (int i=0;i<ASW_MAX_READY_PLAYERS;i++)
+			{
+				if (i+1 == iPlayerEntIndex )
+					continue;
+				CASW_Player *pOtherPlayer = dynamic_cast<CASW_Player*>(UTIL_PlayerByIndex(i + 1)); //found a player?
+				if (!pOtherPlayer || !pOtherPlayer->IsConnected())	//if they're not connected, skip them
+					continue;
+				if (!pBestPlayer || pBestPlayer->m_bRequestedSpectator)					
+					pBestPlayer = pOtherPlayer;
+			}
+			if (pBestPlayer)
+				ASWGameResource()->SetLeader(pBestPlayer);
+		}
+	}
+}
+
 ChatCommand ASW_SetLeader("/setleader", ASW_SetLeader_t);
-ChatCommand ASW_Help("/help", ASW_Help_t);	//softcopy:
+//softcopy:
+ChatCommand ASW_Help_cc("/help", ASW_Help_t);
+ChatCommand ASW_afk_cc("/afk", ASW_AFK_t);
+ConCommand  ASW_afk("asw_afk", ASW_AFK_t , "Sets you afk to leave marine.");

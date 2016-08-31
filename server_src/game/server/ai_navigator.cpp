@@ -2256,9 +2256,8 @@ bool CAI_Navigator::OnMoveBlocked( AIMoveResult_t *pResult )
 		return true;
 
 	float flWaypointDist;
-	//softcopy:test debug "CUtlRBTree overflow!" crashes on this statement
-	//if ( !GetPath()->CurWaypointIsGoal() && GetPath()->GetCurWaypoint()->IsReducible() )
-	if ( !GetPath()->CurWaypointIsGoal() && GetPath()->GetCurWaypoint() && GetPath()->GetCurWaypoint()->IsReducible() )
+
+	if ( !GetPath()->CurWaypointIsGoal() && GetPath()->GetCurWaypoint()->IsReducible() )
 	{
 		flWaypointDist = ComputePathDistance( GetNavType(), GetLocalOrigin(), GetCurWaypointPos() );
 		if ( flWaypointDist < GetHullWidth() )

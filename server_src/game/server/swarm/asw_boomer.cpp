@@ -309,21 +309,7 @@ void CASW_Boomer::MeleeAttack(float distance, float damage)
 		}
 	}
 }
-//softcopy:
-void CASW_Boomer::SetColorScale(const char *alienLabel)
-{
-	BaseClass::SetColorScale(alienLabel);
-}
-//softcopy:
-void CASW_Boomer::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
-{
-	BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);
-}
-//softcopy:
-void CASW_Boomer::MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes)
-{
-	BaseClass::MarineExplode(pMarine, alienLabel, damageTypes);
-}
+
 
 //-----------------------------------------------------------------------------
 // Purpose:	

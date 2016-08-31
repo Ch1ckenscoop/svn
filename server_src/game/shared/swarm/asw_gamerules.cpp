@@ -104,7 +104,7 @@
 #include "missionchooser/iasw_map_builder.h"
 //softcopy:
 #include "asw_sourcemod_interface.h"	// requesterSteamID
-#include "asw_version.h"
+#define SERVER_DLL_VERSION "2.1.9"		// Ch1ckenscoop version
 
 //#include "entityapi.h"
 //#include "entityoutput.h"
@@ -404,7 +404,7 @@ BEGIN_NETWORK_TABLE_NOBASE( CAlienSwarm, DT_ASWGameRules )
 IMPLEMENT_NETWORKCLASS_ALIASED( AlienSwarmProxy, DT_AlienSwarmProxy )
 
 #ifdef CLIENT_DLL
-	void CAlienSwarmProxy::OnDataChanged( DataUpdateType_t updateType )
+void CAlienSwarmProxy::OnDataChanged( DataUpdateType_t updateType )
 {
 	BaseClass::OnDataChanged( updateType );
 	if ( ASWGameRules() )
@@ -6862,7 +6862,11 @@ void CAlienSwarm::LevelInitPostEntity()
 
 	if ( sv_tags.IsValid() )
 	{
-		sv_tags.SetValue("ch1ckenscoop");
+		//softcopy: coded
+		//sv_tags.SetValue("ch1ckenscoop");
+		char buffer[ 32 ];
+		Q_snprintf( buffer, sizeof( buffer ), "%s,v%s", "ch1ckenscoop", SERVER_DLL_VERSION);
+		sv_tags.SetValue( buffer );
 	}
 
 	if (asw_full_treatment_tradeoff.GetBool() && m_bIsFullTreatment)
@@ -7230,7 +7234,7 @@ void asw_list_version(const CCommand &args)
 {
 	CBasePlayer* pPlayer = UTIL_GetCommandClient();
 	char text[36];
-	Q_snprintf( text, sizeof(text), "Ch1ckenscoop version %s", SERVER_DLL_VERSION );	//var defined in 'asw_version.h'
+	Q_snprintf( text, sizeof(text), "%s version %s", "Ch1ckenscoop", SERVER_DLL_VERSION );
 	if (pPlayer)
 	{
 		UTIL_SayText( text, pPlayer );

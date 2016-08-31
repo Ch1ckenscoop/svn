@@ -13,11 +13,11 @@ bool ASW_System_GetCurrentTimeAndDate(int *year, int *month, int *dayOfWeek, int
 
 	if (year)
 	{
-		*year = timeinfo.tm_year;
+		*year = timeinfo.tm_year+1900;
 	}
 	if (month)
 	{
-		*month = timeinfo.tm_mon;
+		*month = timeinfo.tm_mon+1;
 	}
 	if (dayOfWeek)
 	{

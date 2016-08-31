@@ -1083,21 +1083,6 @@ int CASW_Mortarbug::FindMortarNode( const Vector &vThreatPos, float flMinThreatD
 	return NO_NODE;
 }
 
-//softcopy:
-void CASW_Mortarbug::SetColorScale(const char *alienLabel)
-{
-	BaseClass::SetColorScale(alienLabel);
-}
-//softcopy:
-void CASW_Mortarbug::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
-{
-	BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);
-}
-//softcopy:
-void CASW_Mortarbug::MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes)
-{
-	BaseClass::MarineExplode(pMarine, alienLabel, damageTypes);
-}
 
 AI_BEGIN_CUSTOM_NPC( asw_mortarbug, CASW_Mortarbug )
 

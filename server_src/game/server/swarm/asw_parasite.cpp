@@ -1466,19 +1466,7 @@ void CASW_Parasite::BParasiteColorScale()
 	alienLabel = "parasite_beta";
 	SetColorScale( alienLabel );
 }
-void CASW_Parasite::SetColorScale(const char *alienLabel)
-{
-	BaseClass::SetColorScale(alienLabel);
-}
-void CASW_Parasite::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
-{
-	BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);
-}
-void CASW_Parasite::MarineDamageDebugInfo(CBaseEntity *pOther, const char *damageInfo, const char *alienLabel, const char *damageTypes)
-{
-	BaseClass::MarineDamageDebugInfo(pOther, damageInfo, alienLabel, damageTypes);
-}
-//
+
 
 AI_BEGIN_CUSTOM_NPC( asw_parasite, CASW_Parasite )
 	DECLARE_ANIMEVENT( AE_HEADCRAB_JUMPATTACK )

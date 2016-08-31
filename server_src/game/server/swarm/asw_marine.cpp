@@ -3597,7 +3597,7 @@ void CASW_Marine::Event_Killed( const CTakeDamageInfo &info )
 						pMROther->GetDisplayName( szNameOther, sizeof( szNameOther ) );
 						//softcopy: team killer notification
 						//UTIL_ClientPrintAll( ASW_HUD_PRINTTALKANDCONSOLE, "#asw_team_killed", szName, szNameOther );
-						char text[ 256 ]; Q_snprintf( text, sizeof(text), "Teamkill! - %s was killed by %s\n", szName, szNameOther );  
+						char text[ 256 ]; Q_snprintf( text, sizeof(text), "Teamkill! - %s was killed by %s \n", szName, szNameOther );
 	                    UTIL_ClientPrintAll( ASW_HUD_PRINTTALKANDCONSOLE, text );
 						if ( asw_marine_death_notifications.GetBool() )   
 						{
@@ -4278,9 +4278,13 @@ void CASW_Marine::Extinguish()
 
 bool CASW_Marine::AllowedToIgnite( void ) 
 { 
-	if ( m_iJumpJetting.Get() != 0 )
+	if ( m_iJumpJetting.Get() != 0)
 		return false;
-
+	
+	//softcopy: players won't get onfire from firewall while jumping if asw_marine_ff_immune is enabled
+	if (GetGroundEntity() == NULL && asw_marine_ff_immune.GetInt() > 0)
+		return false;
+	
 	float flBurnTime = ( asw_marine_ff_absorption.GetInt() > 0 ) ? asw_marine_time_until_ignite.GetFloat() : 0.2f;
 	if ( m_flFirstBurnTime > 0 && (gpGlobals->curtime - m_flFirstBurnTime) >= flBurnTime )
 		return true;

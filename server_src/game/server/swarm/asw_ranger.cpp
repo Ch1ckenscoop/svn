@@ -356,16 +356,6 @@ void CASW_Ranger::StartTouch( CBaseEntity *pOther )
 			MarineIgnite(pMarine, info, alienLabel, /*damageTypes*/ "on touch");
 	}
 }
-//softcopy:
-void  CASW_Ranger::SetColorScale(const char *alienLabel)
-{
-	BaseClass::SetColorScale(alienLabel);
-}
-//softcopy:
-void  CASW_Ranger::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
-{
-	BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);
-}
 
 //-----------------------------------------------------------------------------
 // Purpose:	

@@ -232,15 +232,6 @@ void CASW_Shaman::StartTouch( CBaseEntity *pOther )
 		m_fLastTouchHurtTime = gpGlobals->curtime;
 	}
 }
-void CASW_Shaman::SetColorScale(const char *alienLabel)
-{
-	BaseClass::SetColorScale(alienLabel);
-}
-void CASW_Shaman::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
-{
-	BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);
-}
-
 
 //-----------------------------------------------------------------------------
 // Purpose:	

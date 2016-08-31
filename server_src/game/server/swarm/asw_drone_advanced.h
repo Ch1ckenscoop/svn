@@ -137,9 +137,10 @@ public:
 	
 	//softcopy:
 	const char		*alienLabel, *damageTypes;
-	virtual void	SetColorScale(const char *alienLabel);
-	virtual void	MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes);
-
+	virtual void	SetColorScale(const char *alienLabel) {return BaseClass::SetColorScale(alienLabel);}
+	virtual void	MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
+					{return BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);}
+					
 private:
 	Class_T			m_ClassType;
 

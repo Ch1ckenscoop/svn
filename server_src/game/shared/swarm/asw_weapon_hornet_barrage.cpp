@@ -130,6 +130,10 @@ void CASW_Weapon_Hornet_Barrage::PrimaryAttack()
 void CASW_Weapon_Hornet_Barrage::ItemPostFrame( void )
 {
 	BaseClass::ItemPostFrame();
+	
+	//softcopy: rockets no reload
+	if ( m_bInReload )	
+		return;
 
 	if ( GetRocketsToFire() > 0 && GetNextLaunchTime() <= gpGlobals->curtime )
 	{
@@ -142,6 +146,12 @@ void CASW_Weapon_Hornet_Barrage::ItemPostFrame( void )
 		}
 #endif
 	}
+}
+
+//softcopy: fixed rocket ammo clips disappear if reload button was pressed during lauching.
+bool CASW_Weapon_Hornet_Barrage::Reload()
+{
+	return false;
 }
 
 void CASW_Weapon_Hornet_Barrage::SetRocketsToFire()

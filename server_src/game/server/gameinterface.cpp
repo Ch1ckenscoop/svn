@@ -216,8 +216,6 @@ ConVar *sv_maxreplay = NULL;
 //softcopy:
 ConVar asw_onslaught_force("asw_onslaught_force", "1", FCVAR_CHEAT, "default = 1, set 0 to disable Onslaught force on.");
 ConVar asw_hardcore_ff_force("asw_hardcore_ff_force","0", FCVAR_CHEAT, "default = 0, set 1 to enable hardcoreFF force on.");
-extern ConVar asw_marine_ff_absorption;
-extern ConVar asw_sentry_friendly_fire_scale;
 extern ConVar asw_hordemode;
 
 static ConVar  *g_pcv_commentary = NULL;
@@ -1926,21 +1924,19 @@ void CServerGameDLL::GetMatchmakingTags( char *buf, size_t bufSize )
 	}
 	if ( asw_onslaught_force.GetBool() && CAlienSwarm::IsOnslaught() )
 	{
-		if (  asw_horde_override.GetBool() )	//check asw_horde_override is changed or not
+		if ( !asw_horde_override.GetBool() )	//check asw_horde_override is changed or not
 		{
-			asw_hordemode.SetValue( 1 );
-			asw_wanderer_override.SetValue( 1 );
-		}
-		else
-		{
-			asw_hordemode.SetValue( 1 );
-			asw_horde_override.SetValue( 1 );
-			asw_wanderer_override.SetValue( 1 );    
 			Q_snprintf(text, sizeof(text),"Disabling Onslaught is not allowed on this server");
 			UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, text); Msg("%s\n",text);
 		}
+		asw_hordemode.SetValue( 1 );
+		asw_horde_override.SetValue( 1 );
+		asw_wanderer_override.SetValue( 1 );
 	}
-
+	else if (CAlienSwarm::IsOnslaught())
+		asw_hordemode.SetValue( 1 );	
+	else
+		asw_hordemode.SetValue( 0 );
 	
 	// hardcore friendly fire
 	if ( CAlienSwarm::IsHardcoreFF() )
@@ -1967,20 +1963,22 @@ void CServerGameDLL::GetMatchmakingTags( char *buf, size_t bufSize )
 		case 1: szSkill = "Easy,"; break;
 		case 3: szSkill = "Hard,"; break;
 		case 4: szSkill = "Insane,"; break;
-		case 5: szSkill = "Imba,"; break;
+		case 5: szSkill = /*"Imba,"*/"Brutal,"; break;	//softcopy: show Brutal instead of Imba
 	}
 	Q_strncpy( buf, szSkill, bufSize );
 	len = strlen( buf );
 	buf += len;
 	bufSize -= len;
 	
-	if ( ASWGameRules() && ASWGameRules()->GetGameState() == ASW_GS_BRIEFING )
+	/* //softcopy: briefing info useless, lets shorten sv_tags
+	if ( ASWGameRules() && ASWGameRules()->GetGameState() == ASW_GS_BRIEFING )	
 	{
 		Q_strncpy( buf, "Briefing,", bufSize );
 		len = strlen( buf );
 		buf += len;
 		bufSize -= len;
 	}
+	*/
 
 	// Trim the last comma if anything was written
 	if ( buf > bufBase )

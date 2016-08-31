@@ -414,8 +414,10 @@ void CASW_Player::PostThink()
 	}	
 
 	// clicking while ingame on mission with no marine makes us spectate the next marine
-	if ((!GetMarine() || GetMarine()->GetHealth()<=0)
-		&& !HasLiveMarines() && ASWGameRules() && ASWGameRules()->GetGameState() == ASW_GS_INGAME)
+	//softcopy: allow spectating other bots if you died or afk. 
+	//if ((!GetMarine() || GetMarine()->GetHealth()<=0)
+	//	&& !HasLiveMarines() && ASWGameRules() && ASWGameRules()->GetGameState() == ASW_GS_INGAME)
+	if ((!GetMarine() || GetMarine()->GetHealth()<=0) && ASWGameRules() && ASWGameRules()->GetGameState() == ASW_GS_INGAME) 
 	{
 		//Msg("m_nButtons & IN_ATTACK = %d (m_Local.m_nOldButtons & IN_ATTACK) = %d\n", (m_nButtons & IN_ATTACK), (m_Local.m_nOldButtons & IN_ATTACK));
 		bool bClicked = (!m_bLastAttackButton && (m_nButtons & IN_ATTACK));

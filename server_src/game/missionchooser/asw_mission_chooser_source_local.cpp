@@ -1022,7 +1022,7 @@ bool CASW_Mission_Chooser_Source_Local::ASW_Campaign_CreateNewSaveGame(char *szF
 	char szDateTime[256];
 	int year, month, dayOfWeek, day, hour, minute, second;
 	ASW_System_GetCurrentTimeAndDate(&year, &month, &dayOfWeek, &day, &hour, &minute, &second);
-	Q_snprintf(szDateTime, sizeof(szDateTime), "%02d/%02d/%02d %02d:%02d", month, day, year, hour, minute);
+	Q_snprintf(szDateTime, sizeof(szDateTime), "%02d/%02d/%04d %02d:%02d", month, day, year, hour, minute);
 
 	if (szFileName[0] == '\0')
 	{

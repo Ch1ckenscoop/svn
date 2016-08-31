@@ -818,9 +818,6 @@ void CASW_Buzzer::StartRadLoopSound()
 //softcopy: Radiation leakage effect function
 void CASW_Buzzer::DoRadiationLeak(const CTakeDamageInfo &info)
 {
-#ifdef GAME_DLL
-	bool bLagComp = false;
-#endif
 	QAngle ang(0,0,0);
 	Vector dir = info.GetDamagePosition() - WorldSpaceCenter();
 	dir.z = 0;
@@ -844,12 +841,6 @@ void CASW_Buzzer::DoRadiationLeak(const CTakeDamageInfo &info)
 	    m_hRadVolume->Spawn();     
 	}
 	m_fLastTouchHurtTime = gpGlobals->curtime;
- #ifdef GAME_DLL
-	if ( bLagComp )
-	{
-		CASW_Lag_Compensation::FinishLagCompensation();	// undo lag compensation if we need to
-	}
-#endif
 }
 //softcopy: set color scale function
 void CASW_Buzzer::SetColorScale(const char *alienLabel)

@@ -680,19 +680,6 @@ void CASW_Queen::StartTouch( CBaseEntity *pOther )
 		m_fLastTouchHurtTime = gpGlobals->curtime;
 	}
 }
-void CASW_Queen::SetColorScale(const char *alienLabel)
-{
-	BaseClass::SetColorScale(alienLabel);
-}
-void CASW_Queen::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
-{
-	BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);
-}
-void CASW_Queen::MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes)
-{
-	BaseClass::MarineExplode(pMarine, alienLabel, damageTypes);
-}
-
 
 bool CASW_Queen::ShouldGib( const CTakeDamageInfo &info )
 {

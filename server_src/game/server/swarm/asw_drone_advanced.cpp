@@ -1028,17 +1028,6 @@ void CASW_Drone_Advanced::MeleeAttack( float distance, float damage, QAngle &vie
 	}
 }
 
-//softcopy:
-void CASW_Drone_Advanced::SetColorScale(const char *alienLabel)
-{
-	BaseClass::SetColorScale(alienLabel);
-}
-//softcopy:
-void CASW_Drone_Advanced::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
-{
-	BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);
-}
-
 bool CASW_Drone_Advanced::CorpseGib( const CTakeDamageInfo &info )
 {
 	CEffectData	data;
