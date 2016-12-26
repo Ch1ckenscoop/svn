@@ -394,12 +394,7 @@ ConVar asw_realistic_death_chatter("asw_realistic_death_chatter", "0", FCVAR_NON
 ConVar asw_god( "asw_god", "0", FCVAR_CHEAT, "Set to 1 to make marines invulnerable" );
 extern ConVar asw_sentry_friendly_fire_scale;
 extern ConVar asw_marine_ff_absorption;
-//softcopy: 
-extern ConVar asw_boomer_ignite_marine;
-extern ConVar asw_boomer_explode_marine;
-extern ConVar asw_boomer_touch_damage;
-extern ConVar asw_blurpoison_enable;
-extern ConVar asw_debug_alien_ignite;
+extern ConVar asw_blurpoison_enable;	//softcopy:
 
 ConVar asw_movement_direction_tolerance( "asw_movement_direction_tolerance", "30.0", FCVAR_CHEAT );
 ConVar asw_movement_direction_interval( "asw_movement_direction_interval", "0.5", FCVAR_CHEAT );
@@ -415,7 +410,7 @@ void CASW_Marine::DoAnimationEvent( PlayerAnimEvent_t event )
 	if (gpGlobals->maxClients > 1 && 
 		(event == PLAYERANIMEVENT_RELOAD || event == PLAYERANIMEVENT_JUMP || event == PLAYERANIMEVENT_WEAPON_SWITCH
 		|| event == PLAYERANIMEVENT_HEAL || event == PLAYERANIMEVENT_KICK || event == PLAYERANIMEVENT_THROW_GRENADE
-		|| event == PLAYERANIMEVENT_BAYONET || event == PLAYERANIMEVENT_PICKUP
+		|| event == PLAYERANIMEVENT_BAYONET /*|| event == PLAYERANIMEVENT_PICKUP*/	//softcopy: commander can see ammo pick up
 		|| ( event >= PLAYERANIMEVENT_MELEE && event <= PLAYERANIMEVENT_MELEE_LAST ) ) )
 	{
 		TE_MarineAnimEventExceptCommander( this, event );	// Send to any clients other than my commander who can see this guy.
@@ -1070,10 +1065,17 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	// scale sentry gun damage
 	if ( newInfo.GetAttacker() && IsSentryClass( newInfo.GetAttacker()->Classify() ) )
 	{
-		if ( asw_sentry_friendly_fire_scale.GetFloat() <= 0 )
+		//softcopy: no matter what is the sentry fire scale, add damage scale if hardcoreFF is on,
+		//          if no sentry damage scale has set, use default value 1 if hardcoreFF is on.
+		/*if ( asw_sentry_friendly_fire_scale.GetFloat() <= 0 )
 			return 0;
 
-		newInfo.ScaleDamage( asw_sentry_friendly_fire_scale.GetFloat() );
+		newInfo.ScaleDamage( asw_sentry_friendly_fire_scale.GetFloat() );*/
+		float fSentryDamage = asw_sentry_friendly_fire_scale.GetFloat();
+		int fFFabsorption = asw_marine_ff_absorption.GetInt();
+		if (fSentryDamage <= 0 && fFFabsorption != 0)
+			return 0;
+		newInfo.ScaleDamage(fFFabsorption == 0 ? (fSentryDamage >1 ? fSentryDamage:1) : fSentryDamage);
 	}
 
 	// AI marines take much less damage from explosive barrels since they're too dumb to not get near them
@@ -1399,9 +1401,8 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 					}
 					MessageEnd();
 				}
-				//softcopy: disable beta buzzer blurpoison to marine
 				//if (info.GetDamageType() & DMG_BLURPOISON)
-				if ((info.GetDamageType() & DMG_BLURPOISON) && asw_blurpoison_enable.GetBool())
+				if ((info.GetDamageType() & DMG_BLURPOISON) && asw_blurpoison_enable.GetBool())	//softcopy: disable blur if beta buzzer 
 				{
 					float duration = asw_buzzer_poison_duration.GetFloat();
 					// affect duration by mission difficulty
@@ -3571,22 +3572,9 @@ void CASW_Marine::Event_Killed( const CTakeDamageInfo &info )
 					else
 						UTIL_ClientPrintAll( ASW_HUD_PRINTTALKANDCONSOLE, "#asw_suicide_male", GetMarineProfile()->m_ShortName );
 					*/
-					char text[ 256 ], text2[ 256 ];
-					if ( GetMarineProfile()->m_bFemale )
-					{
-						UTIL_ClientPrintAll( ASW_HUD_PRINTTALKANDCONSOLE, "#asw_suicide_female", szName );
-						Q_snprintf( text, sizeof(text), "herself");
-					}
-					else
-					{
-						UTIL_ClientPrintAll( ASW_HUD_PRINTTALKANDCONSOLE, "#asw_suicide_male", szName ); 
-						Q_snprintf( text, sizeof(text), "himself" );
-					}
-					Q_snprintf( text2, sizeof(text2), "***** %s killed %s *****\n", szName, text);
-					Msg( text2 );
-                    if ( asw_marine_death_notifications.GetBool() )          
-                        UTIL_LogPrintf( text2 );
-
+					UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, GetMarineProfile()->m_bFemale ? "#asw_suicide_female":"#asw_suicide_male", szName);
+					if ( asw_marine_death_notifications.GetBool() )
+						Msg( "***** %s killed %s *****\n", szName, GetMarineProfile()->m_bFemale ? "herself" : "himself" );
 				}
 				else
 				{
@@ -3601,7 +3589,8 @@ void CASW_Marine::Event_Killed( const CTakeDamageInfo &info )
 	                    UTIL_ClientPrintAll( ASW_HUD_PRINTTALKANDCONSOLE, text );
 						if ( asw_marine_death_notifications.GetBool() )   
 						{
-							UTIL_LogPrintf( text );	Msg(text);	//log teamkill information. 
+							UTIL_LogPrintf( text );	//log teamkill
+							Msg(text);
 						}
 					}
 				}
@@ -4216,12 +4205,9 @@ void CASW_Marine::ASW_Ignite( float flFlameLifetime, float flSize, CBaseEntity *
 	// if this is an env_fire trying to burn us, ignore the grace period that the AllowedToIgnite function does
 	// we want env_fires to always ignite the marine immediately so they can be used as dangerous blockers in levels
 	CFire *pFire = dynamic_cast<CFire*>(pAttacker);
-	//softcopy: uber/jumper/drone/Fire will a seconds delay to ignite marine, other aliens ignore the grace period to ignite marine immediately.
+	//softcopy: aliens ignore the grace period to ignite marine immediately.
 	//if ( AllowedToIgnite() || pFire )
-	if ( AllowedToIgnite() || pFire || (/*pAttacker->Classify() != CLASS_ASW_DRONE_UBER &&*/ 
-										/*pAttacker->Classify() != CLASS_ASW_DRONE_JUMPER &&
-										pAttacker->Classify() != CLASS_ASW_DRONE &&*/ 
-										pAttacker->Classify() != CLASS_ASW_MARINE))
+	if ( AllowedToIgnite() || pFire || pAttacker->Classify() != CLASS_ASW_MARINE )
 	{
 		if( IsOnFire() )
 			return;

@@ -1,0 +1,15 @@
+
+======Leave Marine, release marine slot to spectator======
+
+= Description =
+
+If player wants the spectator to take use their marine slot, enter the command [[asw_afk.wiki | /afk release]] in chat mode, marine slot will be released and taken over by spectator if any.
+
+[[asw_afk.wiki | /afk release]] works only if [[ asw_spectator_take_slot.wiki | asw_spectator_take_slot ]] has set '1'. 
+
+{|
+|| [[asw_version.wiki|Server Version]] Added 
+|-
+||v2.2.0
+|}    
+

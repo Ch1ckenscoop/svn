@@ -93,19 +93,19 @@ ConVar asw_buzzer_color2("asw_buzzer_color2", "255 255 255", FCVAR_NONE, "Sets t
 ConVar asw_buzzer_color2_percent("asw_buzzer_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the old model buzzers you want to give the color",true,0,true,1);
 ConVar asw_buzzer_color3("asw_buzzer_color3", "255 255 255", FCVAR_NONE, "Sets the color of buzzers.");
 ConVar asw_buzzer_color3_percent("asw_buzzer_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the old model buzzers you want to give the color",true,0,true,1);
-ConVar asw_buzzer_scalemod("asw_buzzer_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal buzzers.");
+ConVar asw_buzzer_scalemod("asw_buzzer_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal buzzers.",true,0,true,3);
 ConVar asw_buzzer_scalemod_percent("asw_buzzer_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal old model buzzers you want to scale.",true,0,true,1);
 ConVar asw_buzzer_beta_color("asw_buzzer_beta_color", "255 255 255", FCVAR_NONE, "Sets the color of new model buzzers.");
 ConVar asw_buzzer_beta_color2("asw_buzzer_beta_color2", "255 255 255", FCVAR_NONE, "Sets the color of new model buzzers.");
 ConVar asw_buzzer_beta_color2_percent("asw_buzzer_beta_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the new model buzzers you want to give the color",true,0,true,1);
 ConVar asw_buzzer_beta_color3("asw_buzzer_beta_color3", "255 255 255", FCVAR_NONE, "Sets the color of buzzers.");
 ConVar asw_buzzer_beta_color3_percent("asw_buzzer_beta_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the new model buzzers you want to give the color",true,0,true,1);
-ConVar asw_buzzer_beta_scalemod("asw_buzzer_beta_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal buzzers.");
+ConVar asw_buzzer_beta_scalemod("asw_buzzer_beta_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal buzzers.",true,0,true,3);
 ConVar asw_buzzer_beta_scalemod_percent("asw_buzzer_beta_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal new model buzzers you want to scale.",true,0,true,1);
-ConVar asw_old_buzzer( "asw_old_buzzer","0", FCVAR_CHEAT, "Set 0=buzzer, 1=beta buzzer, 2=random all.");
-ConVar asw_buzzer_radiation_leak_enable( "asw_buzzer_radiation_leak_enable","0", FCVAR_NONE, "Set 1=enable buzzers leak radiation gas cloud.");
-ConVar asw_buzzer_melee_ignite("asw_buzzer_melee_ignite", "0", FCVAR_CHEAT, "Sets 1=buzzer,2=beta buzzer,3=All,ignite marine by buzzer.");
-ConVar asw_buzzer_touch_onfire("asw_buzzer_touch_onfire", "0", FCVAR_CHEAT, "Ignite marine if buzzer body on fire touch.");
+ConVar asw_old_buzzer( "asw_old_buzzer","0", FCVAR_CHEAT, "0 = buzzer, 1 = beta buzzer, 2 = random all.");
+ConVar asw_buzzer_radiation_leak_enable( "asw_buzzer_radiation_leak_enable","0", FCVAR_CHEAT, "Enables buzzers leak radiation gas cloud.");
+ConVar asw_buzzer_melee_ignite("asw_buzzer_melee_ignite", "0", FCVAR_CHEAT, "Ignites marine by buzzer melee(1=buzzer, 2=beta buzzer, 3=All).");
+ConVar asw_buzzer_touch_onfire("asw_buzzer_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if buzzer body on fire touch.");
 ConVar asw_blurpoison_enable("asw_blurpoison_enable", "0", FCVAR_CHEAT);
 extern ConVar asw_debug_alien_ignite;
 bool IsIgnitedByBuzzer;		//debug marine has ignited
@@ -264,11 +264,8 @@ CASW_Buzzer::CASW_Buzzer()
 	
 	//softcopy:
 	m_fLastTouchHurtTime = 0;
-	if ( asw_old_buzzer.GetFloat() == 1 )
-		b_AlienModelName = ASW_BETA_BUZZER_MODEL;
-	else
-		b_AlienModelName = ASW_BUZZER_MODEL;
-
+	b_AlienModelName = asw_old_buzzer.GetFloat()==1 ? ASW_BETA_BUZZER_MODEL : ASW_BUZZER_MODEL;
+	asw_old_buzzer.GetFloat()==2 ? b_AlienModelName = RandomFloat()<=0.5f ? ASW_BETA_BUZZER_MODEL:ASW_BUZZER_MODEL : NULL;
 }
 
 CASW_Buzzer::~CASW_Buzzer()
@@ -524,21 +521,12 @@ void CASW_Buzzer::ASWTraceBleed( float flDamage, const Vector &vecDir, trace_t *
 
 void CASW_Buzzer::DeathSound(  const CTakeDamageInfo &info )
 {
+	//softcopy: individual death sound for buzzer/beta buzzer
 	//CPASAttenuationFilter filter2( this, "ASW_Buzzer.Death" );
 	//EmitSound( filter2, entindex(), "ASW_Buzzer.Death" );
-	
-	//softcopy: individual death sound for buzzer/beta buzzer
-	if (!Q_strcmp(b_AlienModelName, ASW_BETA_BUZZER_MODEL))
-	{
-		CPASAttenuationFilter filter2( this, "Ranger.GibSplatHeavy" );
-		EmitSound( filter2, entindex(), "Ranger.GibSplatHeavy" );	//use ranger death sound more obvisous. 
-	}
-	else
-	{
-		CPASAttenuationFilter filter2( this, "ASW_Buzzer.Death" );
-		EmitSound( filter2, entindex(), "ASW_Buzzer.Death" );
-	}
-
+	bool bBuzzerCompare = !Q_strcmp(b_AlienModelName, ASW_BETA_BUZZER_MODEL);
+	CPASAttenuationFilter filter2(this, bBuzzerCompare ? "Ranger.GibSplatHeavy" : "ASW_Buzzer.Death");
+	EmitSound(filter2, entindex(), bBuzzerCompare ? "Ranger.GibSplatHeavy" : "ASW_Buzzer.Death");
 }
 
 void CASW_Buzzer::PainSound(  const CTakeDamageInfo &info )
@@ -791,18 +779,15 @@ int	CASW_Buzzer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	if (pMarine)
 		pMarine->HurtAlien(this, info);
 
-	//softcopy: release radiation gas leak.
-	if (asw_buzzer_radiation_leak_enable.GetBool())
-	{
-		if(!Q_strcmp(b_AlienModelName, ASW_BETA_BUZZER_MODEL))	//only beta buzzer to leak radiation gas
-			DoRadiationLeak(info);		//leak radiation effect & hurt marine
-	}
+	//softcopy: release radiation gas leak,	only beta buzzer to this
+	if (asw_buzzer_radiation_leak_enable.GetBool() && !Q_strcmp(b_AlienModelName, ASW_BETA_BUZZER_MODEL))
+		DoRadiationLeak(info);	//leak radiation effect & hurt marine
 
 	return nRetVal;
 }
 
-//softcopy: add radloop sound  
-void CASW_Buzzer::StartRadLoopSound()
+//softcopy:
+void CASW_Buzzer::StartRadLoopSound()	//add radloop sound  
 {
 	if( !m_pRadSound )
 	{
@@ -815,8 +800,7 @@ void CASW_Buzzer::StartRadLoopSound()
 		CSoundEnvelopeController::GetController().Play( m_pRadSound, 1.0, fRadPitch );
 	}
 }
-//softcopy: Radiation leakage effect function
-void CASW_Buzzer::DoRadiationLeak(const CTakeDamageInfo &info)
+void CASW_Buzzer::DoRadiationLeak(const CTakeDamageInfo &info)	//Radiation leakage effect function
 {
 	QAngle ang(0,0,0);
 	Vector dir = info.GetDamagePosition() - WorldSpaceCenter();
@@ -842,8 +826,7 @@ void CASW_Buzzer::DoRadiationLeak(const CTakeDamageInfo &info)
 	}
 	m_fLastTouchHurtTime = gpGlobals->curtime;
 }
-//softcopy: set color scale function
-void CASW_Buzzer::SetColorScale(const char *alienLabel)
+void CASW_Buzzer::SetColorScale(const char *alienLabel)	//set color scale function
 {
 	char text[48], text2[48], text3[48], text4[48], text5[48], text6[48], text7[48];
 	Q_snprintf(text,  sizeof(text),  "asw_%s_color", alienLabel);
@@ -864,8 +847,7 @@ void CASW_Buzzer::SetColorScale(const char *alienLabel)
 	if (alienScale <= ((ConVar *)cvar->FindVar(text6))->GetFloat())
 		SetModelScale(((ConVar *)cvar->FindVar(text7))->GetFloat());
 }
-//softcopy:
-void CASW_Buzzer::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
+void CASW_Buzzer::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes) //marine ignition
 {
 	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
 	pMarine->ASW_Ignite( 1.0f, 0, info.GetAttacker(), info.GetWeapon() );
@@ -873,9 +855,7 @@ void CASW_Buzzer::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info,
 	//debug marine has ignited
 	if (asw_debug_alien_ignite.GetBool())
 	{
-		const char *m_damageTypes = damageTypes;
-		if (m_bOnFire)
-			m_damageTypes = "on fire touch";
+		const char *m_damageTypes = m_bOnFire ? "on fire touch" : damageTypes;
 		if (pMarine->IsOnFire() && !IsIgnitedByBuzzer) 
 		{
 			Msg("----- Player %s has ignited  by %s %s -----\n", pMarine->GetPlayerName(), alienLabel, m_damageTypes);
@@ -1553,17 +1533,14 @@ void CASW_Buzzer::Slice( CBaseEntity *pHitEntity, float flInterval, trace_t &tr 
 		CASW_Marine *pMarine = CASW_Marine::AsMarine( pHitEntity );
 		if ( pMarine )
 		{
+			int  iBuzzerMeleeIgnite = asw_buzzer_melee_ignite.GetInt();
+			bool iBuzzerTouchOnfire = ( m_bOnFire && asw_buzzer_touch_onfire.GetBool());
 			damageTypes = "attack";
-			if ((asw_buzzer_melee_ignite.GetInt()==1 || asw_buzzer_melee_ignite.GetInt()==3) || (m_bOnFire && asw_buzzer_touch_onfire.GetBool()))
-			{
-				if (!Q_strcmp(b_AlienModelName, ASW_BUZZER_MODEL))
-					MarineIgnite(pMarine, info, alienLabel, damageTypes);
-			}
-			if (asw_buzzer_melee_ignite.GetInt() >=2 || (m_bOnFire && asw_buzzer_touch_onfire.GetBool()))
-			{
-				if (!Q_strcmp(b_AlienModelName, ASW_BETA_BUZZER_MODEL)) 
-					MarineIgnite(pMarine, info, alienLabel, damageTypes);
-			}
+			if (((iBuzzerMeleeIgnite==1 || iBuzzerMeleeIgnite==3) || iBuzzerTouchOnfire) && !Q_strcmp(b_AlienModelName, ASW_BUZZER_MODEL))
+				MarineIgnite(pMarine, info, alienLabel, damageTypes);
+
+			if ((iBuzzerMeleeIgnite >=2 || iBuzzerTouchOnfire) && !Q_strcmp(b_AlienModelName, ASW_BETA_BUZZER_MODEL ))
+				MarineIgnite(pMarine, info, alienLabel, damageTypes);
 		}
 	}
 
@@ -2293,8 +2270,6 @@ void CASW_Buzzer::Spawn(void)
 	
 	//softcopy:
 	//SetModel( ASW_BUZZER_MODEL );
-	if (asw_old_buzzer.GetFloat() == 2 )	//both buzzer/beta buzzer
-		b_AlienModelName = RandomFloat() <= 0.5f ? ASW_BETA_BUZZER_MODEL : ASW_BUZZER_MODEL;   
 	SetModel( b_AlienModelName );
 
 	SetHullType(HULL_TINY_CENTERED); 
@@ -2347,23 +2322,15 @@ void CASW_Buzzer::Spawn(void)
 	
 	//softcopy:
 	//SetRenderColor(asw_buzzer_color.GetColor().r(), asw_buzzer_color.GetColor().g(), asw_buzzer_color.GetColor().b()); 
-	if (!Q_strcmp(b_AlienModelName, ASW_BETA_BUZZER_MODEL))
-	{
-		asw_blurpoison_enable.SetValue(0);		//disable blurposion to make a different between buzzer & beta buzzer
-		alienLabel = "buzzer_beta";
-		SetColorScale( alienLabel );
-	}
-	else 
-	{
-		asw_blurpoison_enable.SetValue(1);		//default enable buzer blurpoison	
-		alienLabel = "buzzer";
-		SetColorScale( alienLabel );
-	}
+	//default buzzer has blurpoison, disable it for making a different between beta buzzer & buzzer
+	bool bBuzzerCompare = !Q_strcmp(b_AlienModelName, ASW_BETA_BUZZER_MODEL);	//check if beta buzzer
+	asw_blurpoison_enable.SetValue( bBuzzerCompare ? 0 : 1);	//0 = disable beta buzzer blurpoison	
+	SetColorScale((alienLabel = bBuzzerCompare ? "buzzer_beta" : "buzzer"));
 	IsIgnitedByBuzzer = false;		//debug marine has ignited
-	
+
 	// Start out with full power! 
 	m_fEnginePowerScale = GetMaxEnginePower();
-	
+
 	// find panels
 	m_iPanel1 = LookupPoseParameter( "Panel1" );
 	m_iPanel2 = LookupPoseParameter( "Panel2" );
@@ -3386,11 +3353,8 @@ void CASW_Buzzer::SetHealthByDifficultyLevel()
 {	
 	//softcopy: beta buzzer & buzzer difficulty health
 	//SetHealth(ASWGameRules()->ModifyAlienHealthBySkillLevel(sk_asw_buzzer_health.GetFloat()));
-	if (!Q_strcmp(b_AlienModelName, ASW_BETA_BUZZER_MODEL))
-		SetHealth(ASWGameRules()->ModifyAlienHealthBySkillLevel(sk_asw_buzzer_beta_health.GetFloat()));
-	else
-		SetHealth(ASWGameRules()->ModifyAlienHealthBySkillLevel(sk_asw_buzzer_health.GetFloat()));
-
+	SetHealth(ASWGameRules()->ModifyAlienHealthBySkillLevel(!Q_strcmp(b_AlienModelName, ASW_BETA_BUZZER_MODEL) ?
+	sk_asw_buzzer_beta_health.GetFloat() : sk_asw_buzzer_health.GetFloat()));
 }
 
 void CASW_Buzzer::ElectroStun( float flStunTime )

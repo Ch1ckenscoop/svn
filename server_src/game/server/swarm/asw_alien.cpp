@@ -85,7 +85,7 @@ ConVar asw_springcol_debug( "asw_springcol_debug", "0", FCVAR_CHEAT, "Display th
 
 ConVar asw_alien_longrange("asw_alien_longrange", "0", FCVAR_CHEAT, "If non-zero, allow swarm to see this far.");
 ConVar asw_alien_network_cull("asw_alien_network_cull", "1100", FCVAR_NONE, "If non-zero, don't send aliens farther than this distance from marines.");
-ConVar asw_debug_alien_ignite("asw_debug_alien_ignite", "0", FCVAR_NONE, "Print marine is ignited/exploded by alien");	//softcopy: 
+ConVar asw_debug_alien_ignite("asw_debug_alien_ignite", "0", FCVAR_NONE, "Show debug messages for ignition/explosive effects by alien");	//softcopy: 
 
 float CASW_Alien::sm_flLastHurlTime = 0;
 

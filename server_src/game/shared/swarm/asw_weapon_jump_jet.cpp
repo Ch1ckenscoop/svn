@@ -134,7 +134,8 @@ void CASW_Weapon_Jump_Jet::DoJumpJet()
 	pMarine->m_flJumpJetStartTime = gpGlobals->curtime;
 	pMarine->m_flJumpJetEndTime = gpGlobals->curtime + asw_jump_jet_time.GetFloat();
 
-	ASWMeleeSystem()->StartMeleeAttack( ASWMeleeSystem()->GetMeleeAttackByName( "JumpJet" ), pMarine, ASWGameMovement()->GetMoveData() );
+	if (ASWGameMovement())	//softcopy: prevent crashes from admin file simple.ini corrupted/contained special character
+		ASWMeleeSystem()->StartMeleeAttack( ASWMeleeSystem()->GetMeleeAttackByName( "JumpJet" ), pMarine, ASWGameMovement()->GetMoveData() );
 
 #ifndef CLIENT_DLL
 	pMarine->OnWeaponFired( this, 1 );

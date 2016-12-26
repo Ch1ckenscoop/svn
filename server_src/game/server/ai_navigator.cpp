@@ -2257,7 +2257,9 @@ bool CAI_Navigator::OnMoveBlocked( AIMoveResult_t *pResult )
 
 	float flWaypointDist;
 
-	if ( !GetPath()->CurWaypointIsGoal() && GetPath()->GetCurWaypoint()->IsReducible() )
+	//softcopy: fix crashes
+	//if ( !GetPath()->CurWaypointIsGoal() && GetPath()->GetCurWaypoint()->IsReducible() )
+	if (!GetPath()->CurWaypointIsGoal() && GetPath()->GetCurWaypoint() && GetPath()->GetCurWaypoint()->IsReducible())
 	{
 		flWaypointDist = ComputePathDistance( GetNavType(), GetLocalOrigin(), GetCurWaypointPos() );
 		if ( flWaypointDist < GetHullWidth() )

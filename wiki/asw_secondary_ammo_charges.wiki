@@ -1,0 +1,12 @@
+
+======Secondary ammo charges up from ammo bag======
+
+= Description =
+
+Secondary ammo can be charged on weapon, including guns are vindicator/rifle/prototype rifle. Sets the value greater than '0', it will be charged up by this value per each pickup from ammo bag. 
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.2.0 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

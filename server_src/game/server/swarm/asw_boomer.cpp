@@ -45,7 +45,7 @@ ConVar asw_boomer_color2("asw_boomer_color2", "255 255 255", FCVAR_NONE, "Sets t
 ConVar asw_boomer_color2_percent("asw_boomer_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the boomers you want to give the color",true,0,true,1);
 ConVar asw_boomer_color3("asw_boomer_color3", "255 255 255", FCVAR_NONE, "Sets the color of boomers.");
 ConVar asw_boomer_color3_percent("asw_boomer_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the boomers you want to give the color",true,0,true,1);
-ConVar asw_boomer_scalemod("asw_boomer_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal new model parasites.");
+ConVar asw_boomer_scalemod("asw_boomer_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal boomers.",true,0,true,2);
 ConVar asw_boomer_scalemod_percent("asw_boomer_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal boomers you want to scale.",true,0,true,1);
 ConVar asw_boomer_explode_range( "asw_boomer_explode_range", "200", FCVAR_CHEAT, "Sets boomer explode range." );
 ConVar asw_boomer_max_projectile( "asw_boomer_max_projectile", "8", FCVAR_CHEAT, "Sets boomer max projectile." );
@@ -56,10 +56,9 @@ ConVar asw_boomer_melee_min_damage( "asw_boomer_melee_min_damage", "4", FCVAR_CH
 ConVar asw_boomer_melee_max_damage( "asw_boomer_melee_max_damage", "6", FCVAR_CHEAT, "Sets boomer melee max damage." );
 ConVar asw_boomer_melee_force( "asw_boomer_melee_force", "4", FCVAR_CHEAT, "Sets boomer melee force." );
 ConVar asw_boomer_touch_damage( "asw_boomer_touch_damage", "5", FCVAR_CHEAT, "Sets damage caused by boomer on touch." );
-ConVar asw_boomer_ignite("asw_boomer_ignite", "0", FCVAR_CHEAT, "Sets 1=melee, 2=touch, 3=All, ignite marine on boomer melee/touch.");
-ConVar asw_boomer_explode("asw_boomer_explode", "0", FCVAR_CHEAT, "Sets 1=melee, 2=touch, 3=All, explode marine on boomer melee/touch.");
-ConVar asw_boomer_touch_onfire("asw_boomer_touch_onfire", "0", FCVAR_CHEAT, "Ignite marine if boomer body on fire touch.");
-extern ConVar asw_debug_alien_ignite;
+ConVar asw_boomer_ignite("asw_boomer_ignite", "0", FCVAR_CHEAT, "Ignites marine on boomer melee/touch(1=melee, 2=touch, 3=All).");
+ConVar asw_boomer_explode("asw_boomer_explode", "0", FCVAR_CHEAT, "Explodes marine on boomer melee/touch(1=melee, 2=touch, 3=All).");
+ConVar asw_boomer_touch_onfire("asw_boomer_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if boomer body on fire touch.");
 
 extern ConVar asw_alien_debug_death_style;
 

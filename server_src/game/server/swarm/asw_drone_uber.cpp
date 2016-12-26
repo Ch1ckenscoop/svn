@@ -21,13 +21,12 @@ ConVar asw_drone_uber_color2("asw_drone_uber_color2", "255 255 255", FCVAR_NONE,
 ConVar asw_drone_uber_color2_percent("asw_drone_uber_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the drone_ubers you want to give the color",true,0,true,1);
 ConVar asw_drone_uber_color3("asw_drone_uber_color3", "255 255 255", FCVAR_NONE, "Sets the color of drone_ubers.");
 ConVar asw_drone_uber_color3_percent("asw_drone_uber_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the drone_ubers you want to give the color",true,0,true,1);
-ConVar asw_drone_uber_scalemod("asw_drone_uber_scalemod", "1.0", FCVAR_NONE, "Sets the scale of the normal drone_ubers.");
+ConVar asw_drone_uber_scalemod("asw_drone_uber_scalemod", "1.0", FCVAR_NONE, "Sets the scale of the normal drone_ubers.",true,0,true,2);
 ConVar asw_drone_uber_scalemod_percent("asw_drone_uber_scalemod_percent", "1.0", FCVAR_NONE, "Sets the percentage of the normal drone_ubers you want to scale.",true,0,true,1);
-ConVar asw_drone_uber_ignite( "asw_drone_uber_ignite", "0", FCVAR_CHEAT, "Sets 1=melee,2=touch,3=All,ignite marine on uber melee/touch" );
-ConVar asw_drone_uber_touch_onfire("asw_drone_uber_touch_onfire", "0", FCVAR_CHEAT, "Ignite marine if uber body on fire touch.");
+ConVar asw_drone_uber_ignite( "asw_drone_uber_ignite", "0", FCVAR_CHEAT, "Ignites marine on uber melee/touch(1=melee, 2=touch, 3=All)." );
+ConVar asw_drone_uber_touch_onfire("asw_drone_uber_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if uber body on fire touch.");
 extern ConVar asw_drone_melee_force;
 extern ConVar asw_drone_melee_range;
-extern ConVar asw_debug_alien_ignite;
 
 ConVar asw_drone_uber_health("asw_drone_uber_health", "500", FCVAR_CHEAT, "How much health the uber Swarm drones have");
 ConVar asw_uber_speed_scale("asw_uber_speed_scale", "0.5f", FCVAR_CHEAT, "Speed scale of uber drone compared to normal");

@@ -1,0 +1,10 @@
+======Sets medkit bonus charges======
+= Description =
+
+Sets medkit bonus usages a marine starts out with.
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.2.0 || `254` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

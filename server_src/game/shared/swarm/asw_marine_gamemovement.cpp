@@ -70,8 +70,8 @@ extern IFileSystem *filesystem;
 static ConVar asw_marine_gravity( "asw_marine_gravity","800",  FCVAR_NOTIFY | FCVAR_CHEAT, "Marine gravity." );
 static ConVar asw_marine_friction( "asw_marine_friction","10",  FCVAR_NOTIFY | FCVAR_CHEAT, "Marine movement friction." );
 static ConVar asw_sv_maxspeed( "asw_sv_maxspeed", "500",  FCVAR_NOTIFY | FCVAR_CHEAT);
-ConVar asw_melee_walkup("asw_melee_walkup", "0", FCVAR_CHEAT, "Set 1 to enable melee can walk up.");
-//
+ConVar asw_melee_walkup("asw_melee_walkup", "0", FCVAR_CHEAT, "If set to 1, Melee can walk up.");
+
 static ConVar asw_debug_steps("asw_debug_steps", "0", FCVAR_CHEAT | FCVAR_REPLICATED, "Gives debug info on moving up/down steps");
 static ConVar asw_debug_air_move("asw_debug_air_move", "0", FCVAR_CHEAT | FCVAR_REPLICATED, "Gives debug info on air moving");
 ConVar GAMEMOVEMENT_ASW_JUMP_HEIGHT("asw_marine_jump_height", "70.0", FCVAR_CHEAT, "Sets marine jump height.");

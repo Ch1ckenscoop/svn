@@ -25,6 +25,10 @@
 #include "asw_fx_shared.h"
 #include "particle_parse.h"
 #include "asw_barrel_explosive.h"
+#include "asw_boomer_blob.h"
+#include "asw_mortarbug.h"
+#include "asw_weapon_chainsaw_shared.h"
+#include "asw_radiation_volume.h"    
 
 
 // memdbgon must be the last include file in a .cpp file!!!
@@ -120,13 +124,12 @@ ConVar asw_queen_color2("asw_queen_color2", "255 255 255", FCVAR_NONE, "Sets the
 ConVar asw_queen_color2_percent("asw_queen_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the queen you want to give the color",true,0,true,1);
 ConVar asw_queen_color3("asw_queen_color3", "255 255 255", FCVAR_NONE, "Sets the color of parasites.");
 ConVar asw_queen_color3_percent("asw_queen_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the queen you want to give the color",true,0,true,1);
-ConVar asw_queen_scalemod("asw_queen_scalemod", "0.6", FCVAR_NONE, "Sets the scale of normal queens.");
+ConVar asw_queen_scalemod("asw_queen_scalemod", "0.6", FCVAR_NONE, "Sets the scale of normal queens.",true,0,true,1);
 ConVar asw_queen_scalemod_percent("asw_queen_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal queens you want to scale.",true,0,true,1);
-ConVar asw_queen_touch_damage("asw_queen_touch_damage", "5", FCVAR_CHEAT, "set damage caused by queen on touch.");
-ConVar asw_queen_ignite("asw_queen_ignite", "0", FCVAR_CHEAT, "Sets 1=melee, 2=touch, 3=All, ignite marine on queen melee/touch.");
-ConVar asw_queen_explode("asw_queen_explode", "0", FCVAR_CHEAT, "Sets 1=melee, 2=touch, 3=All, explode marine on queen melee/touch.");
-ConVar asw_queen_touch_onfire("asw_queen_touch_onfire", "0", FCVAR_CHEAT, "Ignite marine if queen body on fire touch.");
-extern ConVar asw_debug_alien_ignite;
+ConVar asw_queen_touch_damage("asw_queen_touch_damage", "5", FCVAR_CHEAT, "Damage caused by queen on touch.");
+ConVar asw_queen_ignite("asw_queen_ignite", "0", FCVAR_CHEAT, "Ignites marine on queen melee/touch(1=melee, 2=touch, 3=All).");
+ConVar asw_queen_explode("asw_queen_explode", "0", FCVAR_CHEAT, "Explodes marine on queen melee/touch(1=melee, 2=touch, 3=All).");
+ConVar asw_queen_radiation_leak("asw_queen_radiation_leak", "0", FCVAR_CHEAT, "Enables radiation gas leak damage to marine if queen has hurted.");
 
 ConVar asw_queen_damage_reductions("asw_queen_damage_reductions", "1", FCVAR_CHEAT, "Enables damage reductions for certain player weapons vs the queen.");
 
@@ -667,9 +670,9 @@ void CASW_Queen::StartTouch( CBaseEntity *pOther )
 		m_TouchExplosionDamage = asw_queen_touch_damage.GetInt();
 		CTakeDamageInfo info( this, this, m_TouchExplosionDamage, DMG_SLASH );
 		damageTypes = "on touch";
-		if(asw_queen_ignite.GetInt() >= 2 || (m_bOnFire && asw_queen_touch_onfire.GetBool()))
+		if(asw_queen_ignite.GetInt() >= 2)
 			MarineIgnite(pMarine, info, alienLabel, damageTypes);
-		if (m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime || m_TouchExplosionDamage <= 0)	//don't hurt him if he was hurt recently
+		if (m_fLastTouchHurtTime + 0.35f/*0.6f*/ > gpGlobals->curtime || m_TouchExplosionDamage <= 0)	//don't hurt him if he was hurt recently
 			return;
 		Vector vecForceDir = ( pMarine->GetAbsOrigin() - GetAbsOrigin() );		// hurt the marine
 		CalculateMeleeDamageForce( &info, vecForceDir, pMarine->GetAbsOrigin() );
@@ -678,6 +681,45 @@ void CASW_Queen::StartTouch( CBaseEntity *pOther )
 			MarineExplode(pMarine, alienLabel, damageTypes);
 
 		m_fLastTouchHurtTime = gpGlobals->curtime;
+	}
+}
+void CASW_Queen::DoRadiationLeak(const CTakeDamageInfo &info)
+{
+	QAngle ang(0,0,0);
+	Vector dir = info.GetDamagePosition() - WorldSpaceCenter();
+	dir.z = 0;
+	VectorNormalize(dir);
+	ang[YAW] = UTIL_VecToYaw(dir);
+	StartRadLoopSound();
+	// radiation leakage onces only when marine is hurting by radiation to avoid lag.
+	if (m_fLastTouchHurtTime > (gpGlobals->curtime - gpGlobals->curtime))
+		return;
+	// spawn a jet in the direction of the damage	
+	DispatchParticleEffect( "barrel_rad_gas_jet", WorldSpaceCenter(), ang, PATTACH_CUSTOMORIGIN_FOLLOW, this ); 
+	// also spawn our big cloud marking out the area of radiation
+	DispatchParticleEffect( "barrel_rad_gas_cloud", WorldSpaceCenter(), QAngle( 0, 0, 0 ), PATTACH_CUSTOMORIGIN_FOLLOW, this );
+	// create a volume to HURT people
+	m_hRadVolume = (CASW_Radiation_Volume*) CreateEntityByName("asw_radiation_volume");
+	if (m_hRadVolume)
+	{
+		m_hRadVolume->SetParent(this);
+	    m_hRadVolume->SetLocalOrigin(vec3_origin);
+	    m_hRadVolume->m_hCreator = info.GetAttacker();
+	    m_hRadVolume->Spawn();     
+	}
+	m_fLastTouchHurtTime = gpGlobals->curtime;
+}
+void CASW_Queen::StartRadLoopSound()
+{
+	if( !m_pRadSound )
+	{
+		const char *pszSound = "Misc.Geiger";
+		float fRadPitch = random->RandomInt( 95, 105 );
+
+		CPASAttenuationFilter filter( this );
+		m_pRadSound = CSoundEnvelopeController::GetController().SoundCreate( filter, entindex(), CHAN_STATIC, pszSound, ATTN_NORM );
+
+		CSoundEnvelopeController::GetController().Play( m_pRadSound, 1.0, fRadPitch );
 	}
 }
 
@@ -1466,7 +1508,39 @@ int CASW_Queen::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 				}
 			}		
 		}
+		
+		//softcopy: reduce chainsaw damage (not reducing normal destroy power as much as it's not too strong) 
+		if (info.GetDamageType() & DMG_SLASH)
+		{
+			if (info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_MARINE)
+			{
+				CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(info.GetAttacker());
+				if (pMarine)
+				{
+					CASW_Weapon_Chainsaw *pChainsaw = dynamic_cast<CASW_Weapon_Chainsaw*>(pMarine->GetActiveASWWeapon());
+					if (pChainsaw)
+						damage *= 0.4f;
+				}
+			}		
+		}
+
 	}
+
+	//softcopy: release radiation gas leak.
+	if (asw_queen_radiation_leak.GetBool())
+	{
+		DoRadiationLeak(info);		//leak radiation effect & hurt marine
+	}
+	//make queen immune to boomer blob/mortarbug shell
+	if (dynamic_cast<CASW_Boomer_Blob*>(info.GetAttacker()))
+	{
+		return 0;
+	}
+	if (dynamic_cast<CASW_Mortarbug*>(info.GetAttacker()))
+	{
+		return 0;
+	}
+
 	// make queen immune to buzzers
 	if (dynamic_cast<CASW_Buzzer*>(info.GetAttacker()))
 	{
@@ -1479,6 +1553,10 @@ int CASW_Queen::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		return 0;
 	}
 
+
+	
+	
+	
 	newInfo.SetDamage(damage);
 
 	return BaseClass::OnTakeDamage_Alive(newInfo);

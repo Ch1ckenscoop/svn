@@ -63,7 +63,9 @@ extern ConVar asw_melee_debug;
 extern ConVar asw_debug_marine_damage;
 extern ConVar asw_stim_time_scale;
 extern ConVar asw_marine_ff;
-extern ConVar asw_marine_ff_absorption;		//softcopy:
+//softcopy:
+extern ConVar asw_sentry_friendly_fire_scale;
+extern ConVar asw_marine_ff_absorption;
 
 ConVar asw_leadership_radius("asw_leadership_radius", "600", FCVAR_REPLICATED, "Radius of the leadership field around NCOs with the leadership skill");
 //softcopy: prevent client side cheating
@@ -2615,14 +2617,14 @@ void CASW_Marine::Bleed( const CTakeDamageInfo &info, const Vector &vecPos, cons
 	CRecipientFilter filter;
 	filter.AddAllPlayers();
 
-	//softcopy: prevent marine is bleeding with no hurt if shooting by sentry gun.
-	//					marine is bleeding & hurt only if hardcoreFF is ON.
+	//softcopy: prevent marine is bleeding without hurted if shooting by sentry gun.
+	//			marine is bleeding and damaged only if hardcoreFF is ON or asw_sentry_friendly_fire_scale >0.
 	if (info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_SENTRY_GUN)
 	{
-		if (!CAlienSwarm::IsHardcoreFF( ) && asw_marine_ff_absorption.GetInt() != 0)
+		if (asw_sentry_friendly_fire_scale.GetFloat() <= 0 && asw_marine_ff_absorption.GetInt() != 0)
 			return;
 	}
-	
+
 	// if we've been shot by another marine...
 	if ( info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_MARINE )
 	{

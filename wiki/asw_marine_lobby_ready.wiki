@@ -1,12 +1,12 @@
-======Sets marines lobby ready.======
+======Sets marines lobby ready======
 = Description =
 
-Controls marines are ready on lobby, avoid team leader force-starting in 5 seconds to continue the game. 
+Controls marines/spectators auto mark as ready in lobby, avoid team leader force-start in 5 seconds to continue the game. 
 
 For example:
-* Sets 0, players on matchmaking screens ticks the 'Ready' option manually.
-* Sets 1, players on gamestats screen ticks the 'Ready' option automatically.
-* Sets 2, players on matchmaking screens ticks the 'Ready' option automatically.
+* Sets 0, players on matchmaking screens ticks the 'Ready' option manually
+* Sets 1, players on gamestats screen ticks the 'Ready' option automatically
+* Sets 2, players on matchmaking screens ticks the 'Ready' option automatically
 
 {|
 || [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 

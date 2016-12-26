@@ -32,7 +32,7 @@
 #define ACID_BURN_INTERVAL 1.0f
 #define ASW_ACID_DAMAGE 10.0f
 
-ConVar asw_grenade_ignite_biomass("asw_grenade_ignite_biomass","0",FCVAR_NONE,"set 1, grenade can ignite fire to burn biomass.");		//softcopy:
+ConVar asw_grenade_ignite_biomass("asw_grenade_ignite_biomass", "0", FCVAR_CHEAT, "Ignites biomass by grenade explosive.");		//softcopy:
 
 IMPLEMENT_NETWORKCLASS_ALIASED( ASW_Alien_Goo, DT_ASW_Alien_Goo )
 

@@ -193,15 +193,9 @@ void CASW_Rocket::DoExplosion( bool bHitWall )
 
 	CTakeDamageInfo info( this, GetOwnerEntity(), GetDamage(), DMG_BLAST );
 	info.SetWeapon( m_hCreatorWeapon );
-	//softcopy: Rocket won't damage marine from hardcore friendly fire is off
+	//softcopy: Rocket won't damage marine if hardcoreFF is off. (exclude MARINE if OFF or exclude NONE if ON)
 	//ASWGameRules()->RadiusDamage( info, GetAbsOrigin(), 50, CLASS_NONE, NULL );
-	if ( !CAlienSwarm::IsHardcoreFF( ) && asw_marine_ff_absorption.GetInt() != 0)
-		//exclude marine from rocket damage if hardcoreFF is OFF 
-		ASWGameRules()->RadiusDamage( info, GetAbsOrigin(), 50, CLASS_ASW_MARINE, NULL );
-	else
-		//exclude none from rocket damage if hardcoreFF is ON
-		ASWGameRules()->RadiusDamage( info, GetAbsOrigin(), 50, CLASS_NONE, NULL );
-		
+	ASWGameRules()->RadiusDamage(info, GetAbsOrigin(), 50, asw_marine_ff_absorption.GetInt()>0 ? CLASS_ASW_MARINE : CLASS_NONE, NULL);
 }
 
 void CASW_Rocket::Explode( void )

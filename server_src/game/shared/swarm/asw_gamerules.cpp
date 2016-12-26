@@ -102,9 +102,7 @@
 #include "missionchooser/iasw_mission_chooser.h"
 #include "missionchooser/iasw_random_missions.h"
 #include "missionchooser/iasw_map_builder.h"
-//softcopy:
-#include "asw_sourcemod_interface.h"	// requesterSteamID
-#define SERVER_DLL_VERSION "2.1.9"		// Ch1ckenscoop version
+#include "asw_sourcemod_interface.h"	//softcopy: requesterSteamID
 
 //#include "entityapi.h"
 //#include "entityoutput.h"
@@ -116,22 +114,25 @@ extern ConVar old_radius_damage;
 
 //softcopy:
 bool bReadyclicked = false;
+bool bIsReserved = false;
 int playreadyclicked = 0;
-int skill_default_level = 2;
-ConVar asw_autokick_player("asw_autokick_player", "0", FCVAR_CHEAT, "sets 1 = enable auto kick player.");
-ConVar asw_autokick_player_promotion("asw_autokick_player_promotion", "0", FCVAR_CHEAT, "sets 0-3 promotion, if below the promotion will be autokicked.",true,0,true,3);
-ConVar asw_autokick_player_experience("asw_autokick_player_experience", "4300", FCVAR_CHEAT, "sets player below the skill point will be autokicked.");
-ConVar asw_marine_lobby_ready("asw_marine_lobby_ready", "1", FCVAR_CHEAT, "set 0=All lobby marked not ready,1=ClientConnected lobby not ready,2=All ready");
-ConVar asw_lobby_player_select("asw_lobby_player_select", "4", FCVAR_CHEAT, "max players selectable in lobby, instablity timeout if changed.", true,4, true,6);
-ConVar asw_level_lock("asw_level_lock","0", FCVAR_CHEAT, "default = 0, set 1 - 5 to enable what skill level lock on.", true,0, true,5);
-ConVar asw_infest_damage_easy("asw_infest_damage_easy","175", FCVAR_CHEAT, "sets infest damage on easy level.");
-ConVar asw_infest_damage_normal("asw_infest_damage_normal","225", FCVAR_CHEAT, "sets infest damage on normal level.");
-ConVar asw_infest_damage_hard("asw_infest_damage_hard","270", FCVAR_CHEAT, "sets infest damage on hard level.");
-ConVar asw_infest_damage_insane("asw_infest_damage_insane","280", FCVAR_CHEAT, "sets infest damage on insane level.");
-ConVar asw_infest_damage_brutal("asw_infest_damage_brutal","280", FCVAR_CHEAT, "sets infest damage on brutal level.");
-ConVar asw_hibernate_skill_default("asw_hibernate_skill_default", "0", FCVAR_CHEAT, "skill/FF has set in lobby will reset to normal when hibernating.");
-ConVar asw_vote_kick_admin("asw_vote_kick_admin", "1", FCVAR_CHEAT, "generic admin or above level immune from a kick voting."); 
+int pPlayerId[ASW_NUM_MARINE_PROFILES];
+ConVar asw_autokick_player("asw_autokick_player", "0", FCVAR_CHEAT, "Sets auto kick player.");
+ConVar asw_autokick_player_promotion("asw_autokick_player_promotion", "0", FCVAR_CHEAT, "Sets autokick if below promotion(1-3).",true,0,true,3);
+ConVar asw_autokick_player_experience("asw_autokick_player_experience", "4300", FCVAR_CHEAT, "Autokick if below pre-defined skill points.");
+ConVar asw_marine_lobby_ready("asw_marine_lobby_ready", "1", FCVAR_CHEAT, "Sets auto mark ready(1=gamestats lobby, 2=all lobbies.");
+ConVar asw_spectator_takes_slot("asw_spectator_takes_slot", "0", FCVAR_CHEAT, "If set, spectator can't take over reserved slot."); 
+ConVar asw_lobby_player_select("asw_lobby_player_select", "4", FCVAR_CHEAT, "Max players selectable in lobby, instablity timeout if changed.", true,4, true,6);
+ConVar asw_level_lock("asw_level_lock", "0", FCVAR_CHEAT, "Skill level locked on(1-5).", true,0, true,5);
+ConVar asw_infest_damage_easy("asw_infest_damage_easy", "175", FCVAR_CHEAT, "Infest damage on easy level.");
+ConVar asw_infest_damage_normal("asw_infest_damage_normal", "225", FCVAR_CHEAT, "Infest damage on normal level.");
+ConVar asw_infest_damage_hard("asw_infest_damage_hard", "270", FCVAR_CHEAT, "Infest damage on hard level.");
+ConVar asw_infest_damage_insane("asw_infest_damage_insane", "280", FCVAR_CHEAT, "Infest damage on insane level.");
+ConVar asw_infest_damage_brutal("asw_infest_damage_brutal", "280", FCVAR_CHEAT, "Infest damage on brutal level.");
+ConVar asw_hibernate_skill_default("asw_hibernate_skill_default", "0", FCVAR_CHEAT, "If set, Skill/HardcoreFF switch to default when hibernating.");
+ConVar asw_vote_kick_admin("asw_vote_kick_admin", "1", FCVAR_CHEAT, "Generic admin or above level immune from vote kick."); 
 extern ConVar asw_hardcore_ff_force;
+#define SERVER_DLL_VERSION "2.2.0"		//Ch1ckenscoop version
 
 #define ASW_LAUNCHING_STEP 0.25f			// time between each stage of launching
 
@@ -706,7 +707,7 @@ const char * GenerateNewSaveGameName()
 CAlienSwarm::CAlienSwarm()
 {
 	//Msg("CAlienSwarm created\n");
-	Msg("CAlienSwarm created on map %s\n", STRING(gpGlobals->mapname));	//softcopy: want to know the current map
+	Msg("CAlienSwarm created on map %s\n", STRING(gpGlobals->mapname));	//softcopy: show current map name
 
 	// create the profile list for the server
 	//  clients do this is in c_asw_player.cpp
@@ -814,14 +815,13 @@ CAlienSwarm::CAlienSwarm()
 
 	m_fLastPowerupDropTime = 0;
 	m_flTechFailureRestartTime = 0.0f;
-	
+
 	//softcopy:
 	playreadyclicked = asw_marine_lobby_ready.GetInt();
-	if ( (playreadyclicked >= 1) && (playreadyclicked <= 2) )
-		bReadyclicked = true;		//set for matchmaking marked as ready.
-	else if ( playreadyclicked == 0 )
-		bReadyclicked = false;		//set for matchmaking marked as not ready.
-
+	bReadyclicked = (playreadyclicked >= 1 && playreadyclicked <= 2) ? true : false;
+	bSpectatorCanSelect = false;
+	for (int i=0; i<ASW_NUM_MARINE_PROFILES; i++)
+		pPlayerId[i] = 0;	//initialize
 }
 
 CAlienSwarm::~CAlienSwarm()
@@ -1099,7 +1099,6 @@ bool CAlienSwarm::ClientConnected( edict_t *pEntity, const char *pszName, const 
 
 	CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(CBaseEntity::Instance( pEntity ));
 	//Msg("ClientConnected, entindex is %d\n", pPlayer ? pPlayer->entindex() : -1);
-
 	if (ASWGameResource())
 	{
 		int index = ENTINDEX(pEntity) - 1;
@@ -1107,13 +1106,9 @@ bool CAlienSwarm::ClientConnected( edict_t *pEntity, const char *pszName, const 
 		{
 			//softcopy: marked players  as ready/not ready on ClientConnected lobby
 			//ASWGameResource()->m_bPlayerReady.Set(index, false);
-			if (playreadyclicked == 2)
-			   ASWGameResource()->m_bPlayerReady.Set(index, bReadyclicked);		//marked players  as ready if bReadyclicked=true
-			else 
-			   ASWGameResource()->m_bPlayerReady.Set(index, false);		//palyers marked as not ready if false.
-
+			ASWGameResource()->m_bPlayerReady.Set(index, playreadyclicked==2 ? bReadyclicked : false);
 		}
-		
+
 		// if we have no leader
 		if (ASWGameResource()->GetLeader() == NULL)
 		{
@@ -1121,18 +1116,8 @@ bool CAlienSwarm::ClientConnected( edict_t *pEntity, const char *pszName, const 
 				ASWGameResource()->SetLeader(pPlayer);
 			//else
 			//Msg("Failed to cast connected player\n");
-			if (index >= 0 && index < 8)
-			{
-				//softcopy: leader marked as ready/not ready on ClientConnected lobby
-				//ASWGameResource()->m_bPlayerReady.Set(index, false);
-				if ( playreadyclicked == 2 )
-					ASWGameResource()->m_bPlayerReady.Set(index, bReadyclicked);	//if bReadyclicked=true, leader marked as ready
-				else
-					ASWGameResource()->m_bPlayerReady.Set(index, false);
-
-			}
 		}
-	}	
+	}
 
 	return BaseClass::ClientConnected(pEntity, pszName, pszAddress, reject, maxrejectlen);
 }
@@ -1145,6 +1130,13 @@ void CAlienSwarm::ClientDisconnected( edict_t *pClient )
 		CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(CBaseEntity::Instance( pClient ) );
 		if ( pPlayer )
 		{
+			//softcopy: clean up disconnected userid for SpectatorInLobby
+			for (int i=0; i<ASW_NUM_MARINE_PROFILES; i++)
+			{
+				if (pPlayerId[i] == pPlayer->GetUserID())
+					pPlayerId[i] = 0;
+			}
+
 			ASW_Client_Effects()->PlayerRemove(pPlayer);
 			if ( ASWGameResource() )
 			{
@@ -1279,6 +1271,7 @@ bool CAlienSwarm::RosterSelect( CASW_Player *pPlayer, int RosterIndex, int nPref
 					bCanSelect = false;
 			}
 		}
+
 		// check this marine isn't already selected by someone else
 		for (int i=0;i<ASWGameResource()->GetMaxMarineResources();i++)
 		{
@@ -1289,6 +1282,26 @@ bool CAlienSwarm::RosterSelect( CASW_Player *pPlayer, int RosterIndex, int nPref
 				break;
 			}
 		}
+
+		//softcopy: not allow spectator to take over player slot
+		if (pPlayer && asw_spectator_takes_slot.GetBool())
+		{
+			CRecipientFilter filter;
+			filter.AddRecipient(pPlayer);
+			int iReserved = asw_lobby_player_select.GetInt();
+			if (SpectatorInLobby(pPlayer, false) && !bIsReserved)	//if player is spectator and not reserved, can't take slot
+			{
+				bCanSelect = bSpectatorCanSelect; //flag spectator can select character if player use chatcommand '/afk release'
+				if (!bSpectatorCanSelect)
+				{
+					const char *text = "No free slots available, you are now spectator.";
+					const char *text2= "You couldn't take over the reserved slots.";
+					UTIL_ClientPrintFilter(filter,ASW_HUD_PRINTTALKANDCONSOLE,ASWGameResource()->m_iNumMarinesSelected >=iReserved ? text:text2);
+					Msg("Spectator \"%s\" has attempted to take over the reserved slots.\n", pPlayer->GetPlayerName());
+				}
+			}
+		}
+
 		if (bCanSelect)
 		{						
 			CASW_Marine_Resource* m = (CASW_Marine_Resource*)CreateEntityByName("asw_marine_resource");
@@ -1322,10 +1335,20 @@ bool CAlienSwarm::RosterSelect( CASW_Player *pPlayer, int RosterIndex, int nPref
 				}
 			}
 			m->Spawn();	// asw needed?
-			//softcopy: for AddMarineResource function, add pPlayer to show player who adding bots
-			//if ( !ASWGameResource()->AddMarineResource( m, nPreferredSlot ) )
-			if ( !ASWGameResource()->AddMarineResource( pPlayer, m, nPreferredSlot ) )
+			if ( !ASWGameResource()->AddMarineResource( m, nPreferredSlot ) )
 			{
+				//softcopy: alert the player no slot availble for adding new marine
+				if (pPlayer)
+				{
+					CRecipientFilter filter;
+					filter.AddRecipient(pPlayer);
+					const char *text = "couldn't add new marine resource to list as no free slots";
+					char text2[128];
+					Q_snprintf(text2, sizeof(text2), "You %s", text);
+					UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, text2);
+					Msg("%s %s\n", pPlayer->GetPlayerName(), text);
+				}
+
 				UTIL_Remove( m );
 				return false;
 			}
@@ -2793,7 +2816,7 @@ void CAlienSwarm::OnServerHibernating()
 			szSaveFilename ) );
 	}
 
-	//softcopy: when server hibernating, skill level or hardcoreFF will reset to normal if it was changed in lobby by player
+	//softcopy: when server hibernating, skill level or hardcoreFF will reset to default/normal level if it's changed in lobby
 	if (asw_hibernate_skill_default.GetBool())
 	{
 		ConVar *var = (ConVar *)cvar->FindVar( "asw_skill" );
@@ -2803,10 +2826,11 @@ void CAlienSwarm::OnServerHibernating()
 			switch( var->GetInt() )
 			{	case 1: lvlname = "Easy"; 	break;	case 2: lvlname = "Normal"; break;	case 3: lvlname = "Hard"; break;
 				case 4: lvlname = "Insane"; break;	case 5: lvlname = "Brutal"; break;	}
-			var->SetValue( 2 );
-			Msg( "Skill level \"%s\" default to \"Normal\"\n", lvlname );
+			if ( var->GetInt() != asw_level_lock.GetInt() )
+				Msg( "Skill level \"%s\" has changed to default level\n", lvlname );
+			var->SetValue( asw_level_lock.GetInt() > 0 ? asw_level_lock.GetInt() : 2 );
 		}
-		if ( CAlienSwarm::IsHardcoreFF() && !asw_hardcore_ff_force.GetBool() )
+		if ( IsHardcoreFF() && !asw_hardcore_ff_force.GetBool() )
 		{
 			asw_marine_ff_absorption.SetValue( 1 );
 			asw_sentry_friendly_fire_scale.SetValue( 0.0f );
@@ -2969,24 +2993,27 @@ ConVar asw_bonus_charges_hornets("asw_bonus_charges_hornets", "3", FCVAR_CHEAT, 
 ConVar asw_bonus_charges_grenades_freeze("asw_bonus_charges_grenades_freeze", "5", FCVAR_CHEAT, "Number of freeze grenades a marine starts out with.");
 ConVar asw_bonus_charges_smart_bomb("asw_bonus_charges_smart_bomb", "1", FCVAR_CHEAT, "Number of smart bomb usages a marine starts out with.");
 ConVar asw_bonus_charges_laser_mines("asw_bonus_charges_mines_laser", "12", FCVAR_CHEAT, "Number of laser mines a marine starts out with.");
-ConVar asw_bonus_charges_stun_grenade("asw_bonus_charges_stun_grenade", "5", FCVAR_CHEAT, "Number of P-rifle grenades marine starts out with.");
+//ConVar asw_bonus_charges_stun_grenade("asw_bonus_charges_stun_grenade", "5", FCVAR_CHEAT, "Number of P-rifle grenades marine starts out with."); //softcopy:
 ConVar asw_bonus_charges_stim("asw_bonus_charges_stim", "3", FCVAR_CHEAT, "Number of adrenaline usages a marine starts out with.");
+ConVar asw_bonus_charges_medkit("asw_bonus_charges_medkit", "254", FCVAR_CHEAT, "Number of medkit usages a marine starts out with.");	//softcopy:
 
 //softcopy: ammo cvars for primary weapon.
-ConVar asw_bonus_charges_autogun("asw_bonus_charges_autogun", "250", FCVAR_CHEAT, "set ammo in clip of autogun.");
-ConVar asw_bonus_charges_flamer("asw_bonus_charges_flamer", "40", FCVAR_CHEAT, " Set ammo in clip of flamer.");
-ConVar asw_bonus_charges_minigun("asw_bonus_charges_minigun", "250", FCVAR_CHEAT, "set ammo in clip of minigun.");
-ConVar asw_bonus_charges_grenade_launcher("asw_bonus_charges_grenade_launcher", "6", FCVAR_CHEAT, "set ammo in clip of grenades in launcher.");
-ConVar asw_bonus_charges_pistol("asw_bonus_charges_pistol", "24", FCVAR_CHEAT, "set ammo in clip of pistol.");
-ConVar asw_bonus_charges_pdw("asw_bonus_charges_pdw", "80", FCVAR_CHEAT, "set ammo in clip of pdw.");
-ConVar asw_bonus_charges_prifle("asw_bonus_charges_prifle", "98", FCVAR_CHEAT, "set ammo in clip of prifle.");
-ConVar asw_bonus_charges_rifle("asw_bonus_charges_rifle", "98", FCVAR_CHEAT, "set ammo in clip of rifle.");
-ConVar asw_bonus_charges_railgun("asw_bonus_charges_railgun", "1", FCVAR_CHEAT, "set ammo in clip of railgun.");
-ConVar asw_bonus_charges_shotgun("asw_bonus_charges_shotgun", "4", FCVAR_CHEAT, "set ammo in clip of shotgun.");
-ConVar asw_bonus_charges_sniper_rifle("asw_bonus_charges_sniper_rifle", "12", FCVAR_CHEAT, "set ammo in clip of sniper rifle.");
-ConVar asw_bonus_charges_vindicator("asw_bonus_charges_vindicator", "14", FCVAR_CHEAT, "set ammo in clip of vindicator.");
-ConVar asw_bonus_charges_rifle_grenade("asw_bonus_charges_rifle_grenade", "5", FCVAR_CHEAT, "Number of rifle grenades marine starts out with.");  
-ConVar asw_bonus_charges_vindicator_grenade("asw_bonus_charges_vindicator_grenade","5",FCVAR_CHEAT,"Number of vindicator grenades marine starts out with."); 
+ConVar asw_bonus_charges_autogun("asw_bonus_charges_autogun", "250", FCVAR_CHEAT, "Sets ammo in clip of autogun.");
+ConVar asw_bonus_charges_flamer("asw_bonus_charges_flamer", "40", FCVAR_CHEAT, " Sets ammo in clip of flamer.");
+ConVar asw_bonus_charges_minigun("asw_bonus_charges_minigun", "250", FCVAR_CHEAT, "Sets ammo in clip of minigun.");
+ConVar asw_bonus_charges_grenade_launcher("asw_bonus_charges_grenade_launcher", "6", FCVAR_CHEAT, "Sets ammo in clip of grenades in launcher.");
+ConVar asw_bonus_charges_pistol("asw_bonus_charges_pistol", "24", FCVAR_CHEAT, "Sets ammo in clip of pistol.");
+ConVar asw_bonus_charges_pdw("asw_bonus_charges_pdw", "80", FCVAR_CHEAT, "Sets ammo in clip of pdw.");
+ConVar asw_bonus_charges_prifle("asw_bonus_charges_prifle", "98", FCVAR_CHEAT, "Sets ammo in clip of prifle.");
+ConVar asw_bonus_charges_stun_grenade("asw_bonus_charges_stun_grenade", "5", FCVAR_CHEAT, "Number of P-rifle grenades marine starts out with.",true,0,true,9);
+ConVar asw_bonus_charges_rifle("asw_bonus_charges_rifle", "98", FCVAR_CHEAT, "Sets ammo in clip of rifle.");
+ConVar asw_bonus_charges_rifle_grenade("asw_bonus_charges_rifle_grenade", "5", FCVAR_CHEAT, "Number of rifle grenades marine starts out with.",true,0,true,9);
+ConVar asw_bonus_charges_railgun("asw_bonus_charges_railgun", "1", FCVAR_CHEAT, "Sets ammo in clip of railgun.");
+ConVar asw_bonus_charges_shotgun("asw_bonus_charges_shotgun", "4", FCVAR_CHEAT, "Sets ammo in clip of shotgun.");
+ConVar asw_bonus_charges_sniper_rifle("asw_bonus_charges_sniper_rifle", "12", FCVAR_CHEAT, "Sets ammo in clip of sniper rifle.");
+ConVar asw_bonus_charges_vindicator("asw_bonus_charges_vindicator", "14", FCVAR_CHEAT, "Sets ammo in clip of vindicator.");
+ConVar asw_bonus_charges_vindicator_grenade("asw_bonus_charges_vindicator_grenade","5",FCVAR_CHEAT,"Number of vindicator grenades marine starts out with.",true,0,true,9); 
+ConVar asw_bonus_charges_healgun("asw_bonus_charges_healgun", "185", FCVAR_CHEAT, "Number of healgun usages a marine starts out with.");
 
 void CAlienSwarm::GiveStartingWeaponToMarine(CASW_Marine* pMarine, int iEquipIndex, int iSlot)
 {
@@ -3048,7 +3075,7 @@ void CAlienSwarm::GiveStartingWeaponToMarine(CASW_Marine* pMarine, int iEquipInd
 	if ( !stricmp(szWeaponClass, "asw_weapon_ammo_satchel" ) ) {
 		iPrimaryAmmo += asw_ammo_satchel_bonus.GetInt();
 	}
-
+	
 	pWeapon->SetClip1( iPrimaryAmmo );
 
 	//Ch1ckensCoop: Primary ammo control is handled entirly in the "sk_max_asw_" commands.
@@ -3060,22 +3087,27 @@ void CAlienSwarm::GiveStartingWeaponToMarine(CASW_Marine* pMarine, int iEquipInd
 	//Ch1ckensCoop: Secondary ammo control
 	if ( !stricmp(szWeaponClass, "asw_weapon_prifle") )
 		pWeapon->SetClip2(asw_bonus_charges_stun_grenade.GetInt());
+	//softcopy:
+	if ( !stricmp(szWeaponClass, "asw_weapon_rifle"))
+		pWeapon->SetClip2(asw_bonus_charges_rifle_grenade.GetInt());
+	if ( !stricmp(szWeaponClass, "asw_weapon_vindicator"))
+		pWeapon->SetClip2(asw_bonus_charges_vindicator_grenade.GetInt());
 
-	//softcopy: primary ammo control not more than limitation 255
+	//softcopy: primary ammo control not more than limitation 254
 	if ( !stricmp(szWeaponClass, "asw_weapon_autogun") )
-		pWeapon->SetClip1(asw_bonus_charges_autogun.GetInt()); 
+		pWeapon->SetClip1(asw_bonus_charges_autogun.GetInt());
 	if ( !stricmp(szWeaponClass, "asw_weapon_flamer") )
 		pWeapon->SetClip1(asw_bonus_charges_flamer.GetInt());
     if ( !stricmp(szWeaponClass, "asw_weapon_grenade_launcher") )
-		pWeapon->SetClip1(asw_bonus_charges_grenade_launcher.GetInt());  
+		pWeapon->SetClip1(asw_bonus_charges_grenade_launcher.GetInt());
 	if ( !stricmp(szWeaponClass, "asw_weapon_minigun") )
-		pWeapon->SetClip1(asw_bonus_charges_minigun.GetInt());  
+		pWeapon->SetClip1(asw_bonus_charges_minigun.GetInt());
     if ( !stricmp(szWeaponClass, "asw_weapon_pistol") )
-		pWeapon->SetClip1(asw_bonus_charges_pistol.GetInt());	
+		pWeapon->SetClip1(asw_bonus_charges_pistol.GetInt());
     if ( !stricmp(szWeaponClass, "asw_weapon_prifle") )
 		pWeapon->SetClip1(asw_bonus_charges_prifle.GetInt());
     if ( !stricmp(szWeaponClass, "asw_weapon_pdw") )
-		pWeapon->SetClip1(asw_bonus_charges_pdw.GetInt());	
+		pWeapon->SetClip1(asw_bonus_charges_pdw.GetInt());
 	if ( !stricmp(szWeaponClass, "asw_weapon_railgun") )
 		pWeapon->SetClip1(asw_bonus_charges_railgun.GetInt());
 	if ( !stricmp(szWeaponClass, "asw_weapon_rifle") )
@@ -3086,13 +3118,9 @@ void CAlienSwarm::GiveStartingWeaponToMarine(CASW_Marine* pMarine, int iEquipInd
 		pWeapon->SetClip1(asw_bonus_charges_sniper_rifle.GetInt());
 	if ( !stricmp(szWeaponClass, "asw_weapon_vindicator") )
 		pWeapon->SetClip1(asw_bonus_charges_vindicator.GetInt());
-	//Extra secondary ammo control		
-	if ( !stricmp(szWeaponClass, "asw_weapon_rifle"))                                
-		pWeapon->SetClip2(asw_bonus_charges_rifle_grenade.GetInt());       
-	if ( !stricmp(szWeaponClass, "asw_weapon_vindicator"))          
-		pWeapon->SetClip2(asw_bonus_charges_vindicator_grenade.GetInt()); 	
+	if ( !stricmp(szWeaponClass, "asw_weapon_heal_gun") )
+		pWeapon->SetClip1(asw_bonus_charges_healgun.GetInt());
 
-	
 	//Ch1ckensCoop: Extra ammo control
 	if ( !stricmp(szWeaponClass, "asw_weapon_tesla_trap") )
 		pWeapon->SetClip1(asw_bonus_charges_tesla_trap.GetInt());
@@ -3116,6 +3144,9 @@ void CAlienSwarm::GiveStartingWeaponToMarine(CASW_Marine* pMarine, int iEquipInd
 		pWeapon->SetClip1(asw_bonus_charges_grenades.GetInt());
 	if ( !stricmp(szWeaponClass, "asw_weapon_stim"))
 		pWeapon->SetClip1(asw_bonus_charges_stim.GetInt());
+	//softcopy:
+	if ( !stricmp(szWeaponClass, "asw_weapon_medkit"))
+		pWeapon->SetClip1(asw_bonus_charges_medkit.GetInt());
 
 	// equip the weapon
 	pMarine->Weapon_Equip_In_Index( pWeapon, iSlot );
@@ -5448,12 +5479,9 @@ void CAlienSwarm::OnSkillLevelChanged( int iNewLevel )
 
 	m_iSkillLevel = iNewLevel;
 
-	//softcopy: the chosen level show to players(related to asw_level_lock statments)
-	char text[64]; 
-	if (!Q_strcmp( szDifficulty, "imba")) 
-		Q_snprintf(text, sizeof(text),"%s", "brutal");
-	else 
-		Q_snprintf(text, sizeof(text),"%s", szDifficulty);
+	//softcopy: the chosen level show to players(related to asw_level_lock statements)
+	char text[64];
+	Q_snprintf(text, sizeof(text),"%s", !Q_strcmp( szDifficulty, "imba") ? "brutal" : szDifficulty);
 	*text=(char)toupper(*text);
 	UTIL_ClientPrintAll( ASW_HUD_PRINTTALKANDCONSOLE, CFmtStr("This server is now on %s\n", text) );
 	Msg("Skill level changed to \"%s\" \n", text);
@@ -5494,7 +5522,7 @@ void CAlienSwarm::RequestSkill( CASW_Player *pPlayer, int nSkill )
 				CReliableBroadcastRecipientFilter filter;
 				filter.RemoveRecipient( pPlayer );		// notify everyone except the player changing the difficulty level
 
-				//softcopy: skill level lock cvar control, same as plugin 'asw-exec-skills.smx'
+				//softcopy: skill level lock cvar control, we don't need 'asw-exec-skills' to do this!
 				if ( asw_level_lock.GetInt() > 0 )
 				{
 					if ( var->GetInt() < asw_level_lock.GetInt() )    
@@ -5509,12 +5537,13 @@ void CAlienSwarm::RequestSkill( CASW_Player *pPlayer, int nSkill )
 						  case 4: lvlname = "Insane"; break;  
 						}
 						char text[128];	Q_snprintf(text, sizeof(text), "%s Level is not allowed on this server", lvlname );
-						UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, text);	UTIL_LogPrintf("\"%s\"\n",text); Msg("%s\n",text);
+						UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, text);
+						Msg("%s\n",text);
 					}
 					engine->ServerCommand(CFmtStr("exec skill_%d.cfg\n", var->GetInt()));
 					//Msg("Ran skill_%d.cfg\n", var->GetInt());   //dedug check: whick skill file executed
 				}
-				
+
 				switch(var->GetInt())
 				{
 				case 1: UTIL_ClientPrintFilter( filter, ASW_HUD_PRINTTALKANDCONSOLE, "#asw_set_difficulty_easy", pPlayer->GetPlayerName() ); break;
@@ -5959,14 +5988,16 @@ void CAlienSwarm::SetKickVote(CASW_Player *pPlayer, int iPlayerIndex)
 					return;
 				}
 			}
-			if ( ( sv_vote_kick_ban_duration.GetInt() > 0 ) && !bPlayerCrashed && !isAdmin )  
+			int iMins = sv_vote_kick_ban_duration.GetInt();
+			if ( iMins >0 && !bPlayerCrashed && !isAdmin )  
 			{
 				// don't roll the kick command into this, it will fail on a lan, where kickid will go through
-				engine->ServerCommand( CFmtStr( "banid %d %d;", sv_vote_kick_ban_duration.GetInt(), pOtherPlayer->GetUserID() ) );
+				engine->ServerCommand( CFmtStr( "banid %d %d;", iMins, pOtherPlayer->GetUserID() ) );
 			}
 			if ( !isAdmin )
 			{	
-				Q_snprintf(buffer, sizeof(buffer), "kickid %d\n", pOtherPlayer->GetUserID());
+				const char *text = iMins > 1 ? "minutes" : "minute";
+				Q_snprintf(buffer, sizeof(buffer), "kickid %d Vote kicked: %d %s ban \n", pOtherPlayer->GetUserID(), iMins, text );
 				Msg("sending command: %s\n", buffer);
 				engine->ServerCommand(buffer);	
 				UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, "#asw_player_kicked", pOtherPlayer->GetPlayerName());
@@ -5976,7 +6007,6 @@ void CAlienSwarm::SetKickVote(CASW_Player *pPlayer, int iPlayerIndex)
 				Q_snprintf(buffer, sizeof(buffer), "%s is immune from vote kicking on this server!", pOtherPlayer->GetPlayerName());
 				UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, " ");		//add a line before msg
 				UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, buffer);
-				UTIL_LogPrintf( "%s\n", buffer );
 				Msg( "%s\n", buffer );
 			}
 
@@ -5994,7 +6024,7 @@ void CAlienSwarm::SetKickVote(CASW_Player *pPlayer, int iPlayerIndex)
 				//softcopy: log who vote kicking.
 				char text[256];
 				Q_snprintf(text, sizeof(text), "**** \"%s\" wants \"%s\" to be kicked ****\n", pPlayer->GetPlayerName(), pOtherPlayer->GetPlayerName());
-				UTIL_LogPrintf(text); Msg(text); 
+				Msg(text);
 			}
 		}
 		pPlayer->m_fLastKLVoteTime = gpGlobals->curtime;
@@ -6087,7 +6117,7 @@ void CAlienSwarm::StartVote(CASW_Player *pPlayer, int iVoteType, const char *szV
 	if (iVoteType == ASW_VOTE_CHANGE_MISSION)
 	{
 		UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, "#asw_vote_mission_start", pPlayer->GetPlayerName(), desc);
-		//softcopy: want to know who vote the mission
+		//softcopy: who vote the mission
 		Msg("Player %s voting mission: ----- %s -----\n" , pPlayer->GetPlayerName(), desc);
 	}
 	else if (iVoteType == ASW_VOTE_SAVED_CAMPAIGN)
@@ -6556,45 +6586,8 @@ void CAlienSwarm::BroadcastSound( const char *sound )
 
 void CAlienSwarm::OnPlayerFullyJoined( CASW_Player *pPlayer )
 {
-	//softcopy: players below the required entrance level will be auto kicked when logged in.
-	if ( asw_autokick_player.GetBool() &&  pPlayer && pPlayer->entindex() )
-	{
-		int elevel = 0, islevel = 0, calexp = 0;
-		char text[64], text2[64], text3[128];
-		int iexplevel  = asw_autokick_player_experience.GetInt(); //kick player who below experience points value.
-		int ipromlevel = asw_autokick_player_promotion.GetInt();  //kick player who below promotion value(0-3) only, more than that is too harsh.  
-		if ( ( pPlayer->GetExperience() < iexplevel ) && ( pPlayer->GetPromotion() <= ipromlevel ) )  
-		{ 
-			for (int i=0; i <= 26; i++)
-			{
-				if ( iexplevel >= calexp  &&  i <= 26 )
-					islevel = i + 1;                    //get input value to calucate the player level   
-				if ( pPlayer->GetExperience() >= calexp  &&  i <= 26 ) 
-					elevel = i + 1;                     //get player exp from Steam to calcuate player level
-				calexp = calexp + (1000 +( 50 * i ));   //http://alienswarm.wikia.com/wiki/Leveling for Player experiences table details.
-				if (i == 19)
-					calexp = calexp + 50;               //adjustment exp level after looping to match with Steam 
-				if (i == 20)
-					calexp = calexp - 50;
-				//Msg("experience table: %d\n",calexp); //debug check: calculated experience value.
-			}
-			if ( pPlayer->GetPromotion() == 0 )
-			{
-				Q_snprintf(text, sizeof(text),"<level %d> was auto kicked", elevel);
-				Q_snprintf(text2,sizeof(text2),"need level %d+ to join this modded server", islevel);
-			}
-			else
-			{ 
-				Q_snprintf(text, sizeof(text),"<promoted %d level %d> was auto kicked", elevel, pPlayer->GetPromotion());
-				Q_snprintf(text2,sizeof(text2),"need promoted %d level %d+ to join this modded server", islevel, ipromlevel); 
-			}
-			engine->ServerCommand(CFmtStr("kickid %s Auto kicked:  Sorry! %s\n", pPlayer->GetASWNetworkID(), text2));
-			Q_snprintf(text3, sizeof(text3),"%s %s, %s\n", pPlayer->GetPlayerName(), text, text2);  
-			UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE,text3);
-			UTIL_LogPrintf("Client %s", text3);	Msg("Client %s", text3);
-		}
-	}
-
+	OnPlayerFullyJoinedCheck(pPlayer);	//softcopy: player login criteria check
+	
 	// Set briefing start time
 	m_fBriefingStartedTime = gpGlobals->curtime;
 }
@@ -6894,9 +6887,8 @@ void CAlienSwarm::LevelInitPostEntity()
 	char execCmd[350];
 	Q_snprintf(execCmd, sizeof(execCmd), "exec server\n", mapName);
 	engine->ServerCommand(execCmd);
-	//softcopy: preventing execute lobby.cfg
 	//if (asw_map_configs.GetBool())
-	if (asw_map_configs.GetBool() && !IsLobbyMap())
+	if (asw_map_configs.GetBool() && !IsLobbyMap())	//softcopy: preventing execute lobby.cfg
 	{
 		//Ch1ckensCoop: Fix the per-map configs.
 		Q_snprintf(execCmd, sizeof(execCmd), "exec asw_mapconfigs/%s\n", mapName);
@@ -6909,7 +6901,7 @@ void CAlienSwarm::LevelInitPostEntity()
 		DevMsg("Ran command '%s'\n", execCmd);
 	}
 
-	//softcopy: skill lock control init if activated. Same function as plugin 'asw-exec-skills.smx'
+	//softcopy: skill lock control init if activated.
 	if (asw_level_lock.GetInt() > 0 )
 	{
 		if (asw_skill.GetInt() <= asw_level_lock.GetInt())
@@ -7218,6 +7210,111 @@ bool CAlienSwarm::IsOnslaught()
 {
 	return ( asw_horde_override.GetBool() || asw_wanderer_override.GetBool() );
 }
+
+//softcopy:
+void CAlienSwarm::OnPlayerFullyJoinedCheck(CASW_Player *pPlayer)
+{
+	if (!pPlayer)
+		return;
+
+	if (asw_autokick_player.GetBool())
+	{
+		int iexplevel  = asw_autokick_player_experience.GetInt(); //kick player who below experience points value.
+		int ipromlevel = asw_autokick_player_promotion.GetInt();  //kick player who below promotion value(0-3) only, more than that is too harsh.
+		if ( (pPlayer->GetExperience() < iexplevel ) && ( pPlayer->GetPromotion() <= ipromlevel ) )
+		{
+			int elevel = 0, islevel = 0, calexp = 0;
+			for (int i=0; i <= 26; i++)
+			{
+				if ( iexplevel >= calexp && i <= 26 )
+					islevel = i + 1;                    //get the input value to calcuate the player level.
+				if ( pPlayer->GetExperience() >= calexp && i <= 26 )
+					elevel = i + 1;                     //get the player experience from Steam to calcuate their level.
+				calexp = calexp + (1000 +( 50 * i ));   //http://alienswarm.wikia.com/wiki/Leveling for Player experiences table details.
+				//Msg("experience table: %d, level %i\n", calexp, i+2); //debug check: calculated experience value.
+			}
+
+			char text[64], text2[64], text3[128];
+			pPlayer->GetPromotion()==0 ? (Q_snprintf(text, sizeof(text),"<level %d> was auto kicked", elevel),
+										  Q_snprintf(text2,sizeof(text2),"need level %d+ to join this modded server", islevel)) :
+										 (Q_snprintf(text, sizeof(text),"<promoted %d level %d> was auto kicked", elevel, pPlayer->GetPromotion()),
+										  Q_snprintf(text2,sizeof(text2),"need promoted %d level %d+ to join this modded server",islevel,ipromlevel));
+
+			engine->ServerCommand(CFmtStr("kickid %d Auto kicked:  Sorry! %s\n", pPlayer->GetUserID(), text2));
+			Q_snprintf(text3, sizeof(text3),"%s %s, %s\n", pPlayer->GetPlayerName(), text, text2);
+			UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE,text3);
+			UTIL_LogPrintf("Client %s", text3);
+			Msg("Client %s", text3);
+		}
+	}
+
+	if (asw_spectator_takes_slot.GetBool() || bReadyclicked)	//marks spectator as ready in lobby
+	{
+		if (SpectatorInLobby(pPlayer, true) && !bIsReserved)
+			ASWGameResource()->m_bPlayerReady.Set(pPlayer->entindex()-1, true);
+	}
+}
+bool CAlienSwarm::SpectatorInLobby(CASW_Player *pPlayer, bool bAddpPlayerId)	//check any spectators in lobby
+{
+	int iPlayers = 0, iReserved = asw_lobby_player_select.GetInt();
+	bIsReserved = false;
+	char buffer[128];
+	Q_snprintf(buffer, sizeof(buffer), "%s%s", pPlayer->GetPlayerName(), pPlayer->GetASWNetworkID());
+
+	for (int i=0; i<ASW_NUM_MARINE_PROFILES; i++)
+	{
+		if (bAddpPlayerId)
+		{
+			CASW_Player *pOtherPlayer = dynamic_cast<CASW_Player*>(UTIL_PlayerByIndex(i+1));
+			if (pOtherPlayer && pOtherPlayer->IsConnected())
+			{
+				for (int j=0; j<ASW_NUM_MARINE_PROFILES; j++)	//clean up the userid in array
+				{
+					if (pPlayerId[j] > 0 && pPlayerId[j] == pOtherPlayer->GetUserID())
+						pPlayerId[j] = 0;
+				}
+				pPlayerId[i] = pOtherPlayer->GetUserID(); //store the userids after cleaned up
+				iPlayers++;	//count joined players
+				//Msg("Debug Userid: iPlayers= %i, pPlayerId[%i]= %i, %s \n",iPlayers,i,pPlayerId[i],pOtherPlayer->GetPlayerName());
+			}
+		}
+		else
+		{
+			if (pPlayerId[i] > 0)	//count players in lobby
+				iPlayers++;
+		}
+
+		if (GetCampaignSave() && !Q_strcmp(buffer, STRING(GetCampaignSave()->m_LastCommanders[i])))
+			bIsReserved = true;	//flag the player as reserved if the commander was using them last mission
+	}
+
+	if (iPlayers >0 && iPlayers >iReserved)	//sort if spectator found in lobby
+	{
+		int temp=0, i, j;
+		for (i=0; i<ASW_NUM_MARINE_PROFILES; i++)	//descending sort, move non-zero userids to the front in array
+		{
+			for(j=i+1; j<ASW_NUM_MARINE_PROFILES; j++)
+			{
+				if (pPlayerId[i]<pPlayerId[j])
+				{
+					temp=pPlayerId[j];
+					pPlayerId[j]=pPlayerId[i];
+					pPlayerId[i]=temp;
+				}
+			}
+			//Msg("Debug Sortin: iPlayers= %i, pPlayerId[%i]= %i \n", iPlayers, i, pPlayerId[i]);
+		}
+		//check player has the higher userid number than the other 4 reserved players
+		for (i=iPlayers-iReserved; i>0; i--)
+		{
+			if (pPlayerId[i] > 0 && pPlayer->GetUserID() > pPlayerId[i])
+				return true;	//is spectator
+		}
+	}
+
+	return false;
+}
+
 #ifdef GAME_DLL
 //Ch1ckensCoop: entity lister function
 void asw_list_entities(const CCommand &args)

@@ -80,9 +80,7 @@ public:
 	void SetLeader(CASW_Player *pPlayer);
 
 	CASW_Marine_Resource* GetMarineResource(int i);
-	//softcopy: want to know who add bots
-	//bool AddMarineResource( CASW_Marine_Resource* m, int nPreferredSlot=-1 );
-	bool AddMarineResource( CASW_Player *pPlayer, CASW_Marine_Resource* m, int nPreferredSlot=-1 );
+	bool AddMarineResource( CASW_Marine_Resource* m, int nPreferredSlot=-1 );
 	void DeleteMarineResource( CASW_Marine_Resource *m );
 
 	int GetMaxMarineResources() { return ASW_MAX_MARINE_RESOURCES; }

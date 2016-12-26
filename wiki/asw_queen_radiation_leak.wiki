@@ -1,0 +1,12 @@
+
+======Queen radiation gas leak======
+
+= Description =
+
+Sets queen would release radiation gas to hurt marine if she has damaged by marine. 
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.2.0 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Bool] 
+|}

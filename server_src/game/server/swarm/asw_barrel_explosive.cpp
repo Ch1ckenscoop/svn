@@ -18,13 +18,13 @@ ConVar asw_barrel_health_base( "asw_barrel_health_base", "3", FCVAR_CHEAT, "Heal
 ConVar asw_barrel_health_growth( "asw_barrel_health_growth", "0.15", FCVAR_CHEAT, "% change in health per level" );
 
 //softcopy:
-ConVar asw_barrel_color("asw_barrel_color", "255 255 255", FCVAR_NONE, "set the barrel color.");
-ConVar asw_barrel_color2("asw_barrel_color2", "255 255 255", FCVAR_NONE, "set the barrel color2 adjust.");
+ConVar asw_barrel_color("asw_barrel_color", "255 255 255", FCVAR_NONE, "Sets the barrel color.");
+ConVar asw_barrel_color2("asw_barrel_color2", "255 255 255", FCVAR_NONE, "Sets the barrel color2 adjust.");
 ConVar asw_barrel_color2_percent("asw_barrel_color2_percent", "0.0", FCVAR_NONE, "Percentage Adjusts The barrel color2.");
-ConVar asw_barrel_color3("asw_barrel_color3", "255 255 255", FCVAR_NONE, "set the barrel color3.");
+ConVar asw_barrel_color3("asw_barrel_color3", "255 255 255", FCVAR_NONE, "Sets the barrel color3.");
 ConVar asw_barrel_color3_percent("asw_barrel_color3_percent", "0.0", FCVAR_NONE, "Percentage Adjusts The barrel color3.");
-ConVar asw_barrel_explosive_damage("asw_barrel_explosive_damage", "200.0f", FCVAR_NONE, "set the barrel explosive damage.");
-ConVar asw_barrel_explosive_radius("asw_barrel_explosive_radius","160.0f", FCVAR_NONE, "set the barrel explosive radius damage.");
+ConVar asw_barrel_explosive_damage("asw_barrel_explosive_damage", "200.0f", FCVAR_CHEAT, "Sets the barrel explosive damage.");
+ConVar asw_barrel_explosive_radius("asw_barrel_explosive_radius", "160.0f", FCVAR_CHEAT, "Sets the barrel explosive radius damage.");
 
 LINK_ENTITY_TO_CLASS( asw_barrel_explosive, CASW_Barrel_Explosive );
 

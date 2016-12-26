@@ -1,0 +1,12 @@
+======Specator can't take over the reserved marine slot======
+
+= Description =
+
+Controls spectator can't take over marine slot in lobby if player has high latency or no character selected. See also [[afk.wiki | /afk release]]
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.2.0 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Bool] 
+|}
+

@@ -318,9 +318,8 @@ void CASW_Game_Resource::RemoveAMarineFor(CASW_Player *pPlayer)
 	}
 }
 
-//softcopy: want to know who add bot
-//bool CASW_Game_Resource::AddMarineResource( CASW_Marine_Resource *m, int nPreferredSlot )
-bool CASW_Game_Resource::AddMarineResource( CASW_Player *pPlayer, CASW_Marine_Resource *m, int nPreferredSlot )  
+
+bool CASW_Game_Resource::AddMarineResource( CASW_Marine_Resource *m, int nPreferredSlot )
 {
 	//softcopy: selectable player in lobby default=4, will get instability player timeout if it has changed!
 	if (asw_lobby_player_select.GetInt() > 4 && asw_lobby_player_select.GetInt() <= 6)
@@ -369,11 +368,7 @@ bool CASW_Game_Resource::AddMarineResource( CASW_Player *pPlayer, CASW_Marine_Re
 			return true;
 		}
 	}
-	//softcopy: 
-	//Msg("Couldn't add new marine resource to list as no free slots\n");
-	if ( pPlayer )
-		Msg("\"%s\" couldn't add new marine resource to list as no free slots\n", pPlayer->GetPlayerName());
-	
+ 	//Msg("Couldn't add new marine resource to list as no free slots\n");
 	return false;
 }
 
@@ -456,12 +451,9 @@ void CASW_Game_Resource::SetLeader(CASW_Player *pPlayer)
 		// player index is out of range
 		if (iPlayerIndex >= 0 && iPlayerIndex < ASW_MAX_READY_PLAYERS)
 		{
-			//softcopy:
+			//softcopy: set new/old leader marked as ready/not ready in lobby.
 			//m_bPlayerReady.Set(iPlayerIndex, false);
-			if ( asw_marine_lobby_ready.GetInt() == 2 )
-			    m_bPlayerReady.Set(iPlayerIndex, true); 	//set new/old leader marked as ready on lobby.
-			else 
-			    m_bPlayerReady.Set(iPlayerIndex, false);	//set new/old leader marked as not ready on lobby.
+			m_bPlayerReady.Set(iPlayerIndex, asw_marine_lobby_ready.GetInt() == 2 ? true : false );
 		}
 	}
 }

@@ -73,24 +73,23 @@ ConVar asw_shieldbug_color2("asw_shieldbug_color2", "255 255 255", FCVAR_NONE, "
 ConVar asw_shieldbug_color2_percent("asw_shieldbug_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the new model shieldbugs you want to give the color",true,0,true,1);
 ConVar asw_shieldbug_color3("asw_shieldbug_color3", "255 255 255", FCVAR_NONE, "Sets the color of shieldbugs.");
 ConVar asw_shieldbug_color3_percent("asw_shieldbug_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the new model shieldbugs you want to give the color",true,0,true,1);
-ConVar asw_shieldbug_scalemod("asw_shieldbug_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal new model shieldbugs.");
+ConVar asw_shieldbug_scalemod("asw_shieldbug_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal new model shieldbugs.",true,0,true,2);
 ConVar asw_shieldbug_scalemod_percent("asw_shieldbug_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal new model shieldbugs you want to scale.",true,0,true,1);
 ConVar asw_shieldbug_beta_color("asw_shieldbug_beta_color", "255 255 255", FCVAR_NONE, "Sets the color of beta shieldbugs.");
 ConVar asw_shieldbug_beta_color2("asw_shieldbug_beta_color2", "255 255 255", FCVAR_NONE, "Sets the color of beta shieldbugs.");
 ConVar asw_shieldbug_beta_color2_percent("asw_shieldbug_beta_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the beta shieldbugs you want to give the color",true,0,true,1);
 ConVar asw_shieldbug_beta_color3("asw_shieldbug_beta_color3", "255 255 255", FCVAR_NONE, "Sets the color of beta shieldbugs.");
 ConVar asw_shieldbug_beta_color3_percent("asw_shieldbug_beta_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the beta shieldbugs you want to give the color",true,0,true,1);
-ConVar asw_shieldbug_beta_scalemod("asw_shieldbug_beta_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal beta shieldbugs.");
+ConVar asw_shieldbug_beta_scalemod("asw_shieldbug_beta_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal beta shieldbugs.",true,0,true,2);
 ConVar asw_shieldbug_beta_scalemod_percent("asw_shieldbug_beta_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal beta shieldbugs you want to scale.",true,0,true,1);
 ConVar asw_shieldbug_touch_damage("asw_shieldbug_touch_damage", "5", FCVAR_CHEAT, "Sets damage caused by shieldbug on touch.");
-ConVar asw_shieldbug_ignite("asw_shieldbug_ignite", "0", FCVAR_CHEAT, "Sets 1=melee, 2=touch, 3=All, ignite marine on shieldbug melee/touch.");
-ConVar asw_shieldbug_explode("asw_shieldbug_explode", "0", FCVAR_CHEAT, "Sets 1=melee, 2=touch, 3=All, explode marine on shieldbug melee/touch.");
-ConVar asw_shieldbug_touch_onfire("asw_shieldbug_touch_onfire", "0", FCVAR_CHEAT, "Ignite marine if shieldbug body on fire touch.");
+ConVar asw_shieldbug_ignite("asw_shieldbug_ignite", "0", FCVAR_CHEAT, "Ignites marine on shieldbug melee/touch(1=melee, 2=touch, 3=All).");
+ConVar asw_shieldbug_explode("asw_shieldbug_explode", "0", FCVAR_CHEAT, "Explodes marine on shieldbug melee/touch(1=melee, 2=touch, 3=All).");
+ConVar asw_shieldbug_touch_onfire("asw_shieldbug_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if shieldbug body on fire touch.");
 ConVar asw_shieldbug_beta_gib_chance("asw_shieldbug_beta_gib_chance", "0.80", FCVAR_CHEAT, "Chance of beta shieldbug break into ragdoll pieces instead of ragdoll.",true,0,true,1);
-ConVar asw_shieldbug_beta_defend("asw_shieldbug_beta_defend", "1", FCVAR_CHEAT, "Sets 1=keep on defend attack, 0=defend attack randomly.");
+ConVar asw_shieldbug_beta_defend("asw_shieldbug_beta_defend", "1", FCVAR_CHEAT, "1=keep on defend attack, 0=defend attack randomly.");
 //ConVar asw_old_shieldbug ("asw_old_shieldbug", "0", FCVAR_CHEAT, "1= old shield bug, 0 = new model");
-ConVar asw_old_shieldbug ("asw_old_shieldbug", "0", FCVAR_CHEAT, "1= beta shieldbug, 0 = new model, 2=random all");
-extern ConVar asw_debug_alien_ignite;
+ConVar asw_old_shieldbug ("asw_old_shieldbug", "0", FCVAR_CHEAT, "1 = beta shieldbug, 0 = new model, 2 = random all");
 
 ConVar asw_shieldbug_force_defend("asw_shieldbug_force_defend", "0", FCVAR_CHEAT, "0 = no force, 1 = force open, 2 = force defend");
 ConVar asw_shieldbug_health("asw_shieldbug_health", "1000", FCVAR_CHEAT, "Adjusts the health of the shieldbug."); //Ch1ckensCoop: convar for adjusting shieldbug health.
@@ -119,10 +118,13 @@ CASW_Shieldbug::CASW_Shieldbug( void )
 	{
 		m_pszAlienModelName = SWARM_NEW_SHIELDBUG_MODEL;
 	}
+	
+	//softcopy: random both shieldbug/beta shieldbug
+	asw_old_shieldbug.GetFloat()==2 ? (m_pszAlienModelName=RandomFloat()<=0.5 ? SWARM_SHIELDBUG_MODEL:SWARM_NEW_SHIELDBUG_MODEL) : NULL;
+	m_fLastTouchHurtTime = 0;
+
 	m_bLastShouldDefend = false;  
 	m_nDeathStyle = kDIE_FANCY;
-
-	m_fLastTouchHurtTime = 0;	//softcopy:
 }
 
 LINK_ENTITY_TO_CLASS( asw_shieldbug, CASW_Shieldbug );
@@ -142,10 +144,6 @@ END_DATADESC()
 
 void CASW_Shieldbug::Spawn( void )
 {
-	//softcopy: both shieldbug/beta shieldbug
-	if (asw_old_shieldbug.GetFloat() == 2 )
-		m_pszAlienModelName = RandomFloat() <= 0.5 ? SWARM_SHIELDBUG_MODEL : SWARM_NEW_SHIELDBUG_MODEL; 
-
 	SetHullType(HULL_WIDE_SHORT);
 
 	BaseClass::Spawn();
@@ -170,17 +168,10 @@ void CASW_Shieldbug::Spawn( void )
 
 	//softcopy: set shieldbugs color & scale 
 	//SetRenderColor(asw_shieldbug_color.GetColor().r(), asw_shieldbug_color.GetColor().g(), asw_shieldbug_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
-	if (!Q_strcmp(m_pszAlienModelName, SWARM_SHIELDBUG_MODEL))
-	{
-		alienLabel = "shieldbug_beta";
-		SetColorScale( alienLabel );
-		m_bDefending = true;	//fix beta shieldbug no defending after hurt
-	}
-	else
-	{
-		alienLabel = "shieldbug";
-		SetColorScale( alienLabel );
-	}
+	bool bOldShieldbugCompare = !Q_strcmp(m_pszAlienModelName, SWARM_SHIELDBUG_MODEL);
+	alienLabel = bOldShieldbugCompare ? "shieldbug_beta" : "shieldbug";
+	SetColorScale( alienLabel );
+	bOldShieldbugCompare ? m_bDefending = true : NULL;	//fix beta shieldbug no defending after hurted by marine
 }
 
 CASW_Shieldbug::~CASW_Shieldbug()

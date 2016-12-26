@@ -214,8 +214,8 @@ ConVar sv_autosave( "sv_autosave", "1", 0, "Set to 1 to autosave game on level t
 ConVar *sv_maxreplay = NULL;
 
 //softcopy:
-ConVar asw_onslaught_force("asw_onslaught_force", "1", FCVAR_CHEAT, "default = 1, set 0 to disable Onslaught force on.");
-ConVar asw_hardcore_ff_force("asw_hardcore_ff_force","0", FCVAR_CHEAT, "default = 0, set 1 to enable hardcoreFF force on.");
+ConVar asw_onslaught_force("asw_onslaught_force", "1", FCVAR_CHEAT, "If set to 0, disables Onslaught force on.");
+ConVar asw_hardcore_ff_force("asw_hardcore_ff_force","0", FCVAR_CHEAT, "Sets hardcoreFF force on.");
 extern ConVar asw_hordemode;
 
 static ConVar  *g_pcv_commentary = NULL;
@@ -1909,35 +1909,41 @@ void CServerGameDLL::GetMatchmakingTags( char *buf, size_t bufSize )
 	extern ConVar asw_horde_override;
 	extern ConVar asw_wanderer_override;
 	extern ConVar asw_skill;
-	
+
 	char * const bufBase = buf;
 	int len = 0;
 
-	//softcopy: onslaught/hardcoreFF mode cvar control, same as plugin 'asw-exec-skills.smx'
+	//softcopy: onslaught/hardcoreFF mode cvar control, we don't need 'asw-exec-skills' plugin to do this!
 	char text[128];
 	if ( asw_hardcore_ff_force.GetBool() && !CAlienSwarm::IsHardcoreFF() )
 	{
 		asw_marine_ff_absorption.SetValue( 0 );
-		asw_sentry_friendly_fire_scale.SetValue( 1.0f );
+		//sentry friendly fire scale value sets in asw_marine.cpp
 		Q_snprintf(text, sizeof(text),"Disable hardcore FF is not allowed on this server");
-		UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, text); Msg("%s\n",text);
+		UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, text);
+		Msg("%s\n",text);
 	}
-	if ( asw_onslaught_force.GetBool() && CAlienSwarm::IsOnslaught() )
+	if ( asw_onslaught_force.GetBool() )
 	{
-		if ( !asw_horde_override.GetBool() )	//check asw_horde_override is changed or not
+		if ( CAlienSwarm::IsOnslaught() )
 		{
-			Q_snprintf(text, sizeof(text),"Disabling Onslaught is not allowed on this server");
-			UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, text); Msg("%s\n",text);
+			if ( !asw_horde_override.GetBool() )	//check asw_horde_override is changed or not
+			{
+				Q_snprintf(text, sizeof(text),"Disabling Onslaught is not allowed on this server");
+				UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, text);
+				Msg("%s\n",text);
+			}
+			asw_hordemode.SetValue( 1 );
+			//asw_horde_override.SetValue( 1 );
+			asw_wanderer_override.SetValue( 1 );
 		}
-		asw_hordemode.SetValue( 1 );
-		asw_horde_override.SetValue( 1 );
-		asw_wanderer_override.SetValue( 1 );
 	}
-	else if (CAlienSwarm::IsOnslaught())
-		asw_hordemode.SetValue( 1 );	
 	else
-		asw_hordemode.SetValue( 0 );
-	
+	{
+		asw_hordemode.SetValue(CAlienSwarm::IsOnslaught() ? 1 : 0);
+		asw_wanderer_override.SetValue(CAlienSwarm::IsOnslaught() ? 1 : 0);
+	}
+
 	// hardcore friendly fire
 	if ( CAlienSwarm::IsHardcoreFF() )
 	{

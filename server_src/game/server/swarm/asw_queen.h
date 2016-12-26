@@ -6,6 +6,7 @@
 
 #include "asw_alien.h"
 #include "util_shared.h"
+#include "asw_barrel_radioactive.h"		//softcopy: 
 
 //Ch1ckensCoop: Prevent multiple attacks per slash
 #define ASW_QUEEN_ENTITYSTORAGE_NUM 64
@@ -76,7 +77,11 @@ public:
 	virtual void MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes)
 				{return	BaseClass::MarineExplode(pMarine, alienLabel, damageTypes);}
 	virtual void SetColorScale(const char *alienLabel) {return BaseClass::SetColorScale(alienLabel);}
-
+	virtual void StartRadLoopSound();
+	virtual void DoRadiationLeak(const CTakeDamageInfo &info);
+	CSoundPatch	*m_pRadSound;
+	CHandle<CASW_Radiation_Volume> m_hRadVolume;
+	
 	virtual	bool		AllowedToIgnite( void ) { return false; }
 
 	// head turning

@@ -45,18 +45,17 @@ ConVar asw_drone_color2("asw_drone_color2", "255 255 255", FCVAR_NONE, "Sets the
 ConVar asw_drone_color2_percent("asw_drone_color2_percent", "0", FCVAR_NONE, "Sets the percentage of the drones you want to give the color",true,0,true,1);
 ConVar asw_drone_color3("asw_drone_color3", "255 255 255", FCVAR_NONE, "Sets the color of drones.");
 ConVar asw_drone_color3_percent("asw_drone_color3_percent", "0", FCVAR_NONE, "Sets the percentage of the drones you want to give the color",true,0,true,1);
-ConVar asw_drone_scalemod("asw_drone_scalemod", "1.0", FCVAR_NONE, "Sets the scale of normal drones.");
+ConVar asw_drone_scalemod("asw_drone_scalemod", "1.0", FCVAR_NONE, "Sets the scale of normal drones.",true,0,true,2);
 ConVar asw_drone_scalemod_percent("asw_drone_scalemod_percent", "1.0", FCVAR_NONE, "Sets the percentage of the normal drones you want to scale.",true,0,true,1);
 ConVar asw_drone_jumper_color2("asw_drone_jumper_color2", "255 255 255", FCVAR_NONE, "Sets the color of Mod-jumping drones.");
 ConVar asw_drone_jumper_color2_percent("asw_drone_jumper_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the Mod-Jumping drones you want to give the color",true,0,true,1);
 ConVar asw_drone_jumper_color3("asw_drone_jumper_color3", "255 255 255", FCVAR_NONE, "Sets the color of Mod-jumping drones.");
 ConVar asw_drone_jumper_color3_percent("asw_drone_jumper_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the Mod-Jumping drones you want to give the color",true,0,true,1);
-ConVar asw_drone_jumper_scalemod("asw_drone_jumper_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal drones.");
+ConVar asw_drone_jumper_scalemod("asw_drone_jumper_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal drones.",true,0,true,2);
 ConVar asw_drone_jumper_scalemod_percent("asw_drone_jumper_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal Mod-Jumping drones you want to scale.",true,0,true,1);
-ConVar asw_drone_touch_ignite("asw_drone_touch_ignite", "0", FCVAR_CHEAT, "set 1=drone, 2=jumper, 3=All, ignite marine on touch.");
-ConVar asw_drone_melee_ignite("asw_drone_melee_ignite", "0", FCVAR_CHEAT, "set 1=drone, 2=jumper, 3=All, ignite marine on melee.");
-ConVar asw_drone_touch_onfire("asw_drone_touch_onfire", "0", FCVAR_CHEAT, "Ignite marine if drone body on fire touch.");
-extern ConVar asw_debug_alien_ignite;
+ConVar asw_drone_touch_ignite("asw_drone_touch_ignite", "0", FCVAR_CHEAT, "Ignites marine on touch(1=drone, 2=jumper, 3=All).");
+ConVar asw_drone_melee_ignite("asw_drone_melee_ignite", "0", FCVAR_CHEAT, "Ignites marine on melee(1=drone, 2=jumper, 3=All).");
+ConVar asw_drone_touch_onfire("asw_drone_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if drone body on fire touch.");
 
 #define ASW_DRONE_MELEE1_START_ATTACK_RANGE asw_drone_start_melee_range.GetFloat()
 #define ASW_DRONE_MELEE1_RANGE asw_drone_melee_range.GetFloat()
@@ -247,9 +246,6 @@ void CASW_Drone_Advanced::Spawn( void )
 		m_bJumper = true;
 		//softcopy:
 		//SetRenderColor(asw_drone_jumper_color.GetColor().r(), asw_drone_jumper_color.GetColor().g(), asw_drone_jumper_color.GetColor().b());	//Ch1ckensCoop: Allow setting colors.
-		alienLabel = "drone_jumper";
-		SetColorScale( alienLabel );
-		
 		m_ClassType = (Class_T)CLASS_ASW_DRONE_JUMPER;
 	}
 	else
@@ -257,12 +253,10 @@ void CASW_Drone_Advanced::Spawn( void )
 		m_bJumper = false;
 		m_bDisableJump = true;
 		CapabilitiesRemove( bits_CAP_MOVE_JUMP );
-		//softcopy:
-		alienLabel = "drone";
-		SetColorScale( alienLabel );
-
 		m_ClassType = (Class_T)CLASS_ASW_DRONE;
 	}
+
+	SetColorScale( alienLabel = m_bJumper ? "drone_jumper" : "drone" );	//softcopy:
 
 	SetHullType(HULL_MEDIUMBIG);
 
@@ -934,16 +928,13 @@ void CASW_Drone_Advanced::StartTouch( CBaseEntity *pOther )
 		{
 			CTakeDamageInfo info( this, this, 0, DMG_SLASH );
 			damageTypes = "on touch";
-			if (asw_drone_touch_ignite.GetInt() >=2 || (m_bOnFire && asw_drone_touch_onfire.GetInt() > 0))
-			{
-				if (info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_DRONE_JUMPER)
-					MarineIgnite(pMarine, info, alienLabel, damageTypes);
-			}
-			if ((asw_drone_touch_ignite.GetInt()==1 || asw_drone_touch_ignite.GetInt()==3) || (m_bOnFire && asw_drone_touch_onfire.GetInt() > 0))
-			{
-				if (info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_DRONE)
-					MarineIgnite(pMarine, info, alienLabel, damageTypes);
-			}
+			int  iDroneIgnite = asw_drone_touch_ignite.GetInt();
+			bool bDroneOnfire = (m_bOnFire && asw_drone_touch_onfire.GetInt() >0);
+			if ((iDroneIgnite >=2 || bDroneOnfire) && m_bJumper)
+				MarineIgnite(pMarine, info, alienLabel, damageTypes);
+
+			if (((iDroneIgnite==1 || iDroneIgnite==3) || bDroneOnfire) && !m_bJumper)
+				MarineIgnite(pMarine, info, alienLabel, damageTypes);
 		}
 
 		int iTouchDamage = asw_drone_touch_damage.GetInt();
@@ -1005,26 +996,22 @@ void CASW_Drone_Advanced::MeleeAttack( float distance, float damage, QAngle &vie
 		EmitSound( "ASW_Drone.Attack" );
 
 		//softcopy: ignite marine by drone/jumper melee attack, 1=drone, 2=jumper, 3=All.
-		if (  asw_drone_melee_ignite.GetBool() )
+		if ( asw_drone_melee_ignite.GetInt() >= 1 )
 		{
 			CASW_Marine *pMarine = CASW_Marine::AsMarine(pHurt);
 			if ( pMarine )
 			{
 				CTakeDamageInfo info( this, this, 0, DMG_SLASH );
 				damageTypes = "melee attack";
-				if ( asw_drone_melee_ignite.GetInt() >=2)
-				{
-					if (info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_DRONE_JUMPER)
-						MarineIgnite(pMarine, info, alienLabel, damageTypes);
-				}
-				if ( asw_drone_melee_ignite.GetInt()==1 ||  asw_drone_melee_ignite.GetInt()==3)
-				{
-					if (info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_DRONE)
-						MarineIgnite(pMarine, info, alienLabel, damageTypes);
-				}
+				int iDroneMeleeIgnite = asw_drone_melee_ignite.GetInt();
+				if ( iDroneMeleeIgnite >= 2 && m_bJumper )
+					MarineIgnite(pMarine, info, alienLabel, damageTypes);
+
+				if ( (iDroneMeleeIgnite == 1 || iDroneMeleeIgnite == 3) && !m_bJumper )
+					MarineIgnite(pMarine, info, alienLabel, damageTypes);
 			}
 		}
-		
+
 	}
 }
 

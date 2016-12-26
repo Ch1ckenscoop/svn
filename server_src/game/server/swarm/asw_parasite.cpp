@@ -48,26 +48,26 @@ ConVar asw_parasite_safe_color2("asw_parasite_safe_color2", "255 255 255", FCVAR
 ConVar asw_parasite_safe_color2_percent("asw_parasite_safe_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the defanged parasites you want to give the color",true,0,true,1);
 ConVar asw_parasite_safe_color3("asw_parasite_safe_color3", "255 255 255", FCVAR_NONE, "Sets the color of defanged parasites.");
 ConVar asw_parasite_safe_color3_percent("asw_parasite_safe_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the defanged parasites you want to give the color",true,0,true,1);
-ConVar asw_parasite_safe_scalemod("asw_parasite_safe_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal defanged parasites.");
+ConVar asw_parasite_safe_scalemod("asw_parasite_safe_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal defanged parasites.",true,0,true,2);
 ConVar asw_parasite_safe_scalemod_percent("asw_parasite_safe_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal defanged parasites you want to scale.",true,0,true,1);
 ConVar asw_parasite_color2("asw_parasite_color2", "255 255 255", FCVAR_NONE, "Sets the color of old model parasites.");
 ConVar asw_parasite_color2_percent("asw_parasite_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the parasites you want to give the color",true,0,true,1);
 ConVar asw_parasite_color3("asw_parasite_color3", "255 255 255", FCVAR_NONE, "Sets the color of parasites.");
 ConVar asw_parasite_color3_percent("asw_parasite_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the parasites you want to give the color",true,0,true,1);
-ConVar asw_parasite_scalemod("asw_parasite_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal old model parasites.");
+ConVar asw_parasite_scalemod("asw_parasite_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal old model parasites.",true,0,true,2);
 ConVar asw_parasite_scalemod_percent("asw_parasite_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal parasites you want to scale.");
 ConVar asw_parasite_beta_color("asw_parasite_beta_color", "255 255 255", FCVAR_NONE, "Sets the color of new model parasites.");
 ConVar asw_parasite_beta_color2("asw_parasite_beta_color2", "255 255 255", FCVAR_NONE, "Sets the color of new model parasites.");
 ConVar asw_parasite_beta_color2_percent("asw_parasite_beta_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the beta parasites you want to give the color",true,0,true,1);
 ConVar asw_parasite_beta_color3("asw_parasite_beta_color3", "255 255 255", FCVAR_NONE, "Sets the color of parasites.");
 ConVar asw_parasite_beta_color3_percent("asw_parasite_beta_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the beta parasites you want to give the color",true,0,true,1);
-ConVar asw_parasite_beta_scalemod("asw_parasite_beta_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal new model parasites.");
+ConVar asw_parasite_beta_scalemod("asw_parasite_beta_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal new model parasites.",true,0,true,3);
 ConVar asw_parasite_beta_scalemod_percent("asw_parasite_beta_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal beta parasites you want to scale.",true,0,true,1);
-ConVar asw_old_parasite( "asw_old_parasite", "0", FCVAR_CHEAT, "Set 0=parasite, 1=beta parasite, 2=random all.");
-ConVar asw_parasite_ignite("asw_parasite_ignite", "0", FCVAR_CHEAT, "set 1=parasite,2=beta parasite,3=All, ignite marine on touch.");
-ConVar asw_parasite_defanged_ignite("asw_parasite_defanged_ignite", "0", FCVAR_CHEAT, "Ignite marine by defanged parasite.");
-ConVar asw_parasite_beta_poison("asw_parasite_beta_poison", "0", FCVAR_CHEAT, "Set 1 enable poison blur to marine.");
-ConVar asw_parasite_beta_poison_duration("asw_parasite_beta_poison_duration", "2", FCVAR_CHEAT, "Set 1 - 10, poison blur duration.",true,0,true,10);
+ConVar asw_old_parasite( "asw_old_parasite", "0", FCVAR_CHEAT, "0 = parasite, 1 = beta parasite, 2 = random all.");
+ConVar asw_parasite_ignite("asw_parasite_ignite", "0", FCVAR_CHEAT, "Ignites marine on touch(1=parasite, 2=beta parasite, 3=All).");
+ConVar asw_parasite_defanged_ignite("asw_parasite_defanged_ignite", "0", FCVAR_CHEAT, "Ignites marine by defanged parasite.");
+ConVar asw_parasite_beta_poison("asw_parasite_beta_poison", "0", FCVAR_CHEAT, "Enables poison blur to marine.");
+ConVar asw_parasite_beta_poison_duration("asw_parasite_beta_poison_duration", "2", FCVAR_CHEAT, "Sets poison blur duration(1 - 10).",true,0,true,10);
 extern ConVar asw_debug_alien_ignite;
 
 extern ConVar asw_debug_alien_damage;
@@ -91,10 +91,8 @@ CASW_Parasite::CASW_Parasite( void )// : CASW_Alien()
 	
 	//softcopy:
 	//m_pszAlienModelName = SWARM_PARASITE_MODEL;
-	if ( asw_old_parasite.GetFloat() == 1 )
-		m_pszAlienModelName = SWARM_BETA_PARASITE_MODEL;
-	else
-		m_pszAlienModelName = SWARM_PARASITE_MODEL;
+	m_pszAlienModelName = asw_old_parasite.GetFloat() == 1 ? SWARM_BETA_PARASITE_MODEL : SWARM_PARASITE_MODEL;
+	asw_old_parasite.GetFloat()==2 ? m_pszAlienModelName = RandomFloat()<=0.5 ? SWARM_BETA_PARASITE_MODEL:SWARM_PARASITE_MODEL : NULL;
 
 	m_nAlienCollisionGroup = ASW_COLLISION_GROUP_ALIEN;
 	m_bNeverRagdoll = true;   
@@ -149,7 +147,7 @@ void CASW_Parasite::Spawn( void )
 	SetHullType(HULL_TINY);
 	
 	BaseClass::Spawn();
-	//softcopy:
+	//softcopy: Allow setting colors
 	/*
 	SetModel( SWARM_PARASITE_MODEL);
 
@@ -173,40 +171,8 @@ void CASW_Parasite::Spawn( void )
 	}
 	*/
 	SetModel( m_pszAlienModelName );
-	if (asw_old_parasite.GetFloat() == 0)		//parasite
-	{	
-		if (FClassnameIs(this, "asw_parasite_defanged"))
-			DefangedColorScale();
-		else
-			ParasiteColorScale();
-	}
-	else if	(asw_old_parasite.GetFloat() == 1)	//beta paraiste
-	{	
-		if (FClassnameIs(this, "asw_parasite_defanged"))
-		{
-			SetModel( SWARM_PARASITE_MODEL);
-			DefangedColorScale();
-		}
-		else
-			BParasiteColorScale();
-	}
-	else if (asw_old_parasite.GetFloat() == 2)	//both parasite/beta parasite
-	{
-		m_pszAlienModelName = RandomFloat() <= 0.5 ? SWARM_BETA_PARASITE_MODEL : SWARM_PARASITE_MODEL; 
-		SetModel( m_pszAlienModelName );
-		if (FClassnameIs(this, "asw_parasite_defanged"))
-		{
-			SetModel( SWARM_PARASITE_MODEL);
-			DefangedColorScale();
-		}
-		else
-		{
-			if (!Q_strcmp(m_pszAlienModelName, SWARM_PARASITE_MODEL))
-				ParasiteColorScale();
-			else
-				BParasiteColorScale();
-		}
-	}
+	bool mParasiteCompare = !Q_strcmp(m_pszAlienModelName, SWARM_PARASITE_MODEL);
+	mParasiteCompare ? (FClassnameIs(this, "asw_parasite_defanged") ? DefangedColorScale():ParasiteColorScale()) : BParasiteColorScale();
 
 	SetMoveType( MOVETYPE_STEP );
 	SetHullType(HULL_TINY);
@@ -880,25 +846,20 @@ void CASW_Parasite::InfestMarine(CASW_Marine* pMarine)
 		m_bInfesting = true;
 		
 		//softcopy: ignite marine by parasite/beta parasite attack, 1=parasite, 2=beta parasite, 3=All
-		if (asw_parasite_ignite.GetBool())
+		if (asw_parasite_ignite.GetInt() >= 1)
 		{
 			CTakeDamageInfo info( this, this, 0, DMG_SLASH );
 			damageTypes = "attack";
-			if ((info.GetAttacker() && info.GetAttacker()->Classify()==CLASS_ASW_PARASITE) && (asw_parasite_ignite.GetInt()==1 || asw_parasite_ignite.GetInt()==3)) 
-			{
-				if (!Q_strcmp(m_pszAlienModelName, SWARM_PARASITE_MODEL))
-					MarineIgnite(pMarine, info, alienLabel, damageTypes);
-			}
-			else if ((info.GetAttacker() && info.GetAttacker()->Classify() != CLASS_ASW_PARASITE_DEFANGED) && ( asw_parasite_ignite.GetInt() >=2 ))
-			{
-				if (!Q_strcmp(m_pszAlienModelName, SWARM_BETA_PARASITE_MODEL))
-					MarineIgnite(pMarine, info, alienLabel, damageTypes);
-			}
+			int iParasiteIgnite = asw_parasite_ignite.GetInt();
+			if ((iParasiteIgnite==1 || iParasiteIgnite==3) && !m_bDefanged && !Q_strcmp(m_pszAlienModelName, SWARM_PARASITE_MODEL)) 
+				MarineIgnite(pMarine, info, alienLabel, damageTypes);				
+			else if (iParasiteIgnite >=2 && !m_bDefanged && !Q_strcmp(m_pszAlienModelName, SWARM_BETA_PARASITE_MODEL))
+				MarineIgnite(pMarine, info, alienLabel, damageTypes);
 		}
 		if (asw_parasite_beta_poison.GetBool())	//beta parasite infest & poison blur
 		{
 			CTakeDamageInfo info( this, this, 0, DMG_INFEST | DMG_BLURPOISON );
-			if ((info.GetAttacker() && info.GetAttacker()->Classify() != CLASS_ASW_PARASITE_DEFANGED) && (info.GetAttacker() && info.GetAttacker()->Classify() !=CLASS_ASW_PARASITE))
+			if (!m_bDefanged && Q_strcmp(m_pszAlienModelName, SWARM_PARASITE_MODEL) && !Q_strcmp(m_pszAlienModelName, SWARM_BETA_PARASITE_MODEL))
 			{
 #ifdef GAME_DLL
 				bool bLagComp = false;
@@ -922,7 +883,9 @@ void CASW_Parasite::InfestMarine(CASW_Marine* pMarine)
 					UTIL_ASW_PoisonBlur( pMarine->GetCommander(), duration );
 					if ( duration > 3 )
 						ClientPrint(pMarine->GetCommander(), HUD_PRINTCENTER, "See  the Map  to survive.");
-					MarineDamageDebugInfo(pMarine, "poisoned", alienLabel, "infest");
+
+					if (asw_debug_alien_ignite.GetBool())
+						MarineDamageDebugInfo(pMarine, "infested", alienLabel, "poison");	//debug infested poison
 				}
 			}
 		}
@@ -1124,7 +1087,7 @@ void CASW_Parasite::TouchDamage( CBaseEntity *pOther )
 		CASW_Marine* pMarine = CASW_Marine::AsMarine( pOther );
 		CTakeDamageInfo info( this, this, 0, DMG_ACID );
 		damageTypes = "attack";
-		if ( pMarine && info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_PARASITE_DEFANGED )
+		if ( pMarine && m_bDefanged )
 			MarineIgnite(pMarine, info, alienLabel, damageTypes);
 	}
 }

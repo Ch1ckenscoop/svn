@@ -354,7 +354,8 @@ void CASW_Weapon_Blink::DoBlink()
 	pMarine->m_flJumpJetStartTime = gpGlobals->curtime;
 	pMarine->m_flJumpJetEndTime = gpGlobals->curtime + asw_blink_time.GetFloat();
 
-	ASWMeleeSystem()->StartMeleeAttack( ASWMeleeSystem()->GetMeleeAttackByName( "Blink" ), pMarine, ASWGameMovement()->GetMoveData() );
+	if (ASWGameMovement())	//softcopy: prevent crashes from admin file simple.ini corrupted/contained special character
+		ASWMeleeSystem()->StartMeleeAttack( ASWMeleeSystem()->GetMeleeAttackByName( "Blink" ), pMarine, ASWGameMovement()->GetMoveData() );
 
 	// TODO:
 	/*

@@ -40,12 +40,11 @@ ConVar asw_shaman_color2("asw_shaman_color2", "255 255 255", FCVAR_NONE, "Sets t
 ConVar asw_shaman_color2_percent("asw_shaman_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the shamans you want to give the color",true,0,true,1);
 ConVar asw_shaman_color3("asw_shaman_color3", "255 255 255", FCVAR_NONE, "Sets the color of shamans.");
 ConVar asw_shaman_color3_percent("asw_shaman_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the shamans you want to give the color",true,0,true,1);
-ConVar asw_shaman_scalemod("asw_shaman_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal shamans.");
+ConVar asw_shaman_scalemod("asw_shaman_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal shamans.",true,0,true,3);
 ConVar asw_shaman_scalemod_percent("asw_shaman_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the shamans you want to scale.",true,0,true,1);
-ConVar asw_shaman_ignite("asw_shaman_ignite", "0", FCVAR_CHEAT, "Ignite marine by shaman on touch.");
+ConVar asw_shaman_ignite("asw_shaman_ignite", "0", FCVAR_CHEAT, "Ignites marine by shaman on touch.");
 ConVar asw_shaman_gib_chance("asw_shaman_gib_chance", "0.80", FCVAR_CHEAT, "Chance of shaman break into ragdoll pieces instead of ragdoll.");
-ConVar asw_shaman_touch_onfire("asw_shaman_touch_onfire", "0", FCVAR_CHEAT, "Ignite marine if shaman body on fire touch.");
-extern ConVar asw_debug_alien_ignite;
+ConVar asw_shaman_touch_onfire("asw_shaman_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if shaman body on fire touch.");
 
 extern ConVar asw_debug_alien_damage;
 //-----------------------------------------------------------------------------
@@ -186,11 +185,7 @@ void CASW_Shaman::DeathSound( const CTakeDamageInfo &info )
 	    // if we are playing a fancy death animation, don't play death sounds from code
 	    // all death sounds are played from anim events inside the fancy death animation    
 	    return;
-	if ( m_bOnFire )
-		EmitSound( "ASW_Drone.DeathFireSizzle" );
-	else
-		EmitSound( "Ranger.GibSplatHeavy" );
-	
+	EmitSound(m_bOnFire ? "ASW_Drone.DeathFireSizzle" : "Ranger.GibSplatHeavy");
 }
 
 //softcopy: event_killed for adding death animations.

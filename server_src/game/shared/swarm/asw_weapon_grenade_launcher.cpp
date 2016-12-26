@@ -95,6 +95,12 @@ void CASW_Weapon_Grenade_Launcher::PrimaryAttack( void )
 		vecSrc = pm.endpos;
 
 	Vector vecDest = pPlayer->GetCrosshairTracePos();
+	//softcopy: refer vecDest in asw_weapon_grenades.cpp, fixed bot GL aim to mouse cursor position only.
+	if ( !pMarine->IsInhabited() && pMarine->GetEnemy() )
+	{
+		vecDest = pMarine->GetEnemy()->GetAbsOrigin();
+	}
+	
 	Vector newVel = UTIL_LaunchVector( vecSrc, vecDest, asw_grenade_launcher_gravity.GetFloat() ) * 28.0f;
 
 	const float &fGrenadeDamage = MarineSkills()->GetSkillBasedValueByMarine(pMarine, ASW_MARINE_SKILL_GRENADES, ASW_MARINE_SUBSKILL_GRENADE_CLUSTER_DMG);

@@ -113,7 +113,7 @@ public:
 	virtual void SetColorScale(const char *alienLabel) {return BaseClass::SetColorScale(alienLabel);}
 	virtual void MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
 				{return	BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);}
-	virtual void MarineDamageDebugInfo(CBaseEntity *pOther, const char *alienLabel, const char *damageInfo, const char *damageTypes)
+	virtual void MarineDamageDebugInfo(CBaseEntity *pOther, const char *damageInfo, const char *alienLabel, const char *damageTypes)
 				{return	BaseClass::MarineDamageDebugInfo(pOther, damageInfo, alienLabel, damageTypes);}
 
 protected:

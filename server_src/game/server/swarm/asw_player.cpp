@@ -64,7 +64,7 @@
 
 ConVar asw_blend_test_scale("asw_blend_test_scale", "0.1f", FCVAR_CHEAT);
 ConVar asw_debug_pvs("asw_debug_pvs", "0", FCVAR_CHEAT);
-ConVar asw_player_joined_msg("asw_player_joined_msg", "1", FCVAR_CHEAT, "default=1, set 0 to enable 'player has joined' msg.");	//softcopy:
+ConVar asw_player_joined_msg("asw_player_joined_msg", "0", FCVAR_CHEAT, "If Set, disables 'player has joined' messsage.");	//softcopy:
 extern ConVar asw_rts_controls;
 extern ConVar asw_DebugAutoAim;
 extern ConVar asw_debug_marine_damage;
@@ -557,7 +557,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 3 )
 				{
 					//Warning( "Player sent bad cl_selectm command\n" );
-					Warning( "Player \"%s\" sent bad cl_selectm command\n", GetPlayerName() );	//softcopy: want to know who do the command
+					Warning( "Player \"%s\" sent bad cl_selectm command\n", GetPlayerName() );	//softcopy: who did the command
 				}
 
 				int iRosterIndex = clamp(atoi( args[1] ), 0, ASW_NUM_MARINE_PROFILES-1);
@@ -601,7 +601,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 2 )
 				{
 					//Warning( "Player sent bad cl_dselectm command\n" );
-					Warning( "Player \"%s\" sent bad cl_dselectm command\n", GetPlayerName() );	//softcopy: want to know who do the command
+					Warning( "Player \"%s\" sent bad cl_dselectm command\n", GetPlayerName() );	//softcopy:
 					return true;
 				}
 
@@ -622,7 +622,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 2 )
 				{
 					//Warning( "Player sent bad cl_selectsinglem command\n" );
-					Warning( "Player \"%s\" sent bad cl_selectsinglem command\n", GetPlayerName() );	//softcopy: want to know who do the command
+					Warning( "Player \"%s\" sent bad cl_selectsinglem command\n", GetPlayerName() );	//softcopy:
 				}
 
 				// deselect any current marines
@@ -704,7 +704,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 4 )
 				{
 					//Warning( "Player sent bad loadout command\n" );	
-					Warning( "Player \"%s\" sent bad loadout command\n", GetPlayerName() );		//softcopy: want to know who do the command
+					Warning( "Player \"%s\" sent bad loadout command\n", GetPlayerName() );		//softcopy:
 				}
 
 				int iProfileIndex = clamp(atoi( args[1] ), 0, ASW_NUM_MARINE_PROFILES-1);
@@ -721,7 +721,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 5 )
 				{
 					//Warning( "Player sent bad loadouta command\n" );
-					Warning( "Player \"%s\" sent bad loadouta command\n", GetPlayerName() );	//softcopy: want to know who do the command
+					Warning( "Player \"%s\" sent bad loadouta command\n", GetPlayerName() );	//softcopy:
 				}
 
 				int iProfileIndex = clamp(atoi( args[1] ), 0, ASW_NUM_MARINE_PROFILES-1);
@@ -756,7 +756,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 3 )
 				{
 					//Warning("Player sent a bad cl_spendskill command\n");
-					Warning("Player \"%s\" sent a bad cl_spendskill command\n", GetPlayerName());	//softcopy: want to know who do the command
+					Warning("Player \"%s\" sent a bad cl_spendskill command\n", GetPlayerName());	//softcopy:
 					return false;
 				}
 
@@ -778,7 +778,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 2 )
 				{
 					//Warning("Player sent a bad cl_undoskill command\n");
-					Warning("Player \"%s\" sent a bad cl_undoskill command\n", GetPlayerName());	//softcopy: want to know who do the command
+					Warning("Player \"%s\" sent a bad cl_undoskill command\n", GetPlayerName());	//softcopy:
 					return false;
 				}
 				int iProfileIndex = atoi(args[1]);
@@ -805,7 +805,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 2 )
 				{
 					//Warning("Player sent a bad cl_hardcore_ff command\n");
-					Warning("Player \"%s\" sent a bad cl_hardcore_ff command\n", GetPlayerName());	//softcopy: want to know who do the command
+					Warning("Player \"%s\" sent a bad cl_hardcore_ff command\n", GetPlayerName());	//softcopy:
 					return false;
 				}
 
@@ -841,7 +841,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 2 )
 				{
 					//Warning("Player sent a bad cl_onslaught command\n");
-					Warning("Player \"%s\" sent a bad cl_onslaught command\n", GetPlayerName());	//softcopy: want to know who do the command	
+					Warning("Player \"%s\" sent a bad cl_onslaught command\n", GetPlayerName());	//softcopy:	
 					return false;
 				}
 
@@ -895,7 +895,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 2 )
 				{
 					//Warning("Player sent a bad cl_carnage command\n");
-					Warning("Player \"%s\" sent a bad cl_carnage command\n", GetPlayerName());	//softcopy: want to know who do the command	
+					Warning("Player \"%s\" sent a bad cl_carnage command\n", GetPlayerName());	//softcopy:	
 					return false;
 				}		
 				if (ASWGameRules() && ASWGameResource() && ASWGameResource()->m_Leader.Get() == this)
@@ -907,7 +907,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 2 )
 				{
 					//Warning("Player sent a bad cl_uber command\n");
-					Warning("Player \"%s\" sent a bad cl_uber command\n", GetPlayerName());		//softcopy: want to know who do the command	
+					Warning("Player \"%s\" sent a bad cl_uber command\n", GetPlayerName());		//softcopy:	
 					return false;
 				}		
 				if (ASWGameRules() && ASWGameResource() && ASWGameResource()->m_Leader.Get() == this)
@@ -919,7 +919,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 2 )
 				{
 					//Warning("Player sent a bad cl_hardcore command\n");
-					Warning("Player \"%s\" sent a bad cl_hardcore command\n", GetPlayerName());		//softcopy: want to know who do the command	
+					Warning("Player \"%s\" sent a bad cl_hardcore command\n", GetPlayerName());		//softcopy:	
 					return false;
 				}		
 				if (ASWGameRules() && ASWGameResource() && ASWGameResource()->m_Leader.Get() == this)
@@ -953,7 +953,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 2 )
 				{
 					//Warning("Player sent a bad cl_editing_slot command\n");
-					Warning("Player \"%s\" sent a bad cl_editing_slot command\n", GetPlayerName());		//softcopy: want to know who do the command	
+					Warning("Player \"%s\" sent a bad cl_editing_slot command\n", GetPlayerName());		//softcopy:	
 					return false;
 				}
 				m_nChangingSlot = atoi( args[1] );
@@ -965,7 +965,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 2 )
 				{
 					//Warning("Player sent a bad cl_promoted command\n");
-					Warning("Player \"%s\" sent a bad cl_promoted command\n", GetPlayerName());		//softcopy: want to know who do the command	
+					Warning("Player \"%s\" sent a bad cl_promoted command\n", GetPlayerName());		//softcopy:	
 					return false;
 				}
 				if ( !m_bSentPromotedMessage )
@@ -992,7 +992,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 6 )
 				{
 					//Warning( "Player sent bad marine face command\n" );
-					Warning( "Player \"%s\" sent bad marine face command\n", GetPlayerName() );		//softcopy: want to know who do the command	
+					Warning( "Player \"%s\" sent bad marine face command\n", GetPlayerName() );		//softcopy:	
 				}
 
 				int iMarineEntIndex = atoi( args[1] );		
@@ -1013,7 +1013,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 1 )
 				{
 					//Warning( "Player sent bad cl_orderfollow command\n" );
-					Warning( "Player \"%s\" sent bad cl_orderfollow command\n", GetPlayerName() );	//softcopy: want to know who do the command	
+					Warning( "Player \"%s\" sent bad cl_orderfollow command\n", GetPlayerName() );	//softcopy:	
 				}
 
 				OrderNearbyMarines(this, ASW_ORDER_FOLLOW);
@@ -1025,7 +1025,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 1 )
 				{
 					//Warning( "Player sent bad cl_orderhold command\n" );
-					Warning( "Player \"%s\" sent bad cl_orderhold command\n", GetPlayerName() );	//softcopy: want to know who do the command	
+					Warning( "Player \"%s\" sent bad cl_orderhold command\n", GetPlayerName() );	//softcopy:	
 				}
 
 				OrderNearbyMarines(this, ASW_ORDER_HOLD_POSITION);
@@ -1037,7 +1037,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 2 )
 				{
 					//Warning( "Player sent bad cl_mread command\n" );
-					Warning( "Player \"%s\" sent bad cl_mread command\n", GetPlayerName() );	//softcopy: want to know who do the command	
+					Warning( "Player \"%s\" sent bad cl_mread command\n", GetPlayerName() );	//softcopy:	
 				}
 
 				int iMessageEntIndex = atoi( args[1] );
@@ -1055,7 +1055,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 2 )
 				{
 					//Warning("Player sent a bad cl_emote command\n");
-					Warning("Player \"%s\" sent a bad cl_emote command\n", GetPlayerName());	//softcopy: want to know who do the command	
+					Warning("Player \"%s\" sent a bad cl_emote command\n", GetPlayerName());	//softcopy:	
 					return false;
 				}
 				int iEmote = atoi( args[1] );
@@ -1071,7 +1071,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 2 )
 				{
 					//Warning("Player sent a bad cl_chatter command\n");
-					Warning("Player \"%s\" sent a bad cl_chatter command\n", GetPlayerName());	//softcopy: want to know who do the command	
+					Warning("Player \"%s\" sent a bad cl_chatter command\n", GetPlayerName());	//softcopy:	
 					return false;
 				}
 				int iChatter = atoi( args[1] );
@@ -1092,7 +1092,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 4 )
 				{
 					//Warning("Player sent a bad cl_freecam command\n");
-					Warning("Player \"%s\" sent a bad cl_freecam command\n", GetPlayerName());	//softcopy: want to know who do the command	
+					Warning("Player \"%s\" sent a bad cl_freecam command\n", GetPlayerName());	//softcopy:	
 					return false;
 				}
 
@@ -1108,7 +1108,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 2 )
 				{
 					//Warning("Player sent a bad cl_selecthack command\n");
-					Warning("Player \"%s\" sent a bad cl_selecthack command\n", GetPlayerName());	//softcopy: want to know who do the command	
+					Warning("Player \"%s\" sent a bad cl_selecthack command\n", GetPlayerName());	//softcopy:	
 					return false;
 				}
 
@@ -1135,7 +1135,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 2 )
 				{
 					//Warning("Player sent a bad cl_blipspeech command\n");
-					Warning("Player \"%s\" sent a bad cl_blipspeech command\n", GetPlayerName());	//softcopy: want to know who do the command	
+					Warning("Player \"%s\" sent a bad cl_blipspeech command\n", GetPlayerName());	//softcopy:	
 					return false;
 				}
 				int iTargetMarine = atoi( args[1] );
@@ -1148,7 +1148,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 2 )
 				{
 					//Warning("Player sent a bad cl_viewmail command\n");
-					Warning("Player \"%s\" sent a bad cl_viewmail command\n", GetPlayerName());		//softcopy: want to know who do the command	
+					Warning("Player \"%s\" sent a bad cl_viewmail command\n", GetPlayerName());		//softcopy:	
 					return false;
 				}		
 				if (GetMarine() && GetMarine()->m_hUsingEntity.Get())
@@ -1167,7 +1167,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 2 )
 				{
 					//Warning("Player sent a bad cl_offhand command\n");
-					Warning("Player \"%s\" sent a bad cl_offhand command\n", GetPlayerName());	//softcopy: want to know who do the command	
+					Warning("Player \"%s\" sent a bad cl_offhand command\n", GetPlayerName());	//softcopy:	
 					return false;
 				}
 				int slot = clamp(atoi(args[1]), 0, 2);
@@ -1189,7 +1189,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 				if ( args.ArgC() < 3 )
 				{
 					//Warning("Player sent a bad cl_ai_offhand command\n");
-					Warning("Player \"%s\" sent a bad cl_ai_offhand command\n", GetPlayerName());	//softcopy: want to know who do the command	
+					Warning("Player \"%s\" sent a bad cl_ai_offhand command\n", GetPlayerName());	//softcopy:	
 					return false;
 				}
 				int slot = clamp( atoi( args[1] ), 0, 2 );
@@ -1262,7 +1262,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 		if ( args.ArgC() < 2 )
 		{
 			//Warning( "Player sent bad cl_autoreload command\n" );
-			Warning( "Player \"%s\" sent bad cl_autoreload command\n", GetPlayerName() );	//softcopy: want to know who do the command
+			Warning( "Player \"%s\" sent bad cl_autoreload command\n", GetPlayerName() );	//softcopy:
 		}
 
 		m_bAutoReload = (atoi(args[1]) == 1);
@@ -1274,7 +1274,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 		if ( args.ArgC() < 2 )
 		{
 			//Warning( "Player sent bad switch marine command\n" );
-			Warning( "Player \"%s\" sent bad switch marine command\n", GetPlayerName() );	//softcopy: want to know who do the command
+			Warning( "Player \"%s\" sent bad switch marine command\n", GetPlayerName() );	//softcopy:
 		}
 
 		int iMarineIndex = atoi( args[1] ) - 1;
@@ -1288,7 +1288,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 		if ( args.ArgC() < 4 )
 		{
 			//Warning("Player sent a bad cl_mapline command\n");
-			Warning("Player \"%s\" sent a bad cl_mapline command\n", GetPlayerName());	//softcopy: want to know who do the command
+			Warning("Player \"%s\" sent a bad cl_mapline command\n", GetPlayerName());	//softcopy:
 			return false;
 		}
 		int linetype = clamp(atoi( args[1] ), 0, 1);
@@ -1306,7 +1306,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 		if ( args.ArgC() < 2 )
 		{
 			//Warning("Player sent a bad cl_campaignnext command\n");
-			Warning("Player \"%s\" sent a bad cl_campaignnext command\n", GetPlayerName());		//softcopy: want to know who do the command
+			Warning("Player \"%s\" sent a bad cl_campaignnext command\n", GetPlayerName());		//softcopy:
 			return false;
 		}
 		// make sure we're leader
@@ -1330,7 +1330,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 		if ( args.ArgC() < 2 )
 		{
 			//Warning("Player sent a bad cl_skill command\n");
-			Warning("Player \"%s\" sent a bad cl_skill command\n", GetPlayerName());	//softcopy: want to know who do the command
+			Warning("Player \"%s\" sent a bad cl_skill command\n", GetPlayerName());	//softcopy:
 			return false;
 		}
 		if ( ASWGameRules() )
@@ -1366,7 +1366,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 		if ( args.ArgC() < 2 || !ASWGameResource() || ASWGameResource()->GetLeader() != this || !ASWGameRules())
 		{
 			//Warning("Player sent a bad cl_forceready command\n");
-			Warning("Player \"%s\" sent a bad cl_forceready command\n", GetPlayerName());	//softcopy: want to know who do the command
+			Warning("Player \"%s\" sent a bad cl_forceready command\n", GetPlayerName());	//softcopy:
 			return false;
 		}
 
@@ -1389,7 +1389,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 		if ( args.ArgC() < 1 )
 		{
 			//Warning("Player sent a bad cl_ready command\n");
-			Warning("Player \"%s\" sent a bad cl_ready command\n", GetPlayerName());	//softcopy: want to know who do the command
+			Warning("Player \"%s\" sent a bad cl_ready command\n", GetPlayerName());	//softcopy:
 			return false;
 		}
 
@@ -1425,7 +1425,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 		if ( args.ArgC() < 1 )
 		{
 			//Warning("Player sent a bad cl_spectating command\n");
-			Warning("Player \"%s\" sent a bad cl_spectating command\n", GetPlayerName());	//softcopy: want to know who do the command
+			Warning("Player \"%s\" sent a bad cl_spectating command\n", GetPlayerName());	//softcopy:
 			return false;
 		}
 		Msg("cl_spectating get game resource=%d\n", ASWGameResource());
@@ -1488,7 +1488,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 		if ( args.ArgC() < 2 )
 		{
 			//Warning("Player sent a bad cl_leadervote command\n");
-			Warning("Player \"%s\" sent a bad cl_leadervote command\n", GetPlayerName());	//softcopy: want to know who do the command
+			Warning("Player \"%s\" sent a bad cl_leadervote command\n", GetPlayerName());	//softcopy:
 			return false;
 		}
 		int iTargetPlayer = clamp(atoi(args[1]), -1, gpGlobals->maxClients);
@@ -1500,7 +1500,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 		if ( args.ArgC() < 2 )
 		{
 			//Warning("Player sent a bad cl_kickvote command\n");
-			Warning("Player \"%s\" sent a bad cl_kickvote command\n", GetPlayerName());		//softcopy: want to know who do the command
+			Warning("Player \"%s\" sent a bad cl_kickvote command\n", GetPlayerName());		//softcopy:
 			return false;
 		}
 		int iTargetPlayer = clamp(atoi(args[1]), -1, gpGlobals->maxClients);
@@ -1512,7 +1512,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 		if ( args.ArgC() < 2 )
 		{
 			//Warning("Player sent a bad cl_vmaplist command\n");
-			Warning("Player \"%s\" sent a bad cl_vmaplist command\n", GetPlayerName());		//softcopy: want to know who do the command
+			Warning("Player \"%s\" sent a bad cl_vmaplist command\n", GetPlayerName());		//softcopy:
 			return false;
 		}
 		int nMissionOffset = atoi(args[1]);
@@ -1526,7 +1526,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 		if ( args.ArgC() < 3 )
 		{
 			//Warning("Player sent a bad cl_vcampmaplist command\n");
-			Warning("Player \"%s\" sent a bad cl_vcampmaplist command\n", GetPlayerName());		//softcopy: want to know who do the command
+			Warning("Player \"%s\" sent a bad cl_vcampmaplist command\n", GetPlayerName());		//softcopy:
 			return false;
 		}
 		int nCampaignIndex = atoi(args[1]);
@@ -1543,7 +1543,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 		if ( args.ArgC() < 2 )
 		{
 			//Warning("Player sent a bad cl_vcamplist command\n");
-			Warning("Player \"%s\" sent a bad cl_vcamplist command\n", GetPlayerName());	//softcopy: want to know who do the command
+			Warning("Player \"%s\" sent a bad cl_vcamplist command\n", GetPlayerName());	//softcopy:
 			return false;
 		}
 		int nCampaignOffset = atoi(args[1]);
@@ -1557,7 +1557,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 		if ( args.ArgC() < 2 )
 		{
 			//Warning("Player sent a bad cl_vsaveslist command\n");
-			Warning("Player \"%s\" sent a bad cl_vsaveslist command\n", GetPlayerName());	//softcopy: want to know who do the command
+			Warning("Player \"%s\" sent a bad cl_vsaveslist command\n", GetPlayerName());	//softcopy:
 			return false;
 		}
 		int nSaveOffset = atoi(args[1]);
@@ -1571,7 +1571,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 		if ( args.ArgC() < 2 )
 		{
 			//Warning("Player sent a bad asw_vote_saved_campaign command\n");
-			Warning("Player \"%s\" sent a bad asw_vote_saved_campaign command\n", GetPlayerName());		//softcopy: want to know who do the command
+			Warning("Player \"%s\" sent a bad asw_vote_saved_campaign command\n", GetPlayerName());		//softcopy:
 			return false;
 		}		
 		
@@ -1584,7 +1584,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 		if ( args.ArgC() < 3 )
 		{
 			//Warning("Player sent a bad asw_vote_campaign command\n");
-			Warning("Player \"%s\" sent a bad asw_vote_campaign command\n", GetPlayerName());	//softcopy: want to know who do the command
+			Warning("Player \"%s\" sent a bad asw_vote_campaign command\n", GetPlayerName());	//softcopy:
 			return false;
 		}	
 		int nCampaignIndex = atoi( args[1] );
@@ -1597,7 +1597,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 		if ( args.ArgC() < 2 )
 		{
 			//Warning("Player sent a bad asw_vote_mission command\n");
-			Warning("Player \"%s\" sent a bad asw_vote_mission command\n", GetPlayerName());	//softcopy: want to know who do the command
+			Warning("Player \"%s\" sent a bad asw_vote_mission command\n", GetPlayerName());	//softcopy:
 			return false;
 		}		
 		if (ASWGameRules())
@@ -1621,7 +1621,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 		if ( args.ArgC() < 4 )
 		{
 			//Warning("Player sent a bad cl_ccounts command\n");
-			Warning("Player \"%s\" sent a bad cl_ccounts command\n", GetPlayerName());	//softcopy: want to know who do the command
+			Warning("Player \"%s\" sent a bad cl_ccounts command\n", GetPlayerName());	//softcopy:
 			return false;
 		}
 		m_iClientMissionsCompleted = atoi(args[1]);
@@ -1743,7 +1743,7 @@ bool CASW_Player::ClientCommand( const CCommand &args )
 		if ( args.ArgC() < 2 )
 		{
 			//Warning("Player sent a bad cl_gen_progress command\n");
-			Warning("Player \"%s\" sent a bad cl_gen_progress command\n", GetPlayerName());		//softcopy: want to know who do the command
+			Warning("Player \"%s\" sent a bad cl_gen_progress command\n", GetPlayerName());		//softcopy:
 			return false;
 		}
 		m_fMapGenerationProgress = clamp(atof(args[1]), 0.0f, 1.0f);

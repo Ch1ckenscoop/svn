@@ -155,7 +155,7 @@ ConCommand HurtMyMarine( "HurtMyMarine", HurtMyMarinef, "Gives your marine 1-10 
 
 void asw_LeaveMarinef()
 {
-	CASW_Player *pPlayer = ToASW_Player(UTIL_GetCommandClient());;
+	CASW_Player *pPlayer = ToASW_Player(UTIL_GetCommandClient());
 
 	if (pPlayer && pPlayer->GetMarine())
 	{
@@ -1788,59 +1788,98 @@ void ASW_SetLeader_t( const CCommand &command )
 		ASWGameResource()->SetLeader(pPlayer);
 	}
 }
+ChatCommand ASW_SetLeader("/setleader", ASW_SetLeader_t);
 
-void ASW_Help_t( const CCommand &command )	//softcopy: list some server status
+//softcopy:
+void ASW_AFK_t( const CCommand &command )	//player leave marine & can re-join marine
 {
 	CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(UTIL_GetCommandClient());
+	if (!( pPlayer || ASWGameResource() || ASWGameRules()))
+		return;
+
+	bool bSetReady = true; char szSpecifiedName[64], buf[128];
+	extern ConVar asw_spectator_takes_slot, asw_lobby_player_select;
 	CRecipientFilter filter;
 	filter.AddRecipient(pPlayer);
-	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "/afk          (chat command, leaves marine, sets you as a spectator)");	
-	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "asw_afk       (client console command, same as '/afk')");
+	if (ASWGameRules()->GetGameState() == ASW_GS_BRIEFING)
+	{
+		if (command.ArgC() >1) 
+		{
+			V_strncpy(szSpecifiedName, command.Arg(1), sizeof(szSpecifiedName));
+			V_strnlwr(szSpecifiedName, sizeof(szSpecifiedName));
+			if (V_strstr("release", szSpecifiedName))
+			{
+				if (asw_spectator_takes_slot.GetBool())
+				{
+					if (ASWGameRules()->SpectatorInLobby(pPlayer, false))
+					{
+						bSetReady = false;	//spectator is not allowed to release slot
+						UTIL_ClientPrintFilter(filter,ASW_HUD_PRINTTALKANDCONSOLE,"You are spectator and not allowed to release slot.");
+					}
+					if (bSetReady)
+					{
+						ASWGameRules()->RosterDeselectAll(pPlayer);	//Deselect marine from lobby
+						ASWGameResource()->m_bPlayerReady.Set(pPlayer->entindex()-1, true);	//mark afk player as ready
+						ASWGameRules()->bSpectatorCanSelect = true;
+						UTIL_ClientPrintFilter(filter,ASW_HUD_PRINTTALKANDCONSOLE,"Your marine slot has released, spectator is allowed to take over your slot.");
+					}
+				}
+				else
+					UTIL_ClientPrintFilter(filter,ASW_HUD_PRINTTALKANDCONSOLE, "\"release\" option is not enabled on this server");
+			}
+			else
+			{
+				V_snprintf(buf, sizeof(buf), "\"%s\" option invalid, please be more specific!", szSpecifiedName);
+				UTIL_ClientPrintFilter(filter,ASW_HUD_PRINTTALKANDCONSOLE, buf);
+			}
+		}
+		else
+		{
+			ASWGameRules()->RosterDeselectAll(pPlayer);	//Deselect marine from lobby
+			ASWGameResource()->m_bPlayerReady.Set(pPlayer->entindex()-1, true);	//mark afk player as ready
+		}
+	}
+	else if	(pPlayer->GetMarine())
+	{
+		command.ArgC() > 1 ? NULL : pPlayer->LeaveMarines();	//leave marine from game	
+		const char *text = "afk option invalid, it's only allowed in matchmaking lobby.";
+		const char *text2= "You have left marine, press PFkey < F1-F4 > to join marine again.";
+		UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, command.ArgC() > 1 ? text : text2);
+	}
+	
+	if (ASWGameResource()->GetLeader() == pPlayer )	//if they're leader, pick another leader
+	{
+		CASW_Game_Resource::s_bLeaderGivenDifficultySuggestion = false;
+		CASW_Player *pBestPlayer = NULL;
+		for (int i=0;i<ASW_MAX_READY_PLAYERS;i++)
+		{
+			if (i+1 == pPlayer->entindex() )
+				continue;
+			CASW_Player *pOtherPlayer = dynamic_cast<CASW_Player*>(UTIL_PlayerByIndex(i + 1)); //found a player?
+			if (!pOtherPlayer || !pOtherPlayer->IsConnected())	//if they're not connected, skip them
+				continue;
+			if (!pBestPlayer || pBestPlayer->m_bRequestedSpectator)					
+				pBestPlayer = pOtherPlayer;
+		}
+		if (pBestPlayer)
+			ASWGameResource()->SetLeader(pBestPlayer);
+	}
+}
+ChatCommand ASW_AFK_cc("/afk", ASW_AFK_t);
+ConCommand  ASW_AFK("asw_afk", ASW_AFK_t, "Sets you afk to leave marine.", FCVAR_NONE);
+//help list
+void ASW_Help_t( const CCommand &command )	
+{
+	CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(UTIL_GetCommandClient());
+	CRecipientFilter filter; filter.AddRecipient(pPlayer);
+	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "/afk          (Chat command, leaves marine, sets you as a spectator)");
+	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "/afk release  (Chat command, leaves marine, lets spectator taking over your slot)");
+	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "----------------------------------------------------------------------------------------");
 	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "asw_dropextra (client console command, drop your offhand item)");
+	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "asw_suicide   (client console command, kill yourself in game)");
 	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "ver           (client console command, check ch1ckenscoop version)");
 
 	if (pPlayer)
 		Msg("%s ran '/help' in chatmode\n", pPlayer->GetPlayerName());
 }
-
-//softcopy: AFK, player leave marine & can re-join marine
-void ASW_AFK_t( const CCommand &command )
-{
-	CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(UTIL_GetCommandClient());
-	if (pPlayer && ASWGameResource() && ASWGameRules())
-	{
-		if (ASWGameRules()->GetGameState() == ASW_GS_BRIEFING)
-			ASWGameRules()->RosterDeselectAll(pPlayer);	//Deselect marine from lobby
-		else if	(pPlayer->GetMarine())
-		{
-			pPlayer->LeaveMarines();	//leave marine from game	
-			CRecipientFilter filter; filter.AddRecipient(pPlayer);
-			UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "You have left marine, press F1-F4 to join marine again."); 
-			Msg("%s has left marine from AFK.\n", pPlayer->GetPlayerName());
-		}
-		if (ASWGameResource()->GetLeader() == pPlayer )	//if they're leader, pick another leader
-		{
-			CASW_Game_Resource::s_bLeaderGivenDifficultySuggestion = false;
-			int iPlayerEntIndex = pPlayer->entindex();
-			CASW_Player *pBestPlayer = NULL;
-			for (int i=0;i<ASW_MAX_READY_PLAYERS;i++)
-			{
-				if (i+1 == iPlayerEntIndex )
-					continue;
-				CASW_Player *pOtherPlayer = dynamic_cast<CASW_Player*>(UTIL_PlayerByIndex(i + 1)); //found a player?
-				if (!pOtherPlayer || !pOtherPlayer->IsConnected())	//if they're not connected, skip them
-					continue;
-				if (!pBestPlayer || pBestPlayer->m_bRequestedSpectator)					
-					pBestPlayer = pOtherPlayer;
-			}
-			if (pBestPlayer)
-				ASWGameResource()->SetLeader(pBestPlayer);
-		}
-	}
-}
-
-ChatCommand ASW_SetLeader("/setleader", ASW_SetLeader_t);
-//softcopy:
 ChatCommand ASW_Help_cc("/help", ASW_Help_t);
-ChatCommand ASW_afk_cc("/afk", ASW_AFK_t);
-ConCommand  ASW_afk("asw_afk", ASW_AFK_t , "Sets you afk to leave marine.");

@@ -813,7 +813,9 @@ bool CAI_ScriptedSequence::StartSequence( CAI_BaseNPC *pTarget, string_t iszSeq,
 	int nSequence = pTarget->LookupSequence( STRING( iszSeq ) );
 	if (nSequence == -1)
 	{
-		Warning( "%s: unknown scripted sequence \"%s\"\n", pTarget->GetDebugName(), STRING( iszSeq ));
+		//softcopy: the messages prompts too many from custom maps, need suppress!
+		if (!Q_strcmp(STRING(gpGlobals->mapname) , "ASI-Jac2-Deima")) //excluding Deima
+			Warning( "%s: unknown scripted sequence \"%s\"\n", pTarget->GetDebugName(), STRING( iszSeq ));
 		nSequence = 0;
 	}
 

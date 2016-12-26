@@ -20,8 +20,8 @@ BEGIN_DATADESC( CASW_Simple_Grub )
 END_DATADESC()
 
 //softcopy:
-ConVar asw_grub_touch_damage("asw_grub_touch_damage", "0", FCVAR_CHEAT, "Sets damage caused by grub on touch.");
-ConVar asw_grub_ignite("asw_grub_ignite", "0", FCVAR_CHEAT, "Ignite marine by grub on touch.");
+ConVar asw_grub_touch_damage("asw_grub_touch_damage", "0", FCVAR_CHEAT, "Damage caused by grub on touch.");
+ConVar asw_grub_ignite("asw_grub_ignite", "0", FCVAR_CHEAT, "Ignites marine by grub on touch.");
 extern ConVar asw_debug_alien_ignite;
 bool IsIgnitedGrub;
 
@@ -56,10 +56,9 @@ void CASW_Simple_Grub::Spawn(void)
 	UTIL_SetSize(this, Vector(-12,-12,   0),	Vector(12, 12, 12));
 
 	SetTouch( &CASW_Simple_Grub::GrubTouch );
-	m_iHealth = 1;
 	//softcopy: strong health if it has damage
-	if ( asw_grub_touch_damage.GetInt() > 0 )
-		m_iHealth = 20;
+	//m_iHealth = 1;
+	m_iHealth = asw_grub_touch_damage.GetInt() > 0 ?  20 : 1;
 	IsIgnitedGrub = false;	//debug marine has ignited
 
 	SetBlocksLOS(false);
@@ -88,13 +87,10 @@ void CASW_Simple_Grub::GrubTouch( CBaseEntity *pOther )
 		if (asw_grub_ignite.GetBool())
 		{
 			pMarine->ASW_Ignite( 1.5f, 1.5, info.GetAttacker(), info.GetWeapon() );
-			if (asw_debug_alien_ignite.GetBool())	//debug marine has ignited
+			if (asw_debug_alien_ignite.GetBool() && pMarine->IsOnFire() && !IsIgnitedGrub)	//debug marine has ignited
 			{
-				if (pMarine->IsOnFire() && !IsIgnitedGrub)
-				{
-					Msg("----- Player %s has ignited  by grub on touch -----\n", pMarine->GetPlayerName());
-					IsIgnitedGrub = true;
-				}
+				Msg("----- Player %s has ignited  by grub on touch -----\n", pMarine->GetPlayerName());
+				IsIgnitedGrub = true;
 			}
 		}
 		if (asw_grub_touch_damage.GetInt() > 0)

@@ -25,9 +25,9 @@ ConVar asw_sentry_invincible("asw_sentry_invincible", "0", FCVAR_CHEAT, "Make se
 ConVar asw_sentry_gun_type("asw_sentry_gun_type", "-1", FCVAR_CHEAT, "Force the type of sentry guns built to this. -1, the default, reads from the marine attributes.");
 ConVar asw_sentry_infinite_ammo( "asw_sentry_infinite_ammo", "0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "Sentry guns have infinite ammo");
 //softcopy: 
-ConVar asw_sentry_assemble_speed("asw_sentry_assemble_speed", "0", FCVAR_CHEAT, "default 0=normal, Sets speed of sentry assemble for all marines.",true,1,true,10);  
-ConVar asw_sentry_disassemble_speed("asw_sentry_disassemble_speed", "2", FCVAR_CHEAT, "default=2, Sets sentry disassemble speed.",true,0,true,2);
-ConVar asw_weapons_attach("asw_weapons_attach", "0", FCVAR_CHEAT, "Sets 1 to disable ammo/sentry attaching to weapon cheats");
+ConVar asw_sentry_assemble_speed("asw_sentry_assemble_speed", "0", FCVAR_CHEAT, "Sets sentry assemble speed(0=normal, 1-10).",true,1,true,10);  
+ConVar asw_sentry_disassemble_speed("asw_sentry_disassemble_speed", "2", FCVAR_CHEAT, "Sets sentry disassemble speed(0-2).",true,0,true,2);
+ConVar asw_weapons_attach("asw_weapons_attach", "0", FCVAR_CHEAT, "If set to 1, disables ammo/sentry attaching to weapon cheats");
 extern ConVar asw_weapon_disassemble_speed;
 
 LINK_ENTITY_TO_CLASS( asw_sentry_base, CASW_Sentry_Base );
@@ -102,9 +102,7 @@ void CASW_Sentry_Base::Spawn( void )
 	//softcopy: controls sentry attaching to weapon cheat
 	//UTIL_TraceLine( GetAbsOrigin() + Vector(0, 0, 2),
 	//				GetAbsOrigin() - Vector(0, 0, 32), MASK_SOLID, this, COLLISION_GROUP_NONE, &tr );
-	int CollideGroup = COLLISION_GROUP_NONE;
-	if (asw_weapons_attach.GetBool())
-		CollideGroup = ASW_COLLISION_GROUP_PASSABLE;
+	int CollideGroup = asw_weapons_attach.GetBool() ? ASW_COLLISION_GROUP_PASSABLE : COLLISION_GROUP_NONE;
 	UTIL_TraceLine(GetAbsOrigin()+Vector(0,0,2), GetAbsOrigin()-Vector(0,0,32), MASK_SOLID, this, CollideGroup, &tr);
 	
 	if ( tr.fraction < 1.0f && tr.m_pEnt && !tr.m_pEnt->IsWorld() && !tr.m_pEnt->IsNPC() )
@@ -254,10 +252,10 @@ void CASW_Sentry_Base::MarineUsing(CASW_Marine* pMarine, float deltatime)
 		if (fSkillScale < 1.0)
 			fSkillScale = 1.0f;
 
-		float fSetupAmount = (deltatime * (1.0f/SENTRY_ASSEMBLE_TIME)) * fSkillScale;
 		//softcopy: sentry gun assemble time by cvar control.
-		if (asw_sentry_assemble_speed.GetFloat() > 0)
-			fSetupAmount = (deltatime * 1.0f * asw_sentry_assemble_speed.GetFloat());    
+		//float fSetupAmount = (deltatime * (1.0f/SENTRY_ASSEMBLE_TIME)) * fSkillScale;
+		float fSentrySetupSpeed = asw_sentry_assemble_speed.GetFloat();
+		float fSetupAmount = fSentrySetupSpeed > 0 ? deltatime * 1.0f * fSentrySetupSpeed : (deltatime * (1.0f/SENTRY_ASSEMBLE_TIME)) * fSkillScale;
 
 		m_fAssembleProgress += fSetupAmount;
 		if (m_fAssembleProgress >= 1.0f)

@@ -47,19 +47,18 @@ ConVar asw_harvester_color2("asw_harvester_color2", "255 255 255", FCVAR_NONE, "
 ConVar asw_harvester_color2_percent("asw_harvester_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the old model harvesters you want to give the color",true,0,true,1);
 ConVar asw_harvester_color3("asw_harvester_color3", "255 255 255", FCVAR_NONE, "Sets the color of harvesters.");
 ConVar asw_harvester_color3_percent("asw_harvester_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the old model harvesters you want to give the color",true,0,true,1);
-ConVar asw_harvester_scalemod("asw_harvester_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal harvesters.");
+ConVar asw_harvester_scalemod("asw_harvester_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal harvesters.",true,0,true,2);
 ConVar asw_harvester_scalemod_percent("asw_harvester_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal old model harvesters you want to scale.",true,0,true,1);
 ConVar asw_harvester_beta_color("asw_harvester_beta_color", "255 255 255", FCVAR_NONE, "Sets the color of new model harvesters.");
 ConVar asw_harvester_beta_color2("asw_harvester_beta_color2", "255 255 255", FCVAR_NONE, "Sets the color of new model harvesters.");
 ConVar asw_harvester_beta_color2_percent("asw_harvester_beta_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the new model harvesters you want to give the color",true,0,true,1);
 ConVar asw_harvester_beta_color3("asw_harvester_beta_color3", "255 255 255", FCVAR_NONE, "Sets the color of harvesters.");
 ConVar asw_harvester_beta_color3_percent("asw_harvester_beta_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the new model harvesters you want to give the color",true,0,true,1);
-ConVar asw_harvester_beta_scalemod("asw_harvester_beta_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal harvesters.");
+ConVar asw_harvester_beta_scalemod("asw_harvester_beta_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal harvesters.",true,0,true,2);
 ConVar asw_harvester_beta_scalemod_percent("asw_harvester_beta_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal new model harvesters you want to scale.",true,0,true,1);
-ConVar asw_harvester_new( "asw_harvester_new", "1", FCVAR_CHEAT, "If set to 0=beta harvester, 1=new model, 2=random all.");
-ConVar asw_harvester_touch("asw_harvester_touch", "0", FCVAR_CHEAT, "Sets 1=ignite, 2=explode, 3=All, ignite/explode marine on harvester touch.");
-ConVar asw_harvester_touch_onfire("asw_harvester_touch_onfire", "0", FCVAR_CHEAT, "Ignite marine if harvester body on fire touch.");
-extern ConVar asw_debug_alien_ignite;
+ConVar asw_harvester_new( "asw_harvester_new", "1", FCVAR_CHEAT, "0 = beta harvester, 1 = new model, 2 = random all.");
+ConVar asw_harvester_touch("asw_harvester_touch", "0", FCVAR_CHEAT, "Ignites/explodes marine on harvester touch(1=ignite,2=explode,3=All).");
+ConVar asw_harvester_touch_onfire("asw_harvester_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if harvester body on fire touch.");
 
 //Ch1ckensCoop: Allow setting harvester health
 ConVar asw_harvester_health("asw_harvester_health", "200", FCVAR_CHEAT, "Sets health of harvesters.");
@@ -82,6 +81,9 @@ CASW_Harvester::CASW_Harvester()
 	else
 		m_pszAlienModelName = SWARM_HARVESTER_MODEL;
 
+	//softcopy: random both harvester/beta harvester
+	asw_harvester_new.GetFloat()==2 ? m_pszAlienModelName=RandomFloat()<=0.5f ? SWARM_HARVESTER_MODEL:SWARM_NEW_HARVESTER_MODEL : NULL;
+
 	m_nAlienCollisionGroup = ASW_COLLISION_GROUP_ALIEN;
 }
 
@@ -91,36 +93,24 @@ CASW_Harvester::~CASW_Harvester()
 
 void CASW_Harvester::Spawn( void )
 {
-	//softcopy: both harvester/beta harvester
-	if (asw_harvester_new.GetFloat() == 2 )
-		m_pszAlienModelName = RandomFloat() <= 0.5f ? SWARM_HARVESTER_MODEL : SWARM_NEW_HARVESTER_MODEL; 
-	
 	SetHullType(HULL_WIDE_SHORT);
 
 	BaseClass::Spawn();
-	
+
 	SetHullType(HULL_WIDE_SHORT);
 	UTIL_SetSize(this, Vector(-23,-23,0), Vector(23,23,69));
-				
+
 	m_iHealth = ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_harvester_health.GetFloat());
 
 	CapabilitiesAdd( bits_CAP_MOVE_GROUND | bits_CAP_INNATE_RANGE_ATTACK1 );
 
 	m_takedamage = DAMAGE_NO;	// alien is invulnerable until she finds her first enemy
-	m_bNeverRagdoll = true;  
+	m_bNeverRagdoll = true;
 
 	//softcopy: 
 	//SetRenderColor(asw_harvester_color.GetColor().r(), asw_harvester_color.GetColor().g(), asw_harvester_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors
-	if (!Q_strcmp(m_pszAlienModelName, SWARM_HARVESTER_MODEL))
-	{
-		alienLabel = "harvester_beta";
-		SetColorScale( alienLabel );
-	}
-	else
-	{
-		alienLabel = "harvester";
-		SetColorScale( alienLabel );
-	}
+	alienLabel = !Q_strcmp(m_pszAlienModelName, SWARM_HARVESTER_MODEL) ? "harvester_beta" : "harvester";
+	SetColorScale(alienLabel);
 }
 
 void CASW_Harvester::Precache( void )

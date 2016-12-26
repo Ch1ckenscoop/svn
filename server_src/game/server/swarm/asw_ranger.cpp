@@ -42,11 +42,10 @@ ConVar asw_ranger_color2("asw_ranger_color2", "255 255 255", FCVAR_NONE, "Sets t
 ConVar asw_ranger_color2_percent("asw_ranger_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the rangers you want to give the color",true,0,true,1);
 ConVar asw_ranger_color3("asw_ranger_color3", "255 255 255", FCVAR_NONE, "Sets the color of parasites.");
 ConVar asw_ranger_color3_percent("asw_ranger_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the rangers you want to give the color",true,0,true,1);
-ConVar asw_ranger_scalemod("asw_ranger_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal rangers.");
+ConVar asw_ranger_scalemod("asw_ranger_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal rangers.",true,0,true,2);
 ConVar asw_ranger_scalemod_percent("asw_ranger_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal rangers you want to scale.",true,0,true,1);
-ConVar asw_ranger_touch_ignite("asw_ranger_touch_ignite", "0", FCVAR_NONE, "Ignite marine by ranger on touch.");
-ConVar asw_ranger_touch_onfire("asw_ranger_touch_onfire", "0", FCVAR_CHEAT, "Ignite marine if ranger body on fire touch.");
-extern ConVar asw_debug_alien_ignite;
+ConVar asw_ranger_touch_ignite("asw_ranger_touch_ignite", "0", FCVAR_CHEAT, "Ignites marine on ranger touch.");
+ConVar asw_ranger_touch_onfire("asw_ranger_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if ranger body on fire touch.");
 
 extern ConVar asw_debug_alien_damage;
 extern int AE_MORTARBUG_LAUNCH;		// actual launch of the projectile

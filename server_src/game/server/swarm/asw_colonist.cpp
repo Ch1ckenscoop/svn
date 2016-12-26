@@ -26,11 +26,13 @@ const int MAX_PLAYER_SQUAD = 4;
 
 ConVar	asw_colonist_health ( "asw_colonist_health", "90" );
 ConVar	asw_colonist_tom_health ( "asw_colonist_tom_health", "30" );	// tutorial guy who gets eaten
-ConVar	asw_colonist_zombie_change("asw_colonist_zombie_change","1", FCVAR_CHEAT, "Colonist and zombie.");	//softcopy:
-
+//softcopy:
+bool bIsColonist;
+ConVar	asw_colonist_zombie_change("asw_colonist_zombie_change", "0", FCVAR_CHEAT, "If set, Colonist changed to zombie.");
 #define SWARM_COLONIST_MODEL_ZOMBIE  "models/zombie/classic.mdl"   
+#define SWARM_COLONIST_MODEL_FEMALE  "models/humans/group01/female_01.mdl"	//female colonist
+
 #define SWARM_COLONIST_MODEL         "models/swarm/Colonist/Male/MaleColonist.mdl"
-#define SWARM_COLONIST_MODEL_FEMALE  "models/humans/group01/female_01.mdl" 		//softcopy: add female colonist
 
 LINK_ENTITY_TO_CLASS( asw_colonist, CASW_Colonist );
 
@@ -54,23 +56,17 @@ CASW_Colonist::CASW_Colonist()
 	m_iInfestCycle = 0;
 	//softcopy:
 	//Msg("CASW_Colonist created\n");        
-	if ( asw_colonist_zombie_change.GetBool() )  
-	    Msg("CASW_Zombie created\n");      
-	else
-	    Msg("CASW_Colonist created\n");
+	bIsColonist = !asw_colonist_zombie_change.GetBool();	
+	isFemale=RandomInt(0,1)==0;
+    Msg("%s created\n", (bIsColonist ? (isFemale ? "CASW_Colonist female" : "CASW_Colonist male") : "CASW_Zombie"));
 	selectedBy = -1;  
-	
 }
 
 CASW_Colonist::~CASW_Colonist()
 {
 	//softcopy:
-	//Msg("CASW_Colonist destroyed\n");       
-	if ( asw_colonist_zombie_change.GetBool() )  
-	    Msg("CASW_Zombie destroyed\n");      
-	else
-	    Msg("CASW_Colonist destroyed\n");
-		
+	//Msg("CASW_Colonist destroyed\n");
+	Msg("%s destroyed\n", bIsColonist ? (isFemale ? "CASW_Colonist female" : "CASW_Colonist male") : "CASW_Zombie");    
 }
 
 void CASW_Colonist::Precache()
@@ -101,19 +97,9 @@ void CASW_Colonist::Spawn()
 {
 	Precache();
 	//softcopy:
-	SetModel( SWARM_COLONIST_MODEL );
-	isFemale = RandomInt(0,1)==0;
-	if (asw_colonist_zombie_change.GetBool())
-	{
-		SetModel( SWARM_COLONIST_MODEL_ZOMBIE );	//need steam online to make zombie starting move.
-	}
-	else 
-	{
-	if (isFemale)
-		SetModel( SWARM_COLONIST_MODEL_FEMALE );
-	else
-		 SetModel(  SWARM_COLONIST_MODEL ); 
-	}
+	//SetModel( SWARM_COLONIST_MODEL );
+	SetModel(bIsColonist ? (isFemale ? SWARM_COLONIST_MODEL_FEMALE:SWARM_COLONIST_MODEL ) : SWARM_COLONIST_MODEL_ZOMBIE);
+
  	SetRenderMode(kRenderNormal);
 	SetRenderColor(180,180,180);
 	
@@ -163,11 +149,7 @@ void CASW_Colonist::Spawn()
 	NPCInit();
 	//softcopy:
 	//Msg("Colonist health after NPCInit %d\n", m_iHealth);
-	if ( asw_colonist_zombie_change.GetBool() )
-	   Msg("Zombie health after NPCInit %d\n", m_iHealth);
-	else
-	   Msg("Colonist health after NPCInit %d\n", m_iHealth);
-	   
+	Msg("%s health after NPCInit %d\n", bIsColonist ? "Colonist" : "Zombie", m_iHealth);
 }
 
 Activity CASW_Colonist::NPC_TranslateActivity( Activity activity )
@@ -208,13 +190,10 @@ int CASW_Colonist::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 
 		Scorch( CITIZEN_SCORCH_RATE, CITIZEN_SCORCH_FLOOR );
 	}
-//softcopy:
-	if( info.GetDamageType() & DMG_BURN ) 
-	{
-		if (!IsOnFire()) 
-			ASW_Ignite(7, 0, info.GetAttacker(), info.GetWeapon());
-	}
-	
+	//softcopy:
+	if ( info.GetDamageType() & DMG_BURN && !IsOnFire() )
+		ASW_Ignite(7, 0, info.GetAttacker(), info.GetWeapon());
+
 	CTakeDamageInfo newInfo = info;
 
 	return BaseClass::OnTakeDamage_Alive( newInfo );
@@ -232,10 +211,7 @@ void CASW_Colonist::DeathSound( const CTakeDamageInfo &info )
 	
 	//softcopy: female or male sound
 	//EmitSound( "NPC_Citizen.Die" );
-	if (isFemale)
-		EmitSound( "Faith.Dead0" );
-	else 
-		EmitSound( "Crash.Dead0" );
+	EmitSound(isFemale ? "Faith.Dead0" : "Crash.Dead0");
 }
 
 bool CASW_Colonist::IsHeavyDamage( const CTakeDamageInfo &info )
@@ -268,10 +244,7 @@ void CASW_Colonist::BecomeInfested(CASW_Alien* pAlien)
 	
 	//softcopy: female or male sound
 	//EmitSound("MaleMarine.Pain");
-	if (isFemale)
-		EmitSound( "Faith.SmallPain0" );
-	else 
-		EmitSound( "Crash.SmallPain0" );
+	EmitSound(isFemale ? "Faith.SmallPain0" : "Crash.SmallPain0");
 }
 
 void CASW_Colonist::CureInfestation(CASW_Marine *pHealer, float fCureFraction)
@@ -501,10 +474,7 @@ int CASW_Colonist::SelectSchedule( void )
 Activity CASW_Colonist::GetFlinchActivity( bool bHeavyDamage, bool bGesture )
 {
    //softcopy:
-	if (isFemale) 
-		EmitSound("Faith.SmallPain0");
-	else 
-		EmitSound("Crash.SmallPain0");
+	EmitSound(isFemale ? "Faith.SmallPain0" : "Crash.SmallPain0");
 
 	if (isFemale)
 		return (Activity) ACT_COWER;
@@ -530,7 +500,9 @@ void CASW_Colonist::MeleeBleed(CTakeDamageInfo* info)
 		
 	UTIL_ASW_BloodDrips( GetAbsOrigin()+Vector(0,0,60)+vecDir*3, vecDir, BloodColor(), 5 );
 	SetSchedule(SCHED_BIG_FLINCH);
-	//EmitSound("MaleMarine.Pain");    //softcopy:
+	//softcopy:
+	//EmitSound("MaleMarine.Pain");
+	EmitSound(isFemale ? "Faith.SmallPain0" : "Crash.SmallPain0");
 }
 
 AI_BEGIN_CUSTOM_NPC( asw_colonist, CASW_Colonist )

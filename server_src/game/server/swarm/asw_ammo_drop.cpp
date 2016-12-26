@@ -22,7 +22,12 @@
 
 #define AMMO_DROP_MODEL "models/items/Ammobag/AmmoBag.mdl"
 
-extern ConVar asw_weapons_attach;	//softcopy:
+//softcopy:
+#define MAX_USERMESSAGE_RATE 0.05f;
+ConVar asw_secondary_ammo_charges("asw_secondary_ammo_charges", "0", FCVAR_CHEAT, "Sets number of secondary ammo charge per pickup from ammo bag.",true,0,true,9); 
+float m_fLastMessageTime;
+extern ConVar asw_weapons_attach;
+
 
 LINK_ENTITY_TO_CLASS( asw_ammo_drop, CASW_Ammo_Drop );
 PRECACHE_WEAPON_REGISTER( asw_ammo_drop );
@@ -73,9 +78,7 @@ void CASW_Ammo_Drop::Spawn( void )
 	//softcopy: controls ammo attaching to weapon cheat
 	//UTIL_TraceLine( GetAbsOrigin() + Vector(0, 0, 2),
 	//				GetAbsOrigin() - Vector(0, 0, 32), MASK_SOLID, this, COLLISION_GROUP_NONE, &tr );
-	int CollideGroup = COLLISION_GROUP_NONE;
-	if (asw_weapons_attach.GetBool())
-		CollideGroup = ASW_COLLISION_GROUP_PASSABLE;
+	int CollideGroup = asw_weapons_attach.GetBool() ? ASW_COLLISION_GROUP_PASSABLE : COLLISION_GROUP_NONE;
 	UTIL_TraceLine(GetAbsOrigin()+Vector(0,0,2), GetAbsOrigin()-Vector(0,0,32), MASK_SOLID, this, CollideGroup, &tr);
 
 	if ( tr.fraction < 1.0f && tr.m_pEnt && !tr.m_pEnt->IsWorld() && !tr.m_pEnt->IsNPC() )
@@ -84,6 +87,8 @@ void CASW_Ammo_Drop::Spawn( void )
 	}
 	
 	m_iAmmoUnitsRemaining = DEFAULT_AMMO_DROP_UNITS;
+	
+	m_fLastMessageTime = gpGlobals->curtime;	//softcopy:
 }
 
 void CASW_Ammo_Drop::PlayDeploySound()
@@ -122,6 +127,55 @@ void CASW_Ammo_Drop::ActivateUseIcon( CASW_Marine* pMarine, int nHoldType )
 	if ( nHoldType == ASW_USE_HOLD_START )
 		return;
 
+	//softcopy: secondary ammo charges from ammo bag
+	if (pMarine && asw_secondary_ammo_charges.GetInt() > 0)
+	{
+		CASW_Weapon *pSWeapon = pMarine->GetActiveASWWeapon();
+		if ( !pSWeapon || pSWeapon->Classify() == CLASS_ASW_AMMO_SATCHEL )
+		{
+			CASW_Weapon *pOtherSWeapon = pMarine->GetASWWeapon( 0 );
+			if ( pOtherSWeapon && pOtherSWeapon->Classify() != CLASS_ASW_AMMO_SATCHEL )
+				pSWeapon = pOtherSWeapon;
+			else
+			{
+				pOtherSWeapon = pMarine->GetASWWeapon( 1 );
+				if ( pOtherSWeapon && pOtherSWeapon->Classify() != CLASS_ASW_AMMO_SATCHEL )
+					pSWeapon = pOtherSWeapon;
+			}
+		}
+		if (pSWeapon && pSWeapon->IsOffensiveWeapon())
+		{
+			int iAmmoType = pSWeapon->m_iSecondaryAmmoType;
+			if (iAmmoType == GetAmmoDef()->Index("ASW_ASG_G") || iAmmoType == GetAmmoDef()->Index("ASW_R_G"))
+			{
+				if (pSWeapon->m_iClip2 < pSWeapon->GetMaxClip2())
+				{
+					int iAmmoCost = asw_secondary_ammo_charges.GetInt();
+					pSWeapon->m_iClip2 += iAmmoCost;
+					if (pSWeapon->m_iClip2 > pSWeapon->GetMaxClip2())	
+					{	//excess ammo charged adding back into ammo bag
+						int iAmmoExcess = pSWeapon->m_iClip2 - pSWeapon->GetMaxClip2();
+						pSWeapon->m_iClip2=pSWeapon->GetMaxClip2();
+						m_iAmmoUnitsRemaining += iAmmoExcess;
+					}
+					m_iAmmoUnitsRemaining -= iAmmoCost;
+					if ( m_iAmmoUnitsRemaining < 20 )
+					{
+						pMarine->SetStopTime( gpGlobals->curtime + 1.0f );
+						pMarine->GetMarineSpeech()->Chatter(CHATTER_USE);
+						pMarine->DoAnimationEvent(PLAYERANIMEVENT_PICKUP);
+						EmitSound(pSWeapon->m_iClip2 < 3 ? "ASW_Ammobag.Pickup_lrg" : "ASW_Ammobag.Pickup_sml");
+					}
+				}
+				if ( m_iAmmoUnitsRemaining <= 0 )
+				{
+					CTakeDamageInfo info;
+					BaseClass::Event_Killed( info );
+				}
+			}
+		}
+	}
+
 	CASW_Weapon *pWeapon = GetAmmoUseUnits( pMarine );
 
 	if( pWeapon )
@@ -134,7 +188,9 @@ void CASW_Ammo_Drop::ActivateUseIcon( CASW_Marine* pMarine, int nHoldType )
 		int iClipsToGive = CASW_Ammo_Drop_Shared::GetAmmoClipsToGive( iAmmoType );
 
 		pMarine->SetAmmoCount( MIN( iBullets + pWeapon->GetMaxClip1() * iClipsToGive, iMaxAmmoCount ), iAmmoType );
-		m_iAmmoUnitsRemaining -= iAmmoCost;
+		//softcopy: added 15% more in ammo bag for secondary ammo can be charged
+		//m_iAmmoUnitsRemaining -= iAmmoCost;
+		m_iAmmoUnitsRemaining -= iAmmoCost * 0.85;
 
 		pMarine->GetMarineSpeech()->Chatter(CHATTER_USE);
 
@@ -194,6 +250,37 @@ void CASW_Ammo_Drop::MarineStoppedUsing(CASW_Marine* pMarine)
 
 bool CASW_Ammo_Drop::IsUsable(CBaseEntity *pUser)
 {
+	//softcopy: secondary ammo charges alert
+	if (pUser && asw_secondary_ammo_charges.GetInt() > 0)
+	{
+		CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(pUser);
+		CASW_Weapon *pSWeapon = pMarine->GetActiveASWWeapon();
+		if (pSWeapon && pSWeapon->IsOffensiveWeapon() && (pSWeapon->Classify() == CLASS_ASW_ASSAULT_SHOTGUN ||
+		                pSWeapon->Classify() == CLASS_ASW_RIFLE || pSWeapon->Classify() == CLASS_ASW_PRIFLE))
+		{
+			CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(pMarine->GetCommander());
+			if (pUser->GetAbsOrigin().DistTo(GetAbsOrigin()) < ASW_MARINE_USE_RADIUS)
+			{
+				if (pSWeapon->m_iClip2 < pSWeapon->GetMaxClip2())
+				{
+					if (pPlayer && gpGlobals->curtime > m_fLastMessageTime)
+					{
+						ClientPrint(pPlayer, HUD_PRINTCENTER, "Press <use> (e) to pick up secondary ammo.");
+						m_fLastMessageTime = gpGlobals->curtime + MAX_USERMESSAGE_RATE;
+					}
+				}
+			}
+			else
+			{
+				if (pPlayer && gpGlobals->curtime > m_fLastMessageTime)
+				{
+					ClientPrint(pPlayer, HUD_PRINTCENTER, "");
+					m_fLastMessageTime = gpGlobals->curtime + MAX_USERMESSAGE_RATE;
+				}
+			}
+		}
+	}
+
 	return (pUser && pUser->GetAbsOrigin().DistTo(GetAbsOrigin()) < ASW_MARINE_USE_RADIUS);	// near enough?
 }
 

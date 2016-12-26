@@ -137,6 +137,10 @@ public:
 	virtual bool			ClientCommand( CBaseEntity *pEdict, const CCommand &args );
 	virtual void			ClientCommandKeyValues( edict_t *pEntity, KeyValues *pKeyValues );
 	void OnPlayerFullyJoined( CASW_Player *pPlayer );
+	//softcopy:
+	void OnPlayerFullyJoinedCheck(CASW_Player *pPlayer);
+	bool SpectatorInLobby(CASW_Player *pPlayer, bool bAddpPlayerId);
+	bool bSpectatorCanSelect;
 
 	// powerups
 	virtual void DropPowerup( CBaseEntity *pSource, const CTakeDamageInfo &info, const char *pszSourceClass );

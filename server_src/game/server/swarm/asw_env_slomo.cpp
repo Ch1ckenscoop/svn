@@ -64,7 +64,8 @@ void CEnvSlomo::InputStartSlomo( inputdata_t &inputdata )
 		}
 		else
 		{
-			Msg("env_slomo not setting prevent stimtime as its alreayd further ahead\n");
+			//Msg("env_slomo not setting prevent stimtime as its alreayd further ahead\n");	//softcopy: typo
+			Msg("env_slomo not setting prevent stimtime as its already further ahead\n");
 		}
 		game->StartStim( m_Duration, inputdata.pActivator );
 	}
