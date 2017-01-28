@@ -261,11 +261,11 @@ CASW_Buzzer::CASW_Buzzer()
 	m_fNextPainSound = 0;
 	m_bHoldoutAlien = false;
 	m_flLastDamageTime = 0;
-	
-	//softcopy:
+
+	//softcopy: buzzer/beta buzzer/random both
 	m_fLastTouchHurtTime = 0;
-	b_AlienModelName = asw_old_buzzer.GetFloat()==1 ? ASW_BETA_BUZZER_MODEL : ASW_BUZZER_MODEL;
-	asw_old_buzzer.GetFloat()==2 ? b_AlienModelName = RandomFloat()<=0.5f ? ASW_BETA_BUZZER_MODEL:ASW_BUZZER_MODEL : NULL;
+	b_AlienModelName = asw_old_buzzer.GetInt()==2 ? RandomFloat()<=0.5f ? ASW_BETA_BUZZER_MODEL:ASW_BUZZER_MODEL :
+					   asw_old_buzzer.GetInt()==1 ? ASW_BETA_BUZZER_MODEL:ASW_BUZZER_MODEL;
 }
 
 CASW_Buzzer::~CASW_Buzzer()

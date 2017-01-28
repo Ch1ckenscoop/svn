@@ -131,8 +131,9 @@ ConVar asw_infest_damage_insane("asw_infest_damage_insane", "280", FCVAR_CHEAT, 
 ConVar asw_infest_damage_brutal("asw_infest_damage_brutal", "280", FCVAR_CHEAT, "Infest damage on brutal level.");
 ConVar asw_hibernate_skill_default("asw_hibernate_skill_default", "0", FCVAR_CHEAT, "If set, Skill/HardcoreFF switch to default when hibernating.");
 ConVar asw_vote_kick_admin("asw_vote_kick_admin", "1", FCVAR_CHEAT, "Generic admin or above level immune from vote kick."); 
+ConVar asw_debug_spectator_slot("asw_debug_spectator_slot", "0", FCVAR_CHEAT, "Show debug messages of spectator slots."); 
 extern ConVar asw_hardcore_ff_force;
-#define SERVER_DLL_VERSION "2.2.0"		//Ch1ckenscoop version
+#define SERVER_DLL_VERSION "2.2.1"		//Ch1ckenscoop version
 
 #define ASW_LAUNCHING_STEP 0.25f			// time between each stage of launching
 
@@ -7275,7 +7276,9 @@ bool CAlienSwarm::SpectatorInLobby(CASW_Player *pPlayer, bool bAddpPlayerId)	//c
 				}
 				pPlayerId[i] = pOtherPlayer->GetUserID(); //store the userids after cleaned up
 				iPlayers++;	//count joined players
-				//Msg("Debug Userid: iPlayers= %i, pPlayerId[%i]= %i, %s \n",iPlayers,i,pPlayerId[i],pOtherPlayer->GetPlayerName());
+
+				if (asw_debug_spectator_slot.GetBool())	//debug: show logged in players in array
+					Msg("Debug Userid: iPlayers= %i, pPlayerId[%i]= %i, %s \n", iPlayers, i, pPlayerId[i], pOtherPlayer->GetPlayerName());
 			}
 		}
 		else
@@ -7302,7 +7305,18 @@ bool CAlienSwarm::SpectatorInLobby(CASW_Player *pPlayer, bool bAddpPlayerId)	//c
 					pPlayerId[i]=temp;
 				}
 			}
-			//Msg("Debug Sortin: iPlayers= %i, pPlayerId[%i]= %i \n", iPlayers, i, pPlayerId[i]);
+			if (asw_debug_spectator_slot.GetBool())	//debug: show sorted players order in array
+			{
+				for (int j=1; j<=gpGlobals->maxClients; j++ )	
+				{
+					CASW_Player* pOtherPlayer = dynamic_cast<CASW_Player*>(UTIL_PlayerByIndex(j));
+					if (pOtherPlayer && pOtherPlayer->GetUserID() == pPlayerId[i])
+					{
+						Msg("Debug Sorted: iPlayers= %i, pPlayerId[%i]= %i, %s \n", iPlayers, i, pPlayerId[i], pOtherPlayer->GetPlayerName());
+						break;
+					}
+				}
+			}
 		}
 		//check player has the higher userid number than the other 4 reserved players
 		for (i=iPlayers-iReserved; i>0; i--)

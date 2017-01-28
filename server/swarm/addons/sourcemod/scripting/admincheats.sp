@@ -4,19 +4,16 @@
 
 //softcopy:
 //#define PLUGIN_VERSION "0.2"
-//#define PLUGIN_VERSION "0.2.1"
-//fixed the wrong statement
-//#define PLUGIN_VERSION "0.2.2"
-//shorten the console information
-//#define PLUGIN_VERSION "0.2.3"
-//added send the cheat status to player who has issued the cheat command
-#define PLUGIN_VERSION "0.2.4"
-//modified for sourcemod 1.7.2
+//#define PLUGIN_VERSION "0.2.1"	//fixed the wrong statement
+//#define PLUGIN_VERSION "0.2.2"	//shorten the console information
+//#define PLUGIN_VERSION "0.2.3"	//added send the cheat status to player who has issued the cheat command
+//#define PLUGIN_VERSION "0.2.4"	//modified for sourcemod 1.7.2
+#define PLUGIN_VERSION "0.2.5"		//added show cheats command and weapon name to admin
  
 public Plugin:myinfo =
 {
 	name = "AdminCheats",
-	author = "devicenull, modified by Softcopy",
+	author = "devicenull, updated by Softcopy",
 	description = "Allow admins to use cheat commands for SourceMod v1.7.2",
 	version = PLUGIN_VERSION,
 	url = "http://www.sourcemod.net/"
@@ -72,24 +69,31 @@ public Action:cheatcommand(client, args)
 	new String:name[128];
 	GetClientName(client,name,128);
 	new String:steamid[64];
-
+	new String:argstring2[256];
+	GetCmdArg(1,argstring2,256);
+	
 	new String:access[8];
 	GetConVarString(cCheatOverride,access,8);
 	new String:argstring[256];
 	GetCmdArg(0,argstring,256);
 	if (client == 0)
 	{
-		LogAction(0,-1,"CONSOLE ran cheat command '%s' success!",argstring);
+		//softcopy:
+		//LogAction(0,-1,"CONSOLE ran cheat command '%s' success!",argstring);
+		LogAction(0,-1,"CONSOLE ran cheat command '%s %s' success!",argstring, argstring2);
+		
 		return Plugin_Continue;
 	}
-	
+
 	//softcopy:
 	GetClientAuthId(client, AuthId_Steam2, steamid, sizeof(steamid));
 
 	if (GetUserFlagBits(client)&ReadFlagString(access) > 0 || GetUserFlagBits(client)&ADMFLAG_ROOT > 0)
 	{
-		LogClient(client,"ran cheat command '%s' success!",argstring);
-		//softcopy: doesn't work on SourceMod v1.7.2
+		//softcopy:
+		//LogClient(client,"ran cheat command '%s' success!",argstring);
+		LogClient(client,"ran cheat command '%s %s' success!",argstring, argstring2);
+		//doesn't work on SourceMod v1.7.2
 		//for (new i=1;i<MaxClients;i++)
 		//{
 		//	if (IsClientConnected(i) && IsClientInGame(i) && !IsFakeClient(i))
@@ -100,20 +104,20 @@ public Action:cheatcommand(client, args)
 		//PrintToServer("%s ran cheat command '%s' success!", name, argstring);
 		if (GetConVarInt(ccheatalert) == 1)
 		{
-			PrintToChat(client,"You ran cheat command '%s' success!",argstring);
+			PrintToChat(client,"You ran cheat command '%s %s' success!",argstring, argstring2);
 		}
-		PrintToServer("%s <%s> ran cheat command '%s' success!", name, steamid, argstring);
+		PrintToServer("%s<%s> ran cheat command '%s %s' success!", name, steamid, argstring, argstring2);
 
 		return Plugin_Continue;
 	}
-	//softcopy: 
+	//softcopy:
 	//LogClient(client,"was prevented from running cheat command '%s'",argstring);
-	LogClient(client,"was denied to run cheat command '%s'",argstring);
+	LogClient(client,"was denied to run cheat command '%s %s'",argstring, argstring2);
 	if (GetConVarInt(ccheatalert) == 1)
 	{
-		PrintToChat(client,"You were denied to run cheat command '%s'",argstring);
+		PrintToChat(client,"You were denied to run cheat command '%s %s'",argstring, argstring2);
 	}
-	PrintToServer("%s <%s> was denied to run cheat command '%s'", name, steamid, argstring);
+	PrintToServer("%s<%s> was denied to run cheat command '%s %s'", name, steamid, argstring, argstring2);
 
 	return Plugin_Handled;
 }

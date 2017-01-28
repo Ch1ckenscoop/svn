@@ -82,7 +82,8 @@ CASW_Harvester::CASW_Harvester()
 		m_pszAlienModelName = SWARM_HARVESTER_MODEL;
 
 	//softcopy: random both harvester/beta harvester
-	asw_harvester_new.GetFloat()==2 ? m_pszAlienModelName=RandomFloat()<=0.5f ? SWARM_HARVESTER_MODEL:SWARM_NEW_HARVESTER_MODEL : NULL;
+	if (asw_harvester_new.GetInt()==2)
+		m_pszAlienModelName = RandomFloat()<=0.5f ? SWARM_HARVESTER_MODEL : SWARM_NEW_HARVESTER_MODEL;
 
 	m_nAlienCollisionGroup = ASW_COLLISION_GROUP_ALIEN;
 }

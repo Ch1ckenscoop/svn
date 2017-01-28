@@ -109,8 +109,7 @@ CASW_Shieldbug::CASW_Shieldbug( void )
 	m_fMarineBlockCounter = 0;
 	m_fLastMarineBlockTime = 0;
 	m_flDefendDuration = RandomFloat( 6.0f, 10.0f );
-	//if ( asw_old_shieldbug.GetBool() )
-	if ( asw_old_shieldbug.GetFloat() == 1 )	//softcopy:
+	if ( asw_old_shieldbug.GetBool() )
 	{
 		m_pszAlienModelName = SWARM_SHIELDBUG_MODEL;
 	}
@@ -118,9 +117,10 @@ CASW_Shieldbug::CASW_Shieldbug( void )
 	{
 		m_pszAlienModelName = SWARM_NEW_SHIELDBUG_MODEL;
 	}
-	
+
 	//softcopy: random both shieldbug/beta shieldbug
-	asw_old_shieldbug.GetFloat()==2 ? (m_pszAlienModelName=RandomFloat()<=0.5 ? SWARM_SHIELDBUG_MODEL:SWARM_NEW_SHIELDBUG_MODEL) : NULL;
+	if (asw_old_shieldbug.GetInt()==2)
+		m_pszAlienModelName = RandomFloat()<=0.5 ? SWARM_SHIELDBUG_MODEL : SWARM_NEW_SHIELDBUG_MODEL;
 	m_fLastTouchHurtTime = 0;
 
 	m_bLastShouldDefend = false;  

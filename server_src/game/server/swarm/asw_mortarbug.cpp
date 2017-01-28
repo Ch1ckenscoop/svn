@@ -84,11 +84,10 @@ CASW_Mortarbug::CASW_Mortarbug()
 {
 	m_fLastFireTime = 0;
 	m_fLastTouchHurtTime = 0;
-	//softcopy:
+	//softcopy: mortarbug/beta mortarbug/random both
 	//m_pszAlienModelName = SWARM_MORTARBUG_MODEL;
-	m_pszAlienModelName = asw_old_mortarbug.GetFloat()==1 ? SWARM_BETA_MORTARBUG_MODEL : SWARM_MORTARBUG_MODEL;
-	//random both mortarbug/beta mortarbug
-	asw_old_mortarbug.GetFloat()==2 ? (m_pszAlienModelName=RandomFloat()<= 0.5 ? SWARM_BETA_MORTARBUG_MODEL:SWARM_MORTARBUG_MODEL) : NULL;
+	m_pszAlienModelName = asw_old_mortarbug.GetInt()==2 ? RandomFloat()<=0.5 ? SWARM_BETA_MORTARBUG_MODEL:SWARM_MORTARBUG_MODEL :
+						  asw_old_mortarbug.GetInt()==1 ? SWARM_BETA_MORTARBUG_MODEL:SWARM_MORTARBUG_MODEL;
 
 	m_nAlienCollisionGroup = ASW_COLLISION_GROUP_ALIEN;
 }

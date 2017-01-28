@@ -174,6 +174,7 @@ void CASW_Egg::Spawn( void )
 		//Msg("Telling parasite to idle in egg\n");
 		GetParasite()->IdleInEgg(true);
 		//GetParasite()->AddSpawnFlags(SF_NPC_WAIT_FOR_SCRIPT);
+		GetParasite()->m_bCanBetaParasite = false;	//softcopy: beta parasite won't sit in egg
 		GetParasite()->Spawn();		
 		GetParasite()->SetSleepState(AISS_WAITING_FOR_INPUT);
 		GetParasite()->SetEgg(this);
@@ -191,7 +192,8 @@ void CASW_Egg::Spawn( void )
 		ASWGameResource()->m_iStartingEggsInMap++;
 	}
 
-	m_iRespawns = asw_egg_max_respawns.GetInt();	//Ch1ckensCoop: Control over how many times an egg can respawn.
+	//m_iRespawns = asw_egg_max_respawns.GetInt();	//Ch1ckensCoop: Control over how many times an egg can respawn.
+	m_iRespawns = 0;	//softcopy: Fixed asw_egg_max_respawns not working if cvar > 0
 }
 
 bool CASW_Egg::CreateVPhysics()
@@ -375,6 +377,7 @@ void CASW_Egg::ResetEgg()
 		
 			GetParasite()->IdleInEgg(true);
 			//GetParasite()->AddSpawnFlags(SF_NPC_WAIT_FOR_SCRIPT);
+			GetParasite()->m_bCanBetaParasite = false;	//softcopy: beta parasite won't sit in egg
 			GetParasite()->Spawn();		
 			GetParasite()->SetSleepState(AISS_WAITING_FOR_INPUT);
 			GetParasite()->SetEgg(this);
@@ -386,6 +389,11 @@ void CASW_Egg::ResetEgg()
 	// reset the egg so it can open and hatch again
 	m_bOpen = false;
 	m_bHatched = false;
+	
+	//softcopy: Fixed parasite not hatching after egg respawned
+	m_bOpening = false;	
+	m_fEggResetTime = 0;
+	
 	ResetSequence( LookupSequence( EGG_CLOSED_ANIM ) );
 	SetBodygroup( 1,0 );
 	SetPlaybackRate( RandomFloat( 0.95, 1.05 ) ); // Slightly randomize the playback rate so they don't all match

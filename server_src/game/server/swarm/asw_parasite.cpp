@@ -88,11 +88,12 @@ CASW_Parasite::CASW_Parasite( void )// : CASW_Alien()
 	m_bCommittedToJump = false;
 	m_hEgg = NULL;
 	m_hMother = NULL;
-	
-	//softcopy:
+
+	//softcopy: parasite/beta parasite/random both
 	//m_pszAlienModelName = SWARM_PARASITE_MODEL;
-	m_pszAlienModelName = asw_old_parasite.GetFloat() == 1 ? SWARM_BETA_PARASITE_MODEL : SWARM_PARASITE_MODEL;
-	asw_old_parasite.GetFloat()==2 ? m_pszAlienModelName = RandomFloat()<=0.5 ? SWARM_BETA_PARASITE_MODEL:SWARM_PARASITE_MODEL : NULL;
+	m_pszAlienModelName = asw_old_parasite.GetInt()==2 ? RandomFloat()<=0.5 ? SWARM_BETA_PARASITE_MODEL:SWARM_PARASITE_MODEL :
+						  asw_old_parasite.GetInt()==1 ? SWARM_BETA_PARASITE_MODEL:SWARM_PARASITE_MODEL;
+	m_bCanBetaParasite = true;
 
 	m_nAlienCollisionGroup = ASW_COLLISION_GROUP_ALIEN;
 	m_bNeverRagdoll = true;   
@@ -147,7 +148,7 @@ void CASW_Parasite::Spawn( void )
 	SetHullType(HULL_TINY);
 	
 	BaseClass::Spawn();
-	//softcopy: Allow setting colors
+	//softcopy:
 	/*
 	SetModel( SWARM_PARASITE_MODEL);
 
@@ -170,9 +171,15 @@ void CASW_Parasite::Spawn( void )
 		m_ClassType = (Class_T)CLASS_ASW_PARASITE;
 	}
 	*/
+	//If beta parasites are activated, it won't sit in some eggs. So that, beta parasites now won't sit in eggs anymore.
+	if (!m_bCanBetaParasite)	//force non-beta parasite sit in egg (refer egg.cpp)
+	{
+		m_pszAlienModelName = SWARM_PARASITE_MODEL;
+		m_bCanBetaParasite = true;
+	}
 	SetModel( m_pszAlienModelName );
-	bool mParasiteCompare = !Q_strcmp(m_pszAlienModelName, SWARM_PARASITE_MODEL);
-	mParasiteCompare ? (FClassnameIs(this, "asw_parasite_defanged") ? DefangedColorScale():ParasiteColorScale()) : BParasiteColorScale();
+	bool bAlienCmp = !Q_strcmp(m_pszAlienModelName,SWARM_PARASITE_MODEL);	//allow setting colors & scale
+	bAlienCmp ? FClassnameIs(this, "asw_parasite_defanged") ? DefangedColorScale():ParasiteColorScale() : BParasiteColorScale();
 
 	SetMoveType( MOVETYPE_STEP );
 	SetHullType(HULL_TINY);

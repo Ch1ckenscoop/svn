@@ -480,6 +480,15 @@ int CASW_Marine::SelectHackingSchedule()
 		}
 	}
 
+	//softcopy: Fixed if two techs has spawned, one of them keep accessing panel/computer after hacking completion
+	if (CASW_Use_Area *pArea = m_hAreaToUse)
+	{
+		CASW_Button_Area *pButton = dynamic_cast< CASW_Button_Area* >(pArea);
+		CASW_Computer_Area *pComputer = dynamic_cast< CASW_Computer_Area* >(pArea);
+		if ((pButton && pButton->GetHackProgress() >0.0f) || (pComputer && pComputer->GetHackProgress() >0.0f))
+			return -1;
+	}
+
 	if ( m_hAreaToUse.Get() )
 	{
 		if ( m_hAreaToUse->IsUsable( this ) )

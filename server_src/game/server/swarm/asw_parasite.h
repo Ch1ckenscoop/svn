@@ -104,17 +104,18 @@ public:
 	void StartInfestation();
 	bool CheckInfestTarget( CBaseEntity *pOther );
 	EHANDLE m_hPrepareToInfest;
-	
+
 	//softcopy: parasite color & scale
 	virtual void DefangedColorScale();
 	virtual void ParasiteColorScale();
 	virtual void BParasiteColorScale();
-	const char *alienLabel, *damageTypes;
 	virtual void SetColorScale(const char *alienLabel) {return BaseClass::SetColorScale(alienLabel);}
 	virtual void MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
 				{return	BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);}
 	virtual void MarineDamageDebugInfo(CBaseEntity *pOther, const char *damageInfo, const char *alienLabel, const char *damageTypes)
 				{return	BaseClass::MarineDamageDebugInfo(pOther, damageInfo, alienLabel, damageTypes);}
+	const char *alienLabel, *damageTypes;
+	bool m_bCanBetaParasite;
 
 protected:
 	DEFINE_CUSTOM_AI;

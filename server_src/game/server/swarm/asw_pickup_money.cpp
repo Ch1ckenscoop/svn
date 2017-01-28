@@ -56,6 +56,10 @@ void CASW_Pickup_Money::Spawn( void )
 	SetGravity( asw_money_gravity.GetFloat() );
 	SetFriction( asw_money_friction.GetFloat() );
 	SetElasticity( asw_money_elasticity.GetFloat() );
+
+	//softcopy: removes the dropped money if it's not picked up in 9secs to prevent lagging server
+	SetThink(&CASW_Pickup_Money::SUB_Remove);
+	SetNextThink(gpGlobals->curtime + 9.0f);
 }
 
 void CASW_Pickup_Money::Precache( void )
