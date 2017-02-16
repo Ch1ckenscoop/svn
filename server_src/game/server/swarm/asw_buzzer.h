@@ -136,12 +136,10 @@ public:
 	CSoundPatch	*m_pRadSound;
 	CHandle<CASW_Radiation_Volume> m_hRadVolume;
 	virtual void	StartRadLoopSound();
-	const char 		*b_AlienModelName;
-	float			m_fLastTouchHurtTime;
 	virtual void	DoRadiationLeak(const CTakeDamageInfo &info);
-	const char		*alienLabel, *damageTypes;
-	virtual void 	SetColorScale(const char *alienLabel);
-	virtual void	MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes);
+	const char		*alienLabel, *damageTypes, *b_AlienModelName;
+	float			m_fLastTouchHurtTime;
+	bool 			bOldBuzzer;
 
 	enum BuzzerConditions
 	{

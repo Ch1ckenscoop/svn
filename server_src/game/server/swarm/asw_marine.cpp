@@ -394,7 +394,6 @@ ConVar asw_realistic_death_chatter("asw_realistic_death_chatter", "0", FCVAR_NON
 ConVar asw_god( "asw_god", "0", FCVAR_CHEAT, "Set to 1 to make marines invulnerable" );
 extern ConVar asw_sentry_friendly_fire_scale;
 extern ConVar asw_marine_ff_absorption;
-extern ConVar asw_blurpoison_enable;	//softcopy:
 
 ConVar asw_movement_direction_tolerance( "asw_movement_direction_tolerance", "30.0", FCVAR_CHEAT );
 ConVar asw_movement_direction_interval( "asw_movement_direction_interval", "0.5", FCVAR_CHEAT );
@@ -1401,8 +1400,7 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 					}
 					MessageEnd();
 				}
-				//if (info.GetDamageType() & DMG_BLURPOISON)
-				if ((info.GetDamageType() & DMG_BLURPOISON) && asw_blurpoison_enable.GetBool())	//softcopy: disable blur if beta buzzer 
+				if (info.GetDamageType() & DMG_BLURPOISON)
 				{
 					float duration = asw_buzzer_poison_duration.GetFloat();
 					// affect duration by mission difficulty

@@ -137,10 +137,18 @@ public:
 	virtual bool			ClientCommand( CBaseEntity *pEdict, const CCommand &args );
 	virtual void			ClientCommandKeyValues( edict_t *pEntity, KeyValues *pKeyValues );
 	void OnPlayerFullyJoined( CASW_Player *pPlayer );
+	
 	//softcopy:
 	void OnPlayerFullyJoinedCheck(CASW_Player *pPlayer);
 	bool SpectatorInLobby(CASW_Player *pPlayer, bool bAddpPlayerId);
 	bool bSpectatorCanSelect;
+	virtual void	SetColorScale(CBaseEntity *pAlien, const char *alienLabel);
+	const char *alienLabel, *damageTypes;
+	virtual void	DoTouchExplosion( CBaseEntity *pMarine );
+	virtual void	MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes);
+	virtual void	MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes);
+	virtual void	MarineDamageDebugInfo(CBaseEntity *pOther, const char *alienLabel, const char *damageInfo, const char *damageTypes);
+	int m_TouchExplosionDamage;
 
 	// powerups
 	virtual void DropPowerup( CBaseEntity *pSource, const CTakeDamageInfo &info, const char *pszSourceClass );

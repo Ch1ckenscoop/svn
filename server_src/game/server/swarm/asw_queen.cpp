@@ -22,14 +22,12 @@
 #include "asw_sentry_base.h"
 #include "props.h"
 //softcopy:
-#include "asw_fx_shared.h"
 #include "particle_parse.h"
-#include "asw_barrel_explosive.h"
 #include "asw_boomer_blob.h"
 #include "asw_mortarbug.h"
 #include "asw_weapon_chainsaw_shared.h"
-#include "asw_radiation_volume.h"    
-
+#include "asw_radiation_volume.h"   
+#include "asw_marine_speech.h" 
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -211,7 +209,7 @@ void CASW_Queen::Spawn( void )
 	//SetModelScale(fScale, 0.0f);
 	float fScale = asw_queen_scalemod.GetFloat();
 	alienLabel = "queen";
-	SetColorScale(alienLabel);
+	ASWGameRules()->SetColorScale( this, alienLabel);
 
 	UTIL_SetSize(this, Vector((fScale * -120),(fScale * -120),(fScale * 0)), Vector((fScale * 120),(fScale * 120),(fScale * 160)));
 }
@@ -667,18 +665,22 @@ void CASW_Queen::StartTouch( CBaseEntity *pOther )
 	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
 	if ( pMarine )
 	{
-		m_TouchExplosionDamage = asw_queen_touch_damage.GetInt();
-		CTakeDamageInfo info( this, this, m_TouchExplosionDamage, DMG_SLASH );
+		ASWGameRules()->m_TouchExplosionDamage = asw_queen_touch_damage.GetInt();
+		CTakeDamageInfo info( this, this, ASWGameRules()->m_TouchExplosionDamage, DMG_SLASH );
 		damageTypes = "on touch";
+
 		if(asw_queen_ignite.GetInt() >= 2)
-			MarineIgnite(pMarine, info, alienLabel, damageTypes);
-		if (m_fLastTouchHurtTime + 0.35f/*0.6f*/ > gpGlobals->curtime || m_TouchExplosionDamage <= 0)	//don't hurt him if he was hurt recently
+			ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+
+		if (m_fLastTouchHurtTime + 0.4f/*0.6f*/ > gpGlobals->curtime || ASWGameRules()->m_TouchExplosionDamage <= 0)	//don't hurt him if he was hurt recently
 			return;
+
 		Vector vecForceDir = ( pMarine->GetAbsOrigin() - GetAbsOrigin() );		// hurt the marine
 		CalculateMeleeDamageForce( &info, vecForceDir, pMarine->GetAbsOrigin() );
 		pMarine->TakeDamage( info );
+
 		if (asw_queen_explode.GetInt() >= 2)
-			MarineExplode(pMarine, alienLabel, damageTypes);
+			ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
 
 		m_fLastTouchHurtTime = gpGlobals->curtime;
 	}
@@ -1192,13 +1194,15 @@ void CASW_Queen::SlashAttack(bool bRightClaw)
 		{
 			pMarine->MeleeBleed(&info);
 			//softcopy: ignite/explode marine by queen slash, 1=melee, 2=touch, 3=All
+			int iIgnite = asw_queen_ignite.GetInt();
+			int iExplode = asw_queen_explode.GetInt();
 			damageTypes = "melee attack";
-			if (asw_queen_ignite.GetInt() == 1 || asw_queen_ignite.GetInt() == 3)
-				MarineIgnite(pMarine, info, alienLabel, damageTypes);
-			if (asw_queen_explode.GetInt() == 1 || asw_queen_explode.GetInt() == 3)
+			if (iIgnite == 1 || iIgnite == 3)
+				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+			if (iExplode == 1 || iExplode == 3)
 			{
-				m_TouchExplosionDamage = asw_queen_touch_damage.GetInt();
-				MarineExplode(pMarine, alienLabel, damageTypes);
+				ASWGameRules()->m_TouchExplosionDamage = asw_queen_touch_damage.GetInt();
+				ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
 			}
 			
 		}

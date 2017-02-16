@@ -48,8 +48,10 @@ public:
 	bool ShouldGib( const CTakeDamageInfo &info );
 	bool CorpseGib( const CTakeDamageInfo &info );
 	void Event_Killed( const CTakeDamageInfo &info );
-	
-	float m_fLastTouchHurtTime; 	//softcopy: 
+
+	//softcopy:
+	float m_fLastTouchHurtTime;
+	const char *alienLabel, *damageTypes;
 };
 
 

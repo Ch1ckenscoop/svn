@@ -5,6 +5,7 @@
 #include "asw_util_shared.h"
 #include "asw_marine.h"
 #include "asw_marine_resource.h"
+#include "asw_gamerules.h"	//softcopy:
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -22,8 +23,7 @@ END_DATADESC()
 //softcopy:
 ConVar asw_grub_touch_damage("asw_grub_touch_damage", "0", FCVAR_CHEAT, "Damage caused by grub on touch.");
 ConVar asw_grub_ignite("asw_grub_ignite", "0", FCVAR_CHEAT, "Ignites marine by grub on touch.");
-extern ConVar asw_debug_alien_ignite;
-bool IsIgnitedGrub;
+int iGrubDamage;
 
 extern ConVar asw_debug_simple_alien;
 
@@ -56,10 +56,11 @@ void CASW_Simple_Grub::Spawn(void)
 	UTIL_SetSize(this, Vector(-12,-12,   0),	Vector(12, 12, 12));
 
 	SetTouch( &CASW_Simple_Grub::GrubTouch );
-	//softcopy: strong health if it has damage
+	//softcopy:
 	//m_iHealth = 1;
-	m_iHealth = asw_grub_touch_damage.GetInt() > 0 ?  20 : 1;
-	IsIgnitedGrub = false;	//debug marine has ignited
+	iGrubDamage = asw_grub_touch_damage.GetInt();
+	m_iHealth = iGrubDamage > 0 ?  20 : 1;	//strong health if it has damage
+	alienLabel = "grub";
 
 	SetBlocksLOS(false);
 }
@@ -82,18 +83,13 @@ void CASW_Simple_Grub::GrubTouch( CBaseEntity *pOther )
 	}*/
 	if ( pOther->Classify() == CLASS_ASW_MARINE )
 	{
-		CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
-		CTakeDamageInfo info( this, this, asw_grub_touch_damage.GetInt(), DMG_ACID );
-		if (asw_grub_ignite.GetBool())
-		{
-			pMarine->ASW_Ignite( 1.5f, 1.5, info.GetAttacker(), info.GetWeapon() );
-			if (asw_debug_alien_ignite.GetBool() && pMarine->IsOnFire() && !IsIgnitedGrub)	//debug marine has ignited
-			{
-				Msg("----- Player %s has ignited  by grub on touch -----\n", pMarine->GetPlayerName());
-				IsIgnitedGrub = true;
-			}
-		}
-		if (asw_grub_touch_damage.GetInt() > 0)
+		CTakeDamageInfo info( this, this, iGrubDamage, DMG_ACID );
+		damageTypes = "on touch";
+
+		if (asw_grub_ignite.GetBool() && iGrubDamage >0)
+			ASWGameRules()->MarineIgnite(pOther, info, alienLabel, damageTypes);
+
+		if (iGrubDamage > 0)
 		{
 			if ( m_fLastTouchHurtTime + 1.5f > gpGlobals->curtime )	//don't hurt him if he was hurt recently
 				return;
@@ -108,8 +104,8 @@ void CASW_Simple_Grub::GrubTouch( CBaseEntity *pOther )
 			data.m_vOrigin = vecDamagePos;
 			data.m_nOtherEntIndex = pOther->entindex();
 			DispatchEffect( "ASWAcidBurn", data );
-			if ( asw_debug_alien_ignite.GetBool() )		//debug marine has damaged
-				Msg("----- Player %s has damaged  by grub on touch -----\n", pMarine->GetPlayerName());
+		
+			ASWGameRules()->MarineDamageDebugInfo(pOther, "damaged ", alienLabel, damageTypes);
 			m_fLastTouchHurtTime = gpGlobals->curtime;
 		}
 		else

@@ -95,8 +95,6 @@ ConVar asw_egg_color3_percent("asw_egg_color3_percent", "0.0", FCVAR_NONE, "Perc
 ConVar asw_egg_scalemod("asw_egg_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal egg.",true,0,true,2);
 ConVar asw_egg_scalemod_percent("asw_egg_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal egg you want to scale.");
 ConVar asw_egg_touch_onfire("asw_egg_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if egg body on fire touch.");
-extern ConVar asw_debug_alien_ignite;
-bool IsIgnited;		//debug marine has ignited
 
 float CASW_Egg::s_fNextSpottedChatterTime = 0;
 
@@ -132,17 +130,9 @@ void CASW_Egg::Spawn( void )
 	SetCollisionGroup( ASW_COLLISION_GROUP_EGG );
 
 	//softcopy:
-	float randomColor = RandomFloat(0, 1);
-	if (randomColor <= asw_egg_color2_percent.GetFloat())
-		SetRenderColor(asw_egg_color2.GetColor().r(), asw_egg_color2.GetColor().g(), asw_egg_color2.GetColor().b());
-	else if (randomColor <= (asw_egg_color2_percent.GetFloat() + asw_egg_color3_percent.GetFloat()))
-		SetRenderColor(asw_egg_color3.GetColor().r(), asw_egg_color3.GetColor().g(), asw_egg_color3.GetColor().b());
-	else
-		SetRenderColor(asw_egg_color.GetColor().r(), asw_egg_color.GetColor().g(), asw_egg_color.GetColor().b());
-	float EggScale = RandomFloat(0, 1);
-	if (EggScale <= asw_egg_scalemod_percent.GetFloat())
-		SetModelScale(asw_egg_scalemod.GetFloat());
-
+	alienLabel = "egg";
+	ASWGameRules()->SetColorScale( this, alienLabel );
+	
 	Precache();
 	SetModel(EGG_MODEL);
 	ResetSequence( LookupSequence( EGG_CLOSED_ANIM ) );
@@ -485,27 +475,9 @@ void CASW_Egg::EggTouch(CBaseEntity* pOther)
 		if ( m_bOnFire && asw_egg_touch_onfire.GetBool() )
 		{
 			CTakeDamageInfo info( this, this, 0, DMG_BURN );
-			MarineIgnite(pMarine, info, "egg", "on fire touch");
+			ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, "on fire touch");
 		}
 
-	}
-}
-
-//softcopy:
-void CASW_Egg::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
-{
-	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
-	pMarine->ASW_Ignite( 1.0f, 0, info.GetAttacker(), info.GetWeapon() );
-	
-	if (asw_debug_alien_ignite.GetBool())	//debug marine has ignited
-	{	
-		if (!pMarine->IsOnFire()) 
-			IsIgnited = false;
-		if (pMarine->IsOnFire() && !IsIgnited) 
-		{
-			Msg("----- Player %s has ignited  by %s %s -----\n", pMarine->GetPlayerName(), alienLabel, damageTypes);
-			IsIgnited = true;
-		}
 	}
 }
 

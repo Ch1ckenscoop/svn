@@ -35,7 +35,6 @@
 #include "asw_game_resource.h"
 #include "asw_marine_resource.h"
 #include "asw_weapon.h"
-#include "particle_parse.h"		//softcopy:
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -85,7 +84,6 @@ ConVar asw_springcol_debug( "asw_springcol_debug", "0", FCVAR_CHEAT, "Display th
 
 ConVar asw_alien_longrange("asw_alien_longrange", "0", FCVAR_CHEAT, "If non-zero, allow swarm to see this far.");
 ConVar asw_alien_network_cull("asw_alien_network_cull", "1100", FCVAR_NONE, "If non-zero, don't send aliens farther than this distance from marines.");
-ConVar asw_debug_alien_ignite("asw_debug_alien_ignite", "0", FCVAR_NONE, "Show debug messages for ignition/explosive effects by alien");	//softcopy: 
 
 float CASW_Alien::sm_flLastHurlTime = 0;
 
@@ -215,8 +213,6 @@ CASW_Alien::CASW_Alien( void ) :
 	meleeAttack2.Init( 0.0f, 64.0f, 0.7f, false );
 	rangeAttack1.Init( 64.0f, 786.0f, 0.5f, false );
 	rangeAttack2.Init( 64.0f, 512.0f, 0.5f, false );
-	
-	m_TouchExplosionDamage = 0;		//softcopy:
 }
 
 struct marineInfo		//Ch1ckensCoop: Network culling
@@ -729,93 +725,6 @@ void CASW_Alien::NPCThink( void )
 	}
 	m_flLastThinkTime = gpGlobals->curtime;   
 }
-
-//softcopy: 
-void CASW_Alien::DoTouchExplosion( CBaseEntity *pMarine )	//alien touch explosion function
-{
-	EmitSound( "ASW_T75.Explode" );
-	Vector vecExplosionPos = pMarine->GetAbsOrigin();
-	CPASFilter filter( vecExplosionPos );
-	UserMessageBegin( filter, "ASWBarrelExplosion" );
-	WRITE_FLOAT( vecExplosionPos.x ); 
-	WRITE_FLOAT( vecExplosionPos.y );
-	WRITE_FLOAT( vecExplosionPos.z );
-	WRITE_FLOAT( 160.0f );
-	MessageEnd();
-	DispatchParticleEffect( "electrified_armor_burst", pMarine->GetAbsOrigin(), vec3_angle );	//burst effect
-	
-	// hurt the marine
-	CTakeDamageInfo info( this, this, m_TouchExplosionDamage, DMG_BLAST );
-	Vector vecForceDir = (pMarine->GetAbsOrigin() - GetAbsOrigin());
-	CalculateMeleeDamageForce( &info, vecForceDir, pMarine->GetAbsOrigin() );
-	pMarine->TakeDamage( info );
-}
-void CASW_Alien::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)	//ignite function
-{
-	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
-	pMarine->ASW_Ignite( 1.5f, 1.5, info.GetAttacker(), info.GetWeapon() );
-	
-	if (asw_debug_alien_ignite.GetBool())	//debug marine has ignited
-	{
-		const char *m_damageTypes = damageTypes;
-		if (m_bOnFire)	//alien onfire
-			m_damageTypes = "on fire touch";
-		if (!pMarine->IsOnFire())
-			IsIgnited = false;
-		if (pMarine->IsOnFire() && !IsIgnited )
-		{
-			MarineDamageDebugInfo(pMarine, "ignited ", alienLabel, damageTypes);
-			IsIgnited = true;
-		}
-	}
-}
-void CASW_Alien::MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes)
-{
-	DoTouchExplosion(pMarine);
-
-	if (asw_debug_alien_ignite.GetBool())	//debug marine has exploded
-		MarineDamageDebugInfo(pMarine, "exploded", alienLabel, damageTypes);
-}
-void CASW_Alien::MarineDamageDebugInfo(CBaseEntity *pOther, const char *damageInfo, const char *alienLabel, const char *damageTypes)
-{
-	Msg("----- Player %s has %s by %s %s -----\n", pOther->GetPlayerName(), damageInfo, alienLabel, damageTypes);
-}
-void CASW_Alien::SetColorScale(const char *alienLabel)	//set aliens color scale function
-{
-	char text[48], text2[48], text3[48], text4[48], text5[48], text6[48], text7[48];
-	Q_snprintf(text,  sizeof(text),  "asw_%s_color", alienLabel);
-	Q_snprintf(text2, sizeof(text2), "asw_%s_color2", alienLabel);
-	Q_snprintf(text3, sizeof(text3), "asw_%s_color3", alienLabel);
-	Q_snprintf(text4, sizeof(text4), "asw_%s_color2_percent", alienLabel);
-	Q_snprintf(text5, sizeof(text5), "asw_%s_color3_percent", alienLabel);
-	Q_snprintf(text6, sizeof(text6), "asw_%s_scalemod_percent", alienLabel);
-	Q_snprintf(text7, sizeof(text7), "asw_%s_scalemod", alienLabel); 
-
-	float randomColor = RandomFloat(0, 1);
-	if ( randomColor <= ((ConVar *)cvar->FindVar(text2))->GetFloat() )
-		SetRenderColor( ((ConVar *)cvar->FindVar(text2))->GetColor().r(),((ConVar *)cvar->FindVar(text2))->GetColor().g(),((ConVar *)cvar->FindVar(text2))->GetColor().b() );  
-	else if ( randomColor <= ((ConVar *)cvar->FindVar(text4))->GetFloat() + ((ConVar *)cvar->FindVar(text5))->GetFloat() )
-		SetRenderColor( ((ConVar *)cvar->FindVar(text3))->GetColor().r(),((ConVar *)cvar->FindVar(text3))->GetColor().g(),((ConVar *)cvar->FindVar(text3))->GetColor().b() );
-	else SetRenderColor( ((ConVar *)cvar->FindVar(text))->GetColor().r(),((ConVar *)cvar->FindVar(text))->GetColor().g(),((ConVar *)cvar->FindVar(text))->GetColor().b() );
-	float alienScale = RandomFloat(0, 1);
-	if ( alienScale <= ((ConVar *)cvar->FindVar(text6))->GetFloat() )
-		SetModelScale( ((ConVar *)cvar->FindVar(text7))->GetFloat() );
-
-	/*//ibemad original sample
-	float randomColor = RandomFloat(0, 1);
-	if (randomColor <= asw_color2_percent.GetFloat())
-		SetRenderColor(asw_color2.GetColor().r(), asw_color2.GetColor().g(), asw_color2.GetColor().b());
-	else if (randomColor <= (asw_color2_percent.GetFloat() + asw_color3_percent.GetFloat()))
-		SetRenderColor(asw_color3.GetColor().r(), asw_color3.GetColor().g(), asw_color3.GetColor().b());
-	else
-		SetRenderColor(asw_color.GetColor().r(), asw_color.GetColor().g(), asw_color.GetColor().b());
-
-	float alienScale = RandomFloat(0, 1);
-	if (alienScale <= asw_scalemod_percent.GetFloat())
-		SetModelScale(asw_scalemod.GetFloat());
-	*/
-}
-//
 
 bool CASW_Alien::MarineNearby(float radius, bool bCheck3D)
 {

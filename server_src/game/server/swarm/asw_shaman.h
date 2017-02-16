@@ -44,13 +44,10 @@ public:
 	virtual bool		ShouldGib( const CTakeDamageInfo &info ) { return false; }
 	//softcopy:
 	virtual void		Event_Killed( const CTakeDamageInfo &info );
-	CNetworkVar( bool, m_bInflated );
 	virtual void 		StartTouch( CBaseEntity *pOther );
+	CNetworkVar	( bool, m_bInflated );
 	float 				m_fLastTouchHurtTime;
 	const char			*alienLabel, *damageTypes;
-	virtual void 		SetColorScale(const char *alienLabel) {return BaseClass::SetColorScale(alienLabel);}
-	virtual void 		MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
-						{return BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);}
 
 	// sounds
 	virtual void PainSound( const CTakeDamageInfo &info );

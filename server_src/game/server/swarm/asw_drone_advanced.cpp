@@ -238,7 +238,7 @@ void CASW_Drone_Advanced::Spawn( void )
 			SetBodygroup ( 5, RandomInt (0, 1 ) );
 		}
 
-		//SetRenderColor(asw_drone_color.GetColor().r(), asw_drone_color.GetColor().g(), asw_drone_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
+		//SetRenderColor(asw_drone_color.GetColor().r(), asw_drone_color.GetColor().g(), asw_drone_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors. //softcopy:
 	}
 
 	if (FClassnameIs(this, "asw_drone_jumper"))
@@ -256,7 +256,7 @@ void CASW_Drone_Advanced::Spawn( void )
 		m_ClassType = (Class_T)CLASS_ASW_DRONE;
 	}
 
-	SetColorScale( alienLabel = m_bJumper ? "drone_jumper" : "drone" );	//softcopy:
+	ASWGameRules()->SetColorScale( this, alienLabel = m_bJumper ? "drone_jumper" : "drone" );	//softcopy:
 
 	SetHullType(HULL_MEDIUMBIG);
 
@@ -924,17 +924,19 @@ void CASW_Drone_Advanced::StartTouch( CBaseEntity *pOther )
 	if (pMarine)
 	{
 		//softcopy: ignite marine by drone/jumper on touch/on fire touch, 1=drone, 2=jumper, 3=All.
-		if ( asw_drone_touch_ignite.GetBool() || asw_drone_touch_onfire.GetBool() )
+		int iDroneIgnite = asw_drone_touch_ignite.GetInt();
+		bool bDroneOnFire = asw_drone_touch_onfire.GetBool();
+		if ( iDroneIgnite > 0 || bDroneOnFire )
 		{
 			CTakeDamageInfo info( this, this, 0, DMG_SLASH );
 			damageTypes = "on touch";
-			int  iDroneIgnite = asw_drone_touch_ignite.GetInt();
-			bool bDroneOnfire = (m_bOnFire && asw_drone_touch_onfire.GetInt() >0);
-			if ((iDroneIgnite >=2 || bDroneOnfire) && m_bJumper)
-				MarineIgnite(pMarine, info, alienLabel, damageTypes);
+			bool bDroneIsOnFire = (m_bOnFire && bDroneOnFire);
 
-			if (((iDroneIgnite==1 || iDroneIgnite==3) || bDroneOnfire) && !m_bJumper)
-				MarineIgnite(pMarine, info, alienLabel, damageTypes);
+			if ((iDroneIgnite >=2 || bDroneIsOnFire) && m_bJumper)
+				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+
+			if (((iDroneIgnite==1 || iDroneIgnite==3) || bDroneIsOnFire) && !m_bJumper)
+				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
 		}
 
 		int iTouchDamage = asw_drone_touch_damage.GetInt();
@@ -1005,10 +1007,10 @@ void CASW_Drone_Advanced::MeleeAttack( float distance, float damage, QAngle &vie
 				damageTypes = "melee attack";
 				int iDroneMeleeIgnite = asw_drone_melee_ignite.GetInt();
 				if ( iDroneMeleeIgnite >= 2 && m_bJumper )
-					MarineIgnite(pMarine, info, alienLabel, damageTypes);
+					ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
 
 				if ( (iDroneMeleeIgnite == 1 || iDroneMeleeIgnite == 3) && !m_bJumper )
-					MarineIgnite(pMarine, info, alienLabel, damageTypes);
+					ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
 			}
 		}
 

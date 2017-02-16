@@ -18,10 +18,7 @@
 #include "asw_achievements.h"
 #include "asw_fx_shared.h"
 #include "asw_marine_resource.h"
-//softcopy:
-#include "asw_shareddefs.h"           
-#include "particle_parse.h" 
-
+#include "particle_parse.h"	//softcopy: 
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -68,7 +65,6 @@ ConVar asw_parasite_ignite("asw_parasite_ignite", "0", FCVAR_CHEAT, "Ignites mar
 ConVar asw_parasite_defanged_ignite("asw_parasite_defanged_ignite", "0", FCVAR_CHEAT, "Ignites marine by defanged parasite.");
 ConVar asw_parasite_beta_poison("asw_parasite_beta_poison", "0", FCVAR_CHEAT, "Enables poison blur to marine.");
 ConVar asw_parasite_beta_poison_duration("asw_parasite_beta_poison_duration", "2", FCVAR_CHEAT, "Sets poison blur duration(1 - 10).",true,0,true,10);
-extern ConVar asw_debug_alien_ignite;
 
 extern ConVar asw_debug_alien_damage;
 extern ConVar asw_god;
@@ -120,6 +116,7 @@ BEGIN_DATADESC( CASW_Parasite )
 	DEFINE_FIELD( m_bJumpFromEgg, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_flEggJumpDistance, FIELD_FLOAT ),
 	DEFINE_FIELD( m_bDefanged, FIELD_BOOLEAN ),
+	DEFINE_FIELD( m_bBetaParasite, FIELD_BOOLEAN ),
 	DEFINE_FIELD( m_fSuicideTime, FIELD_FLOAT ),
 	DEFINE_THINKFUNC( LeapThink ),
 	DEFINE_THINKFUNC( InfestThink ),
@@ -178,8 +175,8 @@ void CASW_Parasite::Spawn( void )
 		m_bCanBetaParasite = true;
 	}
 	SetModel( m_pszAlienModelName );
-	bool bAlienCmp = !Q_strcmp(m_pszAlienModelName,SWARM_PARASITE_MODEL);	//allow setting colors & scale
-	bAlienCmp ? FClassnameIs(this, "asw_parasite_defanged") ? DefangedColorScale():ParasiteColorScale() : BParasiteColorScale();
+	//allow setting colors & scale
+	!Q_strcmp(m_pszAlienModelName, SWARM_PARASITE_MODEL) ? FClassnameIs(this, "asw_parasite_defanged") ? DefangedColorScale():ParasiteColorScale() : BParasiteColorScale();
 
 	SetMoveType( MOVETYPE_STEP );
 	SetHullType(HULL_TINY);
@@ -214,7 +211,7 @@ void CASW_Parasite::Event_Killed( const CTakeDamageInfo &info )
 	}
 	
 	//softcopy: add beta parasite death animation
-	if (!Q_strcmp(m_pszAlienModelName, SWARM_BETA_PARASITE_MODEL))
+	if (m_bBetaParasite)
 	{
 		//try add more blood
 		trace_t tr;
@@ -722,8 +719,7 @@ bool CASW_Parasite::CheckInfestTarget( CBaseEntity *pOther )
 {
 	CASW_Marine* pMarine = CASW_Marine::AsMarine( pOther );
 	
-	//if ( pOther )		//softcopy: prevent crashes on pMarine->IsElectrifiedArmorActive()
-	if ( pMarine )
+	if ( pMarine )/*if ( pOther )*/	//softcopy: prevent crashes on pMarine->IsElectrifiedArmorActive()
 	{
 		// if marine has electrified armour on, that protects him from infestation
 		if ( pMarine->IsElectrifiedArmorActive() )
@@ -858,15 +854,15 @@ void CASW_Parasite::InfestMarine(CASW_Marine* pMarine)
 			CTakeDamageInfo info( this, this, 0, DMG_SLASH );
 			damageTypes = "attack";
 			int iParasiteIgnite = asw_parasite_ignite.GetInt();
-			if ((iParasiteIgnite==1 || iParasiteIgnite==3) && !m_bDefanged && !Q_strcmp(m_pszAlienModelName, SWARM_PARASITE_MODEL)) 
-				MarineIgnite(pMarine, info, alienLabel, damageTypes);				
-			else if (iParasiteIgnite >=2 && !m_bDefanged && !Q_strcmp(m_pszAlienModelName, SWARM_BETA_PARASITE_MODEL))
-				MarineIgnite(pMarine, info, alienLabel, damageTypes);
+			if ((iParasiteIgnite==1 || iParasiteIgnite==3) && !m_bDefanged) 
+				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);				
+			else if (iParasiteIgnite >=2 && m_bBetaParasite)
+				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
 		}
 		if (asw_parasite_beta_poison.GetBool())	//beta parasite infest & poison blur
 		{
 			CTakeDamageInfo info( this, this, 0, DMG_INFEST | DMG_BLURPOISON );
-			if (!m_bDefanged && Q_strcmp(m_pszAlienModelName, SWARM_PARASITE_MODEL) && !Q_strcmp(m_pszAlienModelName, SWARM_BETA_PARASITE_MODEL))
+			if (m_bBetaParasite )
 			{
 #ifdef GAME_DLL
 				bool bLagComp = false;
@@ -891,8 +887,7 @@ void CASW_Parasite::InfestMarine(CASW_Marine* pMarine)
 					if ( duration > 3 )
 						ClientPrint(pMarine->GetCommander(), HUD_PRINTCENTER, "See  the Map  to survive.");
 
-					if (asw_debug_alien_ignite.GetBool())
-						MarineDamageDebugInfo(pMarine, "infested", alienLabel, "poison");	//debug infested poison
+					ASWGameRules()->MarineDamageDebugInfo(pMarine, "infested", alienLabel, "poison");	//debug infested poison
 				}
 			}
 		}
@@ -1095,7 +1090,7 @@ void CASW_Parasite::TouchDamage( CBaseEntity *pOther )
 		CTakeDamageInfo info( this, this, 0, DMG_ACID );
 		damageTypes = "attack";
 		if ( pMarine && m_bDefanged )
-			MarineIgnite(pMarine, info, alienLabel, damageTypes);
+			ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
 	}
 }
 
@@ -1415,7 +1410,7 @@ void CASW_Parasite::DefangedColorScale()
 	m_fSuicideTime = gpGlobals->curtime + 60;
 	m_ClassType = (Class_T)CLASS_ASW_PARASITE_DEFANGED;
 	alienLabel = "parasite_safe";
-	SetColorScale( alienLabel );
+	ASWGameRules()->SetColorScale( this, alienLabel );
 }
 void CASW_Parasite::ParasiteColorScale()
 {
@@ -1425,16 +1420,16 @@ void CASW_Parasite::ParasiteColorScale()
 	m_fSuicideTime = 0;
 	m_ClassType = (Class_T)CLASS_ASW_PARASITE;
 	alienLabel = "parasite";
-	SetColorScale( alienLabel );
+	ASWGameRules()->SetColorScale( this, alienLabel );
 }
 void CASW_Parasite::BParasiteColorScale()
 {
-	m_bDefanged = false;
+	m_bBetaParasite = true;
 	m_iHealth	= ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_parasite_health.GetInt());
 	SetBodygroup( 0, 0 );
 	m_fSuicideTime = 0;
 	alienLabel = "parasite_beta";
-	SetColorScale( alienLabel );
+	ASWGameRules()->SetColorScale( this, alienLabel );
 }
 
 

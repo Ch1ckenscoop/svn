@@ -105,17 +105,13 @@ public:
 	bool CheckInfestTarget( CBaseEntity *pOther );
 	EHANDLE m_hPrepareToInfest;
 
-	//softcopy: parasite color & scale
+	//softcopy:
 	virtual void DefangedColorScale();
 	virtual void ParasiteColorScale();
 	virtual void BParasiteColorScale();
-	virtual void SetColorScale(const char *alienLabel) {return BaseClass::SetColorScale(alienLabel);}
-	virtual void MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)
-				{return	BaseClass::MarineIgnite(pOther, info, alienLabel, damageTypes);}
-	virtual void MarineDamageDebugInfo(CBaseEntity *pOther, const char *damageInfo, const char *alienLabel, const char *damageTypes)
-				{return	BaseClass::MarineDamageDebugInfo(pOther, damageInfo, alienLabel, damageTypes);}
 	const char *alienLabel, *damageTypes;
-	bool m_bCanBetaParasite;
+	bool m_bCanBetaParasite;	//beta parasite not sit in egg
+	bool m_bBetaParasite;	//flag is beta parasite
 
 protected:
 	DEFINE_CUSTOM_AI;

@@ -18,9 +18,6 @@
 #include "ai_pathfinder.h"
 #include "ai_link.h"
 #include "asw_util_shared.h"
-//softcopy:
-#include "ammodef.h"
-#include "asw_barrel_explosive.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -112,8 +109,9 @@ void CASW_Mortarbug::Spawn( void )
 	m_takedamage = DAMAGE_NO;	// alien is invulnerable until she finds her first enemy
 	//softcopy:
 	//SetRenderColor(asw_mortarbug_color.GetColor().r(), asw_mortarbug_color.GetColor().g(), asw_mortarbug_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
-	alienLabel = !Q_strcmp(m_pszAlienModelName, SWARM_BETA_MORTARBUG_MODEL) ? "mortarbug_beta" : "mortarbug";
-	SetColorScale( alienLabel );
+	bOldMortarBug = !Q_strcmp(m_pszAlienModelName, SWARM_BETA_MORTARBUG_MODEL);
+	alienLabel = bOldMortarBug ? "mortarbug_beta" : "mortarbug";
+	ASWGameRules()->SetColorScale( this, alienLabel );
 }
 
 void CASW_Mortarbug::Precache( void )
@@ -513,18 +511,19 @@ void CASW_Mortarbug::StartTouch( CBaseEntity *pOther )
 		pMarine->TakeDamage( info );
 		m_fLastTouchHurtTime = gpGlobals->curtime;
 		*/
-		m_TouchExplosionDamage = asw_mortarbug_touch_damage.GetInt();
-		CTakeDamageInfo info( this, this, m_TouchExplosionDamage, DMG_SLASH );
+		int iTouch = asw_mortarbug_touch.GetInt();
+		ASWGameRules()->m_TouchExplosionDamage = asw_mortarbug_touch_damage.GetInt();
+		CTakeDamageInfo info( this, this, ASWGameRules()->m_TouchExplosionDamage, DMG_SLASH );
 		damageTypes = "on touch";
-		if ((asw_mortarbug_touch.GetInt() == 1 || asw_mortarbug_touch.GetInt() == 3) || (m_bOnFire && asw_mortarbug_touch_onfire.GetBool()))
-			MarineIgnite(pMarine, info, alienLabel, damageTypes);
-		if (m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime || m_TouchExplosionDamage <=0)		//don't hurt him if he was hurt recently
+		if ((iTouch == 1 || iTouch == 3) || (m_bOnFire && asw_mortarbug_touch_onfire.GetBool()))
+			ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+		if (m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime || ASWGameRules()->m_TouchExplosionDamage <=0)		//don't hurt him if he was hurt recently
 			return;
 		Vector vecForceDir = ( pMarine->GetAbsOrigin() - GetAbsOrigin() );	// hurt the marine
 		CalculateMeleeDamageForce( &info, vecForceDir, pMarine->GetAbsOrigin() );
 		pMarine->TakeDamage( info );
-		if (asw_mortarbug_touch.GetInt() >= 2)
-			MarineExplode(pMarine, alienLabel, damageTypes);
+		if (iTouch >= 2)
+			ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
 		m_fLastTouchHurtTime = gpGlobals->curtime;
 	}
 }
@@ -698,9 +697,9 @@ void CASW_Mortarbug::Event_Killed( const CTakeDamageInfo &info )
 	UTIL_TraceLine( GetAbsOrigin() + Vector( 0, 0, 16 ), GetAbsOrigin() - Vector( 0, 0, 64 ), MASK_SOLID, this, COLLISION_GROUP_NONE, &tr );
 	UTIL_DecalTrace( &tr, "GreenBloodBig" );
 	m_fGibTime = gpGlobals->curtime + random->RandomFloat(20.0f, 30.0f);
-	if (!Q_strcmp(m_pszAlienModelName, SWARM_BETA_MORTARBUG_MODEL) && m_bOnFire)
+	if (bOldMortarBug && m_bOnFire)
 		m_fGibTime = gpGlobals->curtime;	//remove beta mortardbug after firing 
-	
+
 	BaseClass::Event_Killed(info);
 
 	//m_fGibTime = gpGlobals->curtime + random->RandomFloat(20.0f, 30.0f);	//softcopy:

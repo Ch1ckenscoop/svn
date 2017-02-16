@@ -106,9 +106,6 @@ ConVar asw_old_buzzer( "asw_old_buzzer","0", FCVAR_CHEAT, "0 = buzzer, 1 = beta 
 ConVar asw_buzzer_radiation_leak_enable( "asw_buzzer_radiation_leak_enable","0", FCVAR_CHEAT, "Enables buzzers leak radiation gas cloud.");
 ConVar asw_buzzer_melee_ignite("asw_buzzer_melee_ignite", "0", FCVAR_CHEAT, "Ignites marine by buzzer melee(1=buzzer, 2=beta buzzer, 3=All).");
 ConVar asw_buzzer_touch_onfire("asw_buzzer_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if buzzer body on fire touch.");
-ConVar asw_blurpoison_enable("asw_blurpoison_enable", "0", FCVAR_CHEAT);
-extern ConVar asw_debug_alien_ignite;
-bool IsIgnitedByBuzzer;		//debug marine has ignited
 
 extern ConVar showhitlocation;
 extern ConVar asw_debug_alien_damage;
@@ -524,9 +521,8 @@ void CASW_Buzzer::DeathSound(  const CTakeDamageInfo &info )
 	//softcopy: individual death sound for buzzer/beta buzzer
 	//CPASAttenuationFilter filter2( this, "ASW_Buzzer.Death" );
 	//EmitSound( filter2, entindex(), "ASW_Buzzer.Death" );
-	bool bBuzzerCompare = !Q_strcmp(b_AlienModelName, ASW_BETA_BUZZER_MODEL);
-	CPASAttenuationFilter filter2(this, bBuzzerCompare ? "Ranger.GibSplatHeavy" : "ASW_Buzzer.Death");
-	EmitSound(filter2, entindex(), bBuzzerCompare ? "Ranger.GibSplatHeavy" : "ASW_Buzzer.Death");
+	CPASAttenuationFilter filter2(this, bOldBuzzer ? "Ranger.GibSplatHeavy" : "ASW_Buzzer.Death");
+	EmitSound(filter2, entindex(), bOldBuzzer ? "Ranger.GibSplatHeavy" : "ASW_Buzzer.Death");
 }
 
 void CASW_Buzzer::PainSound(  const CTakeDamageInfo &info )
@@ -780,7 +776,7 @@ int	CASW_Buzzer::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		pMarine->HurtAlien(this, info);
 
 	//softcopy: release radiation gas leak,	only beta buzzer to this
-	if (asw_buzzer_radiation_leak_enable.GetBool() && !Q_strcmp(b_AlienModelName, ASW_BETA_BUZZER_MODEL))
+	if (asw_buzzer_radiation_leak_enable.GetBool() && bOldBuzzer)
 		DoRadiationLeak(info);	//leak radiation effect & hurt marine
 
 	return nRetVal;
@@ -825,43 +821,6 @@ void CASW_Buzzer::DoRadiationLeak(const CTakeDamageInfo &info)	//Radiation leaka
 	    m_hRadVolume->Spawn();     
 	}
 	m_fLastTouchHurtTime = gpGlobals->curtime;
-}
-void CASW_Buzzer::SetColorScale(const char *alienLabel)	//set color scale function
-{
-	char text[48], text2[48], text3[48], text4[48], text5[48], text6[48], text7[48];
-	Q_snprintf(text,  sizeof(text),  "asw_%s_color", alienLabel);
-	Q_snprintf(text2, sizeof(text2), "asw_%s_color2", alienLabel);
-	Q_snprintf(text3, sizeof(text3), "asw_%s_color3", alienLabel);
-	Q_snprintf(text4, sizeof(text4), "asw_%s_color2_percent", alienLabel);
-	Q_snprintf(text5, sizeof(text5), "asw_%s_color3_percent", alienLabel);
-	Q_snprintf(text6, sizeof(text6), "asw_%s_scalemod_percent", alienLabel);
-	Q_snprintf(text7, sizeof(text7), "asw_%s_scalemod", alienLabel); 
-	
-	float randomColor = RandomFloat(0, 1);
-	if (randomColor <= ((ConVar *)cvar->FindVar(text2))->GetFloat())
-		SetRenderColor(((ConVar *)cvar->FindVar(text2))->GetColor().r(),((ConVar *)cvar->FindVar(text2))->GetColor().g(),((ConVar *)cvar->FindVar(text2))->GetColor().b());  
-	else if (randomColor <= ((ConVar *)cvar->FindVar(text4))->GetFloat() + ((ConVar *)cvar->FindVar(text5))->GetFloat())
-		SetRenderColor(((ConVar *)cvar->FindVar(text3))->GetColor().r(),((ConVar *)cvar->FindVar(text3))->GetColor().g(),((ConVar *)cvar->FindVar(text3))->GetColor().b());
-	else SetRenderColor(((ConVar *)cvar->FindVar(text))->GetColor().r(),((ConVar *)cvar->FindVar(text))->GetColor().g(),((ConVar *)cvar->FindVar(text))->GetColor().b());
-	float alienScale = RandomFloat(0, 1);
-	if (alienScale <= ((ConVar *)cvar->FindVar(text6))->GetFloat())
-		SetModelScale(((ConVar *)cvar->FindVar(text7))->GetFloat());
-}
-void CASW_Buzzer::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes) //marine ignition
-{
-	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
-	pMarine->ASW_Ignite( 1.0f, 0, info.GetAttacker(), info.GetWeapon() );
-	
-	//debug marine has ignited
-	if (asw_debug_alien_ignite.GetBool())
-	{
-		const char *m_damageTypes = m_bOnFire ? "on fire touch" : damageTypes;
-		if (pMarine->IsOnFire() && !IsIgnitedByBuzzer) 
-		{
-			Msg("----- Player %s has ignited  by %s %s -----\n", pMarine->GetPlayerName(), alienLabel, m_damageTypes);
-			IsIgnitedByBuzzer = true;
-		}
-	}
 }
 
 bool CASW_Buzzer::CorpseGib( const CTakeDamageInfo &info )
@@ -1492,8 +1451,10 @@ void CASW_Buzzer::Slice( CBaseEntity *pHitEntity, float flInterval, trace_t &tr 
 		flDamage = 1.0f;
 	}
 
-	CTakeDamageInfo info( this, this, flDamage, DMG_SLASH | DMG_BLURPOISON );
-	
+	//softcopy: disable blur if beta buzzer
+	//CTakeDamageInfo info( this, this, flDamage, DMG_SLASH | DMG_BLURPOISON );
+	CTakeDamageInfo info( this, this, flDamage, bOldBuzzer ? DMG_SLASH : DMG_SLASH | DMG_BLURPOISON);
+
 	Vector dir = (tr.endpos - tr.startpos);
 	if ( dir == vec3_origin )
 	{
@@ -1526,21 +1487,22 @@ void CASW_Buzzer::Slice( CBaseEntity *pHitEntity, float flInterval, trace_t &tr 
 		SpawnBlood(tr.endpos, g_vecAttackDir, pHitEntity->BloodColor(), 6 );
 		EmitSound( "ASW_Buzzer.Attack" );
 	}
-	
+
 	//softcopy: ignite marine by buzzer/beta buzzer attack/on fire touch, 1=buzzer, 2=beta buzzer, 3=All
-	if (asw_buzzer_melee_ignite.GetBool() || asw_buzzer_touch_onfire.GetBool())
+	int iBuzzerMeleeIgnite = asw_buzzer_melee_ignite.GetInt();
+	bool bBuzzerOnTouchFire = asw_buzzer_touch_onfire.GetBool();
+	if (iBuzzerMeleeIgnite > 0 || bBuzzerOnTouchFire)
 	{
 		CASW_Marine *pMarine = CASW_Marine::AsMarine( pHitEntity );
 		if ( pMarine )
 		{
-			int  iBuzzerMeleeIgnite = asw_buzzer_melee_ignite.GetInt();
-			bool iBuzzerTouchOnfire = ( m_bOnFire && asw_buzzer_touch_onfire.GetBool());
+			bool iBuzzerIsOnFire = (m_bOnFire && bBuzzerOnTouchFire);
 			damageTypes = "attack";
-			if (((iBuzzerMeleeIgnite==1 || iBuzzerMeleeIgnite==3) || iBuzzerTouchOnfire) && !Q_strcmp(b_AlienModelName, ASW_BUZZER_MODEL))
-				MarineIgnite(pMarine, info, alienLabel, damageTypes);
+			if (((iBuzzerMeleeIgnite==1 || iBuzzerMeleeIgnite==3) || iBuzzerIsOnFire) && !bOldBuzzer)
+				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
 
-			if ((iBuzzerMeleeIgnite >=2 || iBuzzerTouchOnfire) && !Q_strcmp(b_AlienModelName, ASW_BETA_BUZZER_MODEL ))
-				MarineIgnite(pMarine, info, alienLabel, damageTypes);
+			if ((iBuzzerMeleeIgnite >=2 || iBuzzerIsOnFire) && bOldBuzzer)
+				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
 		}
 	}
 
@@ -2267,7 +2229,7 @@ void CASW_Buzzer::RunTask( const Task_t *pTask )
 void CASW_Buzzer::Spawn(void)
 {
 	Precache();
-	
+
 	//softcopy:
 	//SetModel( ASW_BUZZER_MODEL );
 	SetModel( b_AlienModelName );
@@ -2319,14 +2281,11 @@ void CASW_Buzzer::Spawn(void)
 	// for instance, we don't want him to bob whilst he's waiting for a script. This allows designers
 	// to 'hide' buzzers in small places. (sjb)
 	SetNoiseMod( ASW_BUZZER_NOISEMOD_HIDE, ASW_BUZZER_NOISEMOD_HIDE, ASW_BUZZER_NOISEMOD_HIDE );
-	
+
 	//softcopy:
 	//SetRenderColor(asw_buzzer_color.GetColor().r(), asw_buzzer_color.GetColor().g(), asw_buzzer_color.GetColor().b()); 
-	//default buzzer has blurpoison, disable it for making a different between beta buzzer & buzzer
-	bool bBuzzerCompare = !Q_strcmp(b_AlienModelName, ASW_BETA_BUZZER_MODEL);	//check if beta buzzer
-	asw_blurpoison_enable.SetValue( bBuzzerCompare ? 0 : 1);	//0 = disable beta buzzer blurpoison	
-	SetColorScale((alienLabel = bBuzzerCompare ? "buzzer_beta" : "buzzer"));
-	IsIgnitedByBuzzer = false;		//debug marine has ignited
+	bOldBuzzer = !Q_strcmp(b_AlienModelName, ASW_BETA_BUZZER_MODEL);	//check if beta buzzer
+	ASWGameRules()->SetColorScale(this, (alienLabel = bOldBuzzer ? "buzzer_beta" : "buzzer"));
 
 	// Start out with full power! 
 	m_fEnginePowerScale = GetMaxEnginePower();
@@ -3353,8 +3312,7 @@ void CASW_Buzzer::SetHealthByDifficultyLevel()
 {	
 	//softcopy: beta buzzer & buzzer difficulty health
 	//SetHealth(ASWGameRules()->ModifyAlienHealthBySkillLevel(sk_asw_buzzer_health.GetFloat()));
-	SetHealth(ASWGameRules()->ModifyAlienHealthBySkillLevel(!Q_strcmp(b_AlienModelName, ASW_BETA_BUZZER_MODEL) ?
-	sk_asw_buzzer_beta_health.GetFloat() : sk_asw_buzzer_health.GetFloat()));
+	SetHealth(ASWGameRules()->ModifyAlienHealthBySkillLevel(bOldBuzzer ? sk_asw_buzzer_beta_health.GetFloat() : sk_asw_buzzer_health.GetFloat()));
 }
 
 void CASW_Buzzer::ElectroStun( float flStunTime )

@@ -17,8 +17,6 @@
 #include "asw_player.h"
 #include "asw_achievements.h"
 #include "asw_marine_resource.h"
-#include "asw_barrel_explosive.h"	//softcopy:
-
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -106,7 +104,7 @@ void CASW_Boomer::Spawn( void )
 	//softcopy: 
 	//SetRenderColor(asw_boomer_color.GetColor().r(), asw_boomer_color.GetColor().g(), asw_boomer_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
 	alienLabel = "boomer";
-	SetColorScale( alienLabel );
+	ASWGameRules()->SetColorScale( this, alienLabel );
 
 }
 
@@ -273,18 +271,22 @@ void CASW_Boomer::StartTouch( CBaseEntity *pOther )
 	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
 	if ( pMarine )
 	{
-		m_TouchExplosionDamage = asw_boomer_touch_damage.GetInt();
-		CTakeDamageInfo info( this, this, m_TouchExplosionDamage, DMG_SLASH );
+		ASWGameRules()->m_TouchExplosionDamage = asw_boomer_touch_damage.GetInt();
+		CTakeDamageInfo info( this, this, ASWGameRules()->m_TouchExplosionDamage, DMG_SLASH );
 		damageTypes = "on touch";
+
 		if (asw_boomer_ignite.GetInt() >= 2 || (m_bOnFire && asw_boomer_touch_onfire.GetBool()))
-			MarineIgnite(pMarine, info, alienLabel, damageTypes);
-		if ( m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime || m_TouchExplosionDamage <=0 )	//don't hurt him if he was hurt recently
+			ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+
+		if ( m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime || ASWGameRules()->m_TouchExplosionDamage <=0 )	//don't hurt him if he was hurt recently
 			return;
+
 		Vector vecForceDir = ( pMarine->GetAbsOrigin() - GetAbsOrigin() );	// hurt the marine
 		CalculateMeleeDamageForce( &info, vecForceDir, pMarine->GetAbsOrigin() );
 		pMarine->TakeDamage( info );
+
 		if (asw_boomer_explode.GetInt() >= 2 )
-			MarineExplode(pMarine, alienLabel, damageTypes);
+			ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
 
 		m_fLastTouchHurtTime = gpGlobals->curtime;
 	}
@@ -300,11 +302,12 @@ void CASW_Boomer::MeleeAttack(float distance, float damage)
 		{
 			CTakeDamageInfo info( this, this, damage, DMG_SLASH );
 			damageTypes = "melee attack";
+
 			if (asw_boomer_ignite.GetInt() == 1 || asw_boomer_ignite.GetInt() == 3)
-				MarineIgnite(pMarine, info, alienLabel, damageTypes);
+				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
 
 			if ((asw_boomer_explode.GetInt()==1 || asw_boomer_explode.GetInt()==3) && asw_boomer_touch_damage.GetInt() > 0)
-				MarineExplode(pMarine, alienLabel, damageTypes);
+				ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
 		}
 	}
 }

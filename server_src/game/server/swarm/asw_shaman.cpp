@@ -13,7 +13,6 @@
 #include "asw_ai_behavior_fear.h"
 #include "gib.h"
 #include "te_effect_dispatch.h"
-#include "ammodef.h"	//softcopy:
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -47,6 +46,7 @@ ConVar asw_shaman_gib_chance("asw_shaman_gib_chance", "0.80", FCVAR_CHEAT, "Chan
 ConVar asw_shaman_touch_onfire("asw_shaman_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if shaman body on fire touch.");
 
 extern ConVar asw_debug_alien_damage;
+
 //-----------------------------------------------------------------------------
 // Purpose:	
 // Input:	
@@ -72,7 +72,7 @@ void CASW_Shaman::Spawn( void )
 
 	//softcopy: set colors for shaman
 	alienLabel = "shaman";
-	SetColorScale( alienLabel );
+	ASWGameRules()->SetColorScale( this,  alienLabel );
 
 	SetHullType( HULL_MEDIUM );
 	SetHealthByDifficultyLevel();
@@ -85,6 +85,7 @@ void CASW_Shaman::Spawn( void )
 	m_bNeverRagdoll = true;
 
 	SetCollisionGroup( ASW_COLLISION_GROUP_PARASITE );
+
 }
 
 //-----------------------------------------------------------------------------
@@ -217,13 +218,15 @@ void CASW_Shaman::StartTouch( CBaseEntity *pOther )
 	{
 		CTakeDamageInfo info( this, this, 4, DMG_GENERIC );
 		if ( asw_shaman_ignite.GetBool() || (m_bOnFire && asw_shaman_touch_onfire.GetBool()) )
-			MarineIgnite(pMarine, info, alienLabel, /*damageTypes*/ "on touch");
+			ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, /*damageTypes*/ "on touch");
+
 		if (m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime)	// don't hurt him if he was hurt recently
 			return;
+
 		Vector vecForceDir = (pMarine->GetAbsOrigin() - GetAbsOrigin());	// hurt the marine
 		CalculateMeleeDamageForce( &info, vecForceDir, pMarine->GetAbsOrigin() );
 		pMarine->TakeDamage( info );
-		
+
 		m_fLastTouchHurtTime = gpGlobals->curtime;
 	}
 }
@@ -259,10 +262,10 @@ void CASW_Shaman::HandleAnimEvent( animevent_t *pEvent )
 //-----------------------------------------------------------------------------
 bool CASW_Shaman::CreateBehaviors()
 {
-	/*
-	AddBehavior( &m_CombatStunBehavior );
-	m_CombatStunBehavior.Init();
-	*/
+	
+	//AddBehavior( &m_CombatStunBehavior );
+	//m_CombatStunBehavior.Init();
+	
 
 	//self.AddBehavior( "behavior_protect", BehaviorParms );
 
@@ -285,10 +288,9 @@ bool CASW_Shaman::CreateBehaviors()
 	AddBehavior( &m_ScuttleBehavior );
 	m_ScuttleBehavior.Init();
 
-	/*
-	AddBehavior( &m_FearBehavior );
-	m_FearBehavior.Init();
-	*/
+	//AddBehavior( &m_FearBehavior );	
+	//m_FearBehavior.Init();
+
 
 	AddBehavior( &m_IdleBehavior );
 	m_IdleBehavior.Init();

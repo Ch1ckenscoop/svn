@@ -4,7 +4,6 @@
 #include "asw_gamerules.h"
 #include "asw_marine.h"
 #include "asw_weapon_assault_shotgun_shared.h"
-#include "te_effect_dispatch.h"		//softcopy:
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -59,8 +58,7 @@ void CASW_Drone_Uber::Spawn( void )
 {	
 	BaseClass::Spawn();
 
-	//SetRenderColor(asw_drone_uber_color_r.GetInt(), asw_drone_uber_color_g.GetInt(), asw_drone_uber_color_b.GetInt());
-	//SetRenderColor(asw_drone_uber_color.GetColor().r(), asw_drone_uber_color.GetColor().g(), asw_drone_uber_color.GetColor().b());	//softcopy:
+	//SetRenderColor(asw_drone_uber_color_r.GetInt(), asw_drone_uber_color_g.GetInt(), asw_drone_uber_color_b.GetInt());	//softcopy:
 	
 	SetModel( SWARM_NEW_DRONE_MODEL );
 	Precache();
@@ -82,7 +80,7 @@ void CASW_Drone_Uber::Spawn( void )
 	if (asw_drone_uber_scale.GetFloat() != 1)	
 		asw_drone_uber_scalemod.SetValue(asw_drone_uber_scale.GetFloat());
 	alienLabel = "drone_uber";
-	SetColorScale(alienLabel);
+	ASWGameRules()->SetColorScale(this, alienLabel);
 
 	if (asw_uber_scary.GetBool())	//Ch1ckensCoop: Make uber drones SCARY :S
 	{
@@ -132,7 +130,7 @@ float CASW_Drone_Uber::GetDamage()	//Ch1ckensCoop: Easy customizing of alien dam
 			if ( pMarine )
 			{
 				CTakeDamageInfo info( this, this, sk_asw_uber_damage.GetFloat() /*damage*/, DMG_SLASH );
-				MarineIgnite(pMarine, info, alienLabel, /*damageTypes*/ "melee attack");
+				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, /*damageTypes*/ "melee attack");
 			}
 		}
 	}
@@ -150,7 +148,7 @@ void CASW_Drone_Uber::StartTouch( CBaseEntity *pOther )
 		if ( pMarine )
 		{
 			CTakeDamageInfo info( this, this, 0, DMG_SLASH );
-			MarineIgnite(pMarine, info, alienLabel, /*damageTypes*/ "on touch");
+			ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, /*damageTypes*/ "on touch");
 		}
 	}
 }
