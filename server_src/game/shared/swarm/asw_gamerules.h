@@ -143,7 +143,6 @@ public:
 	bool SpectatorInLobby(CASW_Player *pPlayer, bool bAddpPlayerId);
 	bool bSpectatorCanSelect;
 	virtual void	SetColorScale(CBaseEntity *pAlien, const char *alienLabel);
-	const char *alienLabel, *damageTypes;
 	virtual void	DoTouchExplosion( CBaseEntity *pMarine );
 	virtual void	MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes);
 	virtual void	MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes);

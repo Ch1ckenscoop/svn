@@ -271,22 +271,25 @@ void CASW_Boomer::StartTouch( CBaseEntity *pOther )
 	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
 	if ( pMarine )
 	{
-		ASWGameRules()->m_TouchExplosionDamage = asw_boomer_touch_damage.GetInt();
-		CTakeDamageInfo info( this, this, ASWGameRules()->m_TouchExplosionDamage, DMG_SLASH );
+		int iTouchDamage = asw_boomer_touch_damage.GetInt();
+		CTakeDamageInfo info( this, this, iTouchDamage, DMG_SLASH );
 		damageTypes = "on touch";
 
 		if (asw_boomer_ignite.GetInt() >= 2 || (m_bOnFire && asw_boomer_touch_onfire.GetBool()))
 			ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
 
-		if ( m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime || ASWGameRules()->m_TouchExplosionDamage <=0 )	//don't hurt him if he was hurt recently
+		if ( m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime || iTouchDamage <=0 )	//don't hurt him if he was hurt recently
 			return;
 
 		Vector vecForceDir = ( pMarine->GetAbsOrigin() - GetAbsOrigin() );	// hurt the marine
 		CalculateMeleeDamageForce( &info, vecForceDir, pMarine->GetAbsOrigin() );
 		pMarine->TakeDamage( info );
 
-		if (asw_boomer_explode.GetInt() >= 2 )
+		if (asw_boomer_explode.GetInt() >= 2)
+		{
+			ASWGameRules()->m_TouchExplosionDamage = iTouchDamage;
 			ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+		}
 
 		m_fLastTouchHurtTime = gpGlobals->curtime;
 	}

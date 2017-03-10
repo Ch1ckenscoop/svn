@@ -44,6 +44,7 @@ ConVar asw_shaman_scalemod_percent("asw_shaman_scalemod_percent", "0.0", FCVAR_N
 ConVar asw_shaman_ignite("asw_shaman_ignite", "0", FCVAR_CHEAT, "Ignites marine by shaman on touch.");
 ConVar asw_shaman_gib_chance("asw_shaman_gib_chance", "0.80", FCVAR_CHEAT, "Chance of shaman break into ragdoll pieces instead of ragdoll.");
 ConVar asw_shaman_touch_onfire("asw_shaman_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if shaman body on fire touch.");
+ConVar asw_shaman_touch_damage("asw_shaman_touch_damage", "4", FCVAR_CHEAT, "Damage caused by shaman on touch.");
 
 extern ConVar asw_debug_alien_damage;
 
@@ -216,7 +217,7 @@ void CASW_Shaman::StartTouch( CBaseEntity *pOther )
 	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
 	if ( pMarine )
 	{
-		CTakeDamageInfo info( this, this, 4, DMG_GENERIC );
+		CTakeDamageInfo info( this, this, asw_shaman_touch_damage.GetInt(), DMG_GENERIC );
 		if ( asw_shaman_ignite.GetBool() || (m_bOnFire && asw_shaman_touch_onfire.GetBool()) )
 			ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, /*damageTypes*/ "on touch");
 
@@ -262,10 +263,10 @@ void CASW_Shaman::HandleAnimEvent( animevent_t *pEvent )
 //-----------------------------------------------------------------------------
 bool CASW_Shaman::CreateBehaviors()
 {
-	
-	//AddBehavior( &m_CombatStunBehavior );
-	//m_CombatStunBehavior.Init();
-	
+	/*
+	AddBehavior( &m_CombatStunBehavior );
+	m_CombatStunBehavior.Init();
+	*/
 
 	//self.AddBehavior( "behavior_protect", BehaviorParms );
 
@@ -288,8 +289,9 @@ bool CASW_Shaman::CreateBehaviors()
 	AddBehavior( &m_ScuttleBehavior );
 	m_ScuttleBehavior.Init();
 
-	//AddBehavior( &m_FearBehavior );	
-	//m_FearBehavior.Init();
+	//softcopy: re-enable fear behavior
+	AddBehavior( &m_FearBehavior );	
+	m_FearBehavior.Init();
 
 
 	AddBehavior( &m_IdleBehavior );

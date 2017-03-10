@@ -774,7 +774,7 @@ void CASW_Shieldbug::MeleeAttack( float distance, float damage, QAngle &viewPunc
 	CBaseEntity *pHurt = CheckTraceHullAttack( distance, -Vector(16,16,32), Vector(16,16,32), damage, DMG_SLASH, asw_shieldbug_melee_force.GetFloat() );
 	//softcopy:
 	//if ( pHurt && asw_shieldbug_knockdown.GetBool() && !asw_god.GetBool() )
-	if ( pHurt && asw_shieldbug_knockdown.GetBool() && (!asw_god.GetBool() || asw_shieldbug_ignite.GetInt() > 0 || asw_shieldbug_explode.GetInt() > 0) )
+	if ( pHurt && asw_shieldbug_knockdown.GetBool() )
 	{
 		CASW_Marine *pMarine = CASW_Marine::AsMarine( pHurt );
 		if ( pMarine )
@@ -786,13 +786,16 @@ void CASW_Shieldbug::MeleeAttack( float distance, float damage, QAngle &viewPunc
 			pMarine->Knockdown( this, vecForceDir  );
 
 			//softcopy: ignite/explode marine by shieldbug knockdown, 1=melee, 2=touch, 3=All
-			ASWGameRules()->m_TouchExplosionDamage = asw_shieldbug_touch_damage.GetInt();
-			CTakeDamageInfo info( this, this, ASWGameRules()->m_TouchExplosionDamage, DMG_SLASH );
+			int iTouchDamage = asw_shieldbug_touch_damage.GetInt();
+			CTakeDamageInfo info( this, this, iTouchDamage, DMG_SLASH );
 			damageTypes = "knockdown";
 			if (asw_shieldbug_ignite.GetInt()== 1 || asw_shieldbug_ignite.GetInt()== 3)
 				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
-			if ((asw_shieldbug_explode.GetInt()==1 || asw_shieldbug_explode.GetInt()==3) && ASWGameRules()->m_TouchExplosionDamage > 0)
+			if ((asw_shieldbug_explode.GetInt()==1 || asw_shieldbug_explode.GetInt()==3) && iTouchDamage >0)
+			{
+				ASWGameRules()->m_TouchExplosionDamage = iTouchDamage;
 				ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+			}
 			pMarine->GetMarineSpeech()->ForceChatter(CHATTER_PAIN_LARGE, ASW_CHATTER_TIMER_NONE);
 		}
 	}

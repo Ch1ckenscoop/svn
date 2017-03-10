@@ -25,7 +25,7 @@ ConVar asw_sentry_invincible("asw_sentry_invincible", "0", FCVAR_CHEAT, "Make se
 ConVar asw_sentry_gun_type("asw_sentry_gun_type", "-1", FCVAR_CHEAT, "Force the type of sentry guns built to this. -1, the default, reads from the marine attributes.");
 ConVar asw_sentry_infinite_ammo( "asw_sentry_infinite_ammo", "0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "Sentry guns have infinite ammo");
 //softcopy: 
-ConVar asw_sentry_assemble_speed("asw_sentry_assemble_speed", "0", FCVAR_CHEAT, "Sets sentry assemble speed(0=normal, 1-10).",true,1,true,10);  
+ConVar asw_sentry_assemble_speed("asw_sentry_assemble_speed", "0", FCVAR_CHEAT, "Sets sentry assemble speed(0=normal, 1-10).",true,0,true,10);  
 ConVar asw_sentry_disassemble_speed("asw_sentry_disassemble_speed", "2", FCVAR_CHEAT, "Sets sentry disassemble speed(0-2).",true,0,true,2);
 ConVar asw_weapons_attach("asw_weapons_attach", "0", FCVAR_CHEAT, "If set to 1, disables ammo/sentry attaching to weapon cheats");
 extern ConVar asw_weapon_disassemble_speed;

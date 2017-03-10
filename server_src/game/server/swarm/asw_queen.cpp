@@ -128,6 +128,7 @@ ConVar asw_queen_touch_damage("asw_queen_touch_damage", "5", FCVAR_CHEAT, "Damag
 ConVar asw_queen_ignite("asw_queen_ignite", "0", FCVAR_CHEAT, "Ignites marine on queen melee/touch(1=melee, 2=touch, 3=All).");
 ConVar asw_queen_explode("asw_queen_explode", "0", FCVAR_CHEAT, "Explodes marine on queen melee/touch(1=melee, 2=touch, 3=All).");
 ConVar asw_queen_radiation_leak("asw_queen_radiation_leak", "0", FCVAR_CHEAT, "Enables radiation gas leak damage to marine if queen has hurted.");
+ConVar asw_queen_knockdown("asw_queen_knockdown", "1", FCVAR_CHEAT, "Enables knock down marine by queen slash attack.");
 
 ConVar asw_queen_damage_reductions("asw_queen_damage_reductions", "1", FCVAR_CHEAT, "Enables damage reductions for certain player weapons vs the queen.");
 
@@ -665,14 +666,14 @@ void CASW_Queen::StartTouch( CBaseEntity *pOther )
 	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
 	if ( pMarine )
 	{
-		ASWGameRules()->m_TouchExplosionDamage = asw_queen_touch_damage.GetInt();
-		CTakeDamageInfo info( this, this, ASWGameRules()->m_TouchExplosionDamage, DMG_SLASH );
+		int iTouchDamage = asw_queen_touch_damage.GetInt();
+		CTakeDamageInfo info( this, this, iTouchDamage, DMG_SLASH );
 		damageTypes = "on touch";
 
 		if(asw_queen_ignite.GetInt() >= 2)
 			ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
 
-		if (m_fLastTouchHurtTime + 0.4f/*0.6f*/ > gpGlobals->curtime || ASWGameRules()->m_TouchExplosionDamage <= 0)	//don't hurt him if he was hurt recently
+		if (m_fLastTouchHurtTime + 0.4f/*0.6f*/ > gpGlobals->curtime || iTouchDamage <= 0)	//don't hurt him if he was hurt recently
 			return;
 
 		Vector vecForceDir = ( pMarine->GetAbsOrigin() - GetAbsOrigin() );		// hurt the marine
@@ -680,7 +681,10 @@ void CASW_Queen::StartTouch( CBaseEntity *pOther )
 		pMarine->TakeDamage( info );
 
 		if (asw_queen_explode.GetInt() >= 2)
+		{
+			ASWGameRules()->m_TouchExplosionDamage = iTouchDamage;
 			ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+		}
 
 		m_fLastTouchHurtTime = gpGlobals->curtime;
 	}
@@ -1193,18 +1197,29 @@ void CASW_Queen::SlashAttack(bool bRightClaw)
 		if (pMarine)
 		{
 			pMarine->MeleeBleed(&info);
-			//softcopy: ignite/explode marine by queen slash, 1=melee, 2=touch, 3=All
-			int iIgnite = asw_queen_ignite.GetInt();
-			int iExplode = asw_queen_explode.GetInt();
-			damageTypes = "melee attack";
-			if (iIgnite == 1 || iIgnite == 3)
-				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
-			if (iExplode == 1 || iExplode == 3)
+
+			//softcopy: knockdown marine
+			if (asw_queen_knockdown.GetBool() && asw_queen_slash_damage.GetInt() > 0)
 			{
-				ASWGameRules()->m_TouchExplosionDamage = asw_queen_touch_damage.GetInt();
-				ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+				Vector vecForceDir;
+				vecForceDir = ( pMarine->WorldSpaceCenter() - WorldSpaceCenter() );
+				vecForceDir.NormalizeInPlace();
+				vecForceDir *= 500.0f;
+				vecForceDir += Vector( 0, 0, 300.0f );
+				pMarine->Knockdown( this, vecForceDir  );
+				damageTypes = "slash attack";
+				ASWGameRules()->MarineDamageDebugInfo(pMarine, "knockdown", alienLabel, damageTypes);
+				//ignite/explode marine by queen slash, 1=melee, 2=touch, 3=All
+				if (asw_queen_ignite.GetInt() == 1 || asw_queen_ignite.GetInt() == 3)
+					ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+				if (asw_queen_explode.GetInt() == 1 || asw_queen_explode.GetInt() == 3)
+				{
+					ASWGameRules()->m_TouchExplosionDamage = asw_queen_slash_damage.GetInt();
+					ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+				}
+				pMarine->GetMarineSpeech()->ForceChatter(CHATTER_PAIN_LARGE, ASW_CHATTER_TIMER_TEAM);
 			}
-			
+
 		}
 		else
 		{
@@ -1557,10 +1572,6 @@ int CASW_Queen::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		return 0;
 	}
 
-
-	
-	
-	
 	newInfo.SetDamage(damage);
 
 	return BaseClass::OnTakeDamage_Alive(newInfo);

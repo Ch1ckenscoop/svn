@@ -120,8 +120,8 @@ bool bIsReserved = false;
 int playreadyclicked = 0;
 int pPlayerId[ASW_NUM_MARINE_PROFILES];
 ConVar asw_autokick_player("asw_autokick_player", "0", FCVAR_CHEAT, "Sets auto kick player.");
-ConVar asw_autokick_player_promotion("asw_autokick_player_promotion", "0", FCVAR_CHEAT, "Sets autokick if below promotion(1-3).",true,0,true,3);
-ConVar asw_autokick_player_experience("asw_autokick_player_experience", "4300", FCVAR_CHEAT, "Autokick if below pre-defined skill points.");
+ConVar asw_autokick_player_promotion("asw_autokick_player_promotion", "0", FCVAR_CHEAT, "Sets autokick player below the promotion.",true,0,true,6);
+ConVar asw_autokick_player_experience("asw_autokick_player_experience", "5", FCVAR_CHEAT, "Sets autokick player below the experience levels.",true,0,true,27);
 ConVar asw_marine_lobby_ready("asw_marine_lobby_ready", "1", FCVAR_CHEAT, "Sets auto mark ready(1=gamestats lobby, 2=all lobbies.");
 ConVar asw_spectator_takes_slot("asw_spectator_takes_slot", "0", FCVAR_CHEAT, "If set, spectator can't take over reserved slot."); 
 ConVar asw_lobby_player_select("asw_lobby_player_select", "4", FCVAR_CHEAT, "Max players selectable in lobby, instablity timeout if changed.", true,4, true,6);
@@ -136,7 +136,7 @@ ConVar asw_vote_kick_admin("asw_vote_kick_admin", "1", FCVAR_CHEAT, "Generic adm
 ConVar asw_debug_spectator_slot("asw_debug_spectator_slot", "0", FCVAR_CHEAT, "Show debug messages of spectator slots."); 
 ConVar asw_debug_alien_ignite("asw_debug_alien_ignite", "0", FCVAR_NONE, "Show debug messages for ignition/explosive effects by alien");
 extern ConVar asw_hardcore_ff_force;
-#define SERVER_DLL_VERSION "2.2.1"		//Ch1ckenscoop version
+#define SERVER_DLL_VERSION "2.2.2"		//Ch1ckenscoop version
 
 #define ASW_LAUNCHING_STEP 0.25f			// time between each stage of launching
 
@@ -7222,28 +7222,19 @@ void CAlienSwarm::OnPlayerFullyJoinedCheck(CASW_Player *pPlayer)
 	if (!pPlayer)
 		return;
 
-	if (asw_autokick_player.GetBool())
+	if (asw_autokick_player.GetBool())	//kick player who has not enough promotion/experience level when joined in.
 	{
-		int iexplevel  = asw_autokick_player_experience.GetInt(); //kick player who below experience points value.
-		int ipromlevel = asw_autokick_player_promotion.GetInt();  //kick player who below promotion value(0-3) only, more than that is too harsh.
-		if ( (pPlayer->GetExperience() < iexplevel ) && ( pPlayer->GetPromotion() <= ipromlevel ) )
+		int iexplevel = asw_autokick_player_experience.GetInt(),
+			ipromlevel = asw_autokick_player_promotion.GetInt(),
+			iSteamPromotion = pPlayer->GetPromotion(),
+			iSteamLevel = pPlayer->GetLevel()+1;
+		if (iexplevel >= 1 && iSteamPromotion <= ipromlevel && iSteamLevel < iexplevel)
 		{
-			int elevel = 0, islevel = 0, calexp = 0;
-			for (int i=0; i <= 26; i++)
-			{
-				if ( iexplevel >= calexp && i <= 26 )
-					islevel = i + 1;                    //get the input value to calcuate the player level.
-				if ( pPlayer->GetExperience() >= calexp && i <= 26 )
-					elevel = i + 1;                     //get the player experience from Steam to calcuate their level.
-				calexp = calexp + (1000 +( 50 * i ));   //http://alienswarm.wikia.com/wiki/Leveling for Player experiences table details.
-				//Msg("experience table: %d, level %i\n", calexp, i+2); //debug check: calculated experience value.
-			}
-
 			char text[64], text2[64], text3[128];
-			pPlayer->GetPromotion()==0 ? (Q_snprintf(text, sizeof(text),"<level %d> was auto kicked", elevel),
-										  Q_snprintf(text2,sizeof(text2),"need level %d+ to join this modded server", islevel)) :
-										 (Q_snprintf(text, sizeof(text),"<promoted %d level %d> was auto kicked", elevel, pPlayer->GetPromotion()),
-										  Q_snprintf(text2,sizeof(text2),"need promoted %d level %d+ to join this modded server",islevel,ipromlevel));
+			iSteamPromotion==0 ? (Q_snprintf(text, sizeof(text),"<level %d> was auto kicked", iSteamLevel),
+								  Q_snprintf(text2,sizeof(text2),"need level %d+ to join this modded server", iexplevel)) :
+								 (Q_snprintf(text, sizeof(text),"<promoted %d level %d> was auto kicked", iSteamPromotion, iSteamLevel),
+								  Q_snprintf(text2,sizeof(text2),"need promoted %d level %d+ to join this modded server", ipromlevel, iexplevel));
 
 			engine->ServerCommand(CFmtStr("kickid %d Auto kicked:  Sorry! %s\n", pPlayer->GetUserID(), text2));
 			Q_snprintf(text3, sizeof(text3),"%s %s, %s\n", pPlayer->GetPlayerName(), text, text2);

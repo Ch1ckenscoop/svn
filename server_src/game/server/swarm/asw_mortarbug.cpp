@@ -83,10 +83,10 @@ CASW_Mortarbug::CASW_Mortarbug()
 	m_fLastTouchHurtTime = 0;
 	//softcopy: mortarbug/beta mortarbug/random both
 	//m_pszAlienModelName = SWARM_MORTARBUG_MODEL;
+	//m_nAlienCollisionGroup = ASW_COLLISION_GROUP_ALIEN;
 	m_pszAlienModelName = asw_old_mortarbug.GetInt()==2 ? RandomFloat()<=0.5 ? SWARM_BETA_MORTARBUG_MODEL:SWARM_MORTARBUG_MODEL :
 						  asw_old_mortarbug.GetInt()==1 ? SWARM_BETA_MORTARBUG_MODEL:SWARM_MORTARBUG_MODEL;
-
-	m_nAlienCollisionGroup = ASW_COLLISION_GROUP_ALIEN;
+	m_nAlienCollisionGroup = ASW_COLLISION_GROUP_BIG_ALIEN;	//avoid stuck each other
 }
 
 CASW_Mortarbug::~CASW_Mortarbug()
@@ -512,18 +512,21 @@ void CASW_Mortarbug::StartTouch( CBaseEntity *pOther )
 		m_fLastTouchHurtTime = gpGlobals->curtime;
 		*/
 		int iTouch = asw_mortarbug_touch.GetInt();
-		ASWGameRules()->m_TouchExplosionDamage = asw_mortarbug_touch_damage.GetInt();
-		CTakeDamageInfo info( this, this, ASWGameRules()->m_TouchExplosionDamage, DMG_SLASH );
+		int iTouchDamage = asw_mortarbug_touch_damage.GetInt();
+		CTakeDamageInfo info( this, this, iTouchDamage, DMG_SLASH );
 		damageTypes = "on touch";
 		if ((iTouch == 1 || iTouch == 3) || (m_bOnFire && asw_mortarbug_touch_onfire.GetBool()))
 			ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
-		if (m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime || ASWGameRules()->m_TouchExplosionDamage <=0)		//don't hurt him if he was hurt recently
+		if (m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime || iTouchDamage <=0)		//don't hurt him if he was hurt recently
 			return;
 		Vector vecForceDir = ( pMarine->GetAbsOrigin() - GetAbsOrigin() );	// hurt the marine
 		CalculateMeleeDamageForce( &info, vecForceDir, pMarine->GetAbsOrigin() );
 		pMarine->TakeDamage( info );
 		if (iTouch >= 2)
+		{
+			ASWGameRules()->m_TouchExplosionDamage = iTouchDamage;
 			ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+		}
 		m_fLastTouchHurtTime = gpGlobals->curtime;
 	}
 }

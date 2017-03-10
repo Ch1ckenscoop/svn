@@ -59,7 +59,7 @@ void CASW_Pickup_Money::Spawn( void )
 
 	//softcopy: removes the dropped money if it's not picked up in 9secs to prevent lagging server
 	SetThink(&CASW_Pickup_Money::SUB_Remove);
-	SetNextThink(gpGlobals->curtime + 9.0f);
+	SetNextThink(gpGlobals->curtime + 8.0f);
 }
 
 void CASW_Pickup_Money::Precache( void )

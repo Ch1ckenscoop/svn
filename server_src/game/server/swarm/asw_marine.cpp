@@ -82,8 +82,6 @@
 #include "sendprop_priorities.h"
 #include "asw_marine_gamemovement.h"
 #include "asw_client_effects.h"
-#include "asw_barrel_explosive.h"	//softcopy:
-
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -398,6 +396,7 @@ extern ConVar asw_marine_ff_absorption;
 ConVar asw_movement_direction_tolerance( "asw_movement_direction_tolerance", "30.0", FCVAR_CHEAT );
 ConVar asw_movement_direction_interval( "asw_movement_direction_interval", "0.5", FCVAR_CHEAT );
 ConVar asw_marine_ff_immune("asw_marine_ff_immune", "1", FCVAR_CHEAT, "while airborne: 0: disabled, 1: immune to others ff, 2: immune to all ff");
+ConVar asw_sentry_friendly_fire_damage("asw_sentry_friendly_fire_damage", "0.1", FCVAR_CHEAT, "Sets sentry friendly fire damage scale to marine.");	//softcopy:
 
 ConVar asw_marine_death_notifications("asw_marine_death_notifications", "1", FCVAR_NONE, "Display marine death notifications in the server console.");
 
@@ -706,10 +705,8 @@ void CASW_Marine::Precache()
 	PrecacheModel("models/swarm/shouldercone/shouldercone.mdl");
 	PrecacheModel("models/swarm/shouldercone/lasersight.mdl");	
 	PrecacheModel( "cable/cable.vmt" );
-	//softcopy:
-	PrecacheModel( "materials/effects/bluelaser2.vmt" );	//fix 'late precache materials/effects/bluelaser2.vmt'
-	PrecacheScriptSound( "ASW_T75.Explode" );	//alien touch explosion sound
-	
+	PrecacheModel( "materials/effects/bluelaser2.vmt" );	//softcopy: fix 'late precache materials/effects/bluelaser2.vmt'
+
 	PrecacheScriptSound( "ASW.MarineMeleeAttack" );
 	PrecacheScriptSound( "ASW.MarineMeleeAttackFP" );
 	PrecacheScriptSound( "ASW.MarinePowerFistAttack" );
@@ -778,7 +775,6 @@ void CASW_Marine::Precache()
 	PrecacheParticleSystem( "jj_ground_pound" );
 	PrecacheParticleSystem( "invalid_destination" );
 	PrecacheParticleSystem( "Blink" );
-	PrecacheParticleSystem( "explosion_barrel" );	//softcopy: touch explosion effect
 }
 
 void CASW_Marine::PrecacheSpeech()
@@ -1064,17 +1060,22 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	// scale sentry gun damage
 	if ( newInfo.GetAttacker() && IsSentryClass( newInfo.GetAttacker()->Classify() ) )
 	{
-		//softcopy: no matter what is the sentry fire scale, add damage scale if hardcoreFF is on,
-		//          if no sentry damage scale has set, use default value 1 if hardcoreFF is on.
-		/*if ( asw_sentry_friendly_fire_scale.GetFloat() <= 0 )
+		//softcopy: add sentry damage scale no matter what hardcoreFF is on/off.
+		//asw_sentry_friendly_fire_scale is an system value, if this value > 0, hardcoreFF LABEL will auto ON.
+		//so that, new entity asw_sentry_friendly_fire_damage sets damage scale to marine .
+		/*
+		if ( asw_sentry_friendly_fire_scale.GetFloat() <= 0 )
 			return 0;
 
-		newInfo.ScaleDamage( asw_sentry_friendly_fire_scale.GetFloat() );*/
-		float fSentryDamage = asw_sentry_friendly_fire_scale.GetFloat();
+		newInfo.ScaleDamage( asw_sentry_friendly_fire_scale.GetFloat() );
+		*/
+		float fSentryScale = asw_sentry_friendly_fire_scale.GetFloat();
+		float fSentryDamage = asw_sentry_friendly_fire_damage.GetFloat();	
 		int fFFabsorption = asw_marine_ff_absorption.GetInt();
-		if (fSentryDamage <= 0 && fFFabsorption != 0)
+		if (fSentryScale <= 0 && fFFabsorption != 0)
 			return 0;
-		newInfo.ScaleDamage(fFFabsorption == 0 ? (fSentryDamage >1 ? fSentryDamage:1) : fSentryDamage);
+		//applied minimum damage if hardcoreFF is on
+		newInfo.ScaleDamage(fFFabsorption==0 ? (fSentryScale >0 ? fSentryDamage:0.1) : fSentryDamage);
 	}
 
 	// AI marines take much less damage from explosive barrels since they're too dumb to not get near them

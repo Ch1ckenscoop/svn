@@ -530,15 +530,15 @@ void CASW_Harvester::StartTouch( CBaseEntity *pOther )
 	if (pMarine)
 	{
 		int iTouch = asw_harvester_touch.GetInt();
-		ASWGameRules()->m_TouchExplosionDamage = asw_harvester_touch_damage.GetInt();
-		CTakeDamageInfo info( this, this, ASWGameRules()->m_TouchExplosionDamage, DMG_SLASH );
+		int iTouchDamage = asw_harvester_touch_damage.GetInt();
+		CTakeDamageInfo info( this, this, iTouchDamage, DMG_SLASH );
 		damageTypes = "on touch";
 
 		//1=ignite, 2=explode, 3=All to marine
 		if ((iTouch == 1 || iTouch == 3) || (m_bOnFire && asw_harvester_touch_onfire.GetBool()))
 			ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
 
-		if (m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime || ASWGameRules()->m_TouchExplosionDamage <= 0)	// don't hurt him if he was hurt recently
+		if (m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime || iTouchDamage <= 0)	// don't hurt him if he was hurt recently
 			return;
 
 		Vector vecForceDir = ( pMarine->GetAbsOrigin() - GetAbsOrigin() );	// hurt the marine
@@ -546,7 +546,10 @@ void CASW_Harvester::StartTouch( CBaseEntity *pOther )
 		pMarine->TakeDamage( info );
 
 		if ( iTouch >= 2 )
+		{
+			ASWGameRules()->m_TouchExplosionDamage = iTouchDamage;
 			ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+		}
 
 		m_fLastTouchHurtTime = gpGlobals->curtime;
 	}
