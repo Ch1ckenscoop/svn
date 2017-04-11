@@ -1,0 +1,15 @@
+======Setleader for admin.======
+
+= Description =
+
+Command [[setleader.wiki|setleader]] or [[setleader.wiki|/setleader]] for admin to set player as lobby leader.
+
+Enter one of these commands [[setleader.wiki|setleader]] or [[setleader.wiki|/setleader]] on server console / client developer console.
+
+Note: [[setleader.wiki|/setleader]] command only available in Chat mode.
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.2.3 || NULL || [[FCVAR_NONE.wiki|FCVAR_NONE]] || [admin_flag] 
+|}

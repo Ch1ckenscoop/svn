@@ -1790,8 +1790,82 @@ void ASW_SetLeader_t( const CCommand &command )
 }
 ChatCommand ASW_SetLeader("/setleader", ASW_SetLeader_t);
 
-//softcopy:
-void ASW_AFK_t( const CCommand &command )	//player leave marine & can re-join marine
+void ASW_SetLeaderConsole( const CCommand &command )	//softcopy: allow setleader on consoles
+{
+	char buf[64];
+	CRecipientFilter filter;
+	CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(UTIL_GetCommandClient());
+	if (pPlayer)
+	{
+		filter.AddRecipient(pPlayer);
+		CSteamID requesterSteamID;	// Is this player an administrator?
+		if (!pPlayer->GetSteamID(&requesterSteamID))
+			return;
+
+		int iAdminIndex = Sourcemod()->GetAdminIndex(requesterSteamID);
+		if (iAdminIndex < 0)
+		{
+			UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "You are not an admin!");
+			return;
+		}
+		if (!Sourcemod()->AdminHasPowers(iAdminIndex, CASW_Sourcemod_Interface::ADMIN_POWER_KICK))
+		{
+			UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "You do not have the kick privilege, which is required for setleader.");
+			return;
+		}
+	}
+	if (command.ArgC() > 1)	// User specified a player
+	{
+		char szSpecifiedName[64], szTargetPlayerName[64]; bool bPlayerExist = true;
+		V_strncpy(szSpecifiedName, command.Arg(1), sizeof(szSpecifiedName));
+		V_strnlwr(szSpecifiedName, sizeof(szSpecifiedName));
+		CASW_Player *pExist = NULL;
+		for (int i = 0; i < gpGlobals->maxClients; i++)
+		{
+			bPlayerExist = false;
+			CASW_Player *pTargetPlayer = dynamic_cast<CASW_Player*>(UTIL_PlayerByIndex(i));
+			if (!pTargetPlayer)
+				continue;
+
+			pExist = pTargetPlayer;
+			V_strncpy(szTargetPlayerName, pTargetPlayer->GetPlayerName(), sizeof(szTargetPlayerName));
+			V_strnlwr(szTargetPlayerName, sizeof(szTargetPlayerName));
+			if (V_strstr(szTargetPlayerName, szSpecifiedName))
+			{
+				CASW_Player *pOther = dynamic_cast<CASW_Player*>(UTIL_PlayerByIndex(i));
+				if (pOther)
+				{
+					ASWGameResource()->SetLeader(pOther);	// Set the leader
+					V_snprintf(buf, sizeof(buf), "Set \"%s\" as lobby leader success.", szTargetPlayerName);
+					pPlayer ? filter.AddRecipient(pPlayer), UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, buf) : NULL; 
+					pPlayer ? Msg("%s %s \n", pPlayer->GetPlayerName(), buf) : Msg("%s\n", buf);
+					return;
+				}
+			}
+		}
+		if (pExist && !bPlayerExist)
+		{
+			V_snprintf(buf, sizeof(buf), "Unable to find a player with \"%s\" in their name.", szSpecifiedName);
+			pPlayer ? filter.AddRecipient(pPlayer), UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, buf) : Msg("%s\n", buf);
+		}
+		else
+			Msg("Unable to find a player.\n");
+	}
+	else if (pPlayer)	// User unspecified a player
+	{
+		ASWGameResource()->SetLeader(pPlayer);	// Just set the command requester as lobby leader
+		filter.AddRecipient(pPlayer);
+		UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "You are lobby leader now.");
+		Msg("%s %s\n", pPlayer->GetPlayerName(), "has set self as lobby leader.");
+		return;
+	}
+	else
+		Msg("Please be more specific \"Setleader [name|partial name]\" \n");
+}
+ConCommand ASW_Setleader_con("setleader", ASW_SetLeaderConsole, "Sets player as lobby leader.", FCVAR_NONE);
+ConCommand ASW_Setleader_con2("/setleader", ASW_SetLeaderConsole, "Sets player as lobby leader.", FCVAR_NONE);
+
+void ASW_AFK_t( const CCommand &command )	//softcopy: player leave marine & can re-join marine
 {
 	CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(UTIL_GetCommandClient());
 	if (!( pPlayer || ASWGameResource() || ASWGameRules()))
@@ -1866,7 +1940,6 @@ void ASW_AFK_t( const CCommand &command )	//player leave marine & can re-join ma
 	}
 }
 ChatCommand ASW_AFK_cc("/afk", ASW_AFK_t);
-ConCommand  ASW_AFK("asw_afk", ASW_AFK_t, "Sets you afk to leave marine.", FCVAR_NONE);
 //help list
 void ASW_Help_t( const CCommand &command )	
 {

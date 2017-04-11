@@ -4909,6 +4909,10 @@ struct TeleportListEntry_t
 static void TeleportEntity( CBaseEntity *pSourceEntity, TeleportListEntry_t &entry, const Vector *newPosition, const QAngle *newAngles, const Vector *newVelocity )
 {
 	CBaseEntity *pTeleport = entry.pEntity;
+	//softcopy: Fixed crashes on "asw_ent_teleport" command if an invalid named entity has given, I.E. "asw_ent_teleport asw_buzzer".
+	if (!pTeleport)	
+		return;
+
 	Vector prevOrigin = entry.prevAbsOrigin;
 	QAngle prevAngles = entry.prevAbsAngles;
 

@@ -136,7 +136,7 @@ ConVar asw_vote_kick_admin("asw_vote_kick_admin", "1", FCVAR_CHEAT, "Generic adm
 ConVar asw_debug_spectator_slot("asw_debug_spectator_slot", "0", FCVAR_CHEAT, "Show debug messages of spectator slots."); 
 ConVar asw_debug_alien_ignite("asw_debug_alien_ignite", "0", FCVAR_NONE, "Show debug messages for ignition/explosive effects by alien");
 extern ConVar asw_hardcore_ff_force;
-#define SERVER_DLL_VERSION "2.2.2"		//Ch1ckenscoop version
+#define SERVER_DLL_VERSION "2.2.3"		//Ch1ckenscoop version
 
 #define ASW_LAUNCHING_STEP 0.25f			// time between each stage of launching
 

@@ -148,6 +148,10 @@ int CASW_Weapon_Medkit::GetHealAmount()
 	if ( !pMarine )
 		return 0;
 
+	//softcopy: full health marine if last ammo or pick up a pre-spawned medkit
+	if (m_iClip1 == 1 && GetMaxClip1() == 1)
+		return pMarine->GetMaxHealth();
+
 	// medics adjust heal amount by their skills
 	if ( pMarine->GetMarineProfile() && pMarine->GetMarineProfile()->CanUseFirstAid() )
 	{
