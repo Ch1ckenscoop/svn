@@ -4909,7 +4909,7 @@ struct TeleportListEntry_t
 static void TeleportEntity( CBaseEntity *pSourceEntity, TeleportListEntry_t &entry, const Vector *newPosition, const QAngle *newAngles, const Vector *newVelocity )
 {
 	CBaseEntity *pTeleport = entry.pEntity;
-	//softcopy: Fixed crashes on "asw_ent_teleport" command if an invalid named entity has given, I.E. "asw_ent_teleport asw_buzzer".
+	//softcopy: Fixed crashes of asw_ent_teleport
 	if (!pTeleport)	
 		return;
 
@@ -4940,6 +4940,12 @@ static void TeleportEntity( CBaseEntity *pSourceEntity, TeleportListEntry_t &ent
 
 		if ( newPosition )
 		{
+			//softcopy: fixed crashes of teleporting unavailable location
+			Vector targetDir = *newPosition;
+			float targetDist = VectorNormalize(targetDir);
+			if (targetDist > 25000)
+				return;
+
 			pTeleport->AddEffects( EF_NOINTERP );
 			UTIL_SetOrigin( pTeleport, *newPosition );
 		}

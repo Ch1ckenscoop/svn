@@ -55,25 +55,31 @@
 	"7"
 	{
 		"type"		"S"
-		"text"		"TO ADMINS:\nSet youself as leader by typing /setleader\nKick people without a vote by typing /kick <name or part of name>"
+		"text"		"TO ADMINS:\nSet yourself as leader by typing chat command /setleader or console command Setleader"
 		"flags"		""
 	}
 	"8"
 	{
 		"type"		"S"
-		"text"		"The current server time is {TIME}"
+		"text"		"TO ADMINS:\nKick people by typing chat command /kick <name or part of name>"
+		"flags"		""
 	}
 	"9"
 	{
 		"type"		"S"
-		"text"		"Join our steam group: Ch1ckensCoop Servers!"
+		"text"		"The current server time is {TIME}"
 	}
 	"10"
 	{
 		"type"		"S"
+		"text"		"Join our steam group: Ch1ckensCoop Servers!"
+	}
+	"11"
+	{
+		"type"		"S"
 		"text"		"Have an idea? Found a bug?\nPost it at ch1ckenscoop website"
 	}	
-	"11"
+	"12"
 	{
 		"type"		"S"
 		"text"		"Don't like the new effects? Type /cfx in chat to toggle."

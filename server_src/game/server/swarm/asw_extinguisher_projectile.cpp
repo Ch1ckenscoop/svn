@@ -123,14 +123,19 @@ void CASW_Extinguisher_Projectile::ProjectileTouch( CBaseEntity *pOther )
 			}
 		}
 		//Ch1ckensCoop: Allow freeze nades to damage stuff
-		CAI_BaseNPC * RESTRICT pNPC = dynamic_cast<CAI_BaseNPC*>( pOther );	//softcopy:
 		if (pOther && m_flDamage)
 		{
 			//softcopy: m_flDamage has assigned from some where, use initial value for queen damage
 			//CTakeDamageInfo info(this, GetFirer(), m_flDamage, DMG_GENERIC);
-			CTakeDamageInfo info(this, GetFirer(), (pNPC && pNPC->Classify()==CLASS_ASW_QUEEN ? sk_plr_dmg_asw_f.GetFloat():m_flDamage), DMG_GENERIC);
-			
+			CTakeDamageInfo info(this, GetFirer(), (pOther->Classify()==CLASS_ASW_QUEEN ? sk_plr_dmg_asw_f.GetFloat():m_flDamage), DMG_GENERIC);
+
 			//info.SetDamage(m_flDamage);
+			pOther->TakeDamage(info);
+		}
+		//softcopy: Allow flamer extinguisher to damage the rocks, it won't break the rocks until melee/other weapon damages
+		if (pOther && pOther->Classify()==CLASS_ASW_PHYSICS_PROP && pOther->GetHealth() > 7)
+		{
+			CTakeDamageInfo info(this, GetFirer(), asw_fireex_freeze_amount.GetFloat()*10.0f, DMG_GENERIC);
 			pOther->TakeDamage(info);
 		}
 
@@ -140,7 +145,7 @@ void CASW_Extinguisher_Projectile::ProjectileTouch( CBaseEntity *pOther )
 		//if ( pOther->GetCollisionGroup() == COLLISION_GROUP_BREAKABLE_GLASS )
 			 //return;
 
-		//CAI_BaseNPC * RESTRICT pNPC = dynamic_cast<CAI_BaseNPC*>( pOther );	//softcopy:
+		CAI_BaseNPC * RESTRICT pNPC = dynamic_cast<CAI_BaseNPC*>( pOther );
 		if ( pNPC )
 		{
 			// Freeze faster the more frozen the object is

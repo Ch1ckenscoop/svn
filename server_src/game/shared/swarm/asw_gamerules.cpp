@@ -119,6 +119,7 @@ bool bReadyclicked = false;
 bool bIsReserved = false;
 int playreadyclicked = 0;
 int pPlayerId[ASW_NUM_MARINE_PROFILES];
+char pPlayerIp[ASW_NUM_MARINE_PROFILES][30];
 ConVar asw_autokick_player("asw_autokick_player", "0", FCVAR_CHEAT, "Sets auto kick player.");
 ConVar asw_autokick_player_promotion("asw_autokick_player_promotion", "0", FCVAR_CHEAT, "Sets autokick player below the promotion.",true,0,true,6);
 ConVar asw_autokick_player_experience("asw_autokick_player_experience", "5", FCVAR_CHEAT, "Sets autokick player below the experience levels.",true,0,true,27);
@@ -133,10 +134,11 @@ ConVar asw_infest_damage_insane("asw_infest_damage_insane", "280", FCVAR_CHEAT, 
 ConVar asw_infest_damage_brutal("asw_infest_damage_brutal", "280", FCVAR_CHEAT, "Infest damage on brutal level.");
 ConVar asw_hibernate_skill_default("asw_hibernate_skill_default", "0", FCVAR_CHEAT, "If set, Skill/HardcoreFF switch to default when hibernating.");
 ConVar asw_vote_kick_admin("asw_vote_kick_admin", "1", FCVAR_CHEAT, "Generic admin or above level immune from vote kick."); 
+ConVar asw_vote_kick_ipcheck("asw_vote_kick_ipcheck", "1", FCVAR_CHEAT, "Player using duplicate IP can't start a vote kick."); 
 ConVar asw_debug_spectator_slot("asw_debug_spectator_slot", "0", FCVAR_CHEAT, "Show debug messages of spectator slots."); 
 ConVar asw_debug_alien_ignite("asw_debug_alien_ignite", "0", FCVAR_NONE, "Show debug messages for ignition/explosive effects by alien");
 extern ConVar asw_hardcore_ff_force;
-#define SERVER_DLL_VERSION "2.2.3"		//Ch1ckenscoop version
+#define SERVER_DLL_VERSION "2.2.4"		//Ch1ckenscoop version
 
 #define ASW_LAUNCHING_STEP 0.25f			// time between each stage of launching
 
@@ -824,9 +826,12 @@ CAlienSwarm::CAlienSwarm()
 	playreadyclicked = asw_marine_lobby_ready.GetInt();
 	bReadyclicked = (playreadyclicked >= 1 && playreadyclicked <= 2) ? true : false;
 	bSpectatorCanSelect = false;
-	for (int i=0; i<ASW_NUM_MARINE_PROFILES; i++)
-		pPlayerId[i] = 0;	//initialize
-	m_TouchExplosionDamage = 0;		//softcopy:
+	for (int i=0; i<ASW_NUM_MARINE_PROFILES; i++)	//initialize
+	{
+		pPlayerId[i] = 0;
+		strcpy(pPlayerIp[i], "null");
+	}
+	m_TouchExplosionDamage = 0;
 }
 
 CAlienSwarm::~CAlienSwarm()
@@ -1109,9 +1114,20 @@ bool CAlienSwarm::ClientConnected( edict_t *pEntity, const char *pszName, const 
 		int index = ENTINDEX(pEntity) - 1;
 		if (index >= 0 && index < 8)
 		{
-			//softcopy: marked players  as ready/not ready on ClientConnected lobby
+			//softcopy:
+			//marked players as ready/not ready on ClientConnected lobby
 			//ASWGameResource()->m_bPlayerReady.Set(index, false);
 			ASWGameResource()->m_bPlayerReady.Set(index, playreadyclicked==2 ? bReadyclicked : false);
+			//store ip in pPlayerIp
+			if (asw_vote_kick_ipcheck.GetBool())
+			{
+				char cClientIP[30], *portStr;
+				strcpy(cClientIP, pszAddress);
+				if ((portStr=strchr(cClientIP, ':')) != NULL)
+					*portStr='\0';
+				strcpy(pPlayerIp[index], cClientIP);
+				//Msg("Client[%i] %s connected\n", index, pPlayerIp[index]);	//debug: list ip in pPlayerIp
+			}
 		}
 
 		// if we have no leader
@@ -5866,6 +5882,41 @@ void CAlienSwarm::SetKickVote(CASW_Player *pPlayer, int iPlayerIndex)
 {
 	if (!pPlayer)
 		return;
+
+	//softcopy: player using duplicate IP address can't start a vote kick against the intention of kicking other player
+	if (asw_vote_kick_ipcheck.GetBool() && iPlayerIndex != -1)	//make sure iPlayerIndex not a disconnect vote clean
+	{
+		for (int i=0; i<ASW_NUM_MARINE_PROFILES; i++)
+		{
+			CASW_Player *pOtherPlayer = dynamic_cast<CASW_Player*>(UTIL_PlayerByIndex(i+1));
+			if (pOtherPlayer && pOtherPlayer->IsConnected())
+				continue;
+			strcpy(pPlayerIp[i], "null");	//clean up disconnected ip in pPlayerIp
+		}
+		int iPlayers = 0, ipPlayerIndex = pPlayer->entindex()-1;
+		for (int i=0; i<ASW_NUM_MARINE_PROFILES; i++)
+		{
+			if (pPlayer->IsConnected() && !Q_strcmp(pPlayerIp[ipPlayerIndex], pPlayerIp[i]) && Q_strcmp(pPlayerIp[ipPlayerIndex], "null"))
+			{
+				iPlayers++;
+				//Msg("VoteKick client<%i> IP = %s \n", iPlayers, pPlayerIp[i]);	//debug: list voted ip
+				if (iPlayers > 1 && ipPlayerIndex == i)	//the duplicate ip can't start the vote kick
+				{
+					const char *text = "using duplicate IP on vote kick is not allowed on this server";
+					char text2[128]; Q_snprintf(text2, sizeof(text2), "\"%s\" %s", pPlayer->GetPlayerName(), text);
+					CRecipientFilter filter;
+					filter.AddRecipient(pPlayer);
+					CReliableBroadcastRecipientFilter filter2;
+					filter2.RemoveRecipient(pPlayer);	//notify everyone except the player
+					UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, text);
+					UTIL_ClientPrintFilter(filter2, ASW_HUD_PRINTTALKANDCONSOLE, text2);
+					UTIL_LogPrintf("%s\n", text2);
+					Msg("%s\n", text2);
+					return;
+				}
+			}
+		}
+	}
 
 	int iOldPlayer = pPlayer->m_iKickVoteIndex;
 	pPlayer->m_iKickVoteIndex = iPlayerIndex;

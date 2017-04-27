@@ -101,7 +101,13 @@ int CASW_Prop_Laserable::OnTakeDamage(const CTakeDamageInfo &info)
 	// reduce damage of everything except energy beam (mining laser) damage
 	if (newInfo.GetDamageType() & DMG_CLUB)
 	{
-		return 0;
+		//softcopy: Allow marine melee to damage the physics prop(rocks)
+		//return 0;
+		CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(info.GetAttacker());
+		if (pMarine)
+			newInfo.ScaleDamage(0.1f);
+		else
+			return 0;
 	}
 	else if (newInfo.GetDamageType() & DMG_BUCKSHOT)
 	{
