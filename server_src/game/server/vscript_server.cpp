@@ -16,7 +16,7 @@
 #include "isaverestore.h"
 #include "gamerules.h"
 #ifdef _WIN32
-#include "vscript_server_nut.h"	//softcopy: fix PreSpawnInstance and PostSpawn
+//#include "vscript_server_nut.h"
 #endif
 
 extern ScriptClassDesc_t * GetScriptDesc( CBaseEntity * );
@@ -440,7 +440,7 @@ bool VScriptServerInit()
 
 				if ( scriptLanguage == SL_SQUIRREL )
 				{
-					g_pScriptVM->Run( g_Script_vscript_server ); //softcopy: fix missing drones in custom map,  i.e. Orion's elevator area.
+					//g_pScriptVM->Run( g_Script_vscript_server );
 				}
 
 				VScriptRunScript( "mapspawn", false );

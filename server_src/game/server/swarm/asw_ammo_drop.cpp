@@ -128,7 +128,7 @@ void CASW_Ammo_Drop::ActivateUseIcon( CASW_Marine* pMarine, int nHoldType )
 		return;
 
 	//softcopy: secondary ammo charges from ammo bag
-	if (pMarine && asw_secondary_ammo_charges.GetInt() > 0)
+	if (pMarine && nHoldType == ASW_USE_RELEASE_QUICK && asw_secondary_ammo_charges.GetInt() > 0)
 	{
 		CASW_Weapon *pSWeapon = pMarine->GetActiveASWWeapon();
 		if ( !pSWeapon || pSWeapon->Classify() == CLASS_ASW_AMMO_SATCHEL )
@@ -159,7 +159,7 @@ void CASW_Ammo_Drop::ActivateUseIcon( CASW_Marine* pMarine, int nHoldType )
 						m_iAmmoUnitsRemaining += iAmmoExcess;
 					}
 					m_iAmmoUnitsRemaining -= iAmmoCost;
-					if ( m_iAmmoUnitsRemaining < 20 )
+					if (m_iAmmoUnitsRemaining < 20 && pSWeapon->m_iClip2 < pSWeapon->GetMaxClip2())	//no animation if ammo full
 					{
 						pMarine->SetStopTime( gpGlobals->curtime + 1.0f );
 						pMarine->GetMarineSpeech()->Chatter(CHATTER_USE);
@@ -263,6 +263,9 @@ bool CASW_Ammo_Drop::IsUsable(CBaseEntity *pUser)
 			{
 				if (pSWeapon->m_iClip2 < pSWeapon->GetMaxClip2())
 				{
+					if (ASWGameRules()) //set as default of ammo pickup use(e) key time
+						ASWGameRules()->m_fWeaponDisassemble = ASW_USE_KEY_HOLD_SENTRY_TIME;
+
 					if (pPlayer && gpGlobals->curtime > m_fLastMessageTime)
 					{
 						ClientPrint(pPlayer, HUD_PRINTCENTER, "Press <use> (e) to pick up secondary ammo.");

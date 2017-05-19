@@ -92,7 +92,6 @@ ConVar asw_marine_nearby_angle("asw_marine_nearby_angle", "-75", FCVAR_REPLICATE
 ConVar asw_rts_controls("asw_rts_controls", "0", FCVAR_REPLICATED | FCVAR_CHEAT);
 ConVar asw_controls("asw_controls", "1", FCVAR_REPLICATED | FCVAR_CHEAT, "Disable to get normal FPS controls (affects all players on the server)");
 ConVar asw_hl2_camera("asw_hl2_camera", "0", FCVAR_REPLICATED | FCVAR_DONTRECORD | FCVAR_CHEAT);
-ConVar asw_weapon_disassemble_speed("asw_weapon_disassemble_speed", "2", FCVAR_CHEAT);	//softcopy:
 
 #ifdef CLIENT_DLL		
 	extern ConVar asw_vehicle_cam_height;
@@ -1019,10 +1018,10 @@ void CASW_Player::PlayerUse()
 	
 			if ( m_nButtons & IN_USE )
 			{
-				//softcopy: sentry/tesla trap disassemble speed
-				//get cvar from asw_sentry_base & asw_tesla_trap.
+				//softcopy: sentry / tesla trap / guns secondary ammo pickup  use(e) key time
 				//if ( ( gpGlobals->curtime - m_flUseKeyDownTime ) >= ASW_USE_KEY_HOLD_SENTRY_TIME )
-				if ((gpGlobals->curtime - m_flUseKeyDownTime ) >=  asw_weapon_disassemble_speed.GetFloat())
+				float fUseKeyTime = ASWGameRules() ? ASWGameRules()->m_fWeaponDisassemble : ASW_USE_KEY_HOLD_SENTRY_TIME;
+				if ((gpGlobals->curtime - m_flUseKeyDownTime) >= fUseKeyTime)
 				{
 					pActivateEnt = m_hUseKeyDownEnt.Get();
 					nHoldType = ASW_USE_HOLD_RELEASE_FULL;

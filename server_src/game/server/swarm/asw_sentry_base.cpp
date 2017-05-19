@@ -26,9 +26,8 @@ ConVar asw_sentry_gun_type("asw_sentry_gun_type", "-1", FCVAR_CHEAT, "Force the 
 ConVar asw_sentry_infinite_ammo( "asw_sentry_infinite_ammo", "0", FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "Sentry guns have infinite ammo");
 //softcopy: 
 ConVar asw_sentry_assemble_speed("asw_sentry_assemble_speed", "0", FCVAR_CHEAT, "Sets sentry assemble speed(0=normal, 1-10).",true,0,true,10);  
-ConVar asw_sentry_disassemble_speed("asw_sentry_disassemble_speed", "2", FCVAR_CHEAT, "Sets sentry disassemble speed(0-2).",true,0,true,2);
+ConVar asw_sentry_disassemble_speed("asw_sentry_disassemble_speed", "2", FCVAR_CHEAT, "Sets sentry disassemble speed.",true,0.2,true,2);
 ConVar asw_weapons_attach("asw_weapons_attach", "0", FCVAR_CHEAT, "If set to 1, disables ammo/sentry attaching to weapon cheats");
-extern ConVar asw_weapon_disassemble_speed;
 
 LINK_ENTITY_TO_CLASS( asw_sentry_base, CASW_Sentry_Base );
 PRECACHE_REGISTER( asw_sentry_base );
@@ -252,7 +251,7 @@ void CASW_Sentry_Base::MarineUsing(CASW_Marine* pMarine, float deltatime)
 		if (fSkillScale < 1.0)
 			fSkillScale = 1.0f;
 
-		//softcopy: sentry gun assemble time by cvar control.
+		//softcopy: sets sentry assemble speed
 		//float fSetupAmount = (deltatime * (1.0f/SENTRY_ASSEMBLE_TIME)) * fSkillScale;
 		float fSentrySetupSpeed = asw_sentry_assemble_speed.GetFloat();
 		float fSetupAmount = fSentrySetupSpeed > 0 ? deltatime * 1.0f * fSentrySetupSpeed : (deltatime * (1.0f/SENTRY_ASSEMBLE_TIME)) * fSkillScale;
@@ -342,10 +341,10 @@ CASW_Sentry_Top* CASW_Sentry_Base::GetSentryTop()
 
 bool CASW_Sentry_Base::IsUsable(CBaseEntity *pUser)
 {
-	//softcopy: get sentry disassemble speed to asw_player_shared
-	if ( m_bAssembled )
-		asw_weapon_disassemble_speed.SetValue(asw_sentry_disassemble_speed.GetFloat());
-	
+	//softcopy: sets sentry disassemble speed
+	if (pUser && ASWGameRules() && m_bAssembled)	
+		ASWGameRules()->m_fWeaponDisassemble = asw_sentry_disassemble_speed.GetFloat();
+
 	return (pUser && pUser->GetAbsOrigin().DistTo(GetAbsOrigin()) < ASW_MARINE_USE_RADIUS);	// near enough?
 }
 

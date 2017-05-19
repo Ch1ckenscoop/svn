@@ -65,6 +65,7 @@ ConVar asw_parasite_ignite("asw_parasite_ignite", "0", FCVAR_CHEAT, "Ignites mar
 ConVar asw_parasite_defanged_ignite("asw_parasite_defanged_ignite", "0", FCVAR_CHEAT, "Ignites marine by defanged parasite.");
 ConVar asw_parasite_beta_poison("asw_parasite_beta_poison", "0", FCVAR_CHEAT, "Enables poison blur to marine.");
 ConVar asw_parasite_beta_poison_duration("asw_parasite_beta_poison_duration", "2", FCVAR_CHEAT, "Sets poison blur duration(1 - 10).",true,0,true,10);
+ConVar asw_parasite_beta_skin("asw_parasite_beta_skin", "0", FCVAR_CHEAT, "beta parasite skin, 0 = old skin, 1 = new skin, 2 = random all.");
 
 extern ConVar asw_debug_alien_damage;
 extern ConVar asw_god;
@@ -1428,6 +1429,7 @@ void CASW_Parasite::BParasiteColorScale()
 	m_iHealth	= ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_parasite_health.GetInt());
 	SetBodygroup( 0, 0 );
 	m_fSuicideTime = 0;
+	m_nSkin = asw_parasite_beta_skin.GetInt()==2 ? RandomFloat()<=0.5 ? 0:1 : asw_parasite_beta_skin.GetInt()==1 ? 1:0;	//allow changing skin
 	alienLabel = "parasite_beta";
 	ASWGameRules()->SetColorScale( this, alienLabel );
 }

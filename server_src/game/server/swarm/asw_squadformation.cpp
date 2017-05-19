@@ -15,13 +15,14 @@
 ConVar asw_marine_ai_followspot( "asw_marine_ai_followspot", "0", FCVAR_CHEAT );
 ConVar asw_follow_hint_max_range( "asw_follow_hint_max_range", "300", FCVAR_CHEAT );
 ConVar asw_follow_hint_max_z_dist( "asw_follow_hint_max_z_dist", "120", FCVAR_CHEAT );
-//softcopy: set default=0 to avoid sometime crashed by hints enabled
-ConVar asw_follow_use_hints( "asw_follow_use_hints", "0", FCVAR_CHEAT, "0 = follow formation, 1 = use hints when in combat, 2 = always use hints" ); 
+ConVar asw_follow_use_hints( "asw_follow_use_hints", "2", FCVAR_CHEAT, "0 = follow formation, 1 = use hints when in combat, 2 = always use hints" );
 ConVar asw_follow_hint_debug( "asw_follow_hint_debug", "0", FCVAR_CHEAT );
 ConVar asw_follow_velocity_predict( "asw_follow_velocity_predict", "0.3", FCVAR_CHEAT, "Marines travelling in diamond follow formation will predict their leader's movement ahead by this many seconds" );
 ConVar asw_follow_threshold( "asw_follow_threshold", "40", FCVAR_CHEAT, "Marines in diamond formation will move after leader has moved this much" );
 ConVar asw_squad_debug( "asw_squad_debug", "1", FCVAR_CHEAT, "Draw debug overlays for squad movement" );
-extern ConVar asw_boomer_explode_radius;	//softcopy:
+//softcopy:
+ConVar asw_marine_follow_leader( "asw_marine_follow_leader", "0", FCVAR_CHEAT, "Sets AI marines stick with leader");
+extern ConVar asw_boomer_explode_radius;
 
 #define OUT_OF_BOOMER_BOMB_RANGE FLT_MAX
 
@@ -37,14 +38,7 @@ void CASW_SquadFormation::LevelInitPostEntity()
 #else
 	m_bLevelHasFollowHints = ( MarineHintManager()->GetHintCount() > 0 );
 #endif
-	//softcopy: show current hints status to console.
-	//Msg( "Level has follow hints %d\n", m_bLevelHasFollowHints );
-	Msg( "Level has follow hints %d ", m_bLevelHasFollowHints );
-	if ( m_bLevelHasFollowHints && asw_follow_use_hints.GetInt() == 0 )
-		m_bLevelHasFollowHints = false;
-	if (asw_follow_use_hints.GetInt() >=0 && asw_follow_use_hints.GetInt() <=2)
-		Msg( "(use hints = %d)\n", asw_follow_use_hints.GetInt() );
-
+	Msg( "Level has follow hints %d\n", m_bLevelHasFollowHints );
 }
 
 unsigned int CASW_SquadFormation::Add( CASW_Marine *pMarine )
@@ -491,6 +485,11 @@ void CASW_SquadFormation::UpdateFollowPositions()
 				m_vFollowPositions[ i ] = vecBestUnsafeNode;
 				m_bFleeingBoomerBombs[ i ] = true;
 			}
+
+			//softcopy: forces AI marines stick with leader even mortar blobs nearby
+			if (asw_marine_follow_leader.GetBool() && m_bFleeingBoomerBombs[i])
+				VectorTransform( s_MarineFollowOffset[i], matLeaderFacing, m_vFollowPositions[i] );
+
 		}
 		else if ( m_bLevelHasFollowHints && asw_follow_use_hints.GetBool() && ( pLeader->IsInCombat() || asw_follow_use_hints.GetInt() == 2 ) )
 		{

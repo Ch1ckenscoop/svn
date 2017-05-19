@@ -1,6 +1,3 @@
-<!--#summary How to install the Ch1ckensCoop server.
-#labels Featured
--->
 ======How to install the Ch1ckensCoop server.======
 
 === Installing Ch1ckensCoop ===
@@ -18,7 +15,7 @@ Set the URL to [[InstallServer.wiki|http://github.com/ch1ckenscoop/svn/trunk/ser
 After the checkout is complete, click OK again.
 
 Double click steamcmd.exe in the unziped folder, SteamCMD will automatically update and enter you in to a Steam >prompt
-  
+
   * Type 'login yoursteamuserid' at the Steam >prompt. 
   * Enter  yoursteampassword  when prompt for password. 
 
@@ -27,13 +24,15 @@ After successfully logged in, it will prompt for enter 'steam guard code', check
 Make sure the 'steam guard code' has been entered correctly, the 'license info...ok' will be prompted.
 
 Type the following two commands at the Steam >prompt:
-  
+
   * force_install_dir c:/AlienSwarmServer/   
   * app_update 635 validate
 
+  * Don't login Steam until SteamCMD Alien Swarm 100% download completion, otherwise it will get malfunction.
+
 Make sure downloading 100% completion with message "Success! App '635' fully installed."
-  
-  * If any assertion failed or error found:
+
+  * If any assertion failed or error found, start the following 3 steps:
   *   1.delete AlienSwarmServer folder and steamcmd folder,
   *   2.create AlienSwarmServer folder and unzip steamcmd.zip again, 
   *   3.restart from step "Right click on the folder and select 'SVN Checkout'".

@@ -138,7 +138,6 @@ ConVar asw_vote_kick_ipcheck("asw_vote_kick_ipcheck", "1", FCVAR_CHEAT, "Player 
 ConVar asw_debug_spectator_slot("asw_debug_spectator_slot", "0", FCVAR_CHEAT, "Show debug messages of spectator slots."); 
 ConVar asw_debug_alien_ignite("asw_debug_alien_ignite", "0", FCVAR_NONE, "Show debug messages for ignition/explosive effects by alien");
 extern ConVar asw_hardcore_ff_force;
-#define SERVER_DLL_VERSION "2.2.4"		//Ch1ckenscoop version
 
 #define ASW_LAUNCHING_STEP 0.25f			// time between each stage of launching
 
@@ -832,6 +831,7 @@ CAlienSwarm::CAlienSwarm()
 		strcpy(pPlayerIp[i], "null");
 	}
 	m_TouchExplosionDamage = 0;
+	m_fWeaponDisassemble = ASW_USE_KEY_HOLD_SENTRY_TIME;	//softcopy: set as default of disassemble time
 }
 
 CAlienSwarm::~CAlienSwarm()
@@ -6914,7 +6914,7 @@ void CAlienSwarm::LevelInitPostEntity()
 		//softcopy: coded
 		//sv_tags.SetValue("ch1ckenscoop");
 		char buffer[ 32 ];
-		Q_snprintf( buffer, sizeof( buffer ), "%s,v%s", "ch1ckenscoop", SERVER_DLL_VERSION);
+		Q_snprintf( buffer, sizeof( buffer ), "%s,v%s", "ch1ckenscoop", GetCurrentVersion());
 		sv_tags.SetValue( buffer );
 	}
 
@@ -7471,7 +7471,7 @@ void asw_list_version(const CCommand &args)
 {
 	CBasePlayer* pPlayer = UTIL_GetCommandClient();
 	char text[36];
-	Q_snprintf( text, sizeof(text), "%s version %s", "Ch1ckenscoop", SERVER_DLL_VERSION );
+	Q_snprintf( text, sizeof(text), "%s version %s", "Ch1ckenscoop", ASWGameRules()->GetCurrentVersion() );
 	if (pPlayer)
 	{
 		UTIL_SayText( text, pPlayer );

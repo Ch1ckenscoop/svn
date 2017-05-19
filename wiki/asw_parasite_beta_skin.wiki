@@ -1,0 +1,19 @@
+======Changes skins on beta parasite.======
+
+= Description =
+
+Enables the possibility of having skins on a beta parasite. It simply add the possibility of randomly having them. This cvar was added to change the beta parasite skin while [[asw_parasite_beta_skin.wiki|asw_beta_parasite_skin]] was enabled.
+
+==== Example ====
+
+Beta parasite default skin
+<img align=center src=beta_parasite_skin0.png /></a>
+
+Beta parasite new skin
+<img align=center src=beta_parasite_skin1.png /></a>
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.2.5 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

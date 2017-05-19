@@ -1,0 +1,10 @@
+======Sets sentry friendly fire damage======
+= Description =
+
+Controls sentry shot damage [[asw_sentry_friendly_fire_damage.wiki|asw_sentry_friendly_fire_damage]] to hurt marine when hardcoreFF has turned on by lobby Leader.
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.2.2 || `0.1` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Float] 
+|}

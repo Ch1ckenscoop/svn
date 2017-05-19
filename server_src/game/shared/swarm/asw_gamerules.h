@@ -102,6 +102,7 @@ public:
 	virtual void			Precache( void );
 	virtual void			Think( void );
 	virtual const char *GetGameDescription( void ) { return "Ch1ckensCoop"; }
+	virtual const char *GetCurrentVersion ( void ) { return "2.2.5"; }	//softcopy: ch1ckenscoop version
 	virtual void			OnServerHibernating();
 	
 	// briefing roster functions
@@ -148,6 +149,7 @@ public:
 	virtual void	MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes);
 	virtual void	MarineDamageDebugInfo(CBaseEntity *pOther, const char *alienLabel, const char *damageInfo, const char *damageTypes);
 	int m_TouchExplosionDamage;
+	float m_fWeaponDisassemble;
 
 	// powerups
 	virtual void DropPowerup( CBaseEntity *pSource, const CTakeDamageInfo &info, const char *pszSourceClass );
