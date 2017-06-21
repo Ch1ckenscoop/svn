@@ -134,7 +134,7 @@ public:
 		COND_DRONE_LOST_LOS,	// drone had soft line of sight last think, but has lost it this think
 		NEXT_CONDITION,
 	};
-	
+
 	const char		*alienLabel, *damageTypes;	//softcopy:
 
 private:
@@ -157,6 +157,9 @@ private:
 	DEFINE_CUSTOM_AI;	
 
 	float GetDamage();	//Ch1ckensCoop: allow easy damage modifications.
+	//softcopy:
+	bool IsNewDrone() { return !Q_strcmp(STRING(GetModelName()), SWARM_NEW_DRONE_MODEL); }
+	bool bBetaDroneSkin;
 };
 
 enum

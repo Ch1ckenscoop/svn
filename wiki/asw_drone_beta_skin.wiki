@@ -1,0 +1,25 @@
+======Changes skins on beta drones.======
+
+= Description =
+
+Enables the possibility of having skins on a beta drone and beta drone jumper. It simply add the possibility of randomly having them. This cvar was added to change the beta drone skin while [[asw_drone_skin.wiki|asw_drone_skin]] was enabled.
+
+==== Example ====
+
+Beta drone default skin
+<img align=center src=drone_beta_skin0.png /></a>
+
+Beta drone new skin 
+<img align=center src=drone_beta_skin1.png /></a>
+
+Beta drone default skin has wings
+<img align=center src=drone_beta_skin2.png /></a>
+
+Beta drone new skin has wings
+<img align=center src=drone_beta_skin3.png /></a>
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.2.6 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

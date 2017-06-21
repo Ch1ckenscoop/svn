@@ -15,7 +15,7 @@
 //softcopy:
 extern ConVar asw_marine_lobby_ready;
 extern ConVar asw_lobby_player_select;
-int lobby_player_select = 4;
+extern ConVar asw_marine_ai_slot_release;
 
 static char s_szLastLeaderNetworkID[ASW_LEADERID_LEN] = {0};
 
@@ -321,9 +321,48 @@ void CASW_Game_Resource::RemoveAMarineFor(CASW_Player *pPlayer)
 
 bool CASW_Game_Resource::AddMarineResource( CASW_Marine_Resource *m, int nPreferredSlot )
 {
-	//softcopy: selectable player in lobby default=4, will get instability player timeout if it has changed!
-	if (asw_lobby_player_select.GetInt() > 4 && asw_lobby_player_select.GetInt() <= 6)
-		lobby_player_select = asw_lobby_player_select.GetInt();
+	//softcopy:
+	//selectable players in lobby default=4, it will get instability players timeout if it has changed!
+	int iGetLobbyPlayer = asw_lobby_player_select.GetInt();
+	int iLobbyPlayer = (iGetLobbyPlayer > 4 && iGetLobbyPlayer <= 6) ? iGetLobbyPlayer : 4;
+	//auto release bot slots to new joint players when bots in slots,
+	//and prevent commanders not release their bot slots for new joint players.
+	if (asw_marine_ai_slot_release.GetBool())
+	{
+		int ipPlayer = 0, iMarineSum = 0, iHighest = 0;
+		CASW_Player *pChosen = NULL;
+		for ( int i=0; i < iLobbyPlayer; i++ )	
+		{
+			CASW_Player* pOtherPlayer = dynamic_cast<CASW_Player*>(UTIL_PlayerByIndex(i+1));
+			if ( pOtherPlayer && pOtherPlayer->IsConnected() )
+			{
+				ipPlayer++;
+				int iMarines = GetNumMarines(pOtherPlayer);
+				if (iHighest == 0 || iMarines > iHighest)
+				{
+					iHighest = iMarines;
+					pChosen = pOtherPlayer;
+				}
+			}
+		}
+		iMarineSum = iHighest + ipPlayer;
+		if (pChosen && ipPlayer > 1 && iMarineSum > iLobbyPlayer)
+		{
+			for (int i=1; i < (iMarineSum - iLobbyPlayer); i++)
+			{
+				int j=0;
+				while (j < GetMaxMarineResources())	//deselect profileindex once for a new joint player
+				{
+					if (ASWGameRules() && GetMarineResource(j) && GetMarineResource(j)->GetCommander() == pChosen)
+					{
+						ASWGameRules()->RosterDeselect(pChosen, GetMarineResource(j)->GetProfileIndex());
+						break;
+					}
+					j++;
+				}
+			}
+		}
+	}
 
 	if ( nPreferredSlot != -1 )
 	{
@@ -344,7 +383,7 @@ bool CASW_Game_Resource::AddMarineResource( CASW_Marine_Resource *m, int nPrefer
 		// so we flag each element dirty to cause a complete update, which seems to fix the problem
 		//softcopy:
 		//for (int k=0;k<ASW_MAX_MARINE_RESOURCES;k++)
-		for (int k=0;k<lobby_player_select;k++)
+		for (int k=0;k<iLobbyPlayer;k++)
 		{
 			m_MarineResources.GetForModify(k);
 		}
@@ -352,7 +391,7 @@ bool CASW_Game_Resource::AddMarineResource( CASW_Marine_Resource *m, int nPrefer
 	}
 	//softcopy:
 	//for (int i=0;i<ASW_MAX_MARINE_RESOURCES;i++)
-	for (int i=0;i<lobby_player_select;i++)
+	for (int i=0;i<iLobbyPlayer;i++)
 	{
 		if (m_MarineResources[i] == NULL)	// found a free slot
 		{
@@ -361,7 +400,7 @@ bool CASW_Game_Resource::AddMarineResource( CASW_Marine_Resource *m, int nPrefer
 			// the above causes strange cases where the client copy of this networked array is incorrect
 			// so we flag each element dirty to cause a complete update, which seems to fix the problem
 			//for (int k=0;k<ASW_MAX_MARINE_RESOURCES;k++)	//softcopy:
-			for (int k=0;k<lobby_player_select;k++)
+			for (int k=0;k<iLobbyPlayer;k++)
 			{
 				m_MarineResources.GetForModify(k);
 			}

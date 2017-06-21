@@ -125,6 +125,7 @@ ConVar asw_autokick_player_promotion("asw_autokick_player_promotion", "0", FCVAR
 ConVar asw_autokick_player_experience("asw_autokick_player_experience", "5", FCVAR_CHEAT, "Sets autokick player below the experience levels.",true,0,true,27);
 ConVar asw_marine_lobby_ready("asw_marine_lobby_ready", "1", FCVAR_CHEAT, "Sets auto mark ready(1=gamestats lobby, 2=all lobbies.");
 ConVar asw_spectator_takes_slot("asw_spectator_takes_slot", "0", FCVAR_CHEAT, "If set, spectator can't take over reserved slot."); 
+ConVar asw_marine_ai_slot_release("asw_marine_ai_slot_release", "1", FCVAR_CHEAT, "Auto release bot slots to new join player in matchmaking lobby.");
 ConVar asw_lobby_player_select("asw_lobby_player_select", "4", FCVAR_CHEAT, "Max players selectable in lobby, instablity timeout if changed.", true,4, true,6);
 ConVar asw_level_lock("asw_level_lock", "0", FCVAR_CHEAT, "Skill level locked on(1-5).", true,0, true,5);
 ConVar asw_infest_damage_easy("asw_infest_damage_easy", "175", FCVAR_CHEAT, "Infest damage on easy level.");

@@ -84,6 +84,13 @@ typedef enum
 	ACT_COWER,				// FIXME: unused, should be more extreme version of crouching
 	ACT_SMALL_FLINCH,		// FIXME: needed? shouldn't flinching be down with overlays?
 	ACT_BIG_FLINCH,		
+	//softcopy:				// add beta drone flinch and burrow out animations
+	ACT_DRONE_TINY_FLINCH,
+	ACT_DRONE_BURROW_OUT,
+	ACT_DRONE_BURROW_IDLE,
+	ACT_BURROW_OUT,
+	ACT_BURROW_IDLE,
+
 	ACT_MELEE_ATTACK1,
 	ACT_MELEE_ATTACK2,
 	ACT_RELOAD,

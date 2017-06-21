@@ -21,7 +21,7 @@ ConVar asw_follow_velocity_predict( "asw_follow_velocity_predict", "0.3", FCVAR_
 ConVar asw_follow_threshold( "asw_follow_threshold", "40", FCVAR_CHEAT, "Marines in diamond formation will move after leader has moved this much" );
 ConVar asw_squad_debug( "asw_squad_debug", "1", FCVAR_CHEAT, "Draw debug overlays for squad movement" );
 //softcopy:
-ConVar asw_marine_follow_leader( "asw_marine_follow_leader", "0", FCVAR_CHEAT, "Sets AI marines stick with leader");
+ConVar asw_marine_ai_follow( "asw_marine_ai_follow", "0", FCVAR_CHEAT, "Sets AI marines stick with leader");
 extern ConVar asw_boomer_explode_radius;
 
 #define OUT_OF_BOOMER_BOMB_RANGE FLT_MAX
@@ -487,7 +487,7 @@ void CASW_SquadFormation::UpdateFollowPositions()
 			}
 
 			//softcopy: forces AI marines stick with leader even mortar blobs nearby
-			if (asw_marine_follow_leader.GetBool() && m_bFleeingBoomerBombs[i])
+			if (asw_marine_ai_follow.GetBool() && m_bFleeingBoomerBombs[i])
 				VectorTransform( s_MarineFollowOffset[i], matLeaderFacing, m_vFollowPositions[i] );
 
 		}

@@ -56,6 +56,7 @@ ConVar asw_drone_jumper_scalemod_percent("asw_drone_jumper_scalemod_percent", "0
 ConVar asw_drone_touch_ignite("asw_drone_touch_ignite", "0", FCVAR_CHEAT, "Ignites marine on touch(1=drone, 2=jumper, 3=All).");
 ConVar asw_drone_melee_ignite("asw_drone_melee_ignite", "0", FCVAR_CHEAT, "Ignites marine on melee(1=drone, 2=jumper, 3=All).");
 ConVar asw_drone_touch_onfire("asw_drone_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if drone body on fire touch.");
+ConVar asw_drone_beta_skin("asw_drone_beta_skin", "1", FCVAR_CHEAT, "Set 1 to use new skins on beta drones model.");
 
 #define ASW_DRONE_MELEE1_START_ATTACK_RANGE asw_drone_start_melee_range.GetFloat()
 #define ASW_DRONE_MELEE1_RANGE asw_drone_melee_range.GetFloat()
@@ -159,6 +160,7 @@ CASW_Drone_Advanced::CASW_Drone_Advanced( void )
 	m_nAlienCollisionGroup = ASW_COLLISION_GROUP_ALIEN;
 	m_iDeadBodyGroup = 2;
 	//m_debugOverlays |= (OVERLAY_TEXT_BIT | OVERLAY_BBOX_BIT); 
+	bBetaDroneSkin = asw_drone_beta_skin.GetBool();	//softcopy:
 }
 
 CASW_Drone_Advanced::~CASW_Drone_Advanced()
@@ -246,17 +248,22 @@ void CASW_Drone_Advanced::Spawn( void )
 		m_bJumper = true;
 		//softcopy:
 		//SetRenderColor(asw_drone_jumper_color.GetColor().r(), asw_drone_jumper_color.GetColor().g(), asw_drone_jumper_color.GetColor().b());	//Ch1ckensCoop: Allow setting colors.
+		m_nSkin = bBetaDroneSkin ? 3 : 2;	//beta jumpers new skin has wings
+		if (IsNewDrone() && bBetaDroneSkin)	//force beta drone jumpers to be new drone jumpers that jumpers looks like fly jumping
+			SetModel(SWARM_DRONE_MODEL);
+
 		m_ClassType = (Class_T)CLASS_ASW_DRONE_JUMPER;
 	}
 	else
 	{
 		m_bJumper = false;
+		m_nSkin = bBetaDroneSkin ? 1:0;	//softcopy: beta drones new skin
 		m_bDisableJump = true;
 		CapabilitiesRemove( bits_CAP_MOVE_JUMP );
 		m_ClassType = (Class_T)CLASS_ASW_DRONE;
 	}
 
-	ASWGameRules()->SetColorScale( this, alienLabel = m_bJumper ? "drone_jumper" : "drone" );	//softcopy:
+	ASWGameRules()->SetColorScale( this, alienLabel = m_bJumper ? "drone_jumper" : "drone" );	//softcopy: Allow setting colors
 
 	SetHullType(HULL_MEDIUMBIG);
 
@@ -1129,6 +1136,20 @@ Activity CASW_Drone_Advanced::NPC_TranslateActivity( Activity eNewActivity )
 	//}
 	//if ( eNewActivity == ACT_CLIMB_DOWN )
 		//return ACT_CLIMB_UP;
+
+	//softcopy: add beta drone flinch, burrow out & run aim animations
+	if (eNewActivity == ACT_ALIEN_FLINCH_BIG)
+		return  ACT_BIG_FLINCH;
+	if (eNewActivity == ACT_ALIEN_FLINCH_MEDIUM)
+		return  ACT_SMALL_FLINCH;
+	if (eNewActivity == ACT_ALIEN_FLINCH_SMALL)
+		return  ACT_DRONE_TINY_FLINCH;
+	if (eNewActivity == ACT_BURROW_OUT)
+		return  ACT_DRONE_BURROW_OUT;
+	if (eNewActivity == ACT_BURROW_IDLE)
+		return  ACT_DRONE_BURROW_IDLE;
+	if (eNewActivity == ACT_RUN && m_bElectroStunned)
+		return  ACT_RUN_AIM;
 
 	return BaseClass::NPC_TranslateActivity(eNewActivity);
 }

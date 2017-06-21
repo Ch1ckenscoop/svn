@@ -28,8 +28,6 @@ Type the following two commands at the Steam >prompt:
   * force_install_dir c:/AlienSwarmServer/   
   * app_update 635 validate
 
-  * Don't login Steam until SteamCMD Alien Swarm 100% download completion, otherwise it will get malfunction.
-
 Make sure downloading 100% completion with message "Success! App '635' fully installed."
 
   * If any assertion failed or error found, start the following 3 steps:
