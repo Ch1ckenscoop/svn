@@ -11,6 +11,10 @@
 #include "asw_target_dummy_shared.h"
 #include "asw_drone_advanced.h"
 #include "asw_parasite.h"
+//softcopy:
+#include "asw_weapon_tesla_trap.h"
+#include "asw_trace_filter_shot.h"
+#include "asw_shieldbug.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -28,8 +32,11 @@ IMPLEMENT_SERVERCLASS_ST(CASW_Sentry_Top, DT_ASW_Sentry_Top)
 END_SEND_TABLE()
 
 ConVar asw_sentry_friendly_target("asw_sentry_friendly_target", "0", FCVAR_CHEAT, "Whether the sentry targets friendlies or not");
-extern ConVar asw_sentry_friendly_fire_scale;
-
+//softcopy:
+//extern ConVar asw_sentry_friendly_fire_scale;	//unreferenced
+ConVar asw_sentry_tesla("asw_sentry_tesla", "0", FCVAR_CHEAT, "Enables Sentry firing tesla.");
+ConVar asw_sentry_angle("asw_sentry_angle", "0", FCVAR_CHEAT, "Enables sentry firing angle max 180 degrees.");
+int iSentryDefaultRange;
 
 //---------------------------------------------------------
 // Save/Restore
@@ -51,7 +58,7 @@ BEGIN_DATADESC( CASW_Sentry_Top )
 	// DEFINE_FIELD( m_hSentryBase, FIELD_EHANDLE ),
 	DEFINE_FIELD( m_iBaseTurnRate, FIELD_INTEGER ),	
 	DEFINE_FIELD( m_iSentryAngle, FIELD_INTEGER ),
-	DEFINE_FIELD( m_fTurnRate, FIELD_FLOAT ),
+	//DEFINE_FIELD( m_fTurnRate, FIELD_FLOAT ),	//softcopy: duplicated
 	DEFINE_KEYFIELD( m_flShootRange, FIELD_FLOAT, "TurretRange" ),
 	DEFINE_FIELD( m_bHasHysteresis, FIELD_BOOLEAN ),	
 	DEFINE_FIELD( m_bLowAmmo, FIELD_BOOLEAN ),	
@@ -64,8 +71,13 @@ CASW_Sentry_Top::CASW_Sentry_Top()
 {
 	m_flShootRange = ASW_SENTRY_RANGE;
 	m_iAmmoType = GetAmmoDef()->Index("ASW_R");
-	m_iBaseTurnRate = ASW_SENTRY_TURNRATE;
-	m_iSentryAngle = ASW_SENTRY_ANGLE;
+	//softcopy:
+	//m_iBaseTurnRate = ASW_SENTRY_TURNRATE;
+	//m_iSentryAngle = ASW_SENTRY_ANGLE;
+	m_iBaseTurnRate = asw_sentry_angle.GetBool() ? ASW_SENTRY_MAX_TURNRATE : ASW_SENTRY_TURNRATE;
+	m_iSentryAngle = asw_sentry_angle.GetBool() ? ASW_SENTRY_MAX_ANGLE : ASW_SENTRY_ANGLE;
+	iSentryDefaultRange = ASW_SENTRY_RANGE;
+
 	m_bLowAmmo = false;
 }
 #undef ASW_SENTRY_RANGE 
@@ -194,9 +206,14 @@ void CASW_Sentry_Top::TurnToGoal(float deltatime)
 		}
 
 		// set our turn rate depending on if we have an enemy or not
-		float fTurnRate = ASW_SENTRY_TURNRATE * 0.5f;
+		//softcopy:
+		//float fTurnRate = ASW_SENTRY_TURNRATE * 0.5f;
+		float fTurnRate = m_iBaseTurnRate * (asw_sentry_angle.GetBool() ? 0.8f : 0.5f);
+
 		if ( m_hEnemy.IsValid() && m_hEnemy.Get() )
-			fTurnRate = ASW_SENTRY_TURNRATE;
+			//softcopy:
+			//fTurnRate = ASW_SENTRY_TURNRATE;
+			fTurnRate = m_iBaseTurnRate;
 
 		if ( fabs( fDist ) < deltatime * fTurnRate)
 		{
@@ -381,7 +398,7 @@ bool CASW_Sentry_Top::CanSee(CBaseEntity* pEnt)
 	if (fYawDiff > 360.0f)
 		fYawDiff -= 360.0f;
 
-	if (fabs(fYawDiff) > ASW_SENTRY_ANGLE)
+	if (fabs(fYawDiff) > /*ASW_SENTRY_ANGLE*/m_iSentryAngle)	//softcopy: 
 	{
 		m_iCanSeeError = 1;
 		return false;
@@ -435,6 +452,16 @@ bool CASW_Sentry_Top::IsValidEnemy( CAI_BaseNPC *pNPC )
 	{
 		CASW_Parasite *pParasite = static_cast< CASW_Parasite* >( pNPC );
 		if ( pParasite->m_bInfesting )
+		{
+			return false;
+		}
+	}
+
+	//softcopy: won't shoot idle shieldbug farther than a distance from sentry to provide more helpful shot
+	if (pNPC->Classify() == CLASS_ASW_SHIELDBUG)
+	{
+		CASW_Shieldbug *pShieldbug = static_cast<CASW_Shieldbug*>(pNPC);
+		if ((pShieldbug->GetAbsOrigin() - GetAbsOrigin()).Length() > iSentryDefaultRange && pShieldbug->GetActivity()==ACT_IDLE)
 		{
 			return false;
 		}
@@ -506,4 +533,56 @@ void CASW_Sentry_Top::MakeTracer( const Vector &vecTracerSrc, const trace_t &tr,
 	WRITE_FLOAT( tr.endpos.y );
 	WRITE_FLOAT( tr.endpos.z );
 	MessageEnd();
+}
+
+//softcopy:	sentry tesla to slow down alien movement
+void CASW_Sentry_Top::SentryTesla()
+{
+	if (asw_sentry_tesla.GetBool())
+	{
+		CAI_BaseNPC *pNPC = dynamic_cast<CAI_BaseNPC*>(m_hEnemy.Get());
+		if (pNPC && !IsValidEnemy(pNPC))
+			return;
+
+		CASW_Alien *pAlien = dynamic_cast<CASW_Alien*>(m_hEnemy.Get());
+		if (!pAlien)
+			return;
+
+		if (pAlien->IsElectroStunned())
+			return;	//no tesla if invalid enemy or alien has already stunned
+
+		trace_t shockTR;
+		Vector vecShockSrc = WorldSpaceCenter();
+		Vector vecAIPos = pAlien->WorldSpaceCenter();
+		CASWTraceFilterShot traceFilter( this, NULL, COLLISION_GROUP_NONE );
+		AI_TraceLine( vecShockSrc, vecAIPos, MASK_SHOT, &traceFilter, &shockTR );
+		if ( shockTR.fraction != 1.0 && shockTR.m_pEnt )
+		{
+			// spawn a shock effect
+			Vector	vecFXSrc;
+			QAngle	vecFXAng;
+			GetAttachment( "effects", vecFXSrc, vecFXAng );
+			vecAIPos = shockTR.endpos;
+			ClearMultiDamage();	
+			CTakeDamageInfo shockDmgInfo( this, this, 1, DMG_SHOCK );					
+
+			Vector vecDir = vecAIPos - vecShockSrc;
+			VectorNormalize( vecDir );
+			shockDmgInfo.SetDamagePosition( shockTR.endpos );
+			shockDmgInfo.SetDamageForce( vecDir );
+			shockDmgInfo.ScaleDamageForce( 1.0 );	
+			shockDmgInfo.SetWeapon( m_hCreatorWeapon );
+			shockTR.m_pEnt->DispatchTraceAttack( shockDmgInfo, vecDir, &shockTR );
+			ApplyMultiDamage();
+
+			CRecipientFilter filter;
+			filter.AddAllPlayers();
+			UserMessageBegin( filter, "ASWEnemyZappedByTesla" );
+			WRITE_FLOAT( vecShockSrc.x );
+			WRITE_FLOAT( vecShockSrc.y );
+			WRITE_FLOAT( vecShockSrc.z );
+			WRITE_SHORT( pAlien->entindex() );
+			MessageEnd();
+		}
+	}
 }

@@ -57,6 +57,8 @@ void CASW_Sentry_Top_Cannon::Fire()
 		return;
 
 	BaseClass::Fire();
+	
+	SentryTesla();	//softcopy: sentry firing tesla
 
 	Vector diff = m_hEnemy->WorldSpaceCenter() - GetFiringPosition();
 	diff.NormalizeInPlace();
@@ -161,7 +163,9 @@ CAI_BaseNPC *CASW_Sentry_Top_Cannon::SelectOptimalEnemy()
 		// the angle between my current yaw and what's needed to hit the target
 		float flSwivelNeeded = fabs( UTIL_AngleDiff(  // i wish we weren't storing euler angles
 			UTIL_VecToYaw( vMeToTarget ), m_fDeployYaw ) );
-		flSwivelNeeded /= ASW_SENTRY_ANGLE; // normalize to 0..2
+		//softcopy:
+		//flSwivelNeeded /= ASW_SENTRY_ANGLE; // normalize to 0..2
+		flSwivelNeeded /= m_iSentryAngle;
 
 		float fBigness = 0.0f;
 

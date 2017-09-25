@@ -137,6 +137,10 @@ const  float CASW_SquadFormation::s_MarineBeaconDirection[MAX_SQUAD_SIZE]=
 
 float CASW_SquadFormation::GetYaw( unsigned slotnum )
 {
+	//softcopy: fixed GetHintYaw crashes
+	if (!IsValid(slotnum))	
+		return 0.0f;
+
 	if ( m_bStandingInBeacon[slotnum] )
 	{
 		return s_MarineBeaconDirection[slotnum];

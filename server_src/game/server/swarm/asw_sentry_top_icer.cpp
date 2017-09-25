@@ -26,9 +26,10 @@ END_SEND_TABLE()
 BEGIN_DATADESC( CASW_Sentry_Top_Icer )
 END_DATADESC()
 
-extern ConVar asw_weapon_max_shooting_distance;
-extern ConVar asw_weapon_force_scale;
-extern ConVar asw_difficulty_alien_health_step;
+//softcopy: unreferenced.
+//extern ConVar asw_weapon_max_shooting_distance;
+//extern ConVar asw_weapon_force_scale;
+//extern ConVar asw_difficulty_alien_health_step;
 
 ConVar asw_sentry_debug_aim("asw_sentry_debug_aim", "0", FCVAR_CHEAT, "Draw debug lines for sentry gun aim");
 ConVar asw_sentry_icer_amount("asw_sentry_icer_amount", "0.4", FCVAR_CHEAT, "Sets the freeze amount for the icer sentry.");
@@ -50,6 +51,7 @@ CASW_Sentry_Top_Icer::CASW_Sentry_Top_Icer() : CASW_Sentry_Top_Flamer(CASW_Weapo
 	//softcopy:
 	//m_flShootRange = 300;
 	m_flShootRange = asw_sentry_icer_range.GetFloat();
+
 	//increase turn rate until I get better leading code in (so it can actually hit something)
 	m_fTurnRate *= 3.0f;
 }
@@ -111,6 +113,8 @@ void CASW_Sentry_Top_Icer::FireProjectiles( int numShotsToFire, ///< number of p
 	CASW_Marine * RESTRICT const pMarineDeployer = GetSentryBase()->m_hDeployer.Get();
 	Assert( pMarineDeployer );
 	*/
+
+	SentryTesla();	//softcopy: sentry firing tesla
 
 	for ( int i = 0 ; i < numShotsToFire ; i++ )
 	{
@@ -213,7 +217,9 @@ CAI_BaseNPC * CASW_Sentry_Top_Icer::SelectOptimalEnemy()
 		// the angle between my current yaw and what's needed to hit the target
 		float flSwivelNeeded = fabs( UTIL_AngleDiff(  // i wish we weren't storing euler angles
 			UTIL_VecToYaw( vMeToTarget ) , m_fDeployYaw ) );
-		flSwivelNeeded /= ASW_SENTRY_ANGLE; // normalize to 0..2
+		//softcopy:
+		//flSwivelNeeded /= ASW_SENTRY_ANGLE; // normalize to 0..2
+		flSwivelNeeded /= m_iSentryAngle;
 
 		float flFreezeNeeded = 1 - pCandidate->GetFrozenAmount();
 

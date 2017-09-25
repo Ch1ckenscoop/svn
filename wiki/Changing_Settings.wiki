@@ -2,6 +2,8 @@
 #summary Changing Ch1ckensCoop default settings.
 #labels Featured
 -->
+<a href=InstallServer.wiki><img align=right src=googlecode-home.png /></a>
+
 ======Changing Ch1ckensCoop default settings.======
 
 It is highly recommended that you do not change the settings in the files "server.cfg" and "hordemode.cfg". If you edit the server.cfg file, it will be overwritten with the next update. 

@@ -1,7 +1,6 @@
 ======How to install the Ch1ckensCoop server.======
-
+<a href=http://github.com/Ch1ckenscoop/Project><img align=right src=googlecode-home.png /></a>
 === Installing Ch1ckensCoop ===
-
 <a href=http://tortoisesvn.net/downloads.html><img align=center src=tsvn_logo.png /></a>
 
 You will need [http://tortoisesvn.net/downloads.html TortoiseSVN] and [http://media.steampowered.com/installer/steamcmd.zip SteamCMD] to download, TortoiseSVN install, unzip steamcmd.zip and update Ch1ckensCoop. Make sure that you install the version that is appropriate for your OS.

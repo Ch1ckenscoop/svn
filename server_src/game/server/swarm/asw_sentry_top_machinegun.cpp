@@ -26,7 +26,7 @@ END_SEND_TABLE()
 BEGIN_DATADESC( CASW_Sentry_Top_Machinegun )
 END_DATADESC()
 
-extern ConVar asw_sentry_mg_range;
+//extern ConVar asw_sentry_mg_range;	//softcopy: unreferenced
 ConVar asw_sentry_fire_rate("asw_sentry_fire_rate", "0.08f", FCVAR_CHEAT, "Machine gun sentry fire rate in seconds.");
 ConVar asw_sentry_overfire("asw_sentry_overfire", "0.45f", FCVAR_CHEAT, "Machine gun sentries keep firing this long after killing something.");
 ConVar asw_sentry_gun_damage("asw_sentry_gun_damage", "4.0f", FCVAR_CHEAT, "Machine gun sentry fire damage.");	//softcopy:
@@ -50,7 +50,7 @@ void CASW_Sentry_Top_Machinegun::SetTopModel()
 	SetModel(SENTRY_TOP_MODEL);
 }
 
-//softcopy: add function for shoot range
+//softcopy: shot range function
 CASW_Sentry_Top_Machinegun::CASW_Sentry_Top_Machinegun() 
 {
 	m_flShootRange = asw_sentry_gun_range.GetFloat();             
@@ -86,6 +86,10 @@ void CASW_Sentry_Top_Machinegun::Fire()
 	m_fNextFireTime = fsel( gpGlobals->curtime - m_fNextFireTime - gpGlobals->interval_per_tick * 3.0f, gpGlobals->curtime, m_fNextFireTime ); 
 	CASW_Sentry_Base* const pBase = GetSentryBase();
 
+	//softcopy: sentry firing tesla
+	if (pBase)
+		SentryTesla();
+
 	const float fPriorTickTime = gpGlobals->curtime - gpGlobals->interval_per_tick;
 	do 
 	{
@@ -101,7 +105,7 @@ void CASW_Sentry_Top_Machinegun::Fire()
 		// here is that we are "queuing up" the bullets that are supposed to be fired this
 		// frame.
 		EmitSound( "ASW_Sentry.Fire", gpGlobals->curtime + m_fNextFireTime - fPriorTickTime );
-		
+
 		CEffectData	data;
 		data.m_vOrigin = GetAbsOrigin();
 		//data.m_vNormal = dir;

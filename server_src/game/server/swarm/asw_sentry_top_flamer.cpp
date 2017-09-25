@@ -28,10 +28,10 @@ END_SEND_TABLE()
 
 BEGIN_DATADESC( CASW_Sentry_Top_Flamer )
 END_DATADESC()
-
-extern ConVar asw_weapon_max_shooting_distance;
-extern ConVar asw_weapon_force_scale;
-extern ConVar asw_difficulty_alien_health_step;
+//softcopy: unreferenced
+//extern ConVar asw_weapon_max_shooting_distance;
+//extern ConVar asw_weapon_force_scale;
+//extern ConVar asw_difficulty_alien_health_step;
 extern ConVar asw_sentry_debug_aim;
 
 void CASW_Sentry_Top_Flamer::SetTopModel()
@@ -235,6 +235,8 @@ void CASW_Sentry_Top_Flamer::FireProjectiles( int numShotsToFire, ///< number of
 	CShotManipulator Manipulator( vecAiming );
 	CASW_Marine * RESTRICT const pMarineDeployer = GetSentryBase()->m_hDeployer.Get();
 	Assert( pMarineDeployer );
+	
+	SentryTesla();	//softcopy: sentry firing tesla
 
 	for ( int i = 0 ; i < numShotsToFire ; i++ )
 	{

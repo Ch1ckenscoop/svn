@@ -265,6 +265,10 @@ float CASW_Shieldbug::MaxYawSpeed( void )
 {
 	Activity eActivity = GetActivity();
 
+	//softcopy: asleep shieldbug
+	if (GetEfficiency() < AIE_DORMANT && GetSleepState() == AISS_AWAKE && eActivity != ACT_RUN)
+		return 20.0f;
+
 	// Stay still while attacking
 	if ( eActivity == ACT_MELEE_ATTACK1 )
 		return 0.1f;

@@ -146,6 +146,10 @@ float CASW_Harvester::GetIdealAccel( ) const
 
 float CASW_Harvester::MaxYawSpeed( void )
 {
+	//softcopy: awake harvester
+	if (GetEfficiency() < AIE_DORMANT && GetSleepState() == AISS_AWAKE && GetNavigator()->GetMovementActivity() != ACT_RUN)
+		return 32.0f;
+
 	if ( m_bElectroStunned.Get() )
 		return 0.1f;
 

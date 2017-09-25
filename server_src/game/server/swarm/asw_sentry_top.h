@@ -60,7 +60,7 @@ public:
 	int m_iBaseTurnRate;	// angles per second
 	CNetworkVar(int, m_iSentryAngle);
 	//float m_flTimeNextScanPing;
-	float m_fTurnRate;		// actual turn rate	
+	float m_fTurnRate;		// actual turn rate
 
 	float m_flTimeFirstFired;
 	
@@ -90,7 +90,14 @@ public:
 		ASW_SENTRY_FIRING_HEIGHT= 50,
 		ASW_SENTRY_FIRE_ANGLE_THRESHOLD= 3,
 		ASW_SENTRY_RANGE= 525, // just the default
+		//softcopy:
+		ASW_SENTRY_MAX_TURNRATE = 240,	// 225 faster angles per second
+		ASW_SENTRY_MAX_ANGLE = 90,	// spread on each side, Max 90
 	};
+
+	//softcopy:
+	virtual void SentryTesla();
+	EHANDLE m_hCreatorWeapon;
 
 protected:
 	// helper function used by FindEnemy

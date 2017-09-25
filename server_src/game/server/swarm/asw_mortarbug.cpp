@@ -150,6 +150,10 @@ float CASW_Mortarbug::GetIdealAccel( ) const
 
 float CASW_Mortarbug::MaxYawSpeed( void )
 {
+	//softcopy: awake mortarbug
+	if (GetEfficiency() < AIE_DORMANT && GetSleepState() == AISS_AWAKE && GetNavigator()->GetMovementActivity() != ACT_RUN)
+		return 16.0f;
+
 	if ( m_bElectroStunned.Get() )
 		return 0.1f;
 

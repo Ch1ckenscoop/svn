@@ -1,0 +1,10 @@
+======Sets sentry yaw angle======
+= Description =
+
+Controls all sentry shot angle from 120 degrees to Max 180 degrees. Sentry Top turn rate will also be increased if [[asw_sentry_angle.wiki|asw_sentry_angle]] is enabled 
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.2.7 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Bool] 
+|}

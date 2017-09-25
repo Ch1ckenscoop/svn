@@ -1430,6 +1430,7 @@ void CASW_Parasite::BParasiteColorScale()
 	SetBodygroup( 0, 0 );
 	m_fSuicideTime = 0;
 	m_nSkin = asw_parasite_beta_skin.GetInt()==2 ? RandomFloat()<=0.5 ? 0:1 : asw_parasite_beta_skin.GetInt()==1 ? 1:0;	//allow changing skin
+	m_ClassType = (Class_T)CLASS_ASW_PARASITE;
 	alienLabel = "parasite_beta";
 	ASWGameRules()->SetColorScale( this, alienLabel );
 }

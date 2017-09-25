@@ -277,6 +277,10 @@ bool CBaseCombatWeapon::WeaponLOSCondition( const Vector &ownerPos, const Vector
 	// --------------------
 	CAI_BaseNPC* npcOwner = m_hOwner.Get()->MyNPCPointer();
 
+	//softcopy: fixed m_hOwner crashes
+	if (!npcOwner)
+		return false;
+
 	// Find its relative shoot position
 	Vector vecRelativeShootPosition;
 	VectorSubtract( npcOwner->Weapon_ShootPosition(), npcOwner->GetAbsOrigin(), vecRelativeShootPosition );
