@@ -43,19 +43,19 @@ ConVar asw_harvester_spawn_interval( "asw_harvester_spawn_interval", "1.0", FCVA
 
 ConVar asw_harvester_color("asw_harvester_color", "255 255 255", FCVAR_NONE, "Sets the color of harvesters.");
 //softcopy:
-ConVar asw_harvester_color2("asw_harvester_color2", "255 255 255", FCVAR_NONE, "Sets the color of old model harvesters.");
-ConVar asw_harvester_color2_percent("asw_harvester_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the old model harvesters you want to give the color",true,0,true,1);
+ConVar asw_harvester_color2("asw_harvester_color2", "255 255 255", FCVAR_NONE, "Sets the color of harvesters.");
+ConVar asw_harvester_color2_percent("asw_harvester_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of harvesters color",true,0,true,1);
 ConVar asw_harvester_color3("asw_harvester_color3", "255 255 255", FCVAR_NONE, "Sets the color of harvesters.");
-ConVar asw_harvester_color3_percent("asw_harvester_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the old model harvesters you want to give the color",true,0,true,1);
-ConVar asw_harvester_scalemod("asw_harvester_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal harvesters.",true,0,true,2);
-ConVar asw_harvester_scalemod_percent("asw_harvester_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal old model harvesters you want to scale.",true,0,true,1);
-ConVar asw_harvester_beta_color("asw_harvester_beta_color", "255 255 255", FCVAR_NONE, "Sets the color of new model harvesters.");
-ConVar asw_harvester_beta_color2("asw_harvester_beta_color2", "255 255 255", FCVAR_NONE, "Sets the color of new model harvesters.");
-ConVar asw_harvester_beta_color2_percent("asw_harvester_beta_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the new model harvesters you want to give the color",true,0,true,1);
-ConVar asw_harvester_beta_color3("asw_harvester_beta_color3", "255 255 255", FCVAR_NONE, "Sets the color of harvesters.");
-ConVar asw_harvester_beta_color3_percent("asw_harvester_beta_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the new model harvesters you want to give the color",true,0,true,1);
-ConVar asw_harvester_beta_scalemod("asw_harvester_beta_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal harvesters.",true,0,true,2);
-ConVar asw_harvester_beta_scalemod_percent("asw_harvester_beta_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal new model harvesters you want to scale.",true,0,true,1);
+ConVar asw_harvester_color3_percent("asw_harvester_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of harvesters color",true,0,true,1);
+ConVar asw_harvester_scalemod("asw_harvester_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal harvesters.",true,0,true,1.5);
+ConVar asw_harvester_scalemod_percent("asw_harvester_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of normal harvesters scale.",true,0,true,1);
+ConVar asw_harvester_beta_color("asw_harvester_beta_color", "255 255 255", FCVAR_NONE, "Sets the color of beta model harvesters.");
+ConVar asw_harvester_beta_color2("asw_harvester_beta_color2", "255 255 255", FCVAR_NONE, "Sets the color of beta model harvesters.");
+ConVar asw_harvester_beta_color2_percent("asw_harvester_beta_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of beta harvesters color",true,0,true,1);
+ConVar asw_harvester_beta_color3("asw_harvester_beta_color3", "255 255 255", FCVAR_NONE, "Sets the color of beta model harvesters.");
+ConVar asw_harvester_beta_color3_percent("asw_harvester_beta_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of beta harvesters color",true,0,true,1);
+ConVar asw_harvester_beta_scalemod("asw_harvester_beta_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal beta model harvesters.",true,0,true,1.5);
+ConVar asw_harvester_beta_scalemod_percent("asw_harvester_beta_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of normal beta harvesters scale.",true,0,true,1);
 ConVar asw_harvester_new( "asw_harvester_new", "1", FCVAR_CHEAT, "0 = beta harvester, 1 = new model, 2 = random all.");
 ConVar asw_harvester_touch("asw_harvester_touch", "0", FCVAR_CHEAT, "Ignites/explodes marine on harvester touch(1=ignite,2=explode,3=All).");
 ConVar asw_harvester_touch_onfire("asw_harvester_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if harvester body on fire touch.");
@@ -111,7 +111,8 @@ void CASW_Harvester::Spawn( void )
 	//softcopy: 
 	//SetRenderColor(asw_harvester_color.GetColor().r(), asw_harvester_color.GetColor().g(), asw_harvester_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors
 	alienLabel = !Q_strcmp(m_pszAlienModelName, SWARM_HARVESTER_MODEL) ? "harvester_beta" : "harvester";
-	ASWGameRules()->SetColorScale(this, alienLabel);
+	if (ASWGameRules())
+		ASWGameRules()->SetColorScale(this, alienLabel);
 }
 
 void CASW_Harvester::Precache( void )
@@ -540,7 +541,10 @@ void CASW_Harvester::StartTouch( CBaseEntity *pOther )
 
 		//1=ignite, 2=explode, 3=All to marine
 		if ((iTouch == 1 || iTouch == 3) || (m_bOnFire && asw_harvester_touch_onfire.GetBool()))
-			ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+		{
+			if (ASWGameRules())
+				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+		}
 
 		if (m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime || iTouchDamage <= 0)	// don't hurt him if he was hurt recently
 			return;
@@ -551,8 +555,11 @@ void CASW_Harvester::StartTouch( CBaseEntity *pOther )
 
 		if ( iTouch >= 2 )
 		{
-			ASWGameRules()->m_TouchExplosionDamage = iTouchDamage;
-			ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+			if (ASWGameRules())
+			{
+				ASWGameRules()->m_TouchExplosionDamage = iTouchDamage;
+				ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+			}
 		}
 
 		m_fLastTouchHurtTime = gpGlobals->curtime;

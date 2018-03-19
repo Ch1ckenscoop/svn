@@ -119,11 +119,11 @@ ConVar asw_queen_slash_multi("asw_queen_slash_multi", "0", FCVAR_CHEAT, "Set to 
 //softcopy: 
 ConVar asw_queen_color("asw_queen_color", "255 255 255", FCVAR_NONE, "Sets the color of queen.");
 ConVar asw_queen_color2("asw_queen_color2", "255 255 255", FCVAR_NONE, "Sets the color of queen.");
-ConVar asw_queen_color2_percent("asw_queen_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the queen you want to give the color",true,0,true,1);
-ConVar asw_queen_color3("asw_queen_color3", "255 255 255", FCVAR_NONE, "Sets the color of parasites.");
-ConVar asw_queen_color3_percent("asw_queen_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the queen you want to give the color",true,0,true,1);
+ConVar asw_queen_color2_percent("asw_queen_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of queen color",true,0,true,1);
+ConVar asw_queen_color3("asw_queen_color3", "255 255 255", FCVAR_NONE, "Sets the color of queen.");
+ConVar asw_queen_color3_percent("asw_queen_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of queen color",true,0,true,1);
 ConVar asw_queen_scalemod("asw_queen_scalemod", "0.6", FCVAR_NONE, "Sets the scale of normal queens.",true,0,true,1);
-ConVar asw_queen_scalemod_percent("asw_queen_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal queens you want to scale.",true,0,true,1);
+ConVar asw_queen_scalemod_percent("asw_queen_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of normal queens scale.",true,0,true,1);
 ConVar asw_queen_touch_damage("asw_queen_touch_damage", "5", FCVAR_CHEAT, "Damage caused by queen on touch.");
 ConVar asw_queen_ignite("asw_queen_ignite", "0", FCVAR_CHEAT, "Ignites marine on queen melee/touch(1=melee, 2=touch, 3=All).");
 ConVar asw_queen_explode("asw_queen_explode", "0", FCVAR_CHEAT, "Explodes marine on queen melee/touch(1=melee, 2=touch, 3=All).");
@@ -210,7 +210,8 @@ void CASW_Queen::Spawn( void )
 	//SetModelScale(fScale, 0.0f);
 	float fScale = asw_queen_scalemod.GetFloat();
 	alienLabel = "queen";
-	ASWGameRules()->SetColorScale( this, alienLabel);
+	if (ASWGameRules())
+		ASWGameRules()->SetColorScale( this, alienLabel);
 
 	UTIL_SetSize(this, Vector((fScale * -120),(fScale * -120),(fScale * 0)), Vector((fScale * 120),(fScale * 120),(fScale * 160)));
 }
@@ -671,7 +672,10 @@ void CASW_Queen::StartTouch( CBaseEntity *pOther )
 		damageTypes = "on touch";
 
 		if(asw_queen_ignite.GetInt() >= 2)
-			ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+		{
+			if (ASWGameRules())
+				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+		}
 
 		if (m_fLastTouchHurtTime + 0.4f/*0.6f*/ > gpGlobals->curtime || iTouchDamage <= 0)	//don't hurt him if he was hurt recently
 			return;
@@ -682,8 +686,11 @@ void CASW_Queen::StartTouch( CBaseEntity *pOther )
 
 		if (asw_queen_explode.GetInt() >= 2)
 		{
-			ASWGameRules()->m_TouchExplosionDamage = iTouchDamage;
-			ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+			if (ASWGameRules())
+			{
+				ASWGameRules()->m_TouchExplosionDamage = iTouchDamage;
+				ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+			}
 		}
 
 		m_fLastTouchHurtTime = gpGlobals->curtime;
@@ -1208,14 +1215,21 @@ void CASW_Queen::SlashAttack(bool bRightClaw)
 				vecForceDir += Vector( 0, 0, 300.0f );
 				pMarine->Knockdown( this, vecForceDir  );
 				damageTypes = "slash attack";
-				ASWGameRules()->MarineDamageDebugInfo(pMarine, "knockdown", alienLabel, damageTypes);
+				if (ASWGameRules())
+					ASWGameRules()->MarineDamageDebugInfo(pMarine, "knockdown", alienLabel, damageTypes);
 				//ignite/explode marine by queen slash, 1=melee, 2=touch, 3=All
 				if (asw_queen_ignite.GetInt() == 1 || asw_queen_ignite.GetInt() == 3)
-					ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+				{
+					if (ASWGameRules())
+						ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+				}
 				if (asw_queen_explode.GetInt() == 1 || asw_queen_explode.GetInt() == 3)
 				{
-					ASWGameRules()->m_TouchExplosionDamage = asw_queen_slash_damage.GetInt();
-					ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+					if (ASWGameRules())
+					{
+						ASWGameRules()->m_TouchExplosionDamage = asw_queen_slash_damage.GetInt();
+						ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+					}
 				}
 				pMarine->GetMarineSpeech()->ForceChatter(CHATTER_PAIN_LARGE, ASW_CHATTER_TIMER_TEAM);
 			}

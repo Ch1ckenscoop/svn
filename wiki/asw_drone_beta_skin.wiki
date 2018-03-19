@@ -2,7 +2,7 @@
 
 = Description =
 
-Enables the possibility of having skins on a beta drone and beta drone jumper. It simply add the possibility of randomly having them. This cvar was added to change the beta drone skin while [[asw_drone_skin.wiki|asw_drone_skin]] was enabled.
+Enables the possibility of having skins on a beta drone and beta drone jumper. It simply add the possibility of randomly having them. This cvar was added to change the beta drone skin while [[asw_drone_beta_skin.wiki|asw_drone_beta_skin]] was enabled.
 
 ==== Example ====
 
@@ -21,5 +21,5 @@ Beta drone new skin has wings
 {|
 || [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
 |-
-|| 2.2.6 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|| 2.2.6 || `1` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
 |}

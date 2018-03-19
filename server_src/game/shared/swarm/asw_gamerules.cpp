@@ -88,6 +88,9 @@
 #include "asw_client_effects.h"	//Ch1ckensCoop: Include our client effects manager
 //Ch1ckensCoop: Include entitylist.h
 #include "entitylist.h"
+//softcopy:
+#include "asw_sourcemod_interface.h"	//requesterSteamID
+#include "particle_parse.h"
 #endif
 #include "game_timescale_shared.h"
 #include "asw_gamerules.h"
@@ -102,9 +105,6 @@
 #include "missionchooser/iasw_mission_chooser.h"
 #include "missionchooser/iasw_random_missions.h"
 #include "missionchooser/iasw_map_builder.h"
-//softcopy:
-#include "asw_sourcemod_interface.h"	//requesterSteamID
-#include "particle_parse.h"
 
 //#include "entityapi.h"
 //#include "entityoutput.h"
@@ -120,11 +120,12 @@ bool bIsReserved = false;
 int playreadyclicked = 0;
 int pPlayerId[ASW_NUM_MARINE_PROFILES];
 char pPlayerIp[ASW_NUM_MARINE_PROFILES][30];
+float m_fWeaponDisassemble = ASW_USE_KEY_HOLD_SENTRY_TIME;	//default disassemble time
 ConVar asw_autokick_player("asw_autokick_player", "0", FCVAR_CHEAT, "Sets auto kick player.");
 ConVar asw_autokick_player_promotion("asw_autokick_player_promotion", "0", FCVAR_CHEAT, "Sets autokick player below the promotion.",true,0,true,6);
 ConVar asw_autokick_player_experience("asw_autokick_player_experience", "5", FCVAR_CHEAT, "Sets autokick player below the experience levels.",true,0,true,27);
 ConVar asw_marine_lobby_ready("asw_marine_lobby_ready", "1", FCVAR_CHEAT, "Sets auto mark ready(1=gamestats lobby, 2=all lobbies.");
-ConVar asw_spectator_takes_slot("asw_spectator_takes_slot", "0", FCVAR_CHEAT, "If set, spectator can't take over reserved slot."); 
+ConVar asw_spectator_takes_slot("asw_spectator_takes_slot", "1", FCVAR_CHEAT, "If set, spectator can't take over reserved slot."); 
 ConVar asw_marine_ai_slot_release("asw_marine_ai_slot_release", "1", FCVAR_CHEAT, "Auto release bot slots to new join player in matchmaking lobby.");
 ConVar asw_lobby_player_select("asw_lobby_player_select", "4", FCVAR_CHEAT, "Max players selectable in lobby, instablity timeout if changed.", true,4, true,6);
 ConVar asw_level_lock("asw_level_lock", "0", FCVAR_CHEAT, "Skill level locked on(1-5).", true,0, true,5);
@@ -832,7 +833,7 @@ CAlienSwarm::CAlienSwarm()
 		strcpy(pPlayerIp[i], "null");
 	}
 	m_TouchExplosionDamage = 0;
-	m_fWeaponDisassemble = ASW_USE_KEY_HOLD_SENTRY_TIME;	//softcopy: set as default of disassemble time
+
 }
 
 CAlienSwarm::~CAlienSwarm()
@@ -4150,14 +4151,14 @@ bool CAlienSwarm::ShouldCollide( int collisionGroup0, int collisionGroup1 )
 	// marines don't collide with other marines
 	if ( !asw_marine_collision.GetBool() && TEST_COLLISION(COLLISION_GROUP_PLAYER, COLLISION_GROUP_PLAYER) )
 		return false;
-
+#ifndef CLIENT_DLL	//softcopy:
 	if (asw_springcol.GetBool())
 	{
 		if (TEST_COLLISION(ASW_COLLISION_GROUP_ALIEN, ASW_COLLISION_GROUP_BIG_ALIEN) ||
 			TEST_COLLISION(ASW_COLLISION_GROUP_ALIEN, ASW_COLLISION_GROUP_ALIEN))
 			return false;
 	}
-
+#endif
 	if (TESTING_GROUP(ASW_COLLISION_GROUP_BLOCK_DRONES))
 	{
 		// this collision group only blocks drones
@@ -6740,6 +6741,244 @@ void CAlienSwarm::CheckTechFailure()
 		}
 	}
 }
+
+//softcopy:
+void CAlienSwarm::OnPlayerFullyJoinedCheck(CASW_Player *pPlayer)
+{
+	if (!pPlayer)
+		return;
+
+	if (asw_autokick_player.GetBool())	//kick player who has not enough promotion/experience level when joined in.
+	{
+		int iexplevel = asw_autokick_player_experience.GetInt(),
+			ipromlevel = asw_autokick_player_promotion.GetInt(),
+			iSteamPromotion = pPlayer->GetPromotion(),
+			iSteamLevel = pPlayer->GetLevel()+1;
+		if (iexplevel >= 1 && (iSteamPromotion < ipromlevel || (iSteamPromotion >= ipromlevel && iSteamLevel < iexplevel)))
+		{
+			char text[64], text2[64], text3[128];
+			ipromlevel==0 ? (Q_snprintf(text, sizeof(text),"<level %d> was auto kicked", iSteamLevel),
+							 Q_snprintf(text2,sizeof(text2),"need level %d+ to join this modded server", iexplevel)) :
+							(Q_snprintf(text, sizeof(text),"<promoted %d level %d> was auto kicked", iSteamPromotion, iSteamLevel),
+							 Q_snprintf(text2,sizeof(text2),"need promoted %d level %d+ to join this modded server", ipromlevel, iexplevel));
+
+			engine->ServerCommand(CFmtStr("kickid %d Auto kicked:  Sorry! %s\n", pPlayer->GetUserID(), text2));
+			Q_snprintf(text3, sizeof(text3),"%s %s, %s\n", pPlayer->GetPlayerName(), text, text2);
+			UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE,text3);
+			UTIL_LogPrintf("Client %s", text3);
+			Msg("Client %s", text3);
+		}
+	}
+
+	if (asw_marine_ai_slot_release.GetBool())	//release bot slot for new joint player
+		MarineSlotRelease();
+
+	if (asw_spectator_takes_slot.GetBool() || bReadyclicked)	//marks spectator as ready in lobby
+	{
+		if (SpectatorInLobby(pPlayer, true) && !bIsReserved)
+			ASWGameResource()->m_bPlayerReady.Set(pPlayer->entindex()-1, true);
+	}
+}
+bool CAlienSwarm::SpectatorInLobby(CASW_Player *pPlayer, bool bAddpPlayerId)	//check any spectators in lobby
+{
+	int iPlayers = 0, iReserved = asw_lobby_player_select.GetInt();
+	bIsReserved = false;
+	char buffer[128];
+	Q_snprintf(buffer, sizeof(buffer), "%s%s", pPlayer->GetPlayerName(), pPlayer->GetASWNetworkID());
+
+	for (int i=0; i<ASW_NUM_MARINE_PROFILES; i++)
+	{
+		if (bAddpPlayerId)
+		{
+			CASW_Player *pOtherPlayer = dynamic_cast<CASW_Player*>(UTIL_PlayerByIndex(i+1));
+			if (pOtherPlayer && pOtherPlayer->IsConnected())
+			{
+				for (int j=0; j<ASW_NUM_MARINE_PROFILES; j++)	//clean up the userid in array
+				{
+					if (pPlayerId[j] > 0 && pPlayerId[j] == pOtherPlayer->GetUserID())
+						pPlayerId[j] = 0;
+				}
+				pPlayerId[i] = pOtherPlayer->GetUserID(); //store the userids after cleaned up
+				iPlayers++;	//count joined players
+
+				if (asw_debug_spectator_slot.GetBool())	//debug: show logged in players in array
+					Msg("Debug Userid: iPlayers= %i, pPlayerId[%i]= %i, %s \n", iPlayers, i, pPlayerId[i], pOtherPlayer->GetPlayerName());
+			}
+		}
+		else
+		{
+			if (pPlayerId[i] > 0)	//count players in lobby
+				iPlayers++;
+		}
+
+		if (GetCampaignSave() && !Q_strcmp(buffer, STRING(GetCampaignSave()->m_LastCommanders[i])))
+			bIsReserved = true;	//flag the player as reserved if the commander was using them last mission
+	}
+
+	if (iPlayers >0 && iPlayers >iReserved)	//sort if spectator found in lobby
+	{
+		int temp=0, i, j;
+		for (i=0; i<ASW_NUM_MARINE_PROFILES; i++)	//descending sort, move non-zero userids to the front in array
+		{
+			for(j=i+1; j<ASW_NUM_MARINE_PROFILES; j++)
+			{
+				if (pPlayerId[i]<pPlayerId[j])
+				{
+					temp=pPlayerId[j];
+					pPlayerId[j]=pPlayerId[i];
+					pPlayerId[i]=temp;
+				}
+			}
+			if (asw_debug_spectator_slot.GetBool())	//debug: show sorted players order in array
+			{
+				for (int j=1; j<=gpGlobals->maxClients; j++ )	
+				{
+					CASW_Player* pOtherPlayer = dynamic_cast<CASW_Player*>(UTIL_PlayerByIndex(j));
+					if (pOtherPlayer && pOtherPlayer->GetUserID() == pPlayerId[i])
+					{
+						Msg("Debug Sorted: iPlayers= %i, pPlayerId[%i]= %i, %s \n", iPlayers, i, pPlayerId[i], pOtherPlayer->GetPlayerName());
+						break;
+					}
+				}
+			}
+		}
+		//check player has the higher userid number than the other 4 reserved players
+		for (i=iPlayers-iReserved; i>0; i--)
+		{
+			if (pPlayerId[i] > 0 && pPlayer->GetUserID() > pPlayerId[i])
+				return true;	//is spectator
+		}
+	}
+
+	return false;
+}
+void CAlienSwarm::MarineSlotRelease()
+{
+	if (ASWGameResource())	//auto release AI bot slot if server full
+	{
+		int ipPlayer = 0, iMarineSum = 0, iHighest = 0;
+		CASW_Player *pChosen = NULL;
+		for ( int i=0; i < ASW_MAX_READY_PLAYERS; i++ )	
+		{
+			CASW_Player* pOtherPlayer = dynamic_cast<CASW_Player*>(UTIL_PlayerByIndex(i+1));
+			if ( pOtherPlayer && pOtherPlayer->IsConnected() )
+			{
+				ipPlayer++;
+				int iMarines = ASWGameResource()->GetNumMarines(pOtherPlayer);
+				if (iHighest == 0 || iMarines > iHighest)
+				{
+					iHighest = iMarines;
+					pChosen = pOtherPlayer;
+				}
+			}
+		}
+		iMarineSum = iHighest + ipPlayer;
+		int iMax = ASW_MAX_MARINE_RESOURCES-1;	//max = 4
+		if (ipPlayer > 1 && iMarineSum > iMax && pChosen)
+		{
+			for (int i=1; i < (iMarineSum - iMax); i++)
+			{
+				int j=0;
+				while (j < iMax)	//deselect a profileindex for a new joint player
+				{
+					if (GetGameState()==ASW_GS_BRIEFING && iHighest >1 && ASWGameResource()->GetMarineResource(j)->GetCommander()==pChosen )
+					{
+						int iIndexNum = ASWGameResource()->GetMarineResource(j)->GetProfileIndex();
+						{
+							RosterDeselect(pChosen, iIndexNum);
+							CRecipientFilter filter;
+							filter.AddRecipient(pChosen);
+							UTIL_ClientPrintFilter(filter,ASW_HUD_PRINTTALKANDCONSOLE, "One of your bots auto released for new joint player");
+							Msg("%s bot profileIndex %i has released of iHighest %i\n", pChosen->GetPlayerName(), iIndexNum, iHighest); //debug:
+							break;
+						}
+					}
+					j++;
+				}
+			}
+		}
+	}
+}
+void CAlienSwarm::DoTouchExplosion( CBaseEntity *pMarine )	//alien touch explosion function
+{
+	pMarine->EmitSound( "ASW_T75.Explode" );
+	Vector vecExplosionPos = pMarine->GetAbsOrigin();
+	CPASFilter filter( vecExplosionPos );
+	UserMessageBegin( filter, "ASWBarrelExplosion" );
+	WRITE_FLOAT( vecExplosionPos.x ); 
+	WRITE_FLOAT( vecExplosionPos.y );
+	WRITE_FLOAT( vecExplosionPos.z );
+	WRITE_FLOAT( 160.0f );
+	MessageEnd();
+	DispatchParticleEffect( "electrified_armor_burst", pMarine->GetAbsOrigin(), vec3_angle );	//burst effect
+	
+	// hurt the marine
+	CTakeDamageInfo info( pMarine, pMarine, m_TouchExplosionDamage, DMG_BLAST );
+	Vector vecForceDir = (pMarine->GetAbsOrigin() /*- GetAbsOrigin()*/);
+	CalculateMeleeDamageForce( &info, vecForceDir, pMarine->GetAbsOrigin() );
+	pMarine->TakeDamage( info );
+}
+void CAlienSwarm::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)	//ignite effect
+{
+	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
+	if (!pMarine || pMarine->IsOnFire())	//won't ignite if marine already body on fire
+		return;
+
+	pMarine->ASW_Ignite( 1.5f, 1.5, info.GetAttacker(), info.GetWeapon() );
+	MarineDamageDebugInfo(pMarine, "ignited ", alienLabel, damageTypes);
+}
+void CAlienSwarm::MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes)	//explosion effect
+{
+	DoTouchExplosion(pMarine);
+	MarineDamageDebugInfo(pMarine, "exploded", alienLabel, damageTypes);
+}
+void CAlienSwarm::MarineDamageDebugInfo(CBaseEntity *pOther, const char *damageInfo, const char *alienLabel, const char *damageTypes)
+{
+	if (asw_debug_alien_ignite.GetBool())	//debug marine damage effect
+		Msg("----- Player %s has %s by %s %s -----\n", pOther->GetPlayerName(), damageInfo, alienLabel, damageTypes);
+}
+void CAlienSwarm::SetColorScale(CBaseEntity *pAlien, const char *alienLabel)	//set aliens color scale function
+{
+	if (!pAlien)
+		return;
+
+	CBaseAnimating *pAlienScale = dynamic_cast<CBaseAnimating*>(pAlien);
+
+	char text[48], text2[48], text3[48], text4[48], text5[48], text6[48], text7[48];
+	Q_snprintf(text,  sizeof(text),  "asw_%s_color", alienLabel);
+	Q_snprintf(text2, sizeof(text2), "asw_%s_color2", alienLabel);
+	Q_snprintf(text3, sizeof(text3), "asw_%s_color3", alienLabel);
+	Q_snprintf(text4, sizeof(text4), "asw_%s_color2_percent", alienLabel);
+	Q_snprintf(text5, sizeof(text5), "asw_%s_color3_percent", alienLabel);
+	Q_snprintf(text6, sizeof(text6), "asw_%s_scalemod_percent", alienLabel);
+	Q_snprintf(text7, sizeof(text7), "asw_%s_scalemod", alienLabel);
+
+	float randomColor = RandomFloat(0, 1);
+	if ( randomColor <= ((ConVar *)cvar->FindVar(text2))->GetFloat() )
+		pAlien->SetRenderColor(((ConVar *)cvar->FindVar(text2))->GetColor().r(),((ConVar *)cvar->FindVar(text2))->GetColor().g(),((ConVar *)cvar->FindVar(text2))->GetColor().b());
+	else if ( randomColor <= ((ConVar *)cvar->FindVar(text4))->GetFloat() + ((ConVar *)cvar->FindVar(text5))->GetFloat() )
+		pAlien->SetRenderColor(((ConVar *)cvar->FindVar(text3))->GetColor().r(),((ConVar *)cvar->FindVar(text3))->GetColor().g(),((ConVar *)cvar->FindVar(text3))->GetColor().b());
+	else pAlien->SetRenderColor(((ConVar *)cvar->FindVar(text))->GetColor().r(),((ConVar *)cvar->FindVar(text))->GetColor().g(),((ConVar *)cvar->FindVar(text))->GetColor().b());
+
+	float alienScale = RandomFloat(0, 1);
+	if ( pAlienScale && alienScale <= ((ConVar *)cvar->FindVar(text6))->GetFloat() )
+		pAlienScale->SetModelScale( ((ConVar *)cvar->FindVar(text7))->GetFloat() );
+
+	/*//ibemad original sample
+	float randomColor = RandomFloat(0, 1);
+	if (randomColor <= asw_color2_percent.GetFloat())
+		SetRenderColor(asw_color2.GetColor().r(), asw_color2.GetColor().g(), asw_color2.GetColor().b());
+	else if (randomColor <= (asw_color2_percent.GetFloat() + asw_color3_percent.GetFloat()))
+		SetRenderColor(asw_color3.GetColor().r(), asw_color3.GetColor().g(), asw_color3.GetColor().b());
+	else
+		SetRenderColor(asw_color.GetColor().r(), asw_color.GetColor().g(), asw_color.GetColor().b());
+
+	float alienScale = RandomFloat(0, 1);
+	if (alienScale <= asw_scalemod_percent.GetFloat())
+		SetModelScale(asw_scalemod.GetFloat());
+	*/
+}
+//
 #endif  // !CLIENT_DLL
 
 void CAlienSwarm::RefreshSkillData ( bool forceUpdate )
@@ -6892,9 +7131,9 @@ void CAlienSwarm::LevelInitPostEntity()
 	m_bIsOutro = ( !Q_strnicmp( mapName, "outro_", 6 ) );
 	m_bIsTutorial = ( !Q_strnicmp( mapName, "tutorial", 8 ) );
 	m_bIsLobby = ( !Q_strnicmp( mapName, "Lobby", 5 ) );
-
+#ifndef CLIENT_DLL	//softcopy:
 	bool m_bIsFullTreatment = ( !Q_strnicmp( mapName, "syntek_hospital", 15 ) );
-
+#endif
 	if ( ASWHoldoutMode() )
 	{
 		ASWHoldoutMode()->LevelInitPostEntity();
@@ -7267,194 +7506,6 @@ bool CAlienSwarm::IsOnslaught()
 {
 	return ( asw_horde_override.GetBool() || asw_wanderer_override.GetBool() );
 }
-
-//softcopy:
-void CAlienSwarm::OnPlayerFullyJoinedCheck(CASW_Player *pPlayer)
-{
-	if (!pPlayer)
-		return;
-
-	if (asw_autokick_player.GetBool())	//kick player who has not enough promotion/experience level when joined in.
-	{
-		int iexplevel = asw_autokick_player_experience.GetInt(),
-			ipromlevel = asw_autokick_player_promotion.GetInt(),
-			iSteamPromotion = pPlayer->GetPromotion(),
-			iSteamLevel = pPlayer->GetLevel()+1;
-		if (iexplevel >= 1 && iSteamPromotion <= ipromlevel && iSteamLevel < iexplevel)
-		{
-			char text[64], text2[64], text3[128];
-			iSteamPromotion==0 ? (Q_snprintf(text, sizeof(text),"<level %d> was auto kicked", iSteamLevel),
-								  Q_snprintf(text2,sizeof(text2),"need level %d+ to join this modded server", iexplevel)) :
-								 (Q_snprintf(text, sizeof(text),"<promoted %d level %d> was auto kicked", iSteamPromotion, iSteamLevel),
-								  Q_snprintf(text2,sizeof(text2),"need promoted %d level %d+ to join this modded server", ipromlevel, iexplevel));
-
-			engine->ServerCommand(CFmtStr("kickid %d Auto kicked:  Sorry! %s\n", pPlayer->GetUserID(), text2));
-			Q_snprintf(text3, sizeof(text3),"%s %s, %s\n", pPlayer->GetPlayerName(), text, text2);
-			UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE,text3);
-			UTIL_LogPrintf("Client %s", text3);
-			Msg("Client %s", text3);
-		}
-	}
-
-	if (asw_spectator_takes_slot.GetBool() || bReadyclicked)	//marks spectator as ready in lobby
-	{
-		if (SpectatorInLobby(pPlayer, true) && !bIsReserved)
-			ASWGameResource()->m_bPlayerReady.Set(pPlayer->entindex()-1, true);
-	}
-}
-bool CAlienSwarm::SpectatorInLobby(CASW_Player *pPlayer, bool bAddpPlayerId)	//check any spectators in lobby
-{
-	int iPlayers = 0, iReserved = asw_lobby_player_select.GetInt();
-	bIsReserved = false;
-	char buffer[128];
-	Q_snprintf(buffer, sizeof(buffer), "%s%s", pPlayer->GetPlayerName(), pPlayer->GetASWNetworkID());
-
-	for (int i=0; i<ASW_NUM_MARINE_PROFILES; i++)
-	{
-		if (bAddpPlayerId)
-		{
-			CASW_Player *pOtherPlayer = dynamic_cast<CASW_Player*>(UTIL_PlayerByIndex(i+1));
-			if (pOtherPlayer && pOtherPlayer->IsConnected())
-			{
-				for (int j=0; j<ASW_NUM_MARINE_PROFILES; j++)	//clean up the userid in array
-				{
-					if (pPlayerId[j] > 0 && pPlayerId[j] == pOtherPlayer->GetUserID())
-						pPlayerId[j] = 0;
-				}
-				pPlayerId[i] = pOtherPlayer->GetUserID(); //store the userids after cleaned up
-				iPlayers++;	//count joined players
-
-				if (asw_debug_spectator_slot.GetBool())	//debug: show logged in players in array
-					Msg("Debug Userid: iPlayers= %i, pPlayerId[%i]= %i, %s \n", iPlayers, i, pPlayerId[i], pOtherPlayer->GetPlayerName());
-			}
-		}
-		else
-		{
-			if (pPlayerId[i] > 0)	//count players in lobby
-				iPlayers++;
-		}
-
-		if (GetCampaignSave() && !Q_strcmp(buffer, STRING(GetCampaignSave()->m_LastCommanders[i])))
-			bIsReserved = true;	//flag the player as reserved if the commander was using them last mission
-	}
-
-	if (iPlayers >0 && iPlayers >iReserved)	//sort if spectator found in lobby
-	{
-		int temp=0, i, j;
-		for (i=0; i<ASW_NUM_MARINE_PROFILES; i++)	//descending sort, move non-zero userids to the front in array
-		{
-			for(j=i+1; j<ASW_NUM_MARINE_PROFILES; j++)
-			{
-				if (pPlayerId[i]<pPlayerId[j])
-				{
-					temp=pPlayerId[j];
-					pPlayerId[j]=pPlayerId[i];
-					pPlayerId[i]=temp;
-				}
-			}
-			if (asw_debug_spectator_slot.GetBool())	//debug: show sorted players order in array
-			{
-				for (int j=1; j<=gpGlobals->maxClients; j++ )	
-				{
-					CASW_Player* pOtherPlayer = dynamic_cast<CASW_Player*>(UTIL_PlayerByIndex(j));
-					if (pOtherPlayer && pOtherPlayer->GetUserID() == pPlayerId[i])
-					{
-						Msg("Debug Sorted: iPlayers= %i, pPlayerId[%i]= %i, %s \n", iPlayers, i, pPlayerId[i], pOtherPlayer->GetPlayerName());
-						break;
-					}
-				}
-			}
-		}
-		//check player has the higher userid number than the other 4 reserved players
-		for (i=iPlayers-iReserved; i>0; i--)
-		{
-			if (pPlayerId[i] > 0 && pPlayer->GetUserID() > pPlayerId[i])
-				return true;	//is spectator
-		}
-	}
-
-	return false;
-}
-void CAlienSwarm::DoTouchExplosion( CBaseEntity *pMarine )	//alien touch explosion function
-{
-	pMarine->EmitSound( "ASW_T75.Explode" );
-	Vector vecExplosionPos = pMarine->GetAbsOrigin();
-	CPASFilter filter( vecExplosionPos );
-	UserMessageBegin( filter, "ASWBarrelExplosion" );
-	WRITE_FLOAT( vecExplosionPos.x ); 
-	WRITE_FLOAT( vecExplosionPos.y );
-	WRITE_FLOAT( vecExplosionPos.z );
-	WRITE_FLOAT( 160.0f );
-	MessageEnd();
-	DispatchParticleEffect( "electrified_armor_burst", pMarine->GetAbsOrigin(), vec3_angle );	//burst effect
-	
-	// hurt the marine
-	CTakeDamageInfo info( pMarine, pMarine, m_TouchExplosionDamage, DMG_BLAST );
-	Vector vecForceDir = (pMarine->GetAbsOrigin() /*- GetAbsOrigin()*/);
-	CalculateMeleeDamageForce( &info, vecForceDir, pMarine->GetAbsOrigin() );
-	pMarine->TakeDamage( info );
-}
-void CAlienSwarm::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)	//ignite effect
-{
-	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
-	if (!pMarine || pMarine->IsOnFire())	//won't ignite if marine already body on fire
-		return;
-
-	pMarine->ASW_Ignite( 1.5f, 1.5, info.GetAttacker(), info.GetWeapon() );
-	MarineDamageDebugInfo(pMarine, "ignited ", alienLabel, damageTypes);
-}
-void CAlienSwarm::MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes)	//explosion effect
-{
-	DoTouchExplosion(pMarine);
-	MarineDamageDebugInfo(pMarine, "exploded", alienLabel, damageTypes);
-}
-void CAlienSwarm::MarineDamageDebugInfo(CBaseEntity *pOther, const char *damageInfo, const char *alienLabel, const char *damageTypes)
-{
-	if (asw_debug_alien_ignite.GetBool())	//debug marine damage effect
-		Msg("----- Player %s has %s by %s %s -----\n", pOther->GetPlayerName(), damageInfo, alienLabel, damageTypes);
-}
-void CAlienSwarm::SetColorScale(CBaseEntity *pAlien, const char *alienLabel)	//set aliens color scale function
-{
-	if (!pAlien)
-		return;
-
-	CBaseAnimating *pAlienScale = dynamic_cast<CBaseAnimating*>(pAlien);
-
-	char text[48], text2[48], text3[48], text4[48], text5[48], text6[48], text7[48];
-	Q_snprintf(text,  sizeof(text),  "asw_%s_color", alienLabel);
-	Q_snprintf(text2, sizeof(text2), "asw_%s_color2", alienLabel);
-	Q_snprintf(text3, sizeof(text3), "asw_%s_color3", alienLabel);
-	Q_snprintf(text4, sizeof(text4), "asw_%s_color2_percent", alienLabel);
-	Q_snprintf(text5, sizeof(text5), "asw_%s_color3_percent", alienLabel);
-	Q_snprintf(text6, sizeof(text6), "asw_%s_scalemod_percent", alienLabel);
-	Q_snprintf(text7, sizeof(text7), "asw_%s_scalemod", alienLabel);
-
-	float randomColor = RandomFloat(0, 1);
-	if ( randomColor <= ((ConVar *)cvar->FindVar(text2))->GetFloat() )
-		pAlien->SetRenderColor(((ConVar *)cvar->FindVar(text2))->GetColor().r(),((ConVar *)cvar->FindVar(text2))->GetColor().g(),((ConVar *)cvar->FindVar(text2))->GetColor().b());
-	else if ( randomColor <= ((ConVar *)cvar->FindVar(text4))->GetFloat() + ((ConVar *)cvar->FindVar(text5))->GetFloat() )
-		pAlien->SetRenderColor(((ConVar *)cvar->FindVar(text3))->GetColor().r(),((ConVar *)cvar->FindVar(text3))->GetColor().g(),((ConVar *)cvar->FindVar(text3))->GetColor().b());
-	else pAlien->SetRenderColor(((ConVar *)cvar->FindVar(text))->GetColor().r(),((ConVar *)cvar->FindVar(text))->GetColor().g(),((ConVar *)cvar->FindVar(text))->GetColor().b());
-
-	float alienScale = RandomFloat(0, 1);
-	if ( pAlienScale && alienScale <= ((ConVar *)cvar->FindVar(text6))->GetFloat() )
-		pAlienScale->SetModelScale( ((ConVar *)cvar->FindVar(text7))->GetFloat() );
-
-	/*//ibemad original sample
-	float randomColor = RandomFloat(0, 1);
-	if (randomColor <= asw_color2_percent.GetFloat())
-		SetRenderColor(asw_color2.GetColor().r(), asw_color2.GetColor().g(), asw_color2.GetColor().b());
-	else if (randomColor <= (asw_color2_percent.GetFloat() + asw_color3_percent.GetFloat()))
-		SetRenderColor(asw_color3.GetColor().r(), asw_color3.GetColor().g(), asw_color3.GetColor().b());
-	else
-		SetRenderColor(asw_color.GetColor().r(), asw_color.GetColor().g(), asw_color.GetColor().b());
-
-	float alienScale = RandomFloat(0, 1);
-	if (alienScale <= asw_scalemod_percent.GetFloat())
-		SetModelScale(asw_scalemod.GetFloat());
-	*/
-}
-//
 
 #ifdef GAME_DLL
 //Ch1ckensCoop: entity lister function

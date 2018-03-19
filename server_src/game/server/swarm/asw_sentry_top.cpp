@@ -170,6 +170,9 @@ void CASW_Sentry_Top::AnimThink( void )
 
 void CASW_Sentry_Top::SetSentryBase(CASW_Sentry_Base* pSentryBase)
 {
+	if (!pSentryBase)	//softcopy: prevent crashes on m_hSentryTop GetSentryTop()
+		return;
+
 	m_hSentryBase = pSentryBase;
 	SetParent(pSentryBase);
 	SetLocalOrigin(vec3_origin);
@@ -305,7 +308,9 @@ CAI_BaseNPC * CASW_Sentry_Top::SelectOptimalEnemy()
 		if (ppAIs[i]->GetHealth() > 0 && CanSee(ppAIs[i]))
 		{
 			// don't shoot marines
-			if ( !asw_sentry_friendly_target.GetBool() && ppAIs[i]->Classify() == CLASS_ASW_MARINE )
+			//softcopy: and don't shoot colonists
+			//if ( !asw_sentry_friendly_target.GetBool() && ppAIs[i]->Classify() == CLASS_ASW_MARINE )
+			if (!asw_sentry_friendly_target.GetBool() && (ppAIs[i]->Classify() == CLASS_ASW_MARINE || ppAIs[i]->Classify() == CLASS_ASW_COLONIST))
 				continue;
 
 			if ( ppAIs[i]->Classify() == CLASS_SCANNER )

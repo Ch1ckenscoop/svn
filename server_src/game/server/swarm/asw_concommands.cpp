@@ -1913,13 +1913,6 @@ void ASW_AFK_t( const CCommand &command )	//softcopy: player leave marine & can 
 			ASWGameResource()->m_bPlayerReady.Set(pPlayer->entindex()-1, true);	//mark afk player as ready
 		}
 	}
-	else if	(pPlayer->GetMarine())
-	{
-		command.ArgC() > 1 ? NULL : pPlayer->LeaveMarines();	//leave marine from game	
-		const char *text = "afk option invalid, it's only allowed in matchmaking lobby.";
-		const char *text2= "You have left marine, press PFkey < F1-F4 > to join marine again.";
-		UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, command.ArgC() > 1 ? text : text2);
-	}
 	
 	if (ASWGameResource()->GetLeader() == pPlayer )	//if they're leader, pick another leader
 	{
@@ -1940,19 +1933,49 @@ void ASW_AFK_t( const CCommand &command )	//softcopy: player leave marine & can 
 	}
 }
 ChatCommand ASW_AFK_cc("/afk", ASW_AFK_t);
+
+void ASW_READY_t( const CCommand &command )	//softcopy: force all marines ready to start game 
+{
+	CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(UTIL_GetCommandClient());
+	if (!( pPlayer || ASWGameResource() || ASWGameRules()))
+		return;
+
+	CSteamID requesterSteamID;
+	if (!pPlayer->GetSteamID(&requesterSteamID))
+		return;
+	
+	int iAdminIndex = Sourcemod()->GetAdminIndex(requesterSteamID);	// Is this player an administrator?
+
+	if (!(ASWGameResource()->GetLeader()==pPlayer) && iAdminIndex < 0)
+	{
+		CRecipientFilter filter;
+		filter.AddRecipient(pPlayer);
+		UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "You are not lobby leader or admin.");
+		return;
+	}
+
+	if (ASWGameRules()->GetGameState() == ASW_GS_BRIEFING) 
+	{
+		for (int i=0;i<ASW_MAX_READY_PLAYERS;i++)
+		{
+			ASWGameResource()->m_bPlayerReady.Set(i, true);	//mark afk player as ready
+		}
+	}
+}
+ChatCommand ASW_READY_cc("/ready", ASW_READY_t);
 //help list
 void ASW_Help_t( const CCommand &command )	
 {
 	CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(UTIL_GetCommandClient());
 	CRecipientFilter filter; filter.AddRecipient(pPlayer);
-	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "/afk          (Chat command, leaves marine, sets you as a spectator)");
-	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "/afk release  (Chat command, leaves marine, lets spectator taking over your slot)");
-	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "----------------------------------------------------------------------------------------");
-	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "asw_dropextra (client console command, drop your offhand item)");
-	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "asw_suicide   (client console command, kill yourself in game)");
-	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "ver           (client console command, check ch1ckenscoop version)");
+	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "/afk          (Chat command: leaves marine as a spectator)");
+	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "/afk release  (Chat command: leaves marine, spectator can take over your slot in Lobby)");
+	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "/ready        (Chat command: leader sets all marines ready to start game)");
+	//UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "/setleader    (Chat command, sets leader to someone else for admin)");
+	//UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "/kick         (Chat command, kick player for admin)");
+	//UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "ver           (client console command, check ch1ckenscoop version)");
 
 	if (pPlayer)
-		Msg("%s ran '/help' in chatmode\n", pPlayer->GetPlayerName());
+		Msg("%s ran '/help' in chat command\n", pPlayer->GetPlayerName());
 }
 ChatCommand ASW_Help_cc("/help", ASW_Help_t);

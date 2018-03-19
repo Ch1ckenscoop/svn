@@ -89,19 +89,19 @@ ConVar asw_buzzer_poison_duration("asw_buzzer_poison_duration", "0.6f", FCVAR_CH
 ConVar asw_buzzer_color("asw_buzzer_color", "255 255 255", FCVAR_NONE, "Sets the color of buzzers.");
 //softcopy:
 ConVar sk_asw_buzzer_beta_health( "sk_asw_buzzer_beta_health","120", FCVAR_CHEAT, "Health of the beta buzzer");
-ConVar asw_buzzer_color2("asw_buzzer_color2", "255 255 255", FCVAR_NONE, "Sets the color of old model buzzers.");
-ConVar asw_buzzer_color2_percent("asw_buzzer_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the old model buzzers you want to give the color",true,0,true,1);
+ConVar asw_buzzer_color2("asw_buzzer_color2", "255 255 255", FCVAR_NONE, "Sets the color of buzzers.");
+ConVar asw_buzzer_color2_percent("asw_buzzer_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of buzzers color",true,0,true,1);
 ConVar asw_buzzer_color3("asw_buzzer_color3", "255 255 255", FCVAR_NONE, "Sets the color of buzzers.");
-ConVar asw_buzzer_color3_percent("asw_buzzer_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the old model buzzers you want to give the color",true,0,true,1);
-ConVar asw_buzzer_scalemod("asw_buzzer_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal buzzers.",true,0,true,3);
-ConVar asw_buzzer_scalemod_percent("asw_buzzer_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal old model buzzers you want to scale.",true,0,true,1);
-ConVar asw_buzzer_beta_color("asw_buzzer_beta_color", "255 255 255", FCVAR_NONE, "Sets the color of new model buzzers.");
-ConVar asw_buzzer_beta_color2("asw_buzzer_beta_color2", "255 255 255", FCVAR_NONE, "Sets the color of new model buzzers.");
-ConVar asw_buzzer_beta_color2_percent("asw_buzzer_beta_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the new model buzzers you want to give the color",true,0,true,1);
-ConVar asw_buzzer_beta_color3("asw_buzzer_beta_color3", "255 255 255", FCVAR_NONE, "Sets the color of buzzers.");
-ConVar asw_buzzer_beta_color3_percent("asw_buzzer_beta_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the new model buzzers you want to give the color",true,0,true,1);
-ConVar asw_buzzer_beta_scalemod("asw_buzzer_beta_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal buzzers.",true,0,true,3);
-ConVar asw_buzzer_beta_scalemod_percent("asw_buzzer_beta_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal new model buzzers you want to scale.",true,0,true,1);
+ConVar asw_buzzer_color3_percent("asw_buzzer_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of buzzers color",true,0,true,1);
+ConVar asw_buzzer_scalemod("asw_buzzer_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal buzzers.",true,0,true,1.5);
+ConVar asw_buzzer_scalemod_percent("asw_buzzer_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of normal buzzers scale.",true,0,true,1);
+ConVar asw_buzzer_beta_color("asw_buzzer_beta_color", "255 255 255", FCVAR_NONE, "Sets the color of beta model buzzers.");
+ConVar asw_buzzer_beta_color2("asw_buzzer_beta_color2", "255 255 255", FCVAR_NONE, "Sets the color of beta model buzzers.");
+ConVar asw_buzzer_beta_color2_percent("asw_buzzer_beta_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of beta buzzers color",true,0,true,1);
+ConVar asw_buzzer_beta_color3("asw_buzzer_beta_color3", "255 255 255", FCVAR_NONE, "Sets the color of beta model buzzers.");
+ConVar asw_buzzer_beta_color3_percent("asw_buzzer_beta_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of beta buzzers color",true,0,true,1);
+ConVar asw_buzzer_beta_scalemod("asw_buzzer_beta_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal beta model buzzers.",true,0,true,2);
+ConVar asw_buzzer_beta_scalemod_percent("asw_buzzer_beta_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of normal beta buzzers scale.",true,0,true,1);
 ConVar asw_old_buzzer( "asw_old_buzzer","0", FCVAR_CHEAT, "0 = buzzer, 1 = beta buzzer, 2 = random all.");
 ConVar asw_buzzer_radiation_leak_enable( "asw_buzzer_radiation_leak_enable","0", FCVAR_CHEAT, "Enables buzzers leak radiation gas cloud.");
 ConVar asw_buzzer_melee_ignite("asw_buzzer_melee_ignite", "0", FCVAR_CHEAT, "Ignites marine by buzzer melee(1=buzzer, 2=beta buzzer, 3=All).");
@@ -1499,10 +1499,15 @@ void CASW_Buzzer::Slice( CBaseEntity *pHitEntity, float flInterval, trace_t &tr 
 			bool iBuzzerIsOnFire = (m_bOnFire && bBuzzerOnTouchFire);
 			damageTypes = "attack";
 			if (((iBuzzerMeleeIgnite==1 || iBuzzerMeleeIgnite==3) || iBuzzerIsOnFire) && !bOldBuzzer)
-				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
-
+			{
+				if (ASWGameRules())
+					ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+			}
 			if ((iBuzzerMeleeIgnite >=2 || iBuzzerIsOnFire) && bOldBuzzer)
-				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+			{
+				if (ASWGameRules())
+					ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+			}
 		}
 	}
 
@@ -2285,7 +2290,8 @@ void CASW_Buzzer::Spawn(void)
 	//softcopy:
 	//SetRenderColor(asw_buzzer_color.GetColor().r(), asw_buzzer_color.GetColor().g(), asw_buzzer_color.GetColor().b()); 
 	bOldBuzzer = !Q_strcmp(b_AlienModelName, ASW_BETA_BUZZER_MODEL);	//check if beta buzzer
-	ASWGameRules()->SetColorScale(this, (alienLabel = bOldBuzzer ? "buzzer_beta" : "buzzer"));
+	if (ASWGameRules())
+		ASWGameRules()->SetColorScale(this, (alienLabel = bOldBuzzer ? "buzzer_beta" : "buzzer"));
 
 	// Start out with full power! 
 	m_fEnginePowerScale = GetMaxEnginePower();

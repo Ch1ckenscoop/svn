@@ -92,8 +92,8 @@ ConVar asw_egg_color2("asw_egg_color2", "255 255 255", FCVAR_NONE, "The Eggs col
 ConVar asw_egg_color2_percent("asw_egg_color2_percent", "0.0", FCVAR_NONE, "Percentage Adjusts the Eggs color.");
 ConVar asw_egg_color3("asw_egg_color3", "255 255 255", FCVAR_NONE, "The Eggs color adjust.");
 ConVar asw_egg_color3_percent("asw_egg_color3_percent", "0.0", FCVAR_NONE, "Percentage Adjusts the Eggs color.");
-ConVar asw_egg_scalemod("asw_egg_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal egg.",true,0,true,2);
-ConVar asw_egg_scalemod_percent("asw_egg_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal egg you want to scale.");
+ConVar asw_egg_scalemod("asw_egg_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal egg.",true,0,true,1.5);
+ConVar asw_egg_scalemod_percent("asw_egg_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of normal egg scale.");
 ConVar asw_egg_touch_onfire("asw_egg_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if egg body on fire touch.");
 
 float CASW_Egg::s_fNextSpottedChatterTime = 0;
@@ -131,8 +131,9 @@ void CASW_Egg::Spawn( void )
 
 	//softcopy:
 	alienLabel = "egg";
-	ASWGameRules()->SetColorScale( this, alienLabel );
-	
+	if (ASWGameRules())
+		ASWGameRules()->SetColorScale( this, alienLabel );
+
 	Precache();
 	SetModel(EGG_MODEL);
 	ResetSequence( LookupSequence( EGG_CLOSED_ANIM ) );
@@ -475,7 +476,8 @@ void CASW_Egg::EggTouch(CBaseEntity* pOther)
 		if ( m_bOnFire && asw_egg_touch_onfire.GetBool() )
 		{
 			CTakeDamageInfo info( this, this, 0, DMG_BURN );
-			ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, "on fire touch");
+			if (ASWGameRules())
+				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, "on fire touch");
 		}
 
 	}

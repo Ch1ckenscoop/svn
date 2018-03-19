@@ -36,11 +36,11 @@ ConVar asw_shaman_health( "asw_shaman_health", "60", FCVAR_CHEAT );
 //softcopy:
 ConVar asw_shaman_color("asw_shaman_color", "255 255 255", FCVAR_NONE, "Sets the color of shaman.");
 ConVar asw_shaman_color2("asw_shaman_color2", "255 255 255", FCVAR_NONE, "Sets the color of shamans.");
-ConVar asw_shaman_color2_percent("asw_shaman_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the shamans you want to give the color",true,0,true,1);
+ConVar asw_shaman_color2_percent("asw_shaman_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the shamans color",true,0,true,1);
 ConVar asw_shaman_color3("asw_shaman_color3", "255 255 255", FCVAR_NONE, "Sets the color of shamans.");
-ConVar asw_shaman_color3_percent("asw_shaman_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the shamans you want to give the color",true,0,true,1);
-ConVar asw_shaman_scalemod("asw_shaman_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal shamans.",true,0,true,3);
-ConVar asw_shaman_scalemod_percent("asw_shaman_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the shamans you want to scale.",true,0,true,1);
+ConVar asw_shaman_color3_percent("asw_shaman_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the shamans color",true,0,true,1);
+ConVar asw_shaman_scalemod("asw_shaman_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal shamans.",true,0,true,1.5);
+ConVar asw_shaman_scalemod_percent("asw_shaman_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of normal shamans scale.",true,0,true,1);
 ConVar asw_shaman_ignite("asw_shaman_ignite", "0", FCVAR_CHEAT, "Ignites marine by shaman on touch.");
 ConVar asw_shaman_gib_chance("asw_shaman_gib_chance", "0.80", FCVAR_CHEAT, "Chance of shaman break into ragdoll pieces instead of ragdoll.");
 ConVar asw_shaman_touch_onfire("asw_shaman_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if shaman body on fire touch.");
@@ -73,7 +73,8 @@ void CASW_Shaman::Spawn( void )
 
 	//softcopy: set colors for shaman
 	alienLabel = "shaman";
-	ASWGameRules()->SetColorScale( this,  alienLabel );
+	if (ASWGameRules())
+		ASWGameRules()->SetColorScale( this,  alienLabel );
 
 	SetHullType( HULL_MEDIUM );
 	SetHealthByDifficultyLevel();
@@ -219,7 +220,10 @@ void CASW_Shaman::StartTouch( CBaseEntity *pOther )
 	{
 		CTakeDamageInfo info( this, this, asw_shaman_touch_damage.GetInt(), DMG_GENERIC );
 		if ( asw_shaman_ignite.GetBool() || (m_bOnFire && asw_shaman_touch_onfire.GetBool()) )
-			ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, /*damageTypes*/ "on touch");
+		{
+			if (ASWGameRules())
+				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, /*damageTypes*/ "on touch");
+		}
 
 		if (m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime)	// don't hurt him if he was hurt recently
 			return;

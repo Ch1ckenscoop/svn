@@ -66,10 +66,14 @@ void CASW_Sentry_Top_Cannon::Fire()
 
 	Vector launchVector = diff * 1000.0f;
 
-	CASW_Marine * RESTRICT pMarineDeployer = GetSentryBase()->m_hDeployer.Get();
-	Assert( pMarineDeployer );
-
-	//softcopy: grenade damage/radius 
+	//softcopy: prevent pMarineDeployer crashes
+	//CASW_Marine * RESTRICT pMarineDeployer = GetSentryBase()->m_hDeployer.Get();
+	//Assert( pMarineDeployer );
+	CASW_Sentry_Base* RESTRICT pSentryBase = GetSentryBase();
+	if (!pSentryBase)
+		return;
+	CASW_Marine * RESTRICT const pMarineDeployer = pSentryBase->m_hDeployer.Get();
+	//grenade damage/radius 
 	//float fGrenadeDamage = CASW_Weapon_Grenades::GetBoomDamage(pMarineDeployer) * 0.5f;
 	//float fGrenadeRadius = CASW_Weapon_Grenades::GetBoomRadius(pMarineDeployer) * 0.5f;
 	float fGrenadeDamage = CASW_Weapon_Grenades::GetBoomDamage(pMarineDeployer) * asw_sentry_cannon_grenade_damage.GetFloat();

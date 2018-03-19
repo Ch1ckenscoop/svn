@@ -2226,7 +2226,10 @@ void CASW_MarineGameMovement::MeleeMove( void )
 //	1. Stuck can now be resumed by melee(map Landingbay_01, a corner area beside last computer hack panel) 
 //	2. If asw_melee_walkup set to 1, marine can unstuck in most cases(such as Landingbay_02 known stuck areas, including other maps)
 //	3. If asw_melee_walkup is activated, cheating also occurred. Make sure need activate it or not.  
-	bool melee_walkup = !stricmp(gpGlobals->mapname.ToCStr(), "asi-jac1-landingbay_01");
+	bool melee_walkup = false;
+#ifndef CLIENT_DLL
+	melee_walkup = !stricmp(STRING(gpGlobals->mapname), "asi-jac1-landingbay_01");	//softcopy:
+#endif
 	if (asw_melee_walkup.GetBool())		//allow melee walk up to unstuck, also cheating is enabled
 	    melee_walkup = true;
 	//melee unstuck for 'Landingbay_01' only by default asw_melee_walkup is 0, if set to 1, all maps melee while jumping could unstuck in most cases.

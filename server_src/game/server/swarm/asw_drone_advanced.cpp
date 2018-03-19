@@ -42,17 +42,17 @@ ConVar asw_drone_color("asw_drone_color", "255 255 255", FCVAR_NONE, "Sets the c
 ConVar asw_drone_jumper_color("asw_drone_jumper_color", "255 255 255", FCVAR_NONE, "Sets the color of jumping drones.");
 //softcopy:
 ConVar asw_drone_color2("asw_drone_color2", "255 255 255", FCVAR_NONE, "Sets the color of drones.");
-ConVar asw_drone_color2_percent("asw_drone_color2_percent", "0", FCVAR_NONE, "Sets the percentage of the drones you want to give the color",true,0,true,1);
+ConVar asw_drone_color2_percent("asw_drone_color2_percent", "0", FCVAR_NONE, "Sets the percentage of drones color",true,0,true,1);
 ConVar asw_drone_color3("asw_drone_color3", "255 255 255", FCVAR_NONE, "Sets the color of drones.");
-ConVar asw_drone_color3_percent("asw_drone_color3_percent", "0", FCVAR_NONE, "Sets the percentage of the drones you want to give the color",true,0,true,1);
-ConVar asw_drone_scalemod("asw_drone_scalemod", "1.0", FCVAR_NONE, "Sets the scale of normal drones.",true,0,true,2);
-ConVar asw_drone_scalemod_percent("asw_drone_scalemod_percent", "1.0", FCVAR_NONE, "Sets the percentage of the normal drones you want to scale.",true,0,true,1);
-ConVar asw_drone_jumper_color2("asw_drone_jumper_color2", "255 255 255", FCVAR_NONE, "Sets the color of Mod-jumping drones.");
-ConVar asw_drone_jumper_color2_percent("asw_drone_jumper_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the Mod-Jumping drones you want to give the color",true,0,true,1);
-ConVar asw_drone_jumper_color3("asw_drone_jumper_color3", "255 255 255", FCVAR_NONE, "Sets the color of Mod-jumping drones.");
-ConVar asw_drone_jumper_color3_percent("asw_drone_jumper_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the Mod-Jumping drones you want to give the color",true,0,true,1);
-ConVar asw_drone_jumper_scalemod("asw_drone_jumper_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal drones.",true,0,true,2);
-ConVar asw_drone_jumper_scalemod_percent("asw_drone_jumper_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal Mod-Jumping drones you want to scale.",true,0,true,1);
+ConVar asw_drone_color3_percent("asw_drone_color3_percent", "0", FCVAR_NONE, "Sets the percentage of drones color",true,0,true,1);
+ConVar asw_drone_scalemod("asw_drone_scalemod", "1.0", FCVAR_NONE, "Sets the scale of normal drones.",true,0,true,1.5);
+ConVar asw_drone_scalemod_percent("asw_drone_scalemod_percent", "1.0", FCVAR_NONE, "Sets the percentage of normal drones scale.",true,0,true,1);
+ConVar asw_drone_jumper_color2("asw_drone_jumper_color2", "255 255 255", FCVAR_NONE, "Sets the color of jumping drones.");
+ConVar asw_drone_jumper_color2_percent("asw_drone_jumper_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of jumping drones color",true,0,true,1);
+ConVar asw_drone_jumper_color3("asw_drone_jumper_color3", "255 255 255", FCVAR_NONE, "Sets the color of jumping drones.");
+ConVar asw_drone_jumper_color3_percent("asw_drone_jumper_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of jumping drones color",true,0,true,1);
+ConVar asw_drone_jumper_scalemod("asw_drone_jumper_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal jumping drones.",true,0,true,1.5);
+ConVar asw_drone_jumper_scalemod_percent("asw_drone_jumper_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of normal jumping drones scale.",true,0,true,1);
 ConVar asw_drone_touch_ignite("asw_drone_touch_ignite", "0", FCVAR_CHEAT, "Ignites marine on touch(1=drone, 2=jumper, 3=All).");
 ConVar asw_drone_melee_ignite("asw_drone_melee_ignite", "0", FCVAR_CHEAT, "Ignites marine on melee(1=drone, 2=jumper, 3=All).");
 ConVar asw_drone_touch_onfire("asw_drone_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if drone body on fire touch.");
@@ -263,7 +263,8 @@ void CASW_Drone_Advanced::Spawn( void )
 		m_ClassType = (Class_T)CLASS_ASW_DRONE;
 	}
 
-	ASWGameRules()->SetColorScale( this, alienLabel = m_bJumper ? "drone_jumper" : "drone" );	//softcopy: Allow setting colors
+	if (ASWGameRules())
+		ASWGameRules()->SetColorScale( this, alienLabel = m_bJumper ? "drone_jumper" : "drone" );	//softcopy: Allow setting colors
 
 	SetHullType(HULL_MEDIUMBIG);
 
@@ -940,10 +941,15 @@ void CASW_Drone_Advanced::StartTouch( CBaseEntity *pOther )
 			bool bDroneIsOnFire = (m_bOnFire && bDroneOnFire);
 
 			if ((iDroneIgnite >=2 || bDroneIsOnFire) && m_bJumper)
-				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
-
+			{
+				if (ASWGameRules())
+					ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+			}
 			if (((iDroneIgnite==1 || iDroneIgnite==3) || bDroneIsOnFire) && !m_bJumper)
-				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+			{
+				if (ASWGameRules())
+					ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+			}
 		}
 
 		int iTouchDamage = asw_drone_touch_damage.GetInt();
@@ -1014,10 +1020,15 @@ void CASW_Drone_Advanced::MeleeAttack( float distance, float damage, QAngle &vie
 				damageTypes = "melee attack";
 				int iDroneMeleeIgnite = asw_drone_melee_ignite.GetInt();
 				if ( iDroneMeleeIgnite >= 2 && m_bJumper )
-					ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
-
+				{
+					if (ASWGameRules())
+						ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+				}
 				if ( (iDroneMeleeIgnite == 1 || iDroneMeleeIgnite == 3) && !m_bJumper )
-					ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+				{
+					if (ASWGameRules())
+						ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+				}
 			}
 		}
 

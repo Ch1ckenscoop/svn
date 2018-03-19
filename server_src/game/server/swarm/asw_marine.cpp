@@ -87,6 +87,8 @@
 #include "tier0/memdbgon.h"
 
 #define ASW_DEFAULT_MARINE_MODEL "models/swarm/marine/marine.mdl"
+//softcopy:
+ConVar asw_marine_flashlight( "asw_marine_flashlight", "0", FCVAR_CHEAT, "If set, 1=marine flashlight on, 2=normal after picking up a flashlight");
 
 //#define ASW_MARINE_ALWAYS_VPHYSICS
 
@@ -681,6 +683,10 @@ void CASW_Marine::Spawn( void )
 	// make sure his move_x/y pose parameters are at full moving forwards, so the AI follow movement will detect some sequence motion when calculating goal speed
 	SetPoseParameter( "move_x", 1.0f );
 	SetPoseParameter( "move_y", 0.0f );
+
+	//softcopy:
+	if (!HasFlashlight() && asw_marine_flashlight.GetInt() >0)
+		FlashlightTurnOn();
 }
 
 void CASW_Marine::NPCInit()
@@ -2271,6 +2277,9 @@ void CASW_Marine::FlashlightTurnOn( void )
 
 void CASW_Marine::FlashlightTurnOff( void )
 {
+	if ( asw_marine_flashlight.GetInt()==1)	//softcopy: always on
+		return;
+
 	if (IsEffectActive( EF_DIMLIGHT ))
 	{
 		EmitSound( "ASWFlashlight.FlashlightToggle");

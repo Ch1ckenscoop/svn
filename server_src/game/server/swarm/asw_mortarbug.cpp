@@ -50,18 +50,18 @@ ConVar asw_mortarbug_health("asw_mortarbug_health", "350", FCVAR_CHEAT, "Sets th
 ConVar asw_mortarbug_color("asw_mortarbug_color", "255 255 255", FCVAR_NONE, "Sets the color of mortarbugs.");
 //softcopy:
 ConVar asw_mortarbug_color2("asw_mortarbug_color2", "255 255 255", FCVAR_NONE, "Sets the color of mortarbugs.");
-ConVar asw_mortarbug_color2_percent("asw_mortarbug_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the mortarbugs you want to give the color",true,0,true,1);
+ConVar asw_mortarbug_color2_percent("asw_mortarbug_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the mortarbugs color",true,0,true,1);
 ConVar asw_mortarbug_color3("asw_mortarbug_color3", "255 255 255", FCVAR_NONE, "Sets the color of mortarbugs.");
-ConVar asw_mortarbug_color3_percent("asw_mortarbug_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the mortarbugs you want to give the color",true,0,true,1);
-ConVar asw_mortarbug_scalemod("asw_mortarbug_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal mortarbugs.",true,0,true,2);
-ConVar asw_mortarbug_scalemod_percent("asw_mortarbug_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal mortarbugs you want to scale.",true,0,true,1);
-ConVar asw_mortarbug_beta_color("asw_mortarbug_beta_color", "255 255 255", FCVAR_NONE, "Sets the color of beta mortarbugs.");
-ConVar asw_mortarbug_beta_color2("asw_mortarbug_beta_color2", "255 255 255", FCVAR_NONE, "Sets the color of beta mortarbugs.");
-ConVar asw_mortarbug_beta_color2_percent("asw_mortarbug_beta_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the beta mortarbugs you want to give the color",true,0,true,1);
-ConVar asw_mortarbug_beta_color3("asw_mortarbug_beta_color3", "255 255 255", FCVAR_NONE, "Sets the color of mortarbugs.");
-ConVar asw_mortarbug_beta_color3_percent("asw_mortarbug_beta_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the beta mortarbugs you want to give the color",true,0,true,1);
-ConVar asw_mortarbug_beta_scalemod("asw_mortarbug_beta_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal mortarbugs.",true,0,true,2);
-ConVar asw_mortarbug_beta_scalemod_percent("asw_mortarbug_beta_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal beta mortarbugs you want to scale.",true,0,true,1);
+ConVar asw_mortarbug_color3_percent("asw_mortarbug_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the mortarbugs color",true,0,true,1);
+ConVar asw_mortarbug_scalemod("asw_mortarbug_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal mortarbugs.",true,0,true,1.5);
+ConVar asw_mortarbug_scalemod_percent("asw_mortarbug_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of normal mortarbugs scale.",true,0,true,1);
+ConVar asw_mortarbug_beta_color("asw_mortarbug_beta_color", "255 255 255", FCVAR_NONE, "Sets the color of beta model mortarbugs.");
+ConVar asw_mortarbug_beta_color2("asw_mortarbug_beta_color2", "255 255 255", FCVAR_NONE, "Sets the color of beta model mortarbugs.");
+ConVar asw_mortarbug_beta_color2_percent("asw_mortarbug_beta_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the beta mortarbugs color",true,0,true,1);
+ConVar asw_mortarbug_beta_color3("asw_mortarbug_beta_color3", "255 255 255", FCVAR_NONE, "Sets the color of beta model mortarbugs.");
+ConVar asw_mortarbug_beta_color3_percent("asw_mortarbug_beta_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the beta mortarbugs color",true,0,true,1);
+ConVar asw_mortarbug_beta_scalemod("asw_mortarbug_beta_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal beta model mortarbugs.",true,0,true,1.5);
+ConVar asw_mortarbug_beta_scalemod_percent("asw_mortarbug_beta_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of normal beta mortarbugs scale.",true,0,true,1);
 ConVar asw_old_mortarbug( "asw_old_mortarbug","0", FCVAR_NONE, "0 = new model, 1 = beta mortarbug, 2 = random all.");
 ConVar asw_mortarbug_touch("asw_mortarbug_touch", "0", FCVAR_CHEAT, "Ignites/explodes marine on mortar touch(1=ignite, 2=explode, 3=All).");
 ConVar asw_mortarbug_touch_onfire("asw_mortarbug_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if mortarbug body on fire touch.");
@@ -111,7 +111,8 @@ void CASW_Mortarbug::Spawn( void )
 	//SetRenderColor(asw_mortarbug_color.GetColor().r(), asw_mortarbug_color.GetColor().g(), asw_mortarbug_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
 	bOldMortarBug = !Q_strcmp(m_pszAlienModelName, SWARM_BETA_MORTARBUG_MODEL);
 	alienLabel = bOldMortarBug ? "mortarbug_beta" : "mortarbug";
-	ASWGameRules()->SetColorScale( this, alienLabel );
+	if (ASWGameRules())
+		ASWGameRules()->SetColorScale( this, alienLabel );
 }
 
 void CASW_Mortarbug::Precache( void )
@@ -520,7 +521,11 @@ void CASW_Mortarbug::StartTouch( CBaseEntity *pOther )
 		CTakeDamageInfo info( this, this, iTouchDamage, DMG_SLASH );
 		damageTypes = "on touch";
 		if ((iTouch == 1 || iTouch == 3) || (m_bOnFire && asw_mortarbug_touch_onfire.GetBool()))
-			ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+		{
+			if (ASWGameRules())
+				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+		}
+
 		if (m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime || iTouchDamage <=0)		//don't hurt him if he was hurt recently
 			return;
 		Vector vecForceDir = ( pMarine->GetAbsOrigin() - GetAbsOrigin() );	// hurt the marine
@@ -528,8 +533,11 @@ void CASW_Mortarbug::StartTouch( CBaseEntity *pOther )
 		pMarine->TakeDamage( info );
 		if (iTouch >= 2)
 		{
-			ASWGameRules()->m_TouchExplosionDamage = iTouchDamage;
-			ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+			if (ASWGameRules())
+			{
+				ASWGameRules()->m_TouchExplosionDamage = iTouchDamage;
+				ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+			}
 		}
 		m_fLastTouchHurtTime = gpGlobals->curtime;
 	}

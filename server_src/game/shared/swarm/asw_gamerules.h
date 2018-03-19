@@ -102,7 +102,7 @@ public:
 	virtual void			Precache( void );
 	virtual void			Think( void );
 	virtual const char *GetGameDescription( void ) { return "Ch1ckensCoop"; }
-	virtual const char *GetCurrentVersion ( void ) { return "2.2.7"; }	//softcopy: version
+	virtual const char *GetCurrentVersion ( void ) { return "2.2.8"; }	//softcopy: version
 	virtual void			OnServerHibernating();
 	
 	// briefing roster functions
@@ -141,6 +141,7 @@ public:
 	
 	//softcopy:
 	void OnPlayerFullyJoinedCheck(CASW_Player *pPlayer);
+	void MarineSlotRelease();
 	bool SpectatorInLobby(CASW_Player *pPlayer, bool bAddpPlayerId);
 	bool bSpectatorCanSelect;
 	virtual void	SetColorScale(CBaseEntity *pAlien, const char *alienLabel);
@@ -149,7 +150,6 @@ public:
 	virtual void	MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes);
 	virtual void	MarineDamageDebugInfo(CBaseEntity *pOther, const char *alienLabel, const char *damageInfo, const char *damageTypes);
 	int m_TouchExplosionDamage;
-	float m_fWeaponDisassemble;
 
 	// powerups
 	virtual void DropPowerup( CBaseEntity *pSource, const CTakeDamageInfo &info, const char *pszSourceClass );
@@ -415,6 +415,9 @@ public:
 	virtual int	GetGameState() { return m_iGameState; }
 	virtual void SetGameState(int iNewState) { m_iGameState = iNewState; }
 	CNetworkVar(unsigned char, m_iGameState);
+	
+	float m_fWeaponDisassemble;	//softcopy:
+
 #ifdef CLIENT_DLL
 
 	virtual void OnDataChanged( DataUpdateType_t updateType );

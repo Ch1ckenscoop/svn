@@ -259,8 +259,8 @@ void CASW_Weapon_Mining_Laser::ClientThink()
 
 		if ( m_pChargeEffect )
 		{		
-			float flTotalCharge = (gpGlobals->curtime - m_flStartFireTime) + ASW_MINING_LASER_CHARGE_UP_TIME;
-			float flChargeAmt = 1 - (ASW_MINING_LASER_CHARGE_UP_TIME / flTotalCharge);
+			float flTotalCharge = (gpGlobals->curtime - m_flStartFireTime) + asw_mininglaser_charge_time.GetFloat();	//softcopy:
+			float flChargeAmt = 1 - (asw_mininglaser_charge_time.GetFloat() / flTotalCharge);	//softcopy:
 			//m_pChargeEffect->SetControlPoint( 0, startPoint );
 			m_pChargeEffect->SetControlPoint( 1, tr.endpos );
 			m_pChargeEffect->SetControlPoint( 2, Vector( flChargeAmt, flChargeAmt * flCharging, 0 ) );

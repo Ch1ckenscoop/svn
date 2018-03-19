@@ -67,24 +67,24 @@ ConVar asw_sb_gallop_min_range("asw_sb_gallop_min_range", "50.0", FCVAR_CHEAT, "
 ConVar asw_sb_gallop_max_range("asw_sb_gallop_max_range", "130.0", FCVAR_CHEAT, "Max range to do ram attack");
 //softcopy:
 ConVar asw_shieldbug_color2("asw_shieldbug_color2", "255 255 255", FCVAR_NONE, "Sets the color of new model shieldbugs.");
-ConVar asw_shieldbug_color2_percent("asw_shieldbug_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the new model shieldbugs you want to give the color",true,0,true,1);
+ConVar asw_shieldbug_color2_percent("asw_shieldbug_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of new model shieldbugs color",true,0,true,1);
 ConVar asw_shieldbug_color3("asw_shieldbug_color3", "255 255 255", FCVAR_NONE, "Sets the color of shieldbugs.");
-ConVar asw_shieldbug_color3_percent("asw_shieldbug_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the new model shieldbugs you want to give the color",true,0,true,1);
-ConVar asw_shieldbug_scalemod("asw_shieldbug_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal new model shieldbugs.",true,0,true,2);
-ConVar asw_shieldbug_scalemod_percent("asw_shieldbug_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal new model shieldbugs you want to scale.",true,0,true,1);
-ConVar asw_shieldbug_beta_color("asw_shieldbug_beta_color", "255 255 255", FCVAR_NONE, "Sets the color of beta shieldbugs.");
-ConVar asw_shieldbug_beta_color2("asw_shieldbug_beta_color2", "255 255 255", FCVAR_NONE, "Sets the color of beta shieldbugs.");
-ConVar asw_shieldbug_beta_color2_percent("asw_shieldbug_beta_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the beta shieldbugs you want to give the color",true,0,true,1);
-ConVar asw_shieldbug_beta_color3("asw_shieldbug_beta_color3", "255 255 255", FCVAR_NONE, "Sets the color of beta shieldbugs.");
-ConVar asw_shieldbug_beta_color3_percent("asw_shieldbug_beta_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the beta shieldbugs you want to give the color",true,0,true,1);
-ConVar asw_shieldbug_beta_scalemod("asw_shieldbug_beta_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal beta shieldbugs.",true,0,true,2);
-ConVar asw_shieldbug_beta_scalemod_percent("asw_shieldbug_beta_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal beta shieldbugs you want to scale.",true,0,true,1);
+ConVar asw_shieldbug_color3_percent("asw_shieldbug_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of new model shieldbugs color",true,0,true,1);
+ConVar asw_shieldbug_scalemod("asw_shieldbug_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal new model shieldbugs.",true,0,true,1.5);
+ConVar asw_shieldbug_scalemod_percent("asw_shieldbug_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of normal new model shieldbugs scale.",true,0,true,1);
+ConVar asw_shieldbug_beta_color("asw_shieldbug_beta_color", "255 255 255", FCVAR_NONE, "Sets the color of beta model shieldbugs.");
+ConVar asw_shieldbug_beta_color2("asw_shieldbug_beta_color2", "255 255 255", FCVAR_NONE, "Sets the color of beta model shieldbugs.");
+ConVar asw_shieldbug_beta_color2_percent("asw_shieldbug_beta_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of beta shieldbugs color",true,0,true,1);
+ConVar asw_shieldbug_beta_color3("asw_shieldbug_beta_color3", "255 255 255", FCVAR_NONE, "Sets the color of beta model shieldbugs.");
+ConVar asw_shieldbug_beta_color3_percent("asw_shieldbug_beta_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of beta shieldbugs color",true,0,true,1);
+ConVar asw_shieldbug_beta_scalemod("asw_shieldbug_beta_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal beta model shieldbugs.",true,0,true,1.5);
+ConVar asw_shieldbug_beta_scalemod_percent("asw_shieldbug_beta_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of normal beta shieldbugs scale.",true,0,true,1);
 ConVar asw_shieldbug_touch_damage("asw_shieldbug_touch_damage", "5", FCVAR_CHEAT, "Sets damage caused by shieldbug on touch.");
 ConVar asw_shieldbug_ignite("asw_shieldbug_ignite", "0", FCVAR_CHEAT, "Ignites marine on shieldbug melee/touch(1=melee, 2=touch, 3=All).");
 ConVar asw_shieldbug_explode("asw_shieldbug_explode", "0", FCVAR_CHEAT, "Explodes marine on shieldbug melee/touch(1=melee, 2=touch, 3=All).");
 ConVar asw_shieldbug_touch_onfire("asw_shieldbug_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if shieldbug body on fire touch.");
 ConVar asw_shieldbug_beta_gib_chance("asw_shieldbug_beta_gib_chance", "0.80", FCVAR_CHEAT, "Chance of beta shieldbug break into ragdoll pieces instead of ragdoll.",true,0,true,1);
-ConVar asw_shieldbug_beta_defend("asw_shieldbug_beta_defend", "1", FCVAR_CHEAT, "1=keep on defend attack, 0=defend attack randomly.");
+//ConVar asw_shieldbug_beta_defend("asw_shieldbug_beta_defend", "1", FCVAR_CHEAT, "1=keep on defend attack, 0=defend attack randomly.");
 //ConVar asw_old_shieldbug ("asw_old_shieldbug", "0", FCVAR_CHEAT, "1= old shield bug, 0 = new model");
 ConVar asw_old_shieldbug ("asw_old_shieldbug", "0", FCVAR_CHEAT, "1 = beta shieldbug, 0 = new model, 2 = random all");
 
@@ -167,7 +167,8 @@ void CASW_Shieldbug::Spawn( void )
 	//SetRenderColor(asw_shieldbug_color.GetColor().r(), asw_shieldbug_color.GetColor().g(), asw_shieldbug_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
 	bOldShieldBug = !Q_strcmp(m_pszAlienModelName, SWARM_SHIELDBUG_MODEL);
 	alienLabel = bOldShieldBug ? "shieldbug_beta" : "shieldbug";
-	ASWGameRules()->SetColorScale( this, alienLabel );
+	if (ASWGameRules())
+		ASWGameRules()->SetColorScale( this, alienLabel );
 	bOldShieldBug ? m_bDefending = true : false;	//fix beta shieldbug no defending after hurted by marine
 }
 
@@ -348,15 +349,7 @@ bool CASW_Shieldbug::ShouldDefend()
 {
 	//softcopy: beta shieldbug keep in defending stage
 	if (bOldShieldBug)
-	{
-		if (!asw_shieldbug_beta_defend.GetBool())
-		{
-			// randomly leave defending to surprise people if we haven't done a headhit attack in a while
-			if (gpGlobals->curtime > m_fNextHeadhitAttack && random->RandomFloat() > 0.8f)
-				return false;
-		}
 		return true;
-	}
 
 	if ( asw_shieldbug_force_defend.GetInt() == 1 )
 		return false;
@@ -794,11 +787,17 @@ void CASW_Shieldbug::MeleeAttack( float distance, float damage, QAngle &viewPunc
 			CTakeDamageInfo info( this, this, iTouchDamage, DMG_SLASH );
 			damageTypes = "knockdown";
 			if (asw_shieldbug_ignite.GetInt()== 1 || asw_shieldbug_ignite.GetInt()== 3)
-				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+			{
+				if (ASWGameRules())
+					ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+			}
 			if ((asw_shieldbug_explode.GetInt()==1 || asw_shieldbug_explode.GetInt()==3) && iTouchDamage >0)
 			{
-				ASWGameRules()->m_TouchExplosionDamage = iTouchDamage;
-				ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+				if (ASWGameRules())
+				{
+					ASWGameRules()->m_TouchExplosionDamage = iTouchDamage;
+					ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+				}
 			}
 			pMarine->GetMarineSpeech()->ForceChatter(CHATTER_PAIN_LARGE, ASW_CHATTER_TIMER_NONE);
 		}
@@ -986,14 +985,17 @@ void CASW_Shieldbug::StartTouch( CBaseEntity *pOther )
 	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
 	if ( pMarine )
 	{
-		ASWGameRules()->m_TouchExplosionDamage = asw_shieldbug_touch_damage.GetInt();
-		CTakeDamageInfo info( this, this, ASWGameRules()->m_TouchExplosionDamage, DMG_SLASH );
+		int iTouchDamage = asw_shieldbug_touch_damage.GetInt();
+		CTakeDamageInfo info( this, this, iTouchDamage, DMG_SLASH );
 		damageTypes = "on touch";
 
 		if (asw_shieldbug_ignite.GetInt() >= 2 || (m_bOnFire && asw_shieldbug_touch_onfire.GetBool()))
-			ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+		{
+			if (ASWGameRules())
+				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+		}
 
-		if (m_fLastTouchHurtTime + 0.5f /*0.6*/ > gpGlobals->curtime || ASWGameRules()->m_TouchExplosionDamage <= 0)	//don't hurt him if he was hurt recently
+		if (m_fLastTouchHurtTime + 0.5f /*0.6*/ > gpGlobals->curtime || iTouchDamage <= 0)	//don't hurt him if he was hurt recently
 			return;
 
 		Vector vecForceDir = ( pMarine->GetAbsOrigin() - GetAbsOrigin() );	// hurt the marine
@@ -1001,7 +1003,13 @@ void CASW_Shieldbug::StartTouch( CBaseEntity *pOther )
 		pMarine->TakeDamage( info );
 
 		if (asw_shieldbug_explode.GetInt() >= 2)
-			ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+		{
+			if (ASWGameRules())
+			{
+				ASWGameRules()->m_TouchExplosionDamage = iTouchDamage;
+				ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+			}
+		}
 
 		m_fLastTouchHurtTime = gpGlobals->curtime;
 	}

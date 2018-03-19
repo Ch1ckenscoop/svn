@@ -40,11 +40,11 @@ ConVar asw_boomer_inflate_debug( "asw_boomer_inflate_debug", "1.0f", FCVAR_CHEAT
 ConVar asw_boomer_color("asw_boomer_color", "255 255 255", FCVAR_NONE, "Sets the color of boomers.");
 //softcopy:
 ConVar asw_boomer_color2("asw_boomer_color2", "255 255 255", FCVAR_NONE, "Sets the color of boomers.");
-ConVar asw_boomer_color2_percent("asw_boomer_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the boomers you want to give the color",true,0,true,1);
+ConVar asw_boomer_color2_percent("asw_boomer_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of boomers color",true,0,true,1);
 ConVar asw_boomer_color3("asw_boomer_color3", "255 255 255", FCVAR_NONE, "Sets the color of boomers.");
-ConVar asw_boomer_color3_percent("asw_boomer_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the boomers you want to give the color",true,0,true,1);
-ConVar asw_boomer_scalemod("asw_boomer_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal boomers.",true,0,true,2);
-ConVar asw_boomer_scalemod_percent("asw_boomer_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of the normal boomers you want to scale.",true,0,true,1);
+ConVar asw_boomer_color3_percent("asw_boomer_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of boomers color",true,0,true,1);
+ConVar asw_boomer_scalemod("asw_boomer_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal boomers.",true,0,true,1.5);
+ConVar asw_boomer_scalemod_percent("asw_boomer_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of normal boomers scale.",true,0,true,1);
 ConVar asw_boomer_explode_range( "asw_boomer_explode_range", "200", FCVAR_CHEAT, "Sets boomer explode range." );
 ConVar asw_boomer_max_projectile( "asw_boomer_max_projectile", "8", FCVAR_CHEAT, "Sets boomer max projectile." );
 ConVar asw_boomer_explode_damage( "asw_boomer_explode_damage", "55", FCVAR_CHEAT, "Sets boomer explode damage." );
@@ -104,7 +104,8 @@ void CASW_Boomer::Spawn( void )
 	//softcopy: 
 	//SetRenderColor(asw_boomer_color.GetColor().r(), asw_boomer_color.GetColor().g(), asw_boomer_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
 	alienLabel = "boomer";
-	ASWGameRules()->SetColorScale( this, alienLabel );
+	if (ASWGameRules())
+		ASWGameRules()->SetColorScale( this, alienLabel );
 
 }
 
@@ -276,7 +277,10 @@ void CASW_Boomer::StartTouch( CBaseEntity *pOther )
 		damageTypes = "on touch";
 
 		if (asw_boomer_ignite.GetInt() >= 2 || (m_bOnFire && asw_boomer_touch_onfire.GetBool()))
-			ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+		{
+			if (ASWGameRules())
+				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+		}
 
 		if ( m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime || iTouchDamage <=0 )	//don't hurt him if he was hurt recently
 			return;
@@ -287,8 +291,11 @@ void CASW_Boomer::StartTouch( CBaseEntity *pOther )
 
 		if (asw_boomer_explode.GetInt() >= 2)
 		{
-			ASWGameRules()->m_TouchExplosionDamage = iTouchDamage;
-			ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+			if (ASWGameRules())
+			{
+				ASWGameRules()->m_TouchExplosionDamage = iTouchDamage;
+				ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+			}
 		}
 
 		m_fLastTouchHurtTime = gpGlobals->curtime;
@@ -307,10 +314,15 @@ void CASW_Boomer::MeleeAttack(float distance, float damage)
 			damageTypes = "melee attack";
 
 			if (asw_boomer_ignite.GetInt() == 1 || asw_boomer_ignite.GetInt() == 3)
-				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
-
+			{
+				if (ASWGameRules())
+					ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+			}
 			if ((asw_boomer_explode.GetInt()==1 || asw_boomer_explode.GetInt()==3) && asw_boomer_touch_damage.GetInt() > 0)
-				ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+			{
+				if (ASWGameRules())
+					ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+			}
 		}
 	}
 }
