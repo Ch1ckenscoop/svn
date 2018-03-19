@@ -1,0 +1,13 @@
+======Set all players as ready status in lobby======
+
+= Description =
+
+Command [[ready.wiki|/ready]] for lobby leader or admin to set all players as ready status in matchmaking lobby to start game.
+
+Enter command [[ready.wiki|/ready]] in Chat dialog.
+
+{|
+|| [[asw_version.wiki|Server Version]] Added 
+|-
+||v2.2.8
+|}   

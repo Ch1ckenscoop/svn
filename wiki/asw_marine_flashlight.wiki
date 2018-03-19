@@ -1,0 +1,10 @@
+======Sets marine flashlight======
+= Description =
+
+Marine has flaslight to see aliens more easily in dark area. Flashlight can be turned on forever if [[asw_marine_flashlight.wiki|asw_marine_flashlight]] has set '1',  also Flashlight can be turned on forever until marine pick up a flashlight on ground if [[asw_marine_flashlight.wiki|asw_marine_flashlight]] has set '2'
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.2.8 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || Int 
+|}
