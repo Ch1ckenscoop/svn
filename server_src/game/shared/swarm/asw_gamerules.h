@@ -102,7 +102,7 @@ public:
 	virtual void			Precache( void );
 	virtual void			Think( void );
 	virtual const char *GetGameDescription( void ) { return "Ch1ckensCoop"; }
-	virtual const char *GetCurrentVersion ( void ) { return "2.2.8"; }	//softcopy: version
+	virtual const char *GetCurrentVersion ( void ) { return "2.2.9"; }	//softcopy: version
 	virtual void			OnServerHibernating();
 	
 	// briefing roster functions

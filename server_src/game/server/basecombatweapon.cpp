@@ -275,9 +275,12 @@ bool CBaseCombatWeapon::WeaponLOSCondition( const Vector &ownerPos, const Vector
 	// --------------------
 	// Check for occlusion
 	// --------------------
-	CAI_BaseNPC* npcOwner = m_hOwner.Get()->MyNPCPointer();
+	//softcopy: crashes fix
+	if (!m_hOwner.Get())
+		return false;
 
-	//softcopy: fixed m_hOwner crashes
+	CAI_BaseNPC* npcOwner = m_hOwner.Get()->MyNPCPointer();
+	//softcopy:
 	if (!npcOwner)
 		return false;
 
