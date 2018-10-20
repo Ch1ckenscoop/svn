@@ -45,6 +45,7 @@ ConVar asw_shaman_ignite("asw_shaman_ignite", "0", FCVAR_CHEAT, "Ignites marine 
 ConVar asw_shaman_gib_chance("asw_shaman_gib_chance", "0.80", FCVAR_CHEAT, "Chance of shaman break into ragdoll pieces instead of ragdoll.");
 ConVar asw_shaman_touch_onfire("asw_shaman_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if shaman body on fire touch.");
 ConVar asw_shaman_touch_damage("asw_shaman_touch_damage", "4", FCVAR_CHEAT, "Damage caused by shaman on touch.");
+ConVar asw_shaman_heal("asw_shaman_heal", "0.15", FCVAR_CHEAT, "Percentage of shaman healing amount to alien.",true,0,true,1);
 
 extern ConVar asw_debug_alien_damage;
 
@@ -277,7 +278,10 @@ bool CASW_Shaman::CreateBehaviors()
 
 	m_HealOtherBehavior.KeyValue( "heal_distance", "300" );
 	m_HealOtherBehavior.KeyValue( "approach_distance", "120" );
-	m_HealOtherBehavior.KeyValue( "heal_amount", "0.04" );	// percentage per tick healed
+	//softcopy:
+	//m_HealOtherBehavior.KeyValue( "heal_amount", "0.04" );	// percentage per tick healed
+	m_HealOtherBehavior.KeyValue( "heal_amount", asw_shaman_heal.GetString() );	//set default as 0.15, was 0.04
+
 	m_HealOtherBehavior.KeyValue( "consideration_distance", "800" );
 	AddBehavior( &m_HealOtherBehavior );
 	m_HealOtherBehavior.Init();

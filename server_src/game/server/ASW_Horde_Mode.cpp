@@ -158,6 +158,8 @@ CASW_Horde_Mode::~CASW_Horde_Mode()
 void CASW_Horde_Mode::LevelInitPostEntity()
 {
 	//Init();
+
+	m_flLastThinkTime = gpGlobals->curtime;	//softcopy: fixed asw_hordemode_update_mode sometime not working properly
 }
 
 bool CASW_Horde_Mode::Init()
