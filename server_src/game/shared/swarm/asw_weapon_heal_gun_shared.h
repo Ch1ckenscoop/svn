@@ -49,7 +49,11 @@ public:
 	virtual bool		Holster( CBaseCombatWeapon *pSwitchingTo = NULL );
 	virtual void		Drop( const Vector &vecVelocity );
 	virtual bool		ShouldMarineMoveSlow();
-	static float		GetWeaponRange( void ) { return 240; }
+	//softcopy:
+	//static float		GetWeaponRange( void ) { return 240; }
+	static float		GetHealRadius();
+	static float		GetWeaponRange( void ) { return GetHealRadius(); }
+
 	virtual bool		IsOffensiveWeapon() { return false; }
 	virtual Class_T		Classify( void ) { return (Class_T)CLASS_ASW_HEAL_GUN; }
 

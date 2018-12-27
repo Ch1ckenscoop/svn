@@ -43,6 +43,8 @@
 static const float ASW_HG_SEARCH_DIAMETER = 48.0f; // How far past the range to search for enemies to latch on to
 static const float SQRT3 = 1.732050807569; // for computing max extents inside a box
 
+ConVar asw_healgun_radius("asw_healgun_radius", "240", FCVAR_CHEAT, "Healing radius of medical gun.");	//softcopy:
+
 extern ConVar asw_laser_sight;
 extern ConVar asw_marine_special_heal_chatter_chance;
 
@@ -830,6 +832,12 @@ float CASW_Weapon_Heal_Gun::GetInfestationCureAmount()
 	float flCureAmount = MarineSkills()->GetSkillBasedValueByMarine(pMarine, ASW_MARINE_SKILL_XENOWOUNDS) / 100.0f;
 
 	return flCureAmount;
+}
+
+//softcopy: get the healing range
+float CASW_Weapon_Heal_Gun::GetHealRadius()
+{
+	return asw_healgun_radius.GetFloat();
 }
 
 #ifdef CLIENT_DLL

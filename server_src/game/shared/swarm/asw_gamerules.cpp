@@ -3037,6 +3037,7 @@ ConVar asw_bonus_charges_sniper_rifle("asw_bonus_charges_sniper_rifle", "12", FC
 ConVar asw_bonus_charges_vindicator("asw_bonus_charges_vindicator", "14", FCVAR_CHEAT, "Sets ammo in clip of vindicator.");
 ConVar asw_bonus_charges_vindicator_grenade("asw_bonus_charges_vindicator_grenade","5",FCVAR_CHEAT,"Number of vindicator grenades marine starts out with.",true,0,true,9); 
 ConVar asw_bonus_charges_healgun("asw_bonus_charges_healgun", "185", FCVAR_CHEAT, "Number of healgun usages a marine starts out with.");
+ConVar asw_bonus_charges_heal_grenade("asw_bonus_charges_heal_grenade", "9", FCVAR_CHEAT, "Number of grenades in medic satchel usages a marine starts out with.");
 
 void CAlienSwarm::GiveStartingWeaponToMarine(CASW_Marine* pMarine, int iEquipIndex, int iSlot)
 {
@@ -3143,6 +3144,8 @@ void CAlienSwarm::GiveStartingWeaponToMarine(CASW_Marine* pMarine, int iEquipInd
 		pWeapon->SetClip1(asw_bonus_charges_vindicator.GetInt());
 	if ( !stricmp(szWeaponClass, "asw_weapon_heal_gun") )
 		pWeapon->SetClip1(asw_bonus_charges_healgun.GetInt());
+	if ( !stricmp(szWeaponClass, "asw_weapon_heal_grenade") )
+		pWeapon->SetClip1(asw_bonus_charges_heal_grenade.GetInt());
 
 	//Ch1ckensCoop: Extra ammo control
 	if ( !stricmp(szWeaponClass, "asw_weapon_tesla_trap") )
@@ -6954,7 +6957,7 @@ void CAlienSwarm::SetColorScale(CBaseEntity *pAlien, const char *alienLabel)	//s
 	Q_snprintf(text7, sizeof(text7), "asw_%s_scalemod", alienLabel);
 
 	float randomColor = RandomFloat(0, 1);
-	if ( randomColor <= ((ConVar *)cvar->FindVar(text2))->GetFloat() )
+	if ( randomColor <= ((ConVar *)cvar->FindVar(text4))->GetFloat() )
 		pAlien->SetRenderColor(((ConVar *)cvar->FindVar(text2))->GetColor().r(),((ConVar *)cvar->FindVar(text2))->GetColor().g(),((ConVar *)cvar->FindVar(text2))->GetColor().b());
 	else if ( randomColor <= ((ConVar *)cvar->FindVar(text4))->GetFloat() + ((ConVar *)cvar->FindVar(text5))->GetFloat() )
 		pAlien->SetRenderColor(((ConVar *)cvar->FindVar(text3))->GetColor().r(),((ConVar *)cvar->FindVar(text3))->GetColor().g(),((ConVar *)cvar->FindVar(text3))->GetColor().b());
