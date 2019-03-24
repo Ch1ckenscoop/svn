@@ -1,0 +1,10 @@
+======Sets the radius of the healgun.======
+
+= Description =
+
+Sets the radius of the medical healgun healing range..
+{|
+|| asw_version.wkik || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| v.2.3.1 || `240.0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}

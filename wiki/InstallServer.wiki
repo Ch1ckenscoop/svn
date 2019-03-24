@@ -9,6 +9,8 @@ After installing TortoiseSVN and rebooting your computer, create a folder (let's
 
 Right click on the folder and select "SVN Checkout". 
 
+<a href=https://github.com/Ch1ckenscoop/svn/blob/master/wiki/InstallServer.wiki ><img src=svn_checkout.PNG /></a>
+
 Set the URL to [[InstallServer.wiki|http://github.com/ch1ckenscoop/svn/trunk/server]] and click OK.
 
 After the checkout is complete, click OK again.
@@ -29,7 +31,7 @@ Type the following two commands at the Steam >prompt:
 
 Make sure downloading 100% completion with message "Success! App '635' fully installed."
 
-  * If any assertion failed or error found, start the following 3 steps:
+  * If any assertion failed or error found, start the following steps:
   *   1.delete AlienSwarmServer folder and steamcmd folder,
   *   2.create AlienSwarmServer folder and unzip steamcmd.zip again, 
   *   3.restart from step "Right click on the folder and select 'SVN Checkout'".
@@ -37,6 +39,8 @@ Make sure downloading 100% completion with message "Success! App '635' fully ins
   * Type 'quit' to exit Steamcmd.
 
 Right click on the AlienSwarmServer folder and click "TortoiseSVN > Revert..."
+
+<a href=https://github.com/Ch1ckenscoop/svn/blob/master/wiki/InstallServer.wiki ><img src=svn_revert.png /></a>
 
 Tick the box for "Select all" and click OK.
 
