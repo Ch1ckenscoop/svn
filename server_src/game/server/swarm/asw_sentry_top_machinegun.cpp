@@ -29,7 +29,7 @@ END_DATADESC()
 //extern ConVar asw_sentry_mg_range;	//softcopy: unreferenced
 ConVar asw_sentry_fire_rate("asw_sentry_fire_rate", "0.08f", FCVAR_CHEAT, "Machine gun sentry fire rate in seconds.");
 ConVar asw_sentry_overfire("asw_sentry_overfire", "0.45f", FCVAR_CHEAT, "Machine gun sentries keep firing this long after killing something.");
-ConVar asw_sentry_gun_damage("asw_sentry_gun_damage", "4.0f", FCVAR_CHEAT, "Machine gun sentry fire damage.");	//softcopy:
+ConVar asw_sentry_gun_damage("asw_sentry_gun_damage", "10.0f", FCVAR_CHEAT, "Machine gun sentry fire damage.");	//softcopy:
 ConVar asw_sentry_gun_range("asw_sentry_gun_range", "525", FCVAR_CHEAT, "machine gun Set Sentry fire range.");
 //#define ASW_SENTRY_FIRE_RATE 0.08f		// time in seconds between each shot
 //#define ASW_SENTRY_OVERFIRE 0.45f		// keep firing for this long after killing someone, because it's more badass

@@ -51,7 +51,15 @@ ConVar asw_rocket_homing_range("asw_rocket_homing_range", "640000", FCVAR_CHEAT)
 ConVar asw_rocket_wobble_freq("asw_rocket_wobble_freq", "0.25", FCVAR_CHEAT);
 ConVar asw_rocket_wobble_amp("asw_rocket_wobble_amp", "90", FCVAR_CHEAT);
 ConVar asw_rocket_debug("asw_rocket_debug", "0", FCVAR_CHEAT);
-extern ConVar asw_marine_ff_absorption;			//softcopy:
+//softcopy:
+ConVar asw_rocket_color("asw_rocket_color", "255 255 255", FCVAR_NONE, "Sets the color of rocket.");
+ConVar asw_rocket_color2("asw_rocket_color2", "255 255 255", FCVAR_NONE, "Sets the color of rockets.");
+ConVar asw_rocket_color2_percent("asw_rocket_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of rockets color",true,0,true,1);
+ConVar asw_rocket_color3("asw_rocket_color3", "255 255 255", FCVAR_NONE, "Sets the color of rockets.");
+ConVar asw_rocket_color3_percent("asw_rocket_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of rockets color",true,0,true,1);
+ConVar asw_rocket_scalemod("asw_rocket_scalemod", "1.0", FCVAR_NONE, "Sets the scale of normal rockets.",true,0,true,5);
+ConVar asw_rocket_scalemod_percent("asw_rocket_scalemod_percent", "1.0", FCVAR_NONE, "Sets the percentage of normal rocket scale.",true,0,true,1);
+extern ConVar asw_marine_ff_absorption;
 
 #define ASW_ROCKET_MIN_SPEED asw_rocket_min_speed.GetFloat()
 #define ASW_ROCKET_MAX_SPEED asw_rocket_max_speed.GetFloat()
@@ -96,6 +104,10 @@ void CASW_Rocket::Spawn( void )
 	SetSolid( SOLID_BBOX );
 	SetModel(ASW_ROCKET_MODEL);
 	UTIL_SetSize( this, -Vector(4,4,4), Vector(4,4,4) );
+
+	//softcopy:
+	if (ASWGameRules())
+		ASWGameRules()->SetColorScale( this, "rocket" );
 
 	SetTouch( &CASW_Rocket::MissileTouch );
 
@@ -301,7 +313,8 @@ CBaseEntity	* CASW_Rocket::FindPotentialTarget( void ) const
 			}
 	
 			// don't autoaim onto marines
-			if (pEntity->Classify() == CLASS_ASW_MARINE)
+			//if (pEntity->Classify() == CLASS_ASW_MARINE)
+			if (pEntity->Classify() == CLASS_ASW_MARINE || pEntity->Classify() == CLASS_ASW_COLONIST)	//softcopy: don't autoaim colonist
 				continue;
 
 			if ( pEntity->Classify() == CLASS_ASW_PARASITE )

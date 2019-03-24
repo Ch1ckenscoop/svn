@@ -15,6 +15,9 @@
 #include "ai_blended_movement.h"
 #include "soundenvelope.h"
 #include "ai_behavior_actbusy.h"
+//softcopy:
+#include "asw_lag_compensation.h"
+#include "asw_alien.h"
 
 #define ZOM_ATTN_FOOTSTEP ATTN_IDLE
 
@@ -110,7 +113,8 @@ typedef CAI_BlendingHost< CAI_BehaviorHost<CAI_BaseNPC> > CAI_BaseZombieBase;
 
 //=========================================================
 //=========================================================
-abstract_class CNPC_BaseZombie : public CAI_BaseZombieBase
+
+abstract_class CNPC_BaseZombie : public /*CAI_BaseZombieBase*/CASW_Alien	//softcopy:
 {
 	DECLARE_CLASS( CNPC_BaseZombie, CAI_BaseZombieBase );
 
@@ -143,7 +147,10 @@ public:
 	int RangeAttack1Conditions ( float flDot, float flDist ) { return( 0 ); }
 	
 	virtual float GetHitgroupDamageMultiplier( int iHitGroup, const CTakeDamageInfo &info );
+	//softcopy:
+	//void TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr, CDmgAccumulator *pAccumulator );
 	void TraceAttack( const CTakeDamageInfo &info, const Vector &vecDir, trace_t *ptr );
+
 	int OnTakeDamage_Alive( const CTakeDamageInfo &info );
 	virtual float	GetReactionDelay( CBaseEntity *pEnemy ) { return 0.0; }
 
@@ -235,6 +242,32 @@ public:
 	bool OnInsufficientStopDist( AILocalMoveGoal_t *pMoveGoal, float distClear, AIMoveResult_t *pResult );
 
 	virtual	bool		AllowedToIgnite( void ) { return true; }
+
+	//softcopy:
+	const char	*alienLabel, *damageTypes;
+	bool  CorpseGib( const CTakeDamageInfo &info );
+	float m_fLastTouchHurtTime;
+	float m_fHurtSlowMoveTime;
+	float m_flElectroStunSlowMoveTime;
+	float m_fNextStunSound;
+	float m_flLastThinkTime;
+	CNetworkVar(bool, m_bElectroStunned);
+	virtual void ElectroStun( float flStunTime );
+	virtual void NPCThink();
+	virtual bool ShouldMoveSlow() const;	// has this alien been hurt and so should move slow?
+	virtual bool ModifyAutoMovement( Vector &vecNewPos );
+	virtual float GetIdealSpeed() const;
+	virtual void Freeze( float flFreezeAmount, CBaseEntity *pFreezer, Ray_t *pFreezeRay );
+	virtual bool ShouldBecomeStatue( void );
+	virtual bool IsMovementFrozen( void ) { return GetFrozenAmount() > 0.5f; }
+	void  UpdateThawRate();
+	float m_flFreezeResistance;
+	float m_flFrozenTime;
+	float m_flBaseThawRate;
+	virtual int DrawDebugTextOverlays();
+	int m_iDeadBodyGroup;
+	CNetworkVar(bool, m_bOnFire);
+	virtual bool HasDeadBodyGroup() { return false; };
 
 public:
 	CAI_ActBusyBehavior		m_ActBusyBehavior;

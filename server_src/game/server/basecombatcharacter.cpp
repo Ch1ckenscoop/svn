@@ -1215,6 +1215,90 @@ Vector CBaseCombatCharacter::CalcDeathForceVector( const CTakeDamageInfo &info )
 	return vec3_origin;
 }
 
+//softcopy:
+Vector CBaseCombatCharacter::CalcDamageForceVector( const CTakeDamageInfo &info )
+{
+	// Already have a damage force in the data, use that.
+	bool bNoPhysicsForceDamage = g_pGameRules->Damage_NoPhysicsForce( info.GetDamageType() );
+	if ( info.GetDamageForce() != vec3_origin || bNoPhysicsForceDamage )
+	{
+		if( info.GetDamageType() & DMG_BLAST )
+		{
+			// Fudge blast forces a little bit, so that each
+			// victim gets a slightly different trajectory. 
+			// This simulates features that usually vary from
+			// person-to-person variables such as bodyweight,
+			// which are all indentical for characters using the same model.
+			float scale = random->RandomFloat( 0.85, 1.15 );
+			Vector force = info.GetDamageForce();
+			force.x *= scale;
+			force.y *= scale;
+			// Try to always exaggerate the upward force because we've got pretty harsh gravity
+			force.z *= (force.z > 0) ? 1.15 : scale;
+			return force;
+		}
+
+		return info.GetDamageForce();
+	}
+
+	CBaseEntity *pForce = info.GetInflictor();
+	if ( !pForce )
+	{
+		pForce = info.GetAttacker();
+	}
+
+	if ( pForce )
+	{
+		// Calculate an impulse large enough to push a 75kg man 4 in/sec per point of damage
+		float forceScale = info.GetDamage() * 75 * 4;
+
+		Vector forceVector;
+		// If the damage is a blast, point the force vector higher than usual, this gives 
+		// the ragdolls a bodacious "really got blowed up" look.
+		if( info.GetDamageType() & DMG_BLAST )
+		{
+			// exaggerate the force from explosions a little (37.5%)
+			forceVector = (GetLocalOrigin() + Vector(0, 0, WorldAlignSize().z) ) - pForce->GetLocalOrigin();
+			VectorNormalize(forceVector);
+			forceVector *= 1.375f;
+		}
+		else
+		{
+			// taking damage from self?  Take a little random force, but still try to collapse on the spot.
+			if ( this == pForce )
+			{
+				forceVector.x = random->RandomFloat( -1.0f, 1.0f );
+				forceVector.y = random->RandomFloat( -1.0f, 1.0f );
+				forceVector.z = 0.0;
+				forceScale = random->RandomFloat( 1000.0f, 2000.0f );
+			}
+			else
+			{
+				// UNDONE: Collision forces are baked in to CTakeDamageInfo now
+				// UNDONE: Is this MOVETYPE_VPHYSICS code still necessary?
+				if ( pForce->GetMoveType() == MOVETYPE_VPHYSICS )
+				{
+					// killed by a physics object
+					IPhysicsObject *pPhysics = VPhysicsGetObject();
+					if ( !pPhysics )
+					{
+						pPhysics = pForce->VPhysicsGetObject();
+					}
+					pPhysics->GetVelocity( &forceVector, NULL );
+					forceScale = pPhysics->GetMass();
+				}
+				else
+				{
+					forceVector = GetLocalOrigin() - pForce->GetLocalOrigin();
+					VectorNormalize(forceVector);
+				}
+			}
+		}
+		return forceVector * forceScale;
+	}
+	return vec3_origin;
+}
+
 //-----------------------------------------------------------------------------
 // Purpose: 
 // Output : Returns true on success, false on failure.

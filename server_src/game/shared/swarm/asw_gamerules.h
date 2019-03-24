@@ -102,7 +102,7 @@ public:
 	virtual void			Precache( void );
 	virtual void			Think( void );
 	virtual const char *GetGameDescription( void ) { return "Ch1ckensCoop"; }
-	virtual const char *GetCurrentVersion ( void ) { return "2.3.1"; }	//softcopy: version
+	virtual const char *GetCurrentVersion ( void ) { return "2.3.2"; }	//softcopy: version
 	virtual void			OnServerHibernating();
 	
 	// briefing roster functions
@@ -490,6 +490,7 @@ public:
 	bool IsIntroMap() { return m_bIsIntro; }
 	bool IsOutroMap() { return m_bIsOutro; }
 	bool IsLobbyMap() { return m_bIsLobby; }
+	bool IsCity17Map() { return m_bIsCity17; }	//softcopy:
 	static bool IsHardcoreFF();
 	static bool IsOnslaught();
 
@@ -497,6 +498,7 @@ public:
 	bool m_bIsIntro;
 	bool m_bIsOutro;
 	bool m_bIsLobby;		// lobby map is a temporary map that dedicated servers load into.  We detect that and start a new campaign game.
+	bool m_bIsCity17;
 	
 private:
 	char m_szPickupDenial[128];

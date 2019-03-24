@@ -1285,6 +1285,25 @@ static ConCommand asw_set_solid("asw_set_solid", asw_set_solid_f, "Sets solid st
 //------------------------------------------------------------------------------
 void CC_ASW_Ent_Create( const CCommand& args )
 {
+	//softcopy: hl2 npc zombie is available on city17 only
+	if (ASWSpawnManager() && ASWGameRules())
+	{
+		if (ASWSpawnManager()->IsHL2Alien(args[1]) && !ASWGameRules()->IsCity17Map())
+		{
+			CASW_Player* pPlayer = ToASW_Player( UTIL_GetCommandClient() );
+			if (pPlayer)
+			{
+				char text[64];
+				CRecipientFilter filter;
+				filter.AddRecipient(pPlayer);
+				Q_snprintf(text, sizeof(text), "%s is available on city17 only!", args[1]);
+				UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, text);
+				Msg("%s %s!\n", args[0], text);
+				return;
+			}
+		}
+	}
+
 	MDLCACHE_CRITICAL_SECTION();
 
 	bool allowPrecache = CBaseEntity::IsPrecacheAllowed();

@@ -137,8 +137,9 @@ ConVar asw_infest_damage_brutal("asw_infest_damage_brutal", "280", FCVAR_CHEAT, 
 ConVar asw_hibernate_skill_default("asw_hibernate_skill_default", "0", FCVAR_CHEAT, "If set, Skill/HardcoreFF switch to default when hibernating.");
 ConVar asw_vote_kick_admin("asw_vote_kick_admin", "1", FCVAR_CHEAT, "Generic admin or above level immune from vote kick."); 
 ConVar asw_vote_kick_ipcheck("asw_vote_kick_ipcheck", "1", FCVAR_CHEAT, "Player using duplicate IP can't start a vote kick."); 
-ConVar asw_debug_spectator_slot("asw_debug_spectator_slot", "0", FCVAR_CHEAT, "Show debug messages of spectator slots."); 
-ConVar asw_debug_alien_ignite("asw_debug_alien_ignite", "0", FCVAR_NONE, "Show debug messages for ignition/explosive effects by alien");
+ConVar asw_debug_spectator_slot("asw_debug_spectator_slot", "0", FCVAR_CHEAT, "Show debug messages for spectator slots."); 
+ConVar asw_debug_alien_activity("asw_debug_alien_activity", "0", FCVAR_NONE, "Show debug messages for aliens damage activities");
+ConVar asw_debug_alien_spawn("asw_debug_alien_spawn", "0", FCVAR_NONE, "Show debug messages for aliens spawn");
 extern ConVar asw_hardcore_ff_force;
 
 #define ASW_LAUNCHING_STEP 0.25f			// time between each stage of launching
@@ -814,6 +815,7 @@ CAlienSwarm::CAlienSwarm()
 	m_bIsIntro = false;
 	m_bIsOutro = false;
 	m_bIsTutorial = false;
+	m_bIsCity17 = false;	//softcopy:
 
 	m_bCheckAllPlayersLeft = false;
 	m_fEmptyServerTime = false;
@@ -6904,22 +6906,25 @@ void CAlienSwarm::MarineSlotRelease()
 }
 void CAlienSwarm::DoTouchExplosion( CBaseEntity *pMarine )	//alien touch explosion function
 {
-	pMarine->EmitSound( "ASW_T75.Explode" );
-	Vector vecExplosionPos = pMarine->GetAbsOrigin();
-	CPASFilter filter( vecExplosionPos );
-	UserMessageBegin( filter, "ASWBarrelExplosion" );
-	WRITE_FLOAT( vecExplosionPos.x ); 
-	WRITE_FLOAT( vecExplosionPos.y );
-	WRITE_FLOAT( vecExplosionPos.z );
-	WRITE_FLOAT( 160.0f );
-	MessageEnd();
-	DispatchParticleEffect( "electrified_armor_burst", pMarine->GetAbsOrigin(), vec3_angle );	//burst effect
-	
-	// hurt the marine
-	CTakeDamageInfo info( pMarine, pMarine, m_TouchExplosionDamage, DMG_BLAST );
-	Vector vecForceDir = (pMarine->GetAbsOrigin() /*- GetAbsOrigin()*/);
-	CalculateMeleeDamageForce( &info, vecForceDir, pMarine->GetAbsOrigin() );
-	pMarine->TakeDamage( info );
+	if (pMarine)
+	{
+		pMarine->EmitSound( "ASW_T75.Explode" );
+		Vector vecExplosionPos = pMarine->GetAbsOrigin();
+		CPASFilter filter( vecExplosionPos );
+		UserMessageBegin( filter, "ASWBarrelExplosion" );
+		WRITE_FLOAT( vecExplosionPos.x ); 
+		WRITE_FLOAT( vecExplosionPos.y );
+		WRITE_FLOAT( vecExplosionPos.z );
+		WRITE_FLOAT( 160.0f );
+		MessageEnd();
+		DispatchParticleEffect( "electrified_armor_burst", pMarine->GetAbsOrigin(), vec3_angle );	//burst effect
+		
+		// hurt the marine
+		CTakeDamageInfo info( pMarine, pMarine, m_TouchExplosionDamage, DMG_BLAST );
+		Vector vecForceDir = (pMarine->GetAbsOrigin() /*- GetAbsOrigin()*/);
+		CalculateMeleeDamageForce( &info, vecForceDir, pMarine->GetAbsOrigin() );
+		pMarine->TakeDamage( info );
+	}
 }
 void CAlienSwarm::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)	//ignite effect
 {
@@ -6937,35 +6942,50 @@ void CAlienSwarm::MarineExplode(CBaseEntity *pMarine, const char *alienLabel, co
 }
 void CAlienSwarm::MarineDamageDebugInfo(CBaseEntity *pOther, const char *damageInfo, const char *alienLabel, const char *damageTypes)
 {
-	if (asw_debug_alien_ignite.GetBool())	//debug marine damage effect
-		Msg("----- Player %s has %s by %s %s -----\n", pOther->GetPlayerName(), damageInfo, alienLabel, damageTypes);
+	//debug marine/alien damage activity
+	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
+	if (pMarine && asw_debug_alien_activity.GetBool())
+		Msg("----- Player %s has %s by %s %s -----\n", pMarine->GetPlayerName(), damageInfo, alienLabel, damageTypes);
 }
 void CAlienSwarm::SetColorScale(CBaseEntity *pAlien, const char *alienLabel)	//set aliens color scale function
 {
-	if (!pAlien)
+	CBaseAnimating *pEnt = dynamic_cast<CBaseAnimating*>(pAlien);
+	if (!pEnt)
 		return;
 
-	CBaseAnimating *pAlienScale = dynamic_cast<CBaseAnimating*>(pAlien);
+	char szEntity[8][60];
+	Q_snprintf(szEntity[0], sizeof(szEntity[0]), "asw_%s_color", alienLabel);
+	Q_snprintf(szEntity[1], sizeof(szEntity[1]), "asw_%s_color2", alienLabel);
+	Q_snprintf(szEntity[2], sizeof(szEntity[2]), "asw_%s_color3", alienLabel);
+	Q_snprintf(szEntity[3], sizeof(szEntity[3]), "asw_%s_color2_percent", alienLabel);
+	Q_snprintf(szEntity[4], sizeof(szEntity[4]), "asw_%s_color3_percent", alienLabel);
+	Q_snprintf(szEntity[5], sizeof(szEntity[5]), "asw_%s_scalemod_percent", alienLabel);
+	Q_snprintf(szEntity[6], sizeof(szEntity[6]), "asw_%s_scalemod", alienLabel);
 
-	char text[48], text2[48], text3[48], text4[48], text5[48], text6[48], text7[48];
-	Q_snprintf(text,  sizeof(text),  "asw_%s_color", alienLabel);
-	Q_snprintf(text2, sizeof(text2), "asw_%s_color2", alienLabel);
-	Q_snprintf(text3, sizeof(text3), "asw_%s_color3", alienLabel);
-	Q_snprintf(text4, sizeof(text4), "asw_%s_color2_percent", alienLabel);
-	Q_snprintf(text5, sizeof(text5), "asw_%s_color3_percent", alienLabel);
-	Q_snprintf(text6, sizeof(text6), "asw_%s_scalemod_percent", alienLabel);
-	Q_snprintf(text7, sizeof(text7), "asw_%s_scalemod", alienLabel);
+	ConVar *pColor  = (ConVar *)cvar->FindVar(szEntity[0]);
+	ConVar *pColor2 = (ConVar *)cvar->FindVar(szEntity[1]);
+	ConVar *pColor3 = (ConVar *)cvar->FindVar(szEntity[2]);
+	ConVar *pColor2Percent = (ConVar *)cvar->FindVar(szEntity[3]);
+	ConVar *pColor3Percent = (ConVar *)cvar->FindVar(szEntity[4]);
+	ConVar *pColScalePercent = (ConVar *)cvar->FindVar(szEntity[5]);
+	ConVar *pColScaleMod = (ConVar *)cvar->FindVar(szEntity[6]);
 
-	float randomColor = RandomFloat(0, 1);
-	if ( randomColor <= ((ConVar *)cvar->FindVar(text4))->GetFloat() )
-		pAlien->SetRenderColor(((ConVar *)cvar->FindVar(text2))->GetColor().r(),((ConVar *)cvar->FindVar(text2))->GetColor().g(),((ConVar *)cvar->FindVar(text2))->GetColor().b());
-	else if ( randomColor <= ((ConVar *)cvar->FindVar(text4))->GetFloat() + ((ConVar *)cvar->FindVar(text5))->GetFloat() )
-		pAlien->SetRenderColor(((ConVar *)cvar->FindVar(text3))->GetColor().r(),((ConVar *)cvar->FindVar(text3))->GetColor().g(),((ConVar *)cvar->FindVar(text3))->GetColor().b());
-	else pAlien->SetRenderColor(((ConVar *)cvar->FindVar(text))->GetColor().r(),((ConVar *)cvar->FindVar(text))->GetColor().g(),((ConVar *)cvar->FindVar(text))->GetColor().b());
+	if (pColor && pColor2 && pColor3 && pColor2Percent && pColor3Percent)
+	{
+		float randomColor = RandomFloat(0, 1);
+		if (randomColor <= pColor2Percent->GetFloat())
+			pEnt->SetRenderColor(pColor2->GetColor().r(), pColor2->GetColor().g(), pColor2->GetColor().b());
+		else if (randomColor <= pColor2Percent->GetFloat() + pColor3Percent->GetFloat())
+			pEnt->SetRenderColor(pColor3->GetColor().r(),pColor3->GetColor().g(), pColor3->GetColor().b());
+		else pEnt->SetRenderColor(pColor->GetColor().r(), pColor->GetColor().g(), pColor->GetColor().b());
+	}
 
-	float alienScale = RandomFloat(0, 1);
-	if ( pAlienScale && alienScale <= ((ConVar *)cvar->FindVar(text6))->GetFloat() )
-		pAlienScale->SetModelScale( ((ConVar *)cvar->FindVar(text7))->GetFloat() );
+	if (pColScalePercent && pColScaleMod)
+	{
+		float alienScale = RandomFloat(0, 1);
+		if (alienScale <= pColScalePercent->GetFloat())
+			pEnt->SetModelScale(pColScaleMod->GetFloat());
+	}
 
 	/*//ibemad original sample
 	float randomColor = RandomFloat(0, 1);
@@ -7134,7 +7154,8 @@ void CAlienSwarm::LevelInitPostEntity()
 	m_bIsOutro = ( !Q_strnicmp( mapName, "outro_", 6 ) );
 	m_bIsTutorial = ( !Q_strnicmp( mapName, "tutorial", 8 ) );
 	m_bIsLobby = ( !Q_strnicmp( mapName, "Lobby", 5 ) );
-#ifndef CLIENT_DLL	//softcopy:
+	m_bIsCity17 = ( !Q_strnicmp( mapName, "as_city17_", 10 ) );	//softcopy:
+#ifndef CLIENT_DLL
 	bool m_bIsFullTreatment = ( !Q_strnicmp( mapName, "syntek_hospital", 15 ) );
 #endif
 	if ( ASWHoldoutMode() )

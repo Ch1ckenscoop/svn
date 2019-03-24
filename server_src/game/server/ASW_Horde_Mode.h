@@ -33,6 +33,7 @@ public:
 		BETA_PARASITE_INDEX,
 		BETA_BUZZER_INDEX,
 		BETA_MORTAR_INDEX,
+		ZOMBIE_INDEX,	//hl2 alien index
 
 		ALIEN_INDEX_COUNT,	//Ch1ckensCoop: If you're going to add anything, add it before this!
 	};
@@ -52,6 +53,9 @@ public:
 	};
 
 	const AlienInfo *GetAlienInfo(int index);
+	//softcopy:
+	const AlienInfo *GetHL2AlienInfo(int index);
+	int GetHL2Index() { return ZOMBIE_INDEX; }
 	
 	virtual bool Init();
 	virtual void LevelInitPostEntity();
@@ -70,7 +74,7 @@ private:
 	virtual void UpdateHordeMode();
 	virtual void RandomizeHealth(int alienNum);	//Randomize a specific alien type's health.
 	virtual void RandomizeHealth();	//Randomize all alien healths.
-	
+
 };
 
 CASW_Horde_Mode* ASWHordeMode();

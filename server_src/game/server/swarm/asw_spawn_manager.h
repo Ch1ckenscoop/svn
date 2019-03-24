@@ -71,9 +71,15 @@ public:
 	ASW_Alien_Class_Entry* GetAlienClass( int i );
 
 	// spawns a shieldbug somewhere randomly in the map
-	bool SpawnRandomShieldbug();
-	bool SpawnRandomParasitePack( int nParasites );
-
+	//softcopy:
+	//bool SpawnRandomShieldbug();
+	//bool SpawnRandomParasitePack( int nParasites );
+	bool SpawnRandomAlienPack(const char *szAlienClass, int nAlienSpawn);
+	bool SpawnClassPrecache(const char *szClassName);
+	int	 SpawnHL2AlienBatch(const char *szAlienClass, int iNumHL2, float flMarinesBeyondDist = 0);
+	void SpawnHL2AlienClass();
+	bool IsHL2Alien(const char* szAlienClass);
+	
 private:
 	void UpdateCandidateNodes();
 	bool FindHordePosition();

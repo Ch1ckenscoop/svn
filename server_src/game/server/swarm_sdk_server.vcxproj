@@ -547,6 +547,8 @@ exit 1
     <ClCompile Include="globalstate.cpp" />
     <ClCompile Include="grenadethrown.cpp" />
     <ClCompile Include="guntarget.cpp" />
+    <ClCompile Include="hl2\npc_BaseZombie.cpp" />
+    <ClCompile Include="hl2\npc_zombie.cpp" />
     <ClCompile Include="HypKeyValues.cpp" />
     <ClCompile Include="h_ai.cpp" />
     <ClCompile Include="h_export.cpp">
@@ -1359,6 +1361,7 @@ exit 1
     <ClInclude Include="..\shared\hintmessage.h" />
     <ClInclude Include="..\shared\hintsystem.h" />
     <ClInclude Include="..\..\common\hl2orange.spa.h" />
+    <ClInclude Include="hl2\npc_BaseZombie.h" />
     <ClInclude Include="hltvdirector.h" />
     <ClInclude Include="..\shared\ichoreoeventcallback.h" />
     <ClInclude Include="..\shared\igamesystem.h" />

@@ -513,10 +513,12 @@ void CASW_Director::UpdateMarineInsideEscapeRoom( CASW_Marine *pMarine )
 
 void CASW_Director::OnMissionStarted()
 {
-	// if we have wanders turned on, spawn a couple of encounters
 	if ( asw_wanderer_override.GetBool() && ASWGameRules() )
 	{
-		ASWSpawnManager()->SpawnRandomShieldbug();
+		//softcopy:
+		ASWSpawnManager()->SpawnHL2AlienClass();
+		//ASWSpawnManager()->SpawnRandomShieldbug();
+		ASWSpawnManager()->SpawnRandomAlienPack("asw_shieldbug", 1);
 
 		int nParasites = 1;
 		switch( ASWGameRules()->GetSkillLevel() )
@@ -531,7 +533,9 @@ void CASW_Director::OnMissionStarted()
 		while ( nParasites > 0 )
 		{
 			int nParasitesInThisPack = RandomInt( 3, 6 );
-			if ( ASWSpawnManager()->SpawnRandomParasitePack( nParasitesInThisPack ) )
+			//softcopy:
+			if ( ASWSpawnManager()->SpawnRandomAlienPack("asw_parasite", nParasitesInThisPack) )
+			//if ( ASWSpawnManager()->SpawnRandomParasitePack( nParasitesInThisPack ) )
 			{
 				nParasites -= nParasitesInThisPack;
 			}

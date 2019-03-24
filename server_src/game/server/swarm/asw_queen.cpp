@@ -123,7 +123,7 @@ ConVar asw_queen_color2_percent("asw_queen_color2_percent", "0.0", FCVAR_NONE, "
 ConVar asw_queen_color3("asw_queen_color3", "255 255 255", FCVAR_NONE, "Sets the color of queen.");
 ConVar asw_queen_color3_percent("asw_queen_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of queen color",true,0,true,1);
 ConVar asw_queen_scalemod("asw_queen_scalemod", "0.6", FCVAR_NONE, "Sets the scale of normal queens.",true,0,true,1);
-ConVar asw_queen_scalemod_percent("asw_queen_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of normal queens scale.",true,0,true,1);
+ConVar asw_queen_scalemod_percent("asw_queen_scalemod_percent", "1.0", FCVAR_NONE, "Sets the percentage of normal queens scale.",true,0,true,1);
 ConVar asw_queen_touch_damage("asw_queen_touch_damage", "5", FCVAR_CHEAT, "Damage caused by queen on touch.");
 ConVar asw_queen_ignite("asw_queen_ignite", "0", FCVAR_CHEAT, "Ignites marine on queen melee/touch(1=melee, 2=touch, 3=All).");
 ConVar asw_queen_explode("asw_queen_explode", "0", FCVAR_CHEAT, "Explodes marine on queen melee/touch(1=melee, 2=touch, 3=All).");

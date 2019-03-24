@@ -27,9 +27,6 @@ const int MAX_PLAYER_SQUAD = 4;
 ConVar	asw_colonist_health ( "asw_colonist_health", "90" );
 ConVar	asw_colonist_tom_health ( "asw_colonist_tom_health", "30" );	// tutorial guy who gets eaten
 //softcopy:
-bool bIsColonist;
-ConVar	asw_colonist_zombie_change("asw_colonist_zombie_change", "0", FCVAR_CHEAT, "If set, Colonist changed to zombie.");
-#define SWARM_COLONIST_MODEL_ZOMBIE  "models/zombie/classic.mdl"   
 #define SWARM_COLONIST_MODEL_FEMALE  "models/humans/group01/female_01.mdl"	//female colonist
 
 #define SWARM_COLONIST_MODEL         "models/swarm/Colonist/Male/MaleColonist.mdl"
@@ -56,9 +53,8 @@ CASW_Colonist::CASW_Colonist()
 	m_iInfestCycle = 0;
 	//softcopy:
 	//Msg("CASW_Colonist created\n");        
-	bIsColonist = !asw_colonist_zombie_change.GetBool();	
 	isFemale=RandomInt(0,1)==0;
-    Msg("%s created\n", (bIsColonist ? (isFemale ? "CASW_Colonist female" : "CASW_Colonist male") : "CASW_Zombie"));
+    Msg("%s created\n", isFemale ? "CASW_Colonist female" : "CASW_Colonist male");
 	selectedBy = -1;  
 }
 
@@ -66,7 +62,7 @@ CASW_Colonist::~CASW_Colonist()
 {
 	//softcopy:
 	//Msg("CASW_Colonist destroyed\n");
-	Msg("%s destroyed\n", bIsColonist ? (isFemale ? "CASW_Colonist female" : "CASW_Colonist male") : "CASW_Zombie");    
+	Msg("%s destroyed\n", isFemale ? "CASW_Colonist female" : "CASW_Colonist male");    
 }
 
 void CASW_Colonist::Precache()
@@ -78,8 +74,7 @@ void CASW_Colonist::Precache()
 	//PrecacheScriptSound( "NPC_Citizen.FootstepRight" );
 	//PrecacheScriptSound( "NPC_Citizen.Die" );
 	//PrecacheScriptSound( "MaleMarine.Pain" );
-	//add female and zombie model
-	PrecacheModel( SWARM_COLONIST_MODEL_ZOMBIE );
+	//add female model
 	PrecacheModel( SWARM_COLONIST_MODEL_FEMALE );
 	PrecacheScriptSound( "Crash.Dead0" );
 	PrecacheScriptSound( "Crash.SmallPain0" );
@@ -98,7 +93,7 @@ void CASW_Colonist::Spawn()
 	Precache();
 	//softcopy:
 	//SetModel( SWARM_COLONIST_MODEL );
-	SetModel(bIsColonist ? (isFemale ? SWARM_COLONIST_MODEL_FEMALE:SWARM_COLONIST_MODEL ) : SWARM_COLONIST_MODEL_ZOMBIE);
+	SetModel( isFemale ? SWARM_COLONIST_MODEL_FEMALE:SWARM_COLONIST_MODEL );
 
  	SetRenderMode(kRenderNormal);
 	SetRenderColor(180,180,180);
@@ -149,7 +144,7 @@ void CASW_Colonist::Spawn()
 	NPCInit();
 	//softcopy:
 	//Msg("Colonist health after NPCInit %d\n", m_iHealth);
-	Msg("%s health after NPCInit %d\n", bIsColonist ? "Colonist" : "Zombie", m_iHealth);
+	Msg("%s health after NPCInit %d\n", "Colonist", m_iHealth);
 }
 
 Activity CASW_Colonist::NPC_TranslateActivity( Activity activity )

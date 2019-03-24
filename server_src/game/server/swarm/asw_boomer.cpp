@@ -43,8 +43,8 @@ ConVar asw_boomer_color2("asw_boomer_color2", "255 255 255", FCVAR_NONE, "Sets t
 ConVar asw_boomer_color2_percent("asw_boomer_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of boomers color",true,0,true,1);
 ConVar asw_boomer_color3("asw_boomer_color3", "255 255 255", FCVAR_NONE, "Sets the color of boomers.");
 ConVar asw_boomer_color3_percent("asw_boomer_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of boomers color",true,0,true,1);
-ConVar asw_boomer_scalemod("asw_boomer_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal boomers.",true,0,true,1.5);
-ConVar asw_boomer_scalemod_percent("asw_boomer_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of normal boomers scale.",true,0,true,1);
+ConVar asw_boomer_scalemod("asw_boomer_scalemod", "1.0", FCVAR_NONE, "Sets the scale of normal boomers.",true,0,true,1.5);
+ConVar asw_boomer_scalemod_percent("asw_boomer_scalemod_percent", "1.0", FCVAR_NONE, "Sets the percentage of normal boomers scale.",true,0,true,1);
 ConVar asw_boomer_explode_range( "asw_boomer_explode_range", "200", FCVAR_CHEAT, "Sets boomer explode range." );
 ConVar asw_boomer_max_projectile( "asw_boomer_max_projectile", "8", FCVAR_CHEAT, "Sets boomer max projectile." );
 ConVar asw_boomer_explode_damage( "asw_boomer_explode_damage", "55", FCVAR_CHEAT, "Sets boomer explode damage." );

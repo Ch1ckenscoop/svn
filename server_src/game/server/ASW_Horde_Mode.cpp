@@ -20,7 +20,7 @@ ConVar asw_hordemode_update_mode("asw_hordemode_update_mode", "0", FCVAR_CHEAT |
 ConVar asw_hordemode_mode("asw_hordemode_mode", "1", FCVAR_CHEAT | FCVAR_CCOOP, "0 = Health settings only; 1 = Binary + horde_size_max settings + health; 2 = Binary + horde_size_max settings");
 
 //Ch1ckensCoop: Hordemode spawning settings
-ConVar asw_hordemode_aliens("asw_hordemode_aliens", "8063", FCVAR_CHEAT | FCVAR_CCOOP, "Binary flag of allowed aliens. See asw_hordemode_aliens_list command.");
+ConVar asw_hordemode_aliens("asw_hordemode_aliens", "1048575", FCVAR_CHEAT | FCVAR_CCOOP, "Binary flag of allowed aliens. See asw_hordemode_aliens_list command.");
 
 //Ch1ckensCoop: Hordemode horde_size_max settings and alien health settings
 
@@ -122,7 +122,7 @@ ConVar asw_hordemode_harvester_beta_min("asw_hordemode_harvester_beta_min", "1",
 ConVar asw_hordemode_harvester_beta_health_max("asw_hordemode_harvester_beta_health_max", "325", FCVAR_CHEAT | FCVAR_CCOOP, "Maximum beta harvester heatlh.");
 ConVar asw_hordemode_harvester_beta_health_min("asw_hordemode_harvester_beta_health_min", "150", FCVAR_CHEAT | FCVAR_CCOOP, "Minimum beta harvester health.");
 
-//softcopy: hordemode horde_size_max settings and beta aliens health settings
+//softcopy: hordemode horde_size_max settings and beta/hl2 aliens health settings
 //Beta Parasites   
 ConVar asw_hordemode_parasite_beta_max("asw_hordemode_parasite_beta_max", "1", FCVAR_CHEAT, "Maximum beta parasite to spawn.");
 ConVar asw_hordemode_parasite_beta_min("asw_hordemode_parasite_beta_min", "1", FCVAR_CHEAT, "Minimum beta parasite  to spawn.");
@@ -138,6 +138,11 @@ ConVar asw_hordemode_mortar_beta_max("asw_hordemode_mortar_beta_max", "1", FCVAR
 ConVar asw_hordemode_mortar_beta_min("asw_hordemode_mortar_beta_min", "1", FCVAR_CHEAT, "Minimum beta mortar  to spawn.");
 ConVar asw_hordemode_mortar_beta_health_max("asw_hordemode_mortar_beta_health_max", "425", FCVAR_CHEAT, "Maximum beta mortar  heatlh.");
 ConVar asw_hordemode_mortar_beta_health_min("asw_hordemode_mortar_beta_health_min", "300", FCVAR_CHEAT, "Minimum beta mortar  health.");
+//Zombie   
+ConVar asw_hordemode_zombie_max("asw_hordemode_zombie_max", "1", FCVAR_CHEAT, "Maximum npc_zombie to spawn.");
+ConVar asw_hordemode_zombie_min("asw_hordemode_zombie_min", "1", FCVAR_CHEAT, "Minimum npc_zombie to spawn.");
+ConVar asw_hordemode_zombie_health_max("asw_hordemode_zombie_health_max", "425", FCVAR_CHEAT, "Maximum npc_zombie heatlh.");
+ConVar asw_hordemode_zombie_health_min("asw_hordemode_zombie_health_min", "300", FCVAR_CHEAT, "Minimum npc_zombie health.");
 
 static CASW_Horde_Mode g_ASWHordeMode;
 CASW_Horde_Mode* ASWHordeMode() 
@@ -356,6 +361,7 @@ void CASW_Horde_Mode::InitAlienData()
 	m_AlienInfoArray[BETA_BUZZER_INDEX].m_szAlienClassName = "asw_buzzer";
 	m_AlienInfoArray[BETA_PARASITE_INDEX].m_szAlienClassName = "asw_parasite";
 	m_AlienInfoArray[BETA_MORTAR_INDEX].m_szAlienClassName = "asw_mortarbug";
+	m_AlienInfoArray[ZOMBIE_INDEX].m_szAlienClassName = "npc_zombie";
 
 
 	// Alien Flags
@@ -379,6 +385,7 @@ void CASW_Horde_Mode::InitAlienData()
 	m_AlienInfoArray[BETA_BUZZER_INDEX].m_iFlag = 65536;
 	m_AlienInfoArray[BETA_PARASITE_INDEX].m_iFlag = 131072;
 	m_AlienInfoArray[BETA_MORTAR_INDEX].m_iFlag = 262144;
+	m_AlienInfoArray[ZOMBIE_INDEX].m_iFlag = 524288;	//HL2 alien
 
 
 	// Beta Alien Flags
@@ -432,6 +439,7 @@ void CASW_Horde_Mode::InitAlienData()
 	m_AlienInfoArray[MORTAR_INDEX].m_bBeta = false;
 	m_AlienInfoArray[SHAMAN_INDEX].m_bBeta = false;
 	m_AlienInfoArray[UBER_INDEX].m_bBeta = false;
+	m_AlienInfoArray[ZOMBIE_INDEX].m_bBeta = false;
 
 
 	// Alien Maximum Healths
@@ -455,6 +463,7 @@ void CASW_Horde_Mode::InitAlienData()
 	m_AlienInfoArray[BETA_BUZZER_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_buzzer_beta_health_max");
 	m_AlienInfoArray[BETA_PARASITE_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_parasite_beta_health_max");
 	m_AlienInfoArray[BETA_MORTAR_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_mortar_beta_health_max");
+	m_AlienInfoArray[ZOMBIE_INDEX].m_pHealthMaxCvar = g_pCVar->FindVar("asw_hordemode_zombie_health_max");
 
 
 	// Alien Minimum Healths
@@ -478,6 +487,7 @@ void CASW_Horde_Mode::InitAlienData()
 	m_AlienInfoArray[BETA_BUZZER_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_buzzer_beta_health_min");
 	m_AlienInfoArray[BETA_PARASITE_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_parasite_beta_health_min");
 	m_AlienInfoArray[BETA_MORTAR_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_mortar_beta_health_min");
+	m_AlienInfoArray[ZOMBIE_INDEX].m_pHealthMinCvar = g_pCVar->FindVar("asw_hordemode_zombie_health_min");
 
 
 	// Alien Maximums
@@ -501,6 +511,7 @@ void CASW_Horde_Mode::InitAlienData()
 	m_AlienInfoArray[BETA_BUZZER_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_buzzer_beta_max");
 	m_AlienInfoArray[BETA_PARASITE_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_parasite_beta_max");
 	m_AlienInfoArray[BETA_MORTAR_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_mortar_beta_max");
+	m_AlienInfoArray[ZOMBIE_INDEX].m_pMaxCvar = g_pCVar->FindVar("asw_hordemode_zombie_max");
 
 
 	// Alien Minimums
@@ -524,6 +535,7 @@ void CASW_Horde_Mode::InitAlienData()
 	m_AlienInfoArray[BETA_BUZZER_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_buzzer_beta_min");
 	m_AlienInfoArray[BETA_PARASITE_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_parasite_beta_min");
 	m_AlienInfoArray[BETA_MORTAR_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_mortar_beta_min");
+	m_AlienInfoArray[ZOMBIE_INDEX].m_pMinCvar = g_pCVar->FindVar("asw_hordemode_zombie_min");
 
 
 	// Alien Health Cvar ConVarRefs
@@ -547,12 +559,22 @@ void CASW_Horde_Mode::InitAlienData()
 	m_AlienInfoArray[BETA_BUZZER_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("sk_asw_buzzer_beta_health");
 	m_AlienInfoArray[BETA_PARASITE_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("asw_parasite_health");
 	m_AlienInfoArray[BETA_MORTAR_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("asw_mortarbug_health");
+	m_AlienInfoArray[ZOMBIE_INDEX].m_pAlienHealthCvar = g_pCVar->FindVar("sk_zombie_health");
 
 }
 
 const CASW_Horde_Mode::AlienInfo *CASW_Horde_Mode::GetAlienInfo(int index)
 {
 	if (index < 0 || index >= ALIEN_INDEX_COUNT)
+		return NULL;
+
+	return &m_AlienInfoArray[index];
+}
+
+//softcopy:
+const CASW_Horde_Mode::AlienInfo *CASW_Horde_Mode::GetHL2AlienInfo(int index)
+{
+	if (index < ZOMBIE_INDEX || index >= ALIEN_INDEX_COUNT)
 		return NULL;
 
 	return &m_AlienInfoArray[index];

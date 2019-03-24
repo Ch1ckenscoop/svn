@@ -51,8 +51,8 @@ ConVar asw_drone_jumper_color2("asw_drone_jumper_color2", "255 255 255", FCVAR_N
 ConVar asw_drone_jumper_color2_percent("asw_drone_jumper_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of jumping drones color",true,0,true,1);
 ConVar asw_drone_jumper_color3("asw_drone_jumper_color3", "255 255 255", FCVAR_NONE, "Sets the color of jumping drones.");
 ConVar asw_drone_jumper_color3_percent("asw_drone_jumper_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of jumping drones color",true,0,true,1);
-ConVar asw_drone_jumper_scalemod("asw_drone_jumper_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal jumping drones.",true,0,true,1.5);
-ConVar asw_drone_jumper_scalemod_percent("asw_drone_jumper_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of normal jumping drones scale.",true,0,true,1);
+ConVar asw_drone_jumper_scalemod("asw_drone_jumper_scalemod", "1.0", FCVAR_NONE, "Sets the scale of normal jumping drones.",true,0,true,1.5);
+ConVar asw_drone_jumper_scalemod_percent("asw_drone_jumper_scalemod_percent", "1.0", FCVAR_NONE, "Sets the percentage of normal jumping drones scale.",true,0,true,1);
 ConVar asw_drone_touch_ignite("asw_drone_touch_ignite", "0", FCVAR_CHEAT, "Ignites marine on touch(1=drone, 2=jumper, 3=All).");
 ConVar asw_drone_melee_ignite("asw_drone_melee_ignite", "0", FCVAR_CHEAT, "Ignites marine on melee(1=drone, 2=jumper, 3=All).");
 ConVar asw_drone_touch_onfire("asw_drone_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if drone body on fire touch.");
@@ -1148,7 +1148,7 @@ Activity CASW_Drone_Advanced::NPC_TranslateActivity( Activity eNewActivity )
 	//if ( eNewActivity == ACT_CLIMB_DOWN )
 		//return ACT_CLIMB_UP;
 
-	//softcopy: add beta drone flinch, burrow out & run aim animations
+	//softcopy: add beta drone flinch, burrow out & run animations
 	if (eNewActivity == ACT_ALIEN_FLINCH_BIG)
 		return  ACT_BIG_FLINCH;
 	if (eNewActivity == ACT_ALIEN_FLINCH_MEDIUM)
@@ -1161,6 +1161,8 @@ Activity CASW_Drone_Advanced::NPC_TranslateActivity( Activity eNewActivity )
 		return  ACT_DRONE_BURROW_IDLE;
 	if (eNewActivity == ACT_RUN && m_bElectroStunned)
 		return  ACT_RUN_AIM;
+	if (eNewActivity == ACT_RUN)
+		return  ACT_ANTLION_RUN_AGITATED;
 
 	return BaseClass::NPC_TranslateActivity(eNewActivity);
 }

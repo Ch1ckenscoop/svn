@@ -287,6 +287,7 @@ public:
 
 	// utility function to calc damage force
 	virtual Vector			CalcDeathForceVector( const CTakeDamageInfo &info );
+	Vector					CalcDamageForceVector(const CTakeDamageInfo &info);	//softcopy:
 
 	virtual int				BloodColor();
 	virtual Activity		GetDeathActivity( void );

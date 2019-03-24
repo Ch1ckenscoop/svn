@@ -67,27 +67,28 @@ Binary flags of aliens to spawn. Note: will not spawn aliens set in this cvar if
 
 Flags are as follows:
 
-  * Drone: 1
-  * Buzzer: 2
-  * Parasite: 4
-  * Shieldbug: 8
-  * Drone Jumper: 16
-  * Harvester: 32
-  * Defanged parasite: 64
-  * Queen: 128
-  * Boomer: 256
-  * Ranger: 512
-  * Mortar: 1024
-  * Shaman: 2048
-  * Uber Drone: 4096
-  * Beta Drone: 8192
-  * Beta Shieldbug: 16384
-  * Beta Harvester: 32768
-  * Beta Buzzer: 65536
-  * Beta Parasite: 131072
-  * Beta Mortar: 262144
+* Drone: 1
+* Buzzer: 2
+* Parasite: 4
+* Shieldbug: 8
+* Drone Jumper: 16
+* Harvester: 32
+* Defanged parasite: 64
+* Queen: 128
+* Boomer: 256
+* Ranger: 512
+* Mortar: 1024
+* Shaman: 2048
+* Uber Drone: 4096
+* Beta Drone: 8192
+* Beta Shieldbug: 16384
+* Beta Harvester: 32768
+* Beta Buzzer: 65536
+* Beta Parasite: 131072
+* Beta Mortar: 262144
+* NPC Zombie: 524288
 
-All aliens would be `524287`. So if you wanted to spawn all types of drones and rangers, the equation would be this:
+All aliens would be `1048575`. So if you wanted to spawn all types of drones and rangers, the equation would be this:
 
 `1 + 16 + 4096 + 512 = 4625`
 <!--
@@ -534,6 +535,22 @@ All cvars in this category do the same thing: Set the minimum or maximum health 
 |-
 || r326 || `45` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
 |}
+----
+
+== NPC Zombie ==
+
+====== asw_hordemode_zombie_health_max ======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.4 || `100` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}
+====== asw_hordemode_zombie_health_min ======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.4 || `50` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}
 
 
 = Alien Maximums/Minimums =
@@ -969,4 +986,20 @@ All cvars in this category do the same thing: Set the minimum or maximum number 
 || Revision Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
 |-
 || r326 || `1` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}
+----
+
+== NPC Zombie ==
+
+====== asw_hordemode_zombie_max ======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.4 || `1` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|}
+====== asw_hordemode_zombie_min ======
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.4 || `1` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
 |}

@@ -19,6 +19,7 @@
 #include "asw_alien.h"
 #include "entitylist.h"
 #include "asw_gamerules.h"
+#include "ASW_Horde_Mode.h"	//softcopy:
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -31,6 +32,7 @@ CASW_Spawn_Manager* ASWSpawnManager() { return &g_Spawn_Manager; }
 
 extern ConVar asw_director_debug;
 extern ConVar asw_wanderer_max;
+extern ConVar asw_debug_alien_spawn;	//softcopy:
 ConVar asw_horde_min_distance("asw_horde_min_distance", "800", FCVAR_CHEAT, "Minimum distance away from the marines the horde can spawn" );
 ConVar asw_horde_max_distance("asw_horde_max_distance", "1500", FCVAR_CHEAT, "Maximum distance away from the marines the horde can spawn" );
 ConVar asw_max_alien_batch("asw_max_alien_batch", "10", FCVAR_CHEAT, "Max number of aliens spawned in a horde batch" );
@@ -77,6 +79,8 @@ ASW_Alien_Class_Entry g_Aliens[]=
 	ASW_Alien_Class_Entry( "asw_mortarbug", HULL_LARGE ),
 	ASW_Alien_Class_Entry( "asw_shaman", HULL_LARGE ),
 	ASW_Alien_Class_Entry( "asw_drone_uber", HULL_MEDIUMBIG ),
+	ASW_Alien_Class_Entry( "npc_zombie", HULL_HUMAN ),	//softcopy:
+
 };
 //Ch1ckensCoop: Expanded to include all alien types
 // Array indices of drones.  Used by carnage mode.
@@ -231,7 +235,12 @@ void CASW_Spawn_Manager::Update()
 				UTIL_ASW_NearestMarine( m_vecHordePosition, flDistance );
 
 				if ( flDistance < asw_horde_max_distance.GetFloat() && flDistance > asw_horde_min_distance.GetFloat() )
+				{
 					iSpawned = SpawnAlienBatch( asw_horde_class.GetString(), iToSpawn, m_vecHordePosition, m_angHordeAngle );
+					//softcopy: spawns more HL2 aliens if horde has spawned nothing 
+					if (iSpawned <=0)
+						iSpawned = SpawnHL2AlienBatch(asw_horde_class.GetString(), iToSpawn );
+				}
 				else
 				{
 					if (asw_director_debug.GetBool())
@@ -243,6 +252,9 @@ void CASW_Spawn_Manager::Update()
 			else
 			{
 				iSpawned = SpawnAlienBatch( asw_horde_class.GetString(), iToSpawn, m_vecHordePosition, m_angHordeAngle, asw_horde_min_distance.GetFloat() );
+				//softcopy:	spawns more HL2 aliens if horde has spawned nothing 
+				if (iSpawned <=0)
+					iSpawned = SpawnHL2AlienBatch(asw_horde_class.GetString(), iToSpawn , asw_horde_min_distance.GetFloat());
 			}
 
 			m_iHordeToSpawn -= iSpawned;
@@ -661,6 +673,11 @@ int CASW_Spawn_Manager::SpawnAlienBatch( const char* szAlienClass, int iNumAlien
 		return 0;
 	}
 
+	//softcopy: Because only city17 has zombie modules and textures provided,
+	//          so that Ch1ckenscoop will hordemode spawn npc zombies on custom map city17 only.
+	if (ASWGameRules() && IsHL2Alien(szAlienClass) && !ASWGameRules()->IsCity17Map())
+		return 0;
+
 	int iSpawned = 0;
 	bool bCheckGround = true;
 	Vector vecMins = NAI_Hull::Mins(HULL_MEDIUMBIG);
@@ -765,7 +782,6 @@ CBaseEntity* CASW_Spawn_Manager::SpawnAlienAt(const char* szAlienClass, const Ve
 	pEntity->SetAbsOrigin( vecPos );	
 	pEntity->SetAbsAngles( angles );
 	UTIL_DropToFloor( pEntity, MASK_SOLID );
-
 	IASW_Spawnable_NPC* pSpawnable = dynamic_cast<IASW_Spawnable_NPC*>(pEntity);
 	ASSERT(pSpawnable);	
 	if ( !pSpawnable )
@@ -860,7 +876,7 @@ void CASW_Spawn_Manager::DeleteRoute( AI_Waypoint_t *pWaypointList )
 	}
 }
 
-bool CASW_Spawn_Manager::SpawnRandomShieldbug()
+/*bool CASW_Spawn_Manager::SpawnRandomShieldbug()	//softcopy: replaced by SpawnRandomAlienPack
 {
 	int iNumNodes = g_pBigAINet->NumNodes();
 	if ( iNumNodes < 6 )
@@ -924,7 +940,7 @@ bool CASW_Spawn_Manager::SpawnRandomShieldbug()
 
 	aAreas.PurgeAndDeleteElements();
 	return false;
-}
+}*/
 
 Vector TraceToGround( const Vector &vecPos )
 {
@@ -933,7 +949,7 @@ Vector TraceToGround( const Vector &vecPos )
 	return tr.endpos;
 }
 
-bool CASW_Spawn_Manager::SpawnRandomParasitePack( int nParasites )
+/*bool CASW_Spawn_Manager::SpawnRandomParasitePack( int nParasites )	//softcopy: replaced by SpawnRandomAlienPack
 {
 	int iNumNodes = g_pBigAINet->NumNodes();
 	if ( iNumNodes < 6 )
@@ -1005,7 +1021,181 @@ bool CASW_Spawn_Manager::SpawnRandomParasitePack( int nParasites )
 
 	aAreas.PurgeAndDeleteElements();
 	return false;
+}*/
+
+//softcopy: 
+bool CASW_Spawn_Manager::SpawnRandomAlienPack( const char *szAlienClass, int nAlienSpawn )
+{
+	int iNumNodes = g_pBigAINet->NumNodes();
+	if ( iNumNodes < 6 && szAlienClass == NULL )
+		return false;
+
+	int nHull = 0;
+	int nCount = GetNumAlienClasses();
+	for ( int i = 0 ; i < nCount; i++ )	//get the Hull type
+	{
+		if ( !Q_stricmp( szAlienClass, GetAlienClass( i )->m_pszAlienClass ) )
+			nHull = GetAlienClass( i )->m_nHullType;
+	}
+
+	CUtlVector<CASW_Open_Area*> aAreas;
+	for ( int i = 0; i < 6; i++ )
+	{
+		CAI_Node *pNode = NULL;
+		int nTries = 0;
+		while ( nTries < 5 && ( !pNode || pNode->GetType() != NODE_GROUND ) )
+		{
+			pNode = g_pBigAINet->GetNode( RandomInt( 0, iNumNodes ) );
+			nTries++;
+		}
+
+		if ( pNode )
+		{
+			CASW_Open_Area *pArea = FindNearbyOpenArea( pNode->GetOrigin(), HULL_MEDIUMBIG );
+			if ( pArea && pArea->m_nTotalLinks > 30 )
+			{
+				// test if there's room to spawn a alien at that spot
+				if ( ValidSpawnPoint( pArea->m_pNode->GetPosition( nHull ), NAI_Hull::Mins( nHull ), NAI_Hull::Maxs( nHull ), true, false ) )
+				{
+					aAreas.AddToTail( pArea );
+				}
+				else
+				{
+					delete pArea;
+				}
+			}
+		}
+		// stop searching once we have 3 acceptable candidates
+		if ( aAreas.Count() >= 3 )
+			break;
+	}
+
+	// find area with the highest connectivity
+	CASW_Open_Area *pBestArea = NULL;
+	for ( int i = 0; i < aAreas.Count(); i++ )
+	{
+		CASW_Open_Area *pArea = aAreas[i];
+		if ( !pBestArea || pArea->m_nTotalLinks > pBestArea->m_nTotalLinks )
+		{
+			pBestArea = pArea;
+		}
+	}
+
+	if ( pBestArea )
+	{
+		int iSpawned = 0;
+		for ( int i = 0; i < nAlienSpawn; i++ )
+		{
+			CBaseEntity *pAlien = NULL;
+			pAlien = SpawnAlienAt(szAlienClass, !Q_strcmp(szAlienClass, "asw_parasite") ?
+			TraceToGround(pBestArea->m_pNode->GetPosition(nHull)) :	pBestArea->m_pNode->GetPosition(nHull), RandomAngle(0, 360));
+
+			IASW_Spawnable_NPC *pSpawnable = dynamic_cast<IASW_Spawnable_NPC*>( pAlien );
+			if ( pSpawnable )
+			{
+				iSpawned++;
+				pSpawnable->SetAlienOrders(AOT_SpreadThenHibernate, vec3_origin, NULL);
+			}
+			if ( asw_director_debug.GetBool() && pAlien )
+			{
+				Msg( "Spawned %s at %f %f %f\n", szAlienClass, pAlien->GetAbsOrigin() );
+				NDebugOverlay::Cross3D( pAlien->GetAbsOrigin(), 8.0f, 255, 0, 0, true, 20.0f );
+			}
+		}
+		if (iSpawned >0 && asw_debug_alien_spawn.GetBool())
+			Msg("%s: %i %s has spawned.\n", "SpawnRandomAlienPack", iSpawned, szAlienClass); 		
+
+		aAreas.PurgeAndDeleteElements();
+		return true;
+	}
+
+	aAreas.PurgeAndDeleteElements();
+	return false;
 }
+int CASW_Spawn_Manager::SpawnHL2AlienBatch(const char* szAlienClass, int iNumHL2, float flMarinesBeyondDist )
+{
+	int iSpawned = 0;
+
+	if (!ASWHordeMode())
+		return 0;
+
+	const CASW_Horde_Mode::AlienInfo *pHL2 = ASWHordeMode()->GetHL2AlienInfo(ASWHordeMode()->GetHL2Index());
+	if (pHL2)
+	{	
+		const char *szHL2Alien = pHL2->m_szAlienClassName;
+		if (!FStrEq(szHL2Alien, szAlienClass))	//spawn HL2 if they are not the same type
+		{
+			iSpawned = SpawnAlienBatch( szHL2Alien, iNumHL2, m_vecHordePosition, m_angHordeAngle, flMarinesBeyondDist );
+			if (iSpawned > 0 && asw_debug_alien_spawn.GetBool())
+				Msg("%s: %i %s has spawned.\n", "SpawnHL2AlienBatch", iSpawned, szHL2Alien);
+		}
+	}
+
+	return iSpawned;
+}
+void CASW_Spawn_Manager::SpawnHL2AlienClass()	//spawns hl2 aliens when start mission
+{
+	if (ASWGameRules() && !ASWGameRules()->IsCity17Map())	//hl2 is available on city17 only
+		return;
+
+	if (!ASWHordeMode())
+		return;
+
+	for (int i=0; i < ASWHordeMode()->ALIEN_INDEX_COUNT; i++)
+	{
+		const CASW_Horde_Mode::AlienInfo *pHL2 = ASWHordeMode()->GetHL2AlienInfo(i);
+		if (pHL2)
+		{
+			const char *szHL2Alien = pHL2->m_szAlienClassName;	
+			if (SpawnClassPrecache(szHL2Alien))	//spawn after precached 
+			{
+				int nHL2Alien = RandomInt(2, 6);
+				while ( nHL2Alien > 0 )	//random amount
+				{
+					int nHL2InThisPack = RandomInt( 1,3 );
+					if (SpawnRandomAlienPack(szHL2Alien, nHL2InThisPack))
+						nHL2Alien -= nHL2InThisPack;
+					else
+						break;
+				}
+			}
+		}
+	}
+}
+bool CASW_Spawn_Manager::SpawnClassPrecache(const char *szClassName)	//precache spawnable class
+{
+	CBaseEntity *pEntity = dynamic_cast<CBaseEntity *>(CreateEntityByName(szClassName));
+	bool bIsPrecached = false;
+	if (pEntity)
+	{	
+		MDLCACHE_CRITICAL_SECTION();
+		bool allowPrecache = CBaseEntity::IsPrecacheAllowed();
+		CBaseEntity::SetAllowPrecache( true );
+		pEntity->Precache();
+		CBaseEntity::SetAllowPrecache( allowPrecache );
+		bIsPrecached = true;
+	}
+
+	if (asw_debug_alien_spawn.GetBool())
+		Msg("%s: %s %s\n", "SpawnClassPrecache", szClassName, bIsPrecached ? "has precached" : "precache failed");
+
+	return bIsPrecached;
+}
+bool CASW_Spawn_Manager::IsHL2Alien(const char* szAlienClass)	//HL2 aliens validation
+{
+	if (ASWHordeMode())
+	{
+		for (int i = 0; i < ASWHordeMode()->ALIEN_INDEX_COUNT; i++)
+		{
+			const CASW_Horde_Mode::AlienInfo *pHL2 = ASWHordeMode()->GetHL2AlienInfo(i);
+			if (pHL2 && FStrEq(pHL2->m_szAlienClassName, szAlienClass))
+				return true;
+		}
+	}
+	
+	return false;
+}
+//
 
 // heuristic to find reasonably open space - searches for areas with high node connectivity
 CASW_Open_Area* CASW_Spawn_Manager::FindNearbyOpenArea( const Vector &vecSearchOrigin, int nSearchHull )
@@ -1219,10 +1409,14 @@ static ConCommand asw_alien_horde("asw_alien_horde", asw_alien_horde_f, "Creates
 
 CON_COMMAND_F( asw_spawn_shieldbug, "Spawns a shieldbug somewhere randomly in the map", FCVAR_CHEAT )
 {
-	ASWSpawnManager()->SpawnRandomShieldbug();
+	//softcopy: replaced function
+	//ASWSpawnManager()->SpawnRandomShieldbug();
+	ASWSpawnManager()->SpawnRandomAlienPack("asw_shieldbug", 1);
 }
 
 CON_COMMAND_F( asw_spawn_parasite_pack, "Spawns a group of parasites somewhere randomly in the map", FCVAR_CHEAT )
 {
-	ASWSpawnManager()->SpawnRandomParasitePack( RandomInt( 3, 5 ) );
+	//softcopy: replaced function
+	//ASWSpawnManager()->SpawnRandomParasitePack( RandomInt( 3, 5 ) );
+	ASWSpawnManager()->SpawnRandomAlienPack("asw_parasite", RandomInt( 3, 5 ));
 }

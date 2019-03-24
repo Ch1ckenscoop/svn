@@ -42,8 +42,8 @@ ConVar asw_ranger_color2("asw_ranger_color2", "255 255 255", FCVAR_NONE, "Sets t
 ConVar asw_ranger_color2_percent("asw_ranger_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of rangers color",true,0,true,1);
 ConVar asw_ranger_color3("asw_ranger_color3", "255 255 255", FCVAR_NONE, "Sets the color of parasites.");
 ConVar asw_ranger_color3_percent("asw_ranger_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of rangers color",true,0,true,1);
-ConVar asw_ranger_scalemod("asw_ranger_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal rangers.",true,0,true,1.5);
-ConVar asw_ranger_scalemod_percent("asw_ranger_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of normal rangers scale.",true,0,true,1);
+ConVar asw_ranger_scalemod("asw_ranger_scalemod", "1.0", FCVAR_NONE, "Sets the scale of normal rangers.",true,0,true,1.5);
+ConVar asw_ranger_scalemod_percent("asw_ranger_scalemod_percent", "1.0", FCVAR_NONE, "Sets the percentage of normal rangers scale.",true,0,true,1);
 ConVar asw_ranger_touch_ignite("asw_ranger_touch_ignite", "0", FCVAR_CHEAT, "Ignites marine on ranger touch.");
 ConVar asw_ranger_touch_onfire("asw_ranger_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if ranger body on fire touch.");
 

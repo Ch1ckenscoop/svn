@@ -39,8 +39,8 @@ ConVar asw_shaman_color2("asw_shaman_color2", "255 255 255", FCVAR_NONE, "Sets t
 ConVar asw_shaman_color2_percent("asw_shaman_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of the shamans color",true,0,true,1);
 ConVar asw_shaman_color3("asw_shaman_color3", "255 255 255", FCVAR_NONE, "Sets the color of shamans.");
 ConVar asw_shaman_color3_percent("asw_shaman_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the shamans color",true,0,true,1);
-ConVar asw_shaman_scalemod("asw_shaman_scalemod", "0.0", FCVAR_NONE, "Sets the scale of normal shamans.",true,0,true,1.5);
-ConVar asw_shaman_scalemod_percent("asw_shaman_scalemod_percent", "0.0", FCVAR_NONE, "Sets the percentage of normal shamans scale.",true,0,true,1);
+ConVar asw_shaman_scalemod("asw_shaman_scalemod", "1.0", FCVAR_NONE, "Sets the scale of normal shamans.",true,0,true,1.5);
+ConVar asw_shaman_scalemod_percent("asw_shaman_scalemod_percent", "1.0", FCVAR_NONE, "Sets the percentage of normal shamans scale.",true,0,true,1);
 ConVar asw_shaman_ignite("asw_shaman_ignite", "0", FCVAR_CHEAT, "Ignites marine by shaman on touch.");
 ConVar asw_shaman_gib_chance("asw_shaman_gib_chance", "0.80", FCVAR_CHEAT, "Chance of shaman break into ragdoll pieces instead of ragdoll.");
 ConVar asw_shaman_touch_onfire("asw_shaman_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if shaman body on fire touch.");
