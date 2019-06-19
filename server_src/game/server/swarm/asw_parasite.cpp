@@ -785,7 +785,17 @@ void CASW_Parasite::InfestThink( void )
 	DispatchAnimEvents( this );
 
 	CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(GetParent());
-	if ( !pMarine || !pMarine->IsInfested() || pMarine->IsEffectActive( EF_NODRAW ) )
+	//softcopy: think both marine/colonist
+	/*if ( !pMarine || !pMarine->IsInfested() || pMarine->IsEffectActive( EF_NODRAW ) )
+	{
+		FinishedInfesting();
+	}*/
+	CASW_Colonist *pColonist = dynamic_cast<CASW_Colonist*>(GetParent());
+	if (pMarine && (!pMarine->IsInfested() || pMarine->IsEffectActive(EF_NODRAW)))
+	{
+		FinishedInfesting();
+	}
+	else if (pColonist && (!pColonist->IsInfested() || pColonist->IsEffectActive(EF_NODRAW)))
 	{
 		FinishedInfesting();
 	}
@@ -848,8 +858,19 @@ void CASW_Parasite::InfestMarine(CASW_Marine* pMarine)
 		SetThink( &CASW_Parasite::InfestThink );
 		SetTouch( NULL );
 		m_bInfesting = true;
-		
-		//softcopy: ignite marine by parasite/beta parasite attack, 1=parasite, 2=beta parasite, 3=All
+
+		//softcopy: beta parasite infesting gas jet effect
+		if (m_bBetaParasite )
+		{
+			CTakeDamageInfo info;
+			QAngle ang(0,0,0);
+			Vector dir = info.GetDamagePosition() - WorldSpaceCenter();
+			dir.z = 0;
+			VectorNormalize(dir);
+			ang[YAW] = UTIL_VecToYaw(dir);
+			DispatchParticleEffect( "barrel_rad_gas_jet", WorldSpaceCenter(), ang, PATTACH_CUSTOMORIGIN_FOLLOW, this ); //add gas jet effect
+		}
+		//ignite marine by parasite/beta parasite attack, 1=parasite, 2=beta parasite, 3=All
 		if (asw_parasite_ignite.GetInt() >= 1)
 		{
 			CTakeDamageInfo info( this, this, 0, DMG_SLASH );
@@ -871,19 +892,6 @@ void CASW_Parasite::InfestMarine(CASW_Marine* pMarine)
 			CTakeDamageInfo info( this, this, 0, DMG_INFEST | DMG_BLURPOISON );
 			if (m_bBetaParasite )
 			{
-#ifdef GAME_DLL
-				bool bLagComp = false;
-#endif
-				QAngle ang(0,0,0);
-				Vector dir = info.GetDamagePosition() - WorldSpaceCenter();
-				dir.z = 0;
-				VectorNormalize(dir);
-				ang[YAW] = UTIL_VecToYaw(dir);
-				DispatchParticleEffect( "barrel_rad_gas_jet", WorldSpaceCenter(), ang, PATTACH_CUSTOMORIGIN_FOLLOW, this );	//add gas jet effect
-#ifdef GAME_DLL
-				if ( bLagComp )
-					CASW_Lag_Compensation::FinishLagCompensation();	// undo lag compensation if we need to
-#endif
 				float duration = asw_parasite_beta_poison_duration.GetFloat();
 				if ( duration > 0 && duration <= 10)
 				{
@@ -929,13 +937,29 @@ void CASW_Parasite::InfestColonist(CASW_Colonist* pColonist)
 		angle -= pColonist->GetAbsAngles()[YAW];	// get the diff between our angle from the marine and the marine's facing;
 		
 		current = GetAbsAngles();
-		
+
+		//softcopy: copy InfestMarine() statements to replace it for better attachment
+		/*
 		SetParent( pColonist, attachment );
 				Vector vecPosition;
 		float fRaise = random->RandomFloat(0,20);
 		
 		SetLocalOrigin( Vector( -fRaise * 0.2f, 0, fRaise ) );
 		SetLocalAngles( QAngle( 0, angle + asw_infest_angle.GetFloat(), 0 ) );
+		*/
+		Vector vAttachmentPos;
+		//pMarine->GetAttachment( attachment, vAttachmentPos );
+		pColonist->GetAttachment( attachment, vAttachmentPos );
+		// Make sure it's near the chest attachement before parenting
+		Teleport( &vAttachmentPos, &vec3_angle, &vec3_origin );
+		//SetParent( pMarine, attachment );
+		SetParent( pColonist, attachment );
+		float flRaise = RandomFloat( 15.0f, 18.0f );
+		float flForward = RandomFloat( -3.0f, 0.0f );
+		float flSide = RandomFloat( 1.75f, 3.0f ) * ( RandomInt( 0, 1 ) == 0 ? 1.0f : -1.0f );
+		SetLocalOrigin( Vector( flForward, flSide, flRaise ) );
+		SetLocalAngles( QAngle( asw_infest_pitch.GetFloat(), angle + asw_infest_angle.GetFloat(), 0 ) );
+
 		// play our infesting anim
 		if ( asw_parasite_inside.GetBool() )
 		{
@@ -950,7 +974,7 @@ void CASW_Parasite::InfestColonist(CASW_Colonist* pColonist)
 			}
 		}
 		// don't do anymore thinking - need to think still to animate?
-		AddFlag( FL_NOTARGET );
+		//AddFlag( FL_NOTARGET );	//softcopy: Allow targeting parasties that are infesting.
 		SetThink( &CASW_Parasite::InfestThink );
 		SetTouch( NULL );
 		m_bInfesting = true;		
@@ -958,7 +982,7 @@ void CASW_Parasite::InfestColonist(CASW_Colonist* pColonist)
 	else
 	{
 		FinishedInfesting();
-	}		
+	}
 }
 
 // we're done clawing our way in, remove the AI

@@ -76,7 +76,8 @@ public:
 	virtual void DoRadiationLeak(const CTakeDamageInfo &info);
 	CSoundPatch	*m_pRadSound;
 	CHandle<CASW_Radiation_Volume> m_hRadVolume;
-	
+	bool bQueenSpitted;
+
 	virtual	bool		AllowedToIgnite( void ) { return false; }
 
 	// head turning
@@ -194,8 +195,11 @@ enum
 
 enum
 {
-	TASK_DRONE_YAW_TO_DOOR = LAST_ASW_ALIEN_SHARED_TASK,
-	TASK_ASW_SUMMON_WAVE,
+	//softcopy: redefinition
+	//TASK_DRONE_YAW_TO_DOOR = LAST_ASW_ALIEN_SHARED_TASK,
+	//TASK_ASW_SUMMON_WAVE,
+	TASK_ASW_SUMMON_WAVE = LAST_ASW_ALIEN_SHARED_TASK,
+	
 	TASK_ASW_SOUND_SUMMON,
 	TASK_ASW_WAIT_DIVER,
 	TASK_ASW_START_DIVER_ATTACK,

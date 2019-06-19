@@ -2456,6 +2456,10 @@ void CASW_Marine::CheckForAIWeaponSwitch()
 	if ( !GetEnemy() )
 		return;
 
+	//softcopy: no weapons switch if healing
+	if ( IsCurSchedule(SCHED_ASW_HEAL_MARINE) )
+		return;
+
 	CASW_Weapon *pWeapon = GetActiveASWWeapon();
 	if ( pWeapon && pWeapon->IsOffensiveWeapon() && pWeapon->HasPrimaryAmmo() )
 		return;
@@ -2722,6 +2726,24 @@ void CASW_Marine::UpdateFacing()
 		float flAimYaw = UTIL_VecToYaw( m_vecFacingPointFromServer.Get() - GetAbsOrigin() );
 		GetMotor()->SetIdealYawAndUpdate( flAimYaw );
 	}
+	//softcopy: ai face marine as fast as possible to prevent the stupid ai movements 
+	else if ( IsCurSchedule( SCHED_ASW_HEAL_MARINE ) )		// face the marine that we want to heal
+	{
+		if ( m_hHealTarget.Get() )
+		{
+			float flAimYaw = CalcIdealYaw( m_hHealTarget.Get()->GetAbsOrigin() );
+			GetMotor()->SetIdealYawAndUpdate( flAimYaw );
+
+			if ( asw_debug_marine_aim.GetBool() )
+			{
+				Vector vecAim;
+				QAngle angAim = QAngle( 0, flAimYaw, 0 );
+				AngleVectors( angAim, &vecAim );
+
+				NDebugOverlay::Line( GetAbsOrigin(), GetAbsOrigin() + vecAim * 50, 0, 255, 0, false, 0.2f );
+			}
+		}
+	}
 	else if ( GetEnemy() )
 	{
 		Vector vecEnemyLKP = GetEnemyLKP();
@@ -2760,7 +2782,8 @@ void CASW_Marine::UpdateFacing()
 			Msg( "aim error = %f fAimYaw = %f\n", m_fMarineAimError, flAimYaw );
 		}
 	}
-	else if ( IsCurSchedule( SCHED_ASW_HEAL_MARINE ) )		// face the marine that we want to heal
+	//softcopy: relocated to upper part of UpdateFacing()
+	/*else if ( IsCurSchedule( SCHED_ASW_HEAL_MARINE ) )		// face the marine that we want to heal
 	{
 		if ( m_hHealTarget.Get() )
 		{
@@ -2776,7 +2799,7 @@ void CASW_Marine::UpdateFacing()
 				NDebugOverlay::Line( GetAbsOrigin(), GetAbsOrigin() + vecAim * 50, 0, 255, 0, false, 0.2f );
 			}
 		}
-	}
+	}*/
 	else if ( GetASWOrders() == ASW_ORDER_FOLLOW )
 	{
 		float flAimYaw = GetSquadFormation()->GetYaw( GetSquadFormation()->Find(this) );
@@ -3468,6 +3491,8 @@ AI_BEGIN_CUSTOM_NPC( asw_marine, CASW_Marine )
 		"		TASK_ASW_HEAL_MARINE				0"
 		""
 		"	Interrupts"
+		"		COND_HEAVY_DAMAGE"
+		"		COND_MOBBED_BY_ENEMIES"
 		""
 		);
 

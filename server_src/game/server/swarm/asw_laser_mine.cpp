@@ -312,7 +312,9 @@ bool CASW_Laser_Mine::ValidMineTarget(CBaseEntity *pOther)
 
 	if ( pOther->IsNPC() )
 	{
-		if ( m_bFriendly.Get() && pOther->Classify() == CLASS_ASW_MARINE )		// friendly mines don't trigger on marines
+		//softcopy: friendly mines don't trigger on marine/colonist
+		if ( m_bFriendly.Get() && (pOther->Classify() == CLASS_ASW_MARINE || pOther->Classify() == CLASS_ASW_COLONIST) )
+		//if ( m_bFriendly.Get() && pOther->Classify() == CLASS_ASW_MARINE )		// friendly mines don't trigger on marines
 			return false;
 
 		return true;

@@ -28,6 +28,7 @@
 #include "asw_weapon_chainsaw_shared.h"
 #include "asw_radiation_volume.h"   
 #include "asw_marine_speech.h" 
+#include "asw_spawn_manager.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -162,7 +163,10 @@ CASW_Queen::CASW_Queen()
 	m_iCrittersAlive = 0;
 	m_fLayParasiteTime = 0;
 	m_iCrittersSpawnedRecently = 0;
-	m_fLastTouchHurtTime = 0;	//softcopy:
+	//softcopy:
+	m_fLastTouchHurtTime = 0;
+	bQueenSpitted = false;
+
 	m_pszAlienModelName = SWARM_QUEEN_MODEL;
 	m_nAlienCollisionGroup = ASW_COLLISION_GROUP_ALIEN;
 }
@@ -365,6 +369,7 @@ void CASW_Queen::HandleAnimEvent( animevent_t *pEvent )
 	{
 		SpitProjectile();
 		m_iSpitNum++;
+		bQueenSpitted = true;	//softcopy:
 		return;
 	}
 

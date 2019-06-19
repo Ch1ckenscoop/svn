@@ -91,6 +91,9 @@
 //softcopy:
 #include "asw_sourcemod_interface.h"	//requesterSteamID
 #include "particle_parse.h"
+#include "asw_colonist.h"
+#include "asw_queen.h"
+
 #endif
 #include "game_timescale_shared.h"
 #include "asw_gamerules.h"
@@ -113,34 +116,6 @@
 #include "tier0/memdbgon.h"
 
 extern ConVar old_radius_damage;
-
-//softcopy:
-bool bReadyclicked = false;
-bool bIsReserved = false;
-int playreadyclicked = 0;
-int pPlayerId[ASW_NUM_MARINE_PROFILES];
-char pPlayerIp[ASW_NUM_MARINE_PROFILES][30];
-float m_fWeaponDisassemble = ASW_USE_KEY_HOLD_SENTRY_TIME;	//default disassemble time
-ConVar asw_autokick_player("asw_autokick_player", "0", FCVAR_CHEAT, "Sets auto kick player.");
-ConVar asw_autokick_player_promotion("asw_autokick_player_promotion", "0", FCVAR_CHEAT, "Sets autokick player below the promotion.",true,0,true,6);
-ConVar asw_autokick_player_experience("asw_autokick_player_experience", "5", FCVAR_CHEAT, "Sets autokick player below the experience levels.",true,0,true,27);
-ConVar asw_marine_lobby_ready("asw_marine_lobby_ready", "1", FCVAR_CHEAT, "Sets auto mark ready(1=gamestats lobby, 2=all lobbies.");
-ConVar asw_spectator_takes_slot("asw_spectator_takes_slot", "1", FCVAR_CHEAT, "If set, spectator can't take over reserved slot."); 
-ConVar asw_marine_ai_slot_release("asw_marine_ai_slot_release", "1", FCVAR_CHEAT, "Auto release bot slots to new join player in matchmaking lobby.");
-ConVar asw_lobby_player_select("asw_lobby_player_select", "4", FCVAR_CHEAT, "Max players selectable in lobby, instablity timeout if changed.", true,4, true,6);
-ConVar asw_level_lock("asw_level_lock", "0", FCVAR_CHEAT, "Skill level locked on(1-5).", true,0, true,5);
-ConVar asw_infest_damage_easy("asw_infest_damage_easy", "175", FCVAR_CHEAT, "Infest damage on easy level.");
-ConVar asw_infest_damage_normal("asw_infest_damage_normal", "225", FCVAR_CHEAT, "Infest damage on normal level.");
-ConVar asw_infest_damage_hard("asw_infest_damage_hard", "270", FCVAR_CHEAT, "Infest damage on hard level.");
-ConVar asw_infest_damage_insane("asw_infest_damage_insane", "280", FCVAR_CHEAT, "Infest damage on insane level.");
-ConVar asw_infest_damage_brutal("asw_infest_damage_brutal", "280", FCVAR_CHEAT, "Infest damage on brutal level.");
-ConVar asw_hibernate_skill_default("asw_hibernate_skill_default", "0", FCVAR_CHEAT, "If set, Skill/HardcoreFF switch to default when hibernating.");
-ConVar asw_vote_kick_admin("asw_vote_kick_admin", "1", FCVAR_CHEAT, "Generic admin or above level immune from vote kick."); 
-ConVar asw_vote_kick_ipcheck("asw_vote_kick_ipcheck", "1", FCVAR_CHEAT, "Player using duplicate IP can't start a vote kick."); 
-ConVar asw_debug_spectator_slot("asw_debug_spectator_slot", "0", FCVAR_CHEAT, "Show debug messages for spectator slots."); 
-ConVar asw_debug_alien_activity("asw_debug_alien_activity", "0", FCVAR_NONE, "Show debug messages for aliens damage activities");
-ConVar asw_debug_alien_spawn("asw_debug_alien_spawn", "0", FCVAR_NONE, "Show debug messages for aliens spawn");
-extern ConVar asw_hardcore_ff_force;
 
 #define ASW_LAUNCHING_STEP 0.25f			// time between each stage of launching
 
@@ -177,6 +152,20 @@ ConVar asw_map_configs("asw_map_configs", "1", FCVAR_CCOOP, "On mapchange: exec 
 
 ConVar asw_full_treatment_tradeoff("asw_full_treatment_tradeoff", "1", FCVAR_CCOOP, "Remove some useless entities in exchange for more aliens on syntek_hospital.");
 ConVar asw_remove_prop_ragdolls("asw_remove_prop_ragdolls", "1", FCVAR_CCOOP, "Remove laggy prop_ragdolls from levels.");
+//softcopy:
+ConVar asw_autokick_player("asw_autokick_player", "0", FCVAR_CHEAT, "Sets auto kick player.");
+ConVar asw_autokick_player_promotion("asw_autokick_player_promotion", "0", FCVAR_CHEAT, "Sets autokick player below the promotion.",true,0,true,6);
+ConVar asw_autokick_player_experience("asw_autokick_player_experience", "5", FCVAR_CHEAT, "Sets autokick player below the experience levels.",true,0,true,27);
+ConVar asw_marine_lobby_ready("asw_marine_lobby_ready", "1", FCVAR_CHEAT, "Sets auto mark ready(1=gamestats lobby, 2=all lobbies.");
+ConVar asw_spectator_takes_slot("asw_spectator_takes_slot", "1", FCVAR_CHEAT, "If set, spectator can't take over reserved slot."); 
+ConVar asw_marine_ai_slot_release("asw_marine_ai_slot_release", "1", FCVAR_CHEAT, "Auto release bot slots to new join player in matchmaking lobby.");
+ConVar asw_lobby_player_select("asw_lobby_player_select", "4", FCVAR_CHEAT, "Max players selectable in lobby, instablity timeout if changed.", true,4, true,6);
+ConVar asw_level_lock("asw_level_lock", "0", FCVAR_CHEAT, "Skill level locked on(1-5).", true,0, true,5);
+ConVar asw_hibernate_skill_default("asw_hibernate_skill_default", "0", FCVAR_CHEAT, "If set, Skill/HardcoreFF switch to default when hibernating.");
+ConVar asw_vote_kick_admin("asw_vote_kick_admin", "1", FCVAR_CHEAT, "Generic admin or above level immune from vote kick."); 
+ConVar asw_vote_kick_ipcheck("asw_vote_kick_ipcheck", "1", FCVAR_CHEAT, "Player using duplicate IP can't start a vote kick."); 
+ConVar asw_debug_spectator_slot("asw_debug_spectator_slot", "0", FCVAR_CHEAT, "Show debug messages for spectator slots."); 
+ConVar asw_debug_alien_activity("asw_debug_alien_activity", "0", FCVAR_NONE, "Show debug messages for aliens damage activities");
 
 static void UpdateMatchmakingTagsCallback( IConVar *pConVar, const char *pOldValue, float flOldValue )
 {
@@ -209,6 +198,17 @@ ConVar asw_time_scale_delay("asw_time_scale_delay", "0.15", FCVAR_REPLICATED | F
 ConVar asw_ignore_need_two_player_requirement("asw_ignore_need_two_player_requirement", "0", FCVAR_REPLICATED, "If set to 1, ignores the mission setting that states two players are needed to start the mission.");
 ConVar mp_gamemode( "mp_gamemode", "campaign", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY, "Current game mode, acceptable values are campaign and single_mission.", false, 0.0f, false, 0.0f );
 ConVar mm_max_players( "mm_max_players", "4", FCVAR_REPLICATED | FCVAR_CHEAT, "Max players for matchmaking system" );
+//softcopy:
+ConVar asw_infest_damage_easy("asw_infest_damage_easy", "175", FCVAR_CHEAT, "Infest damage on easy level.");
+ConVar asw_infest_damage_normal("asw_infest_damage_normal", "225", FCVAR_CHEAT, "Infest damage on normal level.");
+ConVar asw_infest_damage_hard("asw_infest_damage_hard", "270", FCVAR_CHEAT, "Infest damage on hard level.");
+ConVar asw_infest_damage_insane("asw_infest_damage_insane", "280", FCVAR_CHEAT, "Infest damage on insane level.");
+ConVar asw_infest_damage_brutal("asw_infest_damage_brutal", "280", FCVAR_CHEAT, "Infest damage on brutal level.");
+ConVar asw_debug_alien_spawn("asw_debug_alien_spawn", "0", FCVAR_NONE, "Show debug messages for aliens spawn");
+float m_fWeaponDisassemble = ASW_USE_KEY_HOLD_SENTRY_TIME;	//default disassemble time
+extern ConVar asw_hardcore_ff_force;
+extern ConVar asw_queen_scalemod;
+
 ConVar asw_sentry_friendly_fire_scale( "asw_sentry_friendly_fire_scale", "0", FCVAR_REPLICATED, "Damage scale for sentry gun friendly fire"
 #ifdef GAME_DLL
 									  ,UpdateMatchmakingTagsCallback );
@@ -826,6 +826,7 @@ CAlienSwarm::CAlienSwarm()
 	m_flTechFailureRestartTime = 0.0f;
 
 	//softcopy:
+	bIsReserved = false;
 	playreadyclicked = asw_marine_lobby_ready.GetInt();
 	bReadyclicked = (playreadyclicked >= 1 && playreadyclicked <= 2) ? true : false;
 	bSpectatorCanSelect = false;
@@ -2690,6 +2691,7 @@ void CAlienSwarm::Think()
 				CheckForceReady();
 			}
 			CheckTechFailure();
+			HeartOfSwarmPrune();	//softcopy: queen radius prune to prevent she stuck by aliens on research7 heartoftheswarm 
 		}
 		break;
 	case ASW_GS_OUTRO:
@@ -4085,6 +4087,12 @@ void CAlienSwarm::AlienKilled(CBaseEntity *pAlien, const CTakeDamageInfo &info)
 			pInfested->CureInfestation( pMarine, 0.0f );
 
 		}
+
+		//softcopy: remove infestation after parasite has killed
+		CASW_Colonist *pColonistInfested = dynamic_cast<CASW_Colonist*>(pPara->GetParent());
+		if (pColonistInfested) 
+			pColonistInfested->CureInfestation( NULL, 0.0f );
+
 	}
 	//Wikipedia's code end
 	// send a game event for achievements to use
@@ -5011,7 +5019,9 @@ void CAlienSwarm::FreezeAliensInRadius( CBaseEntity *pInflictor, float flFreezeA
 			continue;
 
 		// don't stumble marines
-		if ( pEntity->Classify() == CLASS_ASW_MARINE )
+		//softcopy: don't stumble colonist too
+		if ( pEntity->Classify() == CLASS_ASW_MARINE  || pEntity->Classify() == CLASS_ASW_COLONIST)
+		//if ( pEntity->Classify() == CLASS_ASW_MARINE )
 		{
 #ifdef GAME_DLL		
 			// but, do extinguish them if they are on fire
@@ -7001,7 +7011,42 @@ void CAlienSwarm::SetColorScale(CBaseEntity *pAlien, const char *alienLabel)	//s
 		SetModelScale(asw_scalemod.GetFloat());
 	*/
 }
+void CAlienSwarm::HeartOfSwarmBehaviors( CBaseEntity *pEntity, const char *szFlag )
+{
+	if (pEntity)
+	{
+		pEntity->KeyValue("m_bDisableNPCCollisions", "1");
+		pEntity->KeyValue("m_bIgnoreGravity", "1");
+		pEntity->KeyValue("spawnflags", szFlag);
+	}
+}
+void CAlienSwarm::HeartOfSwarmPrune()
+{
+	if (m_bIsHeartOfSwarm)
+	{
+		CBaseEntity *pEntity = NULL;
+		while ((pEntity = gEntList.FindEntityByClassname(pEntity, "asw_queen")) != NULL)
+		{
+			CASW_Queen *pQueen = dynamic_cast<CASW_Queen*>(pEntity);
+			if (!pQueen || pQueen->bQueenSpitted)	//stop the aliens prune after queen arrived laser room starting to spit
+				return;
+
+			CBaseEntity *pAlien = NULL;
+			float fRadius = asw_queen_scalemod.GetFloat() * 230;
+			int nCount = ASWSpawnManager()->GetNumAlienClasses();
+			for ( int i = 0; i < nCount; i++ )
+			{
+				while ((pAlien = gEntList.FindEntityByClassname(pAlien, ASWSpawnManager()->GetAlienClass(i)->m_pszAlienClass)) != NULL)
+				{
+					if (pAlien != pQueen && pQueen->GetAbsOrigin().DistTo(pAlien->GetAbsOrigin()) < fRadius)
+						UTIL_Remove(pAlien);
+				}
+			}
+		}
+	}
+}
 //
+
 #endif  // !CLIENT_DLL
 
 void CAlienSwarm::RefreshSkillData ( bool forceUpdate )
@@ -7157,6 +7202,7 @@ void CAlienSwarm::LevelInitPostEntity()
 	m_bIsCity17 = ( !Q_strnicmp( mapName, "as_city17_", 10 ) );	//softcopy:
 #ifndef CLIENT_DLL
 	bool m_bIsFullTreatment = ( !Q_strnicmp( mapName, "syntek_hospital", 15 ) );
+	m_bIsHeartOfSwarm = ( !Q_strnicmp( mapName, "themines2", 9 ) );	//softcopy:
 #endif
 	if ( ASWHoldoutMode() )
 	{
@@ -7200,6 +7246,23 @@ void CAlienSwarm::LevelInitPostEntity()
 		{
 			UTIL_Remove(pEntity);
 		}
+	}
+
+	//softcopy: fix research7 hearoftheswarm queen falling/dead bug
+	if (m_bIsHeartOfSwarm)
+	{
+		CBaseEntity *pEnt = NULL;
+		if ((pEnt = gEntList.FindEntityByName( NULL, "queenscream2" )) != NULL)	//infront of the big lift door
+			HeartOfSwarmBehaviors(pEnt, "224");
+
+		if ((pEnt = gEntList.FindEntityByName( NULL, "queenscream3" )) != NULL)	//behind the multi doors
+			HeartOfSwarmBehaviors(pEnt, "228");
+
+		if ((pEnt = gEntList.FindEntityByName( NULL, "queenscream5" )) != NULL)	//near stair cases place
+			HeartOfSwarmBehaviors(pEnt, "224");
+
+		if ((pEnt = gEntList.FindEntityByName( NULL, "queenscream6" )) != NULL)	//outside the laser room
+			HeartOfSwarmBehaviors(pEnt, "4320");
 	}
 
 	//Ch1ckensCoop: WE DON'T NEED NO STINKIN' PLUGIN TO DO THIS!

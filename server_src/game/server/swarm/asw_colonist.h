@@ -76,7 +76,12 @@ public:
 	virtual void MarineStartedUsing(CASW_Marine* pMarine) {}
 	virtual void MarineStoppedUsing(CASW_Marine* pMarine) {}
 	virtual bool NeedsLOSCheck() { return true; }
-
+	virtual bool CorpseGib( const CTakeDamageInfo &info );
+	virtual float GetFFAbsorptionScale();
+	float m_fLastFriendlyFireTime;
+	float m_fFriendlyFireAbsorptionTime;				// timer for friendly fire damage
+	void Event_Killed(const CTakeDamageInfo& info);
+	bool m_bPlayedCureScream;	// have we played a scream sound for our parasite?
 
 private:
 	DECLARE_DATADESC();

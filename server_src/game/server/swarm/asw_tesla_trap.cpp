@@ -613,7 +613,9 @@ bool CASW_TeslaTrap::IsFriend( CBaseEntity *pEntity )
 	int classify = pEntity->Classify();
 	bool bIsFriendly = false;
 
-  	if( classify == CLASS_ASW_MARINE )
+	//softcopy:
+	if( classify == CLASS_ASW_MARINE || classify == CLASS_ASW_COLONIST )
+  	//if( classify == CLASS_ASW_MARINE )
 	{
 		bIsFriendly = true;
 	}

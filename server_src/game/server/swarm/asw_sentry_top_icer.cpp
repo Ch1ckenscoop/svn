@@ -149,7 +149,9 @@ CAI_BaseNPC * CASW_Sentry_Top_Icer::SelectOptimalEnemy()
 		if (ppAIs[i]->GetHealth() > 0 && CanSee(ppAIs[i]))
 		{
 			// don't shoot marines
-			if ( !asw_sentry_friendly_target.GetBool() && ppAIs[i]->Classify() == CLASS_ASW_MARINE )
+			//softcopy: and don't shoot colonists
+			if (!asw_sentry_friendly_target.GetBool() && (ppAIs[i]->Classify() == CLASS_ASW_MARINE || ppAIs[i]->Classify() == CLASS_ASW_COLONIST))
+			//if ( !asw_sentry_friendly_target.GetBool() && ppAIs[i]->Classify() == CLASS_ASW_MARINE )
 				continue;
 
 			if ( ppAIs[i]->Classify() == CLASS_SCANNER )

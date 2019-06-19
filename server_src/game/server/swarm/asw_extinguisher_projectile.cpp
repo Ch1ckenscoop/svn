@@ -9,6 +9,7 @@
 #include "asw_fire.h"
 #include "asw_marine.h"
 #include "asw_weapon_flamer_shared.h"
+#include "asw_colonist.h"	//softcopy:
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -132,7 +133,14 @@ void CASW_Extinguisher_Projectile::ProjectileTouch( CBaseEntity *pOther )
 			//info.SetDamage(m_flDamage);
 			pOther->TakeDamage(info);
 		}
-		//softcopy: Allow flamer extinguisher to damage the rocks, it won't break the rocks until melee/other weapon damages
+		//softcopy:
+		//not be frozen to die instantly with dead body
+		CASW_Colonist *pColonist = dynamic_cast< CASW_Colonist * > ( pOther );
+		if (pColonist && pColonist->Classify()==CLASS_ASW_COLONIST )
+		{
+			return;
+		}
+		//Allow flamer extinguisher to damage the rocks, it won't break the rocks until melee/other weapon damages
 		if (pOther && pOther->Classify()==CLASS_ASW_PHYSICS_PROP && pOther->GetHealth() > 7)
 		{
 			CTakeDamageInfo info(this, GetFirer(), asw_fireex_freeze_amount.GetFloat()*10.0f, DMG_GENERIC);

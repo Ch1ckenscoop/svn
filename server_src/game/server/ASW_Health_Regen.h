@@ -1,5 +1,7 @@
 #pragma once
 //Ch1ckensCoop: Replacement for spamming medkits.
+#include "asw_colonist.h"	//softcopy:
+
 class CASW_Health_Regen : public CLogicalEntity
 {
 public:
@@ -11,4 +13,5 @@ public:
 
 private:
 	void SetMarineHealth(CASW_Marine *pMarine, int iHealth);
+	void SetColonistHealth(CASW_Colonist *pColonist, int iHealth);	//softcopy:
 };

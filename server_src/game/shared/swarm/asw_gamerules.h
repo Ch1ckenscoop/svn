@@ -102,7 +102,7 @@ public:
 	virtual void			Precache( void );
 	virtual void			Think( void );
 	virtual const char *GetGameDescription( void ) { return "Ch1ckensCoop"; }
-	virtual const char *GetCurrentVersion ( void ) { return "2.3.2"; }	//softcopy: version
+	virtual const char *GetCurrentVersion ( void ) { return "2.3.3"; }	//softcopy:
 	virtual void			OnServerHibernating();
 	
 	// briefing roster functions
@@ -140,6 +140,11 @@ public:
 	void OnPlayerFullyJoined( CASW_Player *pPlayer );
 	
 	//softcopy:
+	bool bReadyclicked;
+	bool bIsReserved;
+	int playreadyclicked;
+	int pPlayerId[ASW_NUM_MARINE_PROFILES];
+	char pPlayerIp[ASW_NUM_MARINE_PROFILES][30];
 	void OnPlayerFullyJoinedCheck(CASW_Player *pPlayer);
 	void MarineSlotRelease();
 	bool SpectatorInLobby(CASW_Player *pPlayer, bool bAddpPlayerId);
@@ -150,6 +155,9 @@ public:
 	virtual void	MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes);
 	virtual void	MarineDamageDebugInfo(CBaseEntity *pOther, const char *alienLabel, const char *damageInfo, const char *damageTypes);
 	int m_TouchExplosionDamage;
+	void HeartOfSwarmBehaviors(CBaseEntity *pEntity, const char *szFlag);
+	void HeartOfSwarmPrune();
+	bool m_bIsHeartOfSwarm;
 
 	// powerups
 	virtual void DropPowerup( CBaseEntity *pSource, const CTakeDamageInfo &info, const char *pszSourceClass );

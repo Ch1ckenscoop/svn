@@ -766,6 +766,7 @@ bool CASW_Weapon_Tesla_Gun::ShockAttach( CBaseEntity *pEntity )
 	if ( !pEntity || (pEntity->m_takedamage == DAMAGE_NO) || 
 		(pEntity->Classify() == CLASS_ASW_MARINE) || (pEntity->Classify() == CLASS_ASW_SENTRY_BASE) ||
 		(pEntity == m_hShockEntity.Get()) || (pEntity->m_iHealth <= 0) ||
+		(pEntity->Classify() == CLASS_ASW_COLONIST) ||	//softcopy:
 		(pEntity == GetMarine()) ) 
 	{
 		return false;

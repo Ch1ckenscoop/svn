@@ -40,12 +40,12 @@
 	"4"
 	{
 		"type"		"S"
-		"text"		"Unlimited ammo for most weapons... \nLimited ammo for flamer and grenade launcher..."
+		"text"		"Unlimited ammo for most weapons... \nLimited ammo for {WHITE}flamer{DEFAULT} and {WHITE}grenade launcher{DEFAULT}..."
 	}
 	"5"
 	{
 		"type"		"S"
-		"text"		"Grab something other than a medkit!\nRegenerative health is on."
+		"text"		"Grab something other than a medkit!\nRegenerative health is {WHITE}on{DEFAULT}."
 	}
 	"6"
 	{
