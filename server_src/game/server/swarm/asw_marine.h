@@ -599,6 +599,7 @@ public:
 	void PerformResurrectionEffect( void );		///< issue any special effects or sounds on resurrection
 	// we want to no part of this freezing business!
 	void Freeze( float flFreezeAmount, CBaseEntity *pFreezer, Ray_t *pFreezeRay ) { }
+	static float GetDamageReduction( CBaseEntity *pEntity, const CTakeDamageInfo &info, float fReduction );	//softcopy:
 
 	// using entities over time
 	virtual bool StartUsing(CBaseEntity *pEntity);

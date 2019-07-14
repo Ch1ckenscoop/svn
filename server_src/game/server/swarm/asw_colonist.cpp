@@ -20,6 +20,7 @@
 #include "asw_marine_resource.h"
 #include "asw_door.h"
 #include "particle_parse.h"
+#include "asw_weapon_mining_laser_shared.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -40,6 +41,7 @@ extern ConVar asw_sentry_friendly_fire_damage;
 extern ConVar asw_marine_ff_absorption;
 extern ConVar asw_marine_ff_absorption_build_rate;
 extern ConVar asw_marine_ff_absorption_decay_rate;
+extern ConVar asw_mininglaser_damage_reduction;	//softcopy:
 extern ConVar asw_god;
 
 LINK_ENTITY_TO_CLASS( asw_colonist, CASW_Colonist );
@@ -92,7 +94,9 @@ void CASW_Colonist::Precache()
 	PrecacheScriptSound( "Crash.SmallPain0" );
 	PrecacheScriptSound( "Faith.Dead0" );
 	PrecacheScriptSound( "Faith.SmallPain0" );
-
+	//softcopy:
+	PrecacheScriptSound( "ASW.MarineImpact" );
+	PrecacheScriptSound( "Strider.Impact" );
 
 	//PrecacheInstancedScene( "scenes/swarmscenes/tutorialscript3.vcd" );
 	//PrecacheInstancedScene( "scenes/swarmscenes/FishermanAlert.vcd" );
@@ -256,12 +260,12 @@ int CASW_Colonist::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	{
 		newInfo.ScaleDamage( 10.0f );
 	}
-	//take much less damage from laser mine since they're too dumb to not get near them
+	//take much less damage from laser mine
 	if ( info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_LASER_MINES )
 	{
 		newInfo.ScaleDamage( 10.0f );
 	}
-	//take much less damage from grenade since they're too dumb to not get near them
+	//take much less damage from grenade
 	if ( info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_MARINE )
 	{
 		CASW_Marine *pOtherMarine = dynamic_cast<CASW_Marine*>(info.GetAttacker());
@@ -269,6 +273,39 @@ int CASW_Colonist::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 			newInfo.ScaleDamage( 10.0f );
 		else
 			newInfo.ScaleDamage( 0.5f );
+	}
+	// don't allow FF from melee attacks
+	bool bFriendlyFire = newInfo.GetAttacker() && newInfo.GetAttacker()->Classify() == CLASS_ASW_MARINE;
+	if ( bFriendlyFire )
+	{
+		if (newInfo.GetDamageType() & DMG_CLUB)
+		{
+			//if (asw_debug_marine_damage.GetBool())
+			//Msg("  but all ignored, since it's FF meleee dmg\n");
+			return 0;
+		}
+		//take much less damage from mining
+		CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(newInfo.GetAttacker());
+		if (pMarine)
+		{
+			CASW_Weapon_Mining_Laser *pMiningLaser = dynamic_cast<CASW_Weapon_Mining_Laser*>(pMarine->GetActiveASWWeapon());
+			if (pMiningLaser)
+				newInfo.ScaleDamage(CASW_Marine::GetDamageReduction(pMiningLaser, newInfo, asw_mininglaser_damage_reduction.GetFloat()));
+		}		
+		// drop the damage down by our absorption buffer
+		bool bFlamerDot = !!(newInfo.GetDamageType() & ( DMG_BURN | DMG_DIRECT ) );
+		if ( newInfo.GetDamage() > 0 && newInfo.GetAttacker() != this && !bFlamerDot )
+		{
+			bool bHardcoreMode = ASWGameRules() && ASWGameRules()->IsHardcoreMode();
+			if ( !bHardcoreMode && asw_marine_ff_absorption.GetInt() != 0 )
+			{
+				float flNewDamage = info.GetDamage() * GetFFAbsorptionScale();
+				newInfo.SetDamage(flNewDamage);
+				//if ( asw_debug_marine_damage.GetBool() )
+				//	Msg(" FF damage (%f) reduced to %f from FF absorption (%f)\n", newInfo.GetDamage(), flNewDamage, GetFFAbsorptionScale());
+			}
+			m_fLastFriendlyFireTime = gpGlobals->curtime;
+		}
 	}
 	//don't kill the colonist in one hit unless he's on 1 health
 	bool bKillProtection = false;
@@ -292,42 +329,33 @@ int CASW_Colonist::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		Teleport( &vNewPos, NULL, &vNewVel );
 		newInfo.SetDamage( 5.0f );
 	}
+	int iPreDamageHealth = GetHealth();
+	int result = BaseClass::OnTakeDamage_Alive(newInfo);
+	int iDamageTaken = iPreDamageHealth - GetHealth();
 	if (m_iHealth <= 0)
 	{
 		CASW_Door *pDoor = dynamic_cast<CASW_Door*>(newInfo.GetInflictor());
 		if (!pDoor)	// can't survive damage from a falling door, even with kill protection or die hard
 		{
 			if (bKillProtection)
-				m_iHealth = 1;
-		}
-	}
-	// don't allow FF from melee attacks
-	bool bFriendlyFire = newInfo.GetAttacker() && newInfo.GetAttacker()->Classify() == CLASS_ASW_MARINE;
-	if ( bFriendlyFire )
-	{
-		if (newInfo.GetDamageType() & DMG_CLUB)
-		{
-			//if (asw_debug_marine_damage.GetBool())
-			//Msg("  but all ignored, since it's FF meleee dmg\n");
-			return 0;
-		}			
-		// drop the damage down by our absorption buffer
-		bool bFlamerDot = !!(newInfo.GetDamageType() & ( DMG_BURN | DMG_DIRECT ) );
-		if ( newInfo.GetDamage() > 0 && newInfo.GetAttacker() != this && !bFlamerDot )
-		{
-			bool bHardcoreMode = ASWGameRules() && ASWGameRules()->IsHardcoreMode();
-			if ( !bHardcoreMode && asw_marine_ff_absorption.GetInt() != 0 )
 			{
-				float flNewDamage = info.GetDamage() * GetFFAbsorptionScale();
-				newInfo.SetDamage(flNewDamage);
-				//if ( asw_debug_marine_damage.GetBool() )
-				//	Msg(" FF damage (%f) reduced to %f from FF absorption (%f)\n", newInfo.GetDamage(), flNewDamage, GetFFAbsorptionScale());
+				//Msg("#Debug: Colonist kill protection is active\n");
+				m_iHealth = 1;
 			}
-			m_fLastFriendlyFireTime = gpGlobals->curtime;
 		}
 	}
-
-	return BaseClass::OnTakeDamage_Alive( newInfo );
+	if ( newInfo.GetDamage() > 0 )
+	{
+		// if they take more than 10% damage in one hit or their health is below 20%, play a bigger sound
+		if ( float(iDamageTaken) / float(GetMaxHealth()) > 0.1 || float(m_iHealth) / float(GetMaxHealth()) < 0.25 )
+			EmitSound( "Strider.Impact" );
+		else
+			EmitSound( "ASW.MarineImpact" );
+	}
+	
+	//softcopy:
+	//return BaseClass::OnTakeDamage_Alive( newInfo );
+	return result;
 }
 
 bool CASW_Colonist::IsPlayerAlly( CBasePlayer *pPlayer )

@@ -60,6 +60,7 @@ void CASW_Health_Regen::Think()
 			int infestedLowHealing = asw_marine_health_regen_infestation_boost.GetInt() + asw_marine_health_regen_amount_low.GetInt();
 			float threshold = asw_marine_health_regen_threshold.GetFloat();
 			int medicHealing = asw_marine_health_regen_medicboost.GetInt();
+			fHealthRegenSpeed = asw_marine_health_regen_speed.GetFloat();	//softcopy:
 
 			int medicBoost = 0;
 
@@ -127,6 +128,8 @@ void CASW_Health_Regen::Think()
 			}
 		}
 	}
+
+	//softcopy:
 	//SetNextThink( gpGlobals->curtime + asw_marine_health_regen_speed.GetFloat());
 	SetNextThink( gpGlobals->curtime + fHealthRegenSpeed );
 

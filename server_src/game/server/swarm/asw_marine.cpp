@@ -82,6 +82,7 @@
 #include "sendprop_priorities.h"
 #include "asw_marine_gamemovement.h"
 #include "asw_client_effects.h"
+#include "asw_weapon_mining_laser_shared.h"	//softcopy:
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -89,6 +90,7 @@
 #define ASW_DEFAULT_MARINE_MODEL "models/swarm/marine/marine.mdl"
 //softcopy:
 ConVar asw_marine_flashlight( "asw_marine_flashlight", "0", FCVAR_CHEAT, "If set, 1=marine flashlight on, 2=normal after picking up a flashlight");
+ConVar asw_mininglaser_damage_reduction( "asw_mininglaser_damage_reduction", "1", FCVAR_CHEAT, "Set damage scale of mininglaser fire against marines",true,0.01,true,1);
 
 //#define ASW_MARINE_ALWAYS_VPHYSICS
 
@@ -1063,6 +1065,18 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	if ( asw_debug_marine_damage.GetBool() )
 		Msg( "Marine taking premodified damage of %f\n", newInfo.GetDamage() );
 
+	//softcopy: mining laser damage reductions
+	if (info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_MARINE && asw_marine_ff_immune.GetInt() > 0)
+	{
+		CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(info.GetAttacker());
+		if (pMarine)
+		{
+			CASW_Weapon_Mining_Laser *pMiningLaser = dynamic_cast<CASW_Weapon_Mining_Laser*>(pMarine->GetActiveASWWeapon());
+			if (pMiningLaser)
+				newInfo.ScaleDamage(GetDamageReduction(pMiningLaser, newInfo, asw_mininglaser_damage_reduction.GetFloat()));
+		}
+	}
+
 	// scale sentry gun damage
 	if ( newInfo.GetAttacker() && IsSentryClass( newInfo.GetAttacker()->Classify() ) )
 	{
@@ -1579,6 +1593,20 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	return result;
 }
 
+//softcopy:
+float CASW_Marine::GetDamageReduction( CBaseEntity *pEntity, const CTakeDamageInfo &info, float fReduction )
+{ 
+	float fLDamage = 0;
+	float fDamage = 0;
+	if (pEntity)
+	{
+		fDamage  = info.GetDamage();
+		fLDamage = fDamage * fReduction;
+		//Msg("Debug: %s %f, after damage %f\n", pEntity->GetClassname(), fDamage, fLDamage);
+	}
+
+	return fLDamage;
+}
 
 // you can assume there is an attacker when this function is called.
 void CASW_Marine::ApplyPassiveArmorEffects( CTakeDamageInfo &dmgInfo ) RESTRICT
