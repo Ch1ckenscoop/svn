@@ -284,14 +284,11 @@ int CASW_Colonist::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 			//Msg("  but all ignored, since it's FF meleee dmg\n");
 			return 0;
 		}
-		//take much less damage from mining
-		CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(newInfo.GetAttacker());
-		if (pMarine)
-		{
-			CASW_Weapon_Mining_Laser *pMiningLaser = dynamic_cast<CASW_Weapon_Mining_Laser*>(pMarine->GetActiveASWWeapon());
-			if (pMiningLaser)
-				newInfo.ScaleDamage(CASW_Marine::GetDamageReduction(pMiningLaser, newInfo, asw_mininglaser_damage_reduction.GetFloat()));
-		}		
+
+		//mining laser and chainsaw damage reductions
+		if (ASWGameRules())	
+			newInfo.ScaleDamage(ASWGameRules()->PowerWeaponDamageReduction(info));
+
 		// drop the damage down by our absorption buffer
 		bool bFlamerDot = !!(newInfo.GetDamageType() & ( DMG_BURN | DMG_DIRECT ) );
 		if ( newInfo.GetDamage() > 0 && newInfo.GetAttacker() != this && !bFlamerDot )

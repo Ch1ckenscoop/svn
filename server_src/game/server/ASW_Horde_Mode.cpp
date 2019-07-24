@@ -141,8 +141,8 @@ ConVar asw_hordemode_mortar_beta_health_min("asw_hordemode_mortar_beta_health_mi
 //Zombie   
 ConVar asw_hordemode_zombie_max("asw_hordemode_zombie_max", "1", FCVAR_CHEAT, "Maximum npc_zombie to spawn.");
 ConVar asw_hordemode_zombie_min("asw_hordemode_zombie_min", "1", FCVAR_CHEAT, "Minimum npc_zombie to spawn.");
-ConVar asw_hordemode_zombie_health_max("asw_hordemode_zombie_health_max", "425", FCVAR_CHEAT, "Maximum npc_zombie heatlh.");
-ConVar asw_hordemode_zombie_health_min("asw_hordemode_zombie_health_min", "300", FCVAR_CHEAT, "Minimum npc_zombie health.");
+ConVar asw_hordemode_zombie_health_max("asw_hordemode_zombie_health_max", "250", FCVAR_CHEAT, "Maximum npc_zombie heatlh.");
+ConVar asw_hordemode_zombie_health_min("asw_hordemode_zombie_health_min", "100", FCVAR_CHEAT, "Minimum npc_zombie health.");
 
 static CASW_Horde_Mode g_ASWHordeMode;
 CASW_Horde_Mode* ASWHordeMode() 

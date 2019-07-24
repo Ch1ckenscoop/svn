@@ -108,6 +108,9 @@
 #include "missionchooser/iasw_mission_chooser.h"
 #include "missionchooser/iasw_random_missions.h"
 #include "missionchooser/iasw_map_builder.h"
+//softcopy:
+#include "asw_weapon_mining_laser_shared.h"
+#include "asw_weapon_chainsaw_shared.h"
 
 //#include "entityapi.h"
 //#include "entityoutput.h"
@@ -204,6 +207,8 @@ ConVar asw_infest_damage_normal("asw_infest_damage_normal", "225", FCVAR_CHEAT, 
 ConVar asw_infest_damage_hard("asw_infest_damage_hard", "270", FCVAR_CHEAT, "Infest damage on hard level.");
 ConVar asw_infest_damage_insane("asw_infest_damage_insane", "280", FCVAR_CHEAT, "Infest damage on insane level.");
 ConVar asw_infest_damage_brutal("asw_infest_damage_brutal", "280", FCVAR_CHEAT, "Infest damage on brutal level.");
+ConVar asw_mininglaser_damage_reduction( "asw_mininglaser_damage_reduction", "1", FCVAR_CHEAT, "Set damage scale of mininglaser fire against marines/colonists",true,0,true,1);
+ConVar asw_chainsaw_damage_reduction( "asw_chainsaw_damage_reduction", "1", FCVAR_CHEAT, "Set damage scale of chainsaw against marines/colonists",true,0,true,1);
 ConVar asw_debug_alien_spawn("asw_debug_alien_spawn", "0", FCVAR_NONE, "Show debug messages for aliens spawn");
 float m_fWeaponDisassemble = ASW_USE_KEY_HOLD_SENTRY_TIME;	//default disassemble time
 extern ConVar asw_hardcore_ff_force;
@@ -7592,6 +7597,41 @@ bool CAlienSwarm::IsHardcoreFF()
 bool CAlienSwarm::IsOnslaught()
 {
 	return ( asw_horde_override.GetBool() || asw_wanderer_override.GetBool() );
+}
+
+//softcopy:
+float CAlienSwarm::GetWeaponDamageReduction( CBaseEntity *pEntity, const CTakeDamageInfo &info, float fDmgScale )
+{ 
+	float fLessFactor = 0.1;	//more damage reduction on heavy weapons
+	float fLDamage = info.GetDamage();
+	float fDamageScale = fLDamage * fDmgScale * fLessFactor;
+
+	fLDamage = fDmgScale > 0 && fDmgScale < 1 ? fDamageScale : fDmgScale == 1 ? fLDamage : 0.0f;
+
+	if (pEntity)
+	{
+		//Msg("%s damage %f, after damage scale reduction %f\n", pEntity->GetClassname(), info.GetDamage(), fLDamage);
+	}
+
+	return fLDamage;
+}
+float CAlienSwarm::PowerWeaponDamageReduction(const CTakeDamageInfo &info)
+{
+	CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(info.GetAttacker());
+	float fResult = 0;
+	if (pMarine)
+	{
+		CASW_Weapon_Mining_Laser *pMiningLaser = dynamic_cast<CASW_Weapon_Mining_Laser*>(pMarine->GetActiveASWWeapon());
+		CASW_Weapon_Chainsaw *pChainsaw = dynamic_cast<CASW_Weapon_Chainsaw*>(pMarine->GetActiveASWWeapon());
+
+		if (pMiningLaser)
+			fResult = GetWeaponDamageReduction(pMiningLaser, info, asw_mininglaser_damage_reduction.GetFloat());
+
+		if (pChainsaw)
+			fResult = GetWeaponDamageReduction(pChainsaw, info, asw_chainsaw_damage_reduction.GetFloat());
+	}
+
+	return fResult;
 }
 
 #ifdef GAME_DLL

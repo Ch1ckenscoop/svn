@@ -102,7 +102,7 @@ public:
 	virtual void			Precache( void );
 	virtual void			Think( void );
 	virtual const char *GetGameDescription( void ) { return "Ch1ckensCoop"; }
-	virtual const char *GetCurrentVersion ( void ) { return "2.3.4"; }	//softcopy:
+	virtual const char *GetCurrentVersion ( void ) { return "2.3.5"; }	//softcopy:
 	virtual void			OnServerHibernating();
 	
 	// briefing roster functions
@@ -423,8 +423,11 @@ public:
 	virtual int	GetGameState() { return m_iGameState; }
 	virtual void SetGameState(int iNewState) { m_iGameState = iNewState; }
 	CNetworkVar(unsigned char, m_iGameState);
-	
-	float m_fWeaponDisassemble;	//softcopy:
+
+	//softcopy:
+	float m_fWeaponDisassemble;
+	float PowerWeaponDamageReduction(const CTakeDamageInfo &info);
+	float GetWeaponDamageReduction( CBaseEntity *pEntity, const CTakeDamageInfo &info, float fDmgScale );
 
 #ifdef CLIENT_DLL
 

@@ -17,7 +17,7 @@
 #include "asw_weapon.h"
 #endif
 
-enum CHAINSAW_FIRE_STATE { FIRE_OFF, FIRE_STARTUP, FIRE_CHARGE };
+//enum CHAINSAW_FIRE_STATE { FIRE_OFF, FIRE_STARTUP, FIRE_CHARGE };	//softcopy:
 
 class CASW_Weapon_Chainsaw : public CASW_Weapon
 {
@@ -62,6 +62,10 @@ public:
 	// Classification
 	virtual Class_T		Classify( void ) { return (Class_T) CLASS_ASW_CHAINSAW; }
 private:
+
+	//softcopy: set private to prevent conflict with mining laser enum
+	enum CHAINSAW_FIRE_STATE { FIRE_OFF, FIRE_STARTUP, FIRE_CHARGE };
+
 	void	Attack( void );
 	void	EndAttack( void );
 	void	Fire( const Vector &vecOrigSrc, const Vector &vecDir );
