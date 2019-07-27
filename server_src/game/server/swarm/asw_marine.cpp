@@ -92,6 +92,8 @@
 #define ASW_DEFAULT_MARINE_MODEL "models/swarm/marine/marine.mdl"
 //softcopy:
 ConVar asw_marine_flashlight( "asw_marine_flashlight", "0", FCVAR_CHEAT, "If set, 1=marine flashlight on, 2=normal after picking up a flashlight");
+ConVar asw_mininglaser_damage_reduction( "asw_mininglaser_damage_reduction", "1", FCVAR_CHEAT, "Sets the mininglaser fire damage scales against marines/colonists",true,0,true,1);
+ConVar asw_chainsaw_damage_reduction( "asw_chainsaw_damage_reduction", "1", FCVAR_CHEAT, "Sets the chainsaw damage scales against marines/colonists",true,0,true,1);
 
 //#define ASW_MARINE_ALWAYS_VPHYSICS
 
@@ -1069,8 +1071,18 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	//softcopy: mining laser and chainsaw damage reductions
 	if (info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_MARINE)
 	{
-		if (ASWGameRules())
-			newInfo.ScaleDamage(ASWGameRules()->PowerWeaponDamageReduction(info));
+		CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(info.GetAttacker());
+		if (pMarine)
+		{
+			CASW_Weapon_Mining_Laser *pMiningLaser = dynamic_cast<CASW_Weapon_Mining_Laser*>(pMarine->GetActiveASWWeapon());
+			CASW_Weapon_Chainsaw *pChainsaw = dynamic_cast<CASW_Weapon_Chainsaw*>(pMarine->GetActiveASWWeapon());
+
+			if (pMiningLaser)
+				newInfo.ScaleDamage(GetScaleDamageReduction(pMiningLaser, newInfo, asw_mininglaser_damage_reduction.GetFloat()));
+			
+			if (pChainsaw)
+				newInfo.ScaleDamage(GetScaleDamageReduction(pChainsaw, newInfo, asw_chainsaw_damage_reduction.GetFloat()));
+		}
 	}
 
 	// scale sentry gun damage
@@ -1587,6 +1599,22 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	}
 
 	return result;
+}
+
+//softcopy:
+float CASW_Marine::GetScaleDamageReduction( CBaseEntity *pEntity, const CTakeDamageInfo &info, float fDmgScale )
+{ 
+	float fLessFactor = 0.01;	//more damage reduction on heavy weapons
+	float fLDamage = info.GetDamage();
+	float fLDamageScale = fLDamage * fDmgScale * fLessFactor;
+
+	if (pEntity)
+	{
+		fLDamage = fDmgScale > 0 && fDmgScale < 1 ? fLDamageScale : fDmgScale >= 1 ? fLDamage : 0.0f;
+		//Msg("%s damage %f, after damage scale reduction %f\n", pEntity->GetClassname(), info.GetDamage(), fLDamage);
+	}
+
+	return fLDamage;
 }
 
 // you can assume there is an attacker when this function is called.

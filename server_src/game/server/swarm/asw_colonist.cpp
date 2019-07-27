@@ -21,6 +21,7 @@
 #include "asw_door.h"
 #include "particle_parse.h"
 #include "asw_weapon_mining_laser_shared.h"
+#include "asw_weapon_chainsaw_shared.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -34,6 +35,7 @@ ConVar	asw_colonist_tom_health ( "asw_colonist_tom_health", "100" );	// tutorial
 
 #define SWARM_COLONIST_MODEL         "models/swarm/Colonist/Male/MaleColonist.mdl"
 
+//softcopy:
 extern ConVar asw_marine_death_protection;
 extern ConVar asw_marine_death_notifications;
 extern ConVar asw_sentry_friendly_fire_scale;
@@ -41,7 +43,8 @@ extern ConVar asw_sentry_friendly_fire_damage;
 extern ConVar asw_marine_ff_absorption;
 extern ConVar asw_marine_ff_absorption_build_rate;
 extern ConVar asw_marine_ff_absorption_decay_rate;
-extern ConVar asw_mininglaser_damage_reduction;	//softcopy:
+extern ConVar asw_mininglaser_damage_reduction;
+extern ConVar asw_chainsaw_damage_reduction;
 extern ConVar asw_god;
 
 LINK_ENTITY_TO_CLASS( asw_colonist, CASW_Colonist );
@@ -286,8 +289,21 @@ int CASW_Colonist::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		}
 
 		//mining laser and chainsaw damage reductions
-		if (ASWGameRules())	
-			newInfo.ScaleDamage(ASWGameRules()->PowerWeaponDamageReduction(info));
+		if (info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_MARINE)
+		{
+			CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(info.GetAttacker());
+			if (pMarine)
+			{
+				CASW_Weapon_Mining_Laser *pMiningLaser = dynamic_cast<CASW_Weapon_Mining_Laser*>(pMarine->GetActiveASWWeapon());
+				CASW_Weapon_Chainsaw *pChainsaw = dynamic_cast<CASW_Weapon_Chainsaw*>(pMarine->GetActiveASWWeapon());
+
+				if (pMiningLaser)
+					newInfo.ScaleDamage(CASW_Marine::GetScaleDamageReduction(pMiningLaser, newInfo, asw_mininglaser_damage_reduction.GetFloat()));
+				
+				if (pChainsaw)
+					newInfo.ScaleDamage(CASW_Marine::GetScaleDamageReduction(pChainsaw, newInfo, asw_chainsaw_damage_reduction.GetFloat()));
+			}
+		}
 
 		// drop the damage down by our absorption buffer
 		bool bFlamerDot = !!(newInfo.GetDamageType() & ( DMG_BURN | DMG_DIRECT ) );
