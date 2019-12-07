@@ -23,6 +23,7 @@ ConVar asw_sentry_cannon_fire_rate("asw_sentry_cannon_fire_rate", "1.75f", FCVAR
 ConVar asw_sentry_cannon_grenade_damage("asw_sentry_cannon_grenade_damage", "0.5f", FCVAR_CHEAT, "Cannon gun sentry grenade damage.");
 ConVar asw_sentry_cannon_grenade_radius("asw_sentry_cannon_grenade_radius", "0.5f", FCVAR_CHEAT, "Cannon gun sentry grenade radius.");
 ConVar asw_sentry_cannon_range("asw_sentry_cannon_range", "1000", FCVAR_CHEAT, "Sets the shoot range of the cannon sentry.");
+ConVar asw_sentry_cannon_tesla("asw_sentry_cannon_tesla", "1", FCVAR_CHEAT, "Enables tesla on the cannon sentry.");
 
 LINK_ENTITY_TO_CLASS( asw_sentry_top_cannon, CASW_Sentry_Top_Cannon );
 PRECACHE_REGISTER( asw_sentry_top_cannon );
@@ -57,8 +58,10 @@ void CASW_Sentry_Top_Cannon::Fire()
 		return;
 
 	BaseClass::Fire();
-	
-	SentryTesla();	//softcopy: sentry firing tesla
+
+	//softcopy: sentry firing tesla
+	if (asw_sentry_cannon_tesla.GetBool())
+		SentryTesla();
 
 	Vector diff = m_hEnemy->WorldSpaceCenter() - GetFiringPosition();
 	diff.NormalizeInPlace();

@@ -7,6 +7,9 @@
 #include "cbase.h"
 #include "Sprite.h"
 
+//softcopy: header file has been spliteed
+#include "asw_health_bar_shared.h"
+/*
 #ifdef CLIENT_DLL
 	#include "asw_hud_3dmarinenames.h"
 #endif
@@ -56,7 +59,7 @@ private:
 	CNetworkVar( bool, m_bHideAtFullHealth );
 
 };
-
+*/
 
 LINK_ENTITY_TO_CLASS( asw_health_bar, CASWHealthBar );
 

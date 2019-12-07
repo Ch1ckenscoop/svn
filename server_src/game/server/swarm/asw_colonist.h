@@ -6,6 +6,7 @@
 #include "ai_playerally.h"
 #include "asw_shareddefs.h"
 #include "iasw_server_usable_entity.h"	//softcopy:
+#include "asw_health_bar_shared.h"
 
 class CASW_Marine;
 class CASW_Alien;
@@ -34,7 +35,7 @@ public:
 	float m_fLastASWThink;
 
 	// healing
-	void AddSlowHeal(int iHealAmount, CASW_Marine *pMedic);
+	//void AddSlowHeal(int iHealAmount, CASW_Marine *pMedic);	//softcopy:
 	bool m_bSlowHeal;
 	int m_iSlowHealAmount;
 	float m_fNextSlowHealTick;
@@ -82,6 +83,8 @@ public:
 	float m_fFriendlyFireAbsorptionTime;				// timer for friendly fire damage
 	void Event_Killed(const CTakeDamageInfo& info);
 	bool m_bPlayedCureScream;	// have we played a scream sound for our parasite?
+	CASWHealthBar* pHealthBar;
+	void ShowHealthBar();
 
 private:
 	DECLARE_DATADESC();

@@ -443,7 +443,10 @@ void CASW_Spawn_Manager::UpdateCandidateNodes()
 	if ( !GetNetwork() || !GetNetwork()->NumNodes() )
 	{
 		m_vecHordePosition = vec3_origin;
-		Msg("Error: Can't spawn hordes as this map has no node network\n");
+		//softcopy:
+		//Msg("Error: Can't spawn hordes as this map has no node network\n");
+		ASWGameRules()->MsgInterval("Error: Can't spawn hordes as this map has no node network", 4);
+
 		return;
 	}
 
@@ -673,11 +676,6 @@ int CASW_Spawn_Manager::SpawnAlienBatch( const char* szAlienClass, int iNumAlien
 		return 0;
 	}
 
-	//softcopy: Because only city17 has zombie modules and textures provided,
-	//          so that Ch1ckenscoop will hordemode spawn npc zombies on custom map city17 only.
-	if (ASWGameRules() && IsHL2Alien(szAlienClass) && !ASWGameRules()->IsCity17Map())
-		return 0;
-
 	int iSpawned = 0;
 	bool bCheckGround = true;
 	Vector vecMins = NAI_Hull::Mins(HULL_MEDIUMBIG);
@@ -765,7 +763,11 @@ int CASW_Spawn_Manager::SpawnAlienBatch( const char* szAlienClass, int iNumAlien
 }
 
 CBaseEntity* CASW_Spawn_Manager::SpawnAlienAt(const char* szAlienClass, const Vector& vecPos, const QAngle &angle)
-{	
+{
+	//softcopy; HL2 is available on city17 only
+	if (ASWGameRules() && IsHL2Alien(szAlienClass) && !ASWGameRules()->IsCity17Map())
+		return NULL;
+
 	CBaseEntity	*pEntity = NULL;	
 	pEntity = CreateEntityByName( szAlienClass );
 	CAI_BaseNPC	*pNPC = dynamic_cast<CAI_BaseNPC*>(pEntity);
@@ -1023,7 +1025,7 @@ Vector TraceToGround( const Vector &vecPos )
 	return false;
 }*/
 
-//softcopy: 
+//softcopy: dynamic aliens spawn
 bool CASW_Spawn_Manager::SpawnRandomAlienPack( const char *szAlienClass, int nAlienSpawn )
 {
 	int iNumNodes = g_pBigAINet->NumNodes();
@@ -1133,18 +1135,15 @@ int CASW_Spawn_Manager::SpawnHL2AlienBatch(const char* szAlienClass, int iNumHL2
 
 	return iSpawned;
 }
-void CASW_Spawn_Manager::SpawnHL2AlienClass()	//spawns hl2 aliens when start mission
+void CASW_Spawn_Manager::SpawnHL2AlienClass()	//spawns HL2 aliens when start mission
 {
-	if (ASWGameRules() && !ASWGameRules()->IsCity17Map())	//hl2 is available on city17 only
-		return;
-
-	if (!ASWHordeMode())
+	if (!ASWHordeMode() || !ASWGameRules())
 		return;
 
 	for (int i=0; i < ASWHordeMode()->ALIEN_INDEX_COUNT; i++)
 	{
 		const CASW_Horde_Mode::AlienInfo *pHL2 = ASWHordeMode()->GetHL2AlienInfo(i);
-		if (pHL2)
+		if (pHL2 && ASWGameRules()->IsCity17Map())
 		{
 			const char *szHL2Alien = pHL2->m_szAlienClassName;	
 			if (SpawnClassPrecache(szHL2Alien))	//spawn after precached 

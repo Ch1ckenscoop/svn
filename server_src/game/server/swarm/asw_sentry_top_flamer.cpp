@@ -32,7 +32,9 @@ END_DATADESC()
 //extern ConVar asw_weapon_max_shooting_distance;
 //extern ConVar asw_weapon_force_scale;
 //extern ConVar asw_difficulty_alien_health_step;
+
 extern ConVar asw_sentry_debug_aim;
+//ConVar asw_sentry_flamer_tesla("asw_sentry_flamer_tesla", "0", FCVAR_CHEAT, "Enables tesla on the flamer sentry.");	//softcopy:
 
 void CASW_Sentry_Top_Flamer::SetTopModel()
 {
@@ -243,7 +245,9 @@ void CASW_Sentry_Top_Flamer::FireProjectiles( int numShotsToFire, ///< number of
 		return;
 	CASW_Marine * RESTRICT const pMarineDeployer = pSentryBase->m_hDeployer.Get();
 
-	SentryTesla();	//softcopy: sentry firing tesla
+	//softcopy: sentry firing tesla
+	//if (asw_sentry_flamer_tesla.GetBool())
+	//	SentryTesla();
 
 	for ( int i = 0 ; i < numShotsToFire ; i++ )
 	{

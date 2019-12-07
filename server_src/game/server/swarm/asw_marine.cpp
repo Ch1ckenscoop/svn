@@ -82,9 +82,6 @@
 #include "sendprop_priorities.h"
 #include "asw_marine_gamemovement.h"
 #include "asw_client_effects.h"
-//softcopy:
-#include "asw_weapon_mining_laser_shared.h"
-#include "asw_weapon_chainsaw_shared.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -92,8 +89,6 @@
 #define ASW_DEFAULT_MARINE_MODEL "models/swarm/marine/marine.mdl"
 //softcopy:
 ConVar asw_marine_flashlight( "asw_marine_flashlight", "0", FCVAR_CHEAT, "If set, 1=marine flashlight on, 2=normal after picking up a flashlight");
-ConVar asw_mininglaser_damage_reduction( "asw_mininglaser_damage_reduction", "1", FCVAR_CHEAT, "Sets the mininglaser fire damage scales against marines/colonists",true,0,true,1);
-ConVar asw_chainsaw_damage_reduction( "asw_chainsaw_damage_reduction", "1", FCVAR_CHEAT, "Sets the chainsaw damage scales against marines/colonists",true,0,true,1);
 
 //#define ASW_MARINE_ALWAYS_VPHYSICS
 
@@ -354,7 +349,7 @@ IMPLEMENT_SERVERCLASS_ST(CASW_Marine, DT_ASW_Marine)
 
 	END_DATADESC()
 
-	extern ConVar weapon_showproficiency;
+extern ConVar weapon_showproficiency;
 extern ConVar asw_leadership_radius;
 extern ConVar asw_buzzer_poison_duration;
 extern ConVar asw_debug_marine_chatter;
@@ -1071,17 +1066,14 @@ int CASW_Marine::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 	//softcopy: mining laser and chainsaw damage reductions
 	if (info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_MARINE)
 	{
-		CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(info.GetAttacker());
-		if (pMarine)
+		if (ASWGameRules())
 		{
-			CASW_Weapon_Mining_Laser *pMiningLaser = dynamic_cast<CASW_Weapon_Mining_Laser*>(pMarine->GetActiveASWWeapon());
-			CASW_Weapon_Chainsaw *pChainsaw = dynamic_cast<CASW_Weapon_Chainsaw*>(pMarine->GetActiveASWWeapon());
-
-			if (pMiningLaser)
-				newInfo.ScaleDamage(GetScaleDamageReduction(pMiningLaser, newInfo, asw_mininglaser_damage_reduction.GetFloat()));
-			
-			if (pChainsaw)
-				newInfo.ScaleDamage(GetScaleDamageReduction(pChainsaw, newInfo, asw_chainsaw_damage_reduction.GetFloat()));
+			float fReduction = -1;
+#ifndef CLIENT_DLL
+			fReduction = ASWGameRules()->PowerWeaponDamageReduction(info);
+#endif
+			if (fReduction >= 0)
+				newInfo.ScaleDamage(fReduction);
 		}
 	}
 

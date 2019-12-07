@@ -2,6 +2,7 @@
 #include "ASW_Horde_Mode.h"
 #include "convar.h"
 #include "asw_spawn_manager.h"
+#include "asw_gamerules.h"	//softcopy:
 
 #include "memdbgon.h"
 
@@ -240,6 +241,19 @@ void CASW_Horde_Mode::UpdateHordeMode()
 		Msg("Alien index is %i.\n", alienIndex);
 
 	const char *alienClassName = m_AlienInfoArray[alienIndex].m_szAlienClassName;
+
+	//softcopy: HL2 is available on city17 only
+	if (ASWSpawnManager() && ASWGameRules())
+	{
+		if (ASWSpawnManager()->IsHL2Alien(alienClassName) && !ASWGameRules()->IsCity17Map())
+		{
+			if (asw_hordemode_debug.GetBool())
+				Msg("Hordemode set alien class to %s, is available on city17 only.\n", alienClassName);
+
+			return;
+		}
+	}
+
 	ConVar *alienMax = m_AlienInfoArray[alienIndex].m_pMaxCvar;
 	ConVar *alienMin = m_AlienInfoArray[alienIndex].m_pMinCvar;
 	ConVar *alienHealthCvar = m_AlienInfoArray[alienIndex].m_pAlienHealthCvar;

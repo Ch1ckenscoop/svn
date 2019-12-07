@@ -1891,7 +1891,7 @@ void ASW_AFK_t( const CCommand &command )	//softcopy: player leave marine & can 
 		return;
 
 	bool bSetReady = true; char szSpecifiedName[64], buf[128];
-	extern ConVar asw_spectator_takes_slot, asw_lobby_player_select;
+	extern ConVar asw_spectator_takes_slot;
 	CRecipientFilter filter;
 	filter.AddRecipient(pPlayer);
 	if (ASWGameRules()->GetGameState() == ASW_GS_BRIEFING)

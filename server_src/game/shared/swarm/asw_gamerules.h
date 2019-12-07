@@ -102,7 +102,7 @@ public:
 	virtual void			Precache( void );
 	virtual void			Think( void );
 	virtual const char *GetGameDescription( void ) { return "Ch1ckensCoop"; }
-	virtual const char *GetCurrentVersion ( void ) { return "2.3.6"; }	//softcopy:
+	virtual const char *GetCurrentVersion ( void ) { return "2.3.7"; }	//softcopy:
 	virtual void			OnServerHibernating();
 	
 	// briefing roster functions
@@ -158,6 +158,11 @@ public:
 	void HeartOfSwarmBehaviors(CBaseEntity *pEntity, const char *szFlag);
 	void HeartOfSwarmPrune();
 	bool m_bIsHeartOfSwarm;
+	float GetWeaponDamageReduction( CBaseEntity *pEntity, float fDamage, float fDmgScale );
+	float PowerWeaponDamageReduction( const CTakeDamageInfo &info );
+	const char* SkillLevelName(int iSkill=0);
+	float fLastMsgPromptTime;
+	void MsgInterval(const char* szText, float fInterval=2.5f);
 
 	// powerups
 	virtual void DropPowerup( CBaseEntity *pSource, const CTakeDamageInfo &info, const char *pszSourceClass );

@@ -484,38 +484,38 @@ float CNPC_BaseZombie::MaxYawSpeed( void )
 {
 	if( m_fIsTorso )
 	{
-		return( 60 );
+		return( 120 );	//softcopy: was 60
 	}
 	else if (IsMoving() && HasPoseParameter( GetSequence(), m_poseMove_Yaw ))
 	{
-		return( 15 );
+		return( 30 );	//softcopy: was 15
 	}
 	else
 	{
 		switch( GetActivity() )
 		{
 		case ACT_TURN_LEFT:
-			//softcopy:
-			return 100;
+			//softcopy: no left turn ?
+			return 160;
 			break;
 
 		case ACT_TURN_RIGHT:
-			return 100;
+			return 160;	//softcopy: was100
 			break;
 		case ACT_RUN:
-			return 15;
+			return 30;	//softcopy: was 15;
 			break;
 		case ACT_WALK:
 		case ACT_IDLE:
-			return 25;
+			return 30;	//softcopy: was 25;
 			break;
 		case ACT_RANGE_ATTACK1:
 		case ACT_RANGE_ATTACK2:
 		case ACT_MELEE_ATTACK1:
 		case ACT_MELEE_ATTACK2:
-			return 120;
+			return 240;	//softcopy: was 120;
 		default:
-			return 90;
+			return 150;	//softcopy: was 90;
 			break;
 		}
 	}
@@ -1689,7 +1689,7 @@ void CNPC_BaseZombie::HandleAnimEvent( animevent_t *pEvent )
 		QAngle qaPunch( 45, random->RandomInt(-5,5), random->RandomInt(-5,5) );
 		AngleVectors( GetLocalAngles(), &forward );
 		forward = forward * 200;
-		ClawAttack( GetClawAttackRange(), sk_zombie_dmg_one_slash.GetFloat(), qaPunch, forward, ZOMBIE_BLOOD_BOTH_HANDS );
+		ClawAttack( GetClawAttackRange(), sk_zombie_dmg_one_slash.GetFloat() *1.8, qaPunch, forward, ZOMBIE_BLOOD_BOTH_HANDS ); //softcopy: both hands 1.8
 		return;
 	}
 
@@ -1932,23 +1932,29 @@ bool CNPC_BaseZombie::ShouldMoveSlow() const
 {
 	return (gpGlobals->curtime < m_fHurtSlowMoveTime);
 }
+float CNPC_BaseZombie::GetIdealAccel( ) const
+{
+	// zombie goes FASTER
+	return GetIdealSpeed() * 2.5f;
+}
 float CNPC_BaseZombie::GetIdealSpeed() const
 {
-	// if the alien is hurt, move slower	
+	// if the zombie is hurt, move slower	
 	if ( ShouldMoveSlow() )
 	{
 		if ( m_bElectroStunned.Get() )
-		{
-			return BaseClass::GetIdealSpeed() * asw_alien_stunned_speed.GetFloat();	//Ch1ckensCoop:
-		}
+			return BaseClass::GetIdealSpeed() * asw_alien_stunned_speed.GetFloat();
 		else
-		{
-			return BaseClass::GetIdealSpeed() * asw_alien_hurt_speed.GetFloat();	//Ch1ckensCoop:
-		}
+			return BaseClass::GetIdealSpeed() * asw_alien_hurt_speed.GetFloat();
 	}
 
-	return BaseClass::GetIdealSpeed();	//Ch1ckensCoop:
+	float flFreezeSpeedScale = 1.0f - m_flFrozen;
+	flFreezeSpeedScale = clamp<float>( flFreezeSpeedScale, 0.0f, 1.0f );
+
+	return BaseClass::GetIdealSpeed() * flFreezeSpeedScale;
 }
+
+
 void CNPC_BaseZombie::Freeze( float flFreezeAmount, CBaseEntity *pFreezer, Ray_t *pFreezeRay ) 
 {
     /*if (!m_bFreezable)	//Ch1ckensCoop:

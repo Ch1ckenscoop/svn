@@ -108,6 +108,9 @@
 #include "missionchooser/iasw_mission_chooser.h"
 #include "missionchooser/iasw_random_missions.h"
 #include "missionchooser/iasw_map_builder.h"
+//softcopy:
+#include "asw_weapon_mining_laser_shared.h"
+#include "asw_weapon_chainsaw_shared.h"
 
 //#include "entityapi.h"
 //#include "entityoutput.h"
@@ -157,11 +160,11 @@ ConVar asw_autokick_player("asw_autokick_player", "0", FCVAR_CHEAT, "Sets auto k
 ConVar asw_autokick_player_promotion("asw_autokick_player_promotion", "0", FCVAR_CHEAT, "Sets autokick player below the promotion.",true,0,true,6);
 ConVar asw_autokick_player_experience("asw_autokick_player_experience", "5", FCVAR_CHEAT, "Sets autokick player below the experience levels.",true,0,true,27);
 ConVar asw_marine_lobby_ready("asw_marine_lobby_ready", "1", FCVAR_CHEAT, "Sets auto mark ready(1=gamestats lobby, 2=all lobbies.");
-ConVar asw_spectator_takes_slot("asw_spectator_takes_slot", "1", FCVAR_CHEAT, "If set, spectator can't take over reserved slot."); 
+ConVar asw_spectator_takes_slot("asw_spectator_takes_slot", "1", FCVAR_CHEAT, "Spectator can't take over reserved slot."); 
 ConVar asw_marine_ai_slot_release("asw_marine_ai_slot_release", "1", FCVAR_CHEAT, "Auto release bot slots to new join player in matchmaking lobby.");
 ConVar asw_lobby_player_select("asw_lobby_player_select", "4", FCVAR_CHEAT, "Max players selectable in lobby, instablity timeout if changed.", true,4, true,6);
-ConVar asw_level_lock("asw_level_lock", "0", FCVAR_CHEAT, "Skill level locked on(1-5).", true,0, true,5);
-ConVar asw_hibernate_skill_default("asw_hibernate_skill_default", "0", FCVAR_CHEAT, "If set, Skill/HardcoreFF switch to default when hibernating.");
+ConVar asw_level_lock("asw_level_lock", "0", FCVAR_CHEAT, "Lock skill level on matchmaking lobby", true,-1, true,5);
+ConVar asw_hibernate_skill_default("asw_hibernate_skill_default", "0", FCVAR_CHEAT, "Skill/HardcoreFF switch to default when hibernating.");
 ConVar asw_vote_kick_admin("asw_vote_kick_admin", "1", FCVAR_CHEAT, "Generic admin or above level immune from vote kick."); 
 ConVar asw_vote_kick_ipcheck("asw_vote_kick_ipcheck", "1", FCVAR_CHEAT, "Player using duplicate IP can't start a vote kick."); 
 ConVar asw_debug_spectator_slot("asw_debug_spectator_slot", "0", FCVAR_CHEAT, "Show debug messages for spectator slots."); 
@@ -204,6 +207,8 @@ ConVar asw_infest_damage_normal("asw_infest_damage_normal", "225", FCVAR_CHEAT, 
 ConVar asw_infest_damage_hard("asw_infest_damage_hard", "270", FCVAR_CHEAT, "Infest damage on hard level.");
 ConVar asw_infest_damage_insane("asw_infest_damage_insane", "280", FCVAR_CHEAT, "Infest damage on insane level.");
 ConVar asw_infest_damage_brutal("asw_infest_damage_brutal", "280", FCVAR_CHEAT, "Infest damage on brutal level.");
+ConVar asw_mininglaser_damage_reduction( "asw_mininglaser_damage_reduction", "1", FCVAR_CHEAT, "Sets the mininglaser fire damage scales against marines/colonists",true,0,true,1);
+ConVar asw_chainsaw_damage_reduction( "asw_chainsaw_damage_reduction", "1", FCVAR_CHEAT, "Sets the chainsaw damage scales against marines/colonists",true,0,true,1);
 ConVar asw_debug_alien_spawn("asw_debug_alien_spawn", "0", FCVAR_NONE, "Show debug messages for aliens spawn");
 float m_fWeaponDisassemble = ASW_USE_KEY_HOLD_SENTRY_TIME;	//default disassemble time
 extern ConVar asw_hardcore_ff_force;
@@ -836,6 +841,7 @@ CAlienSwarm::CAlienSwarm()
 		strcpy(pPlayerIp[i], "null");
 	}
 	m_TouchExplosionDamage = 0;
+	fLastMsgPromptTime = 0;
 
 }
 
@@ -2847,21 +2853,19 @@ void CAlienSwarm::OnServerHibernating()
 	if (asw_hibernate_skill_default.GetBool())
 	{
 		ConVar *var = (ConVar *)cvar->FindVar( "asw_skill" );
-		if ( var && var->GetInt() != 2 )
+		int iSkillLock = asw_level_lock.GetInt();
+		if ( var && var->GetInt() != iSkillLock )
 		{
-			const char *lvlname = "Normal";
-			switch( var->GetInt() )
-			{	case 1: lvlname = "Easy"; 	break;	case 2: lvlname = "Normal"; break;	case 3: lvlname = "Hard"; break;
-				case 4: lvlname = "Insane"; break;	case 5: lvlname = "Brutal"; break;	}
-			if ( var->GetInt() != asw_level_lock.GetInt() )
-				Msg( "Skill level \"%s\" has changed to default level\n", lvlname );
-			var->SetValue( asw_level_lock.GetInt() > 0 ? asw_level_lock.GetInt() : 2 );
+			const char* szOldSkillName = SkillLevelName();
+			var->SetValue( iSkillLock > 0 ? iSkillLock : 2 );
+			if (Q_strcmp(szOldSkillName, SkillLevelName()))
+				Msg( "Skill level changed from \"%s\" to \"%s\"\n", szOldSkillName, SkillLevelName() );
 		}
 		if ( IsHardcoreFF() && !asw_hardcore_ff_force.GetBool() )
 		{
 			asw_marine_ff_absorption.SetValue( 1 );
 			asw_sentry_friendly_fire_scale.SetValue( 0.0f );
-			Msg( "FriendlyFire \"Hardcore\" default to \"Normal\"\n" );
+			Msg( "FriendlyFire changed from \"Hardcore\" to \"Regular\"\n" );
 		}
 	}
 }
@@ -5518,9 +5522,10 @@ void CAlienSwarm::OnSkillLevelChanged( int iNewLevel )
 	m_iSkillLevel = iNewLevel;
 
 	//softcopy: the chosen level show to players(related to asw_level_lock statements)
-	char text[64];
-	Q_snprintf(text, sizeof(text),"%s", !Q_strcmp( szDifficulty, "imba") ? "brutal" : szDifficulty);
-	*text=(char)toupper(*text);
+	//char text[64];
+	//Q_snprintf(text, sizeof(text),"%s", !Q_strcmp( szDifficulty, "imba") ? "brutal" : szDifficulty);
+	//*text=(char)toupper(*text);	//upper case first letter
+	const char* text = SkillLevelName(iNewLevel);
 	UTIL_ClientPrintAll( ASW_HUD_PRINTTALKANDCONSOLE, CFmtStr("This server is now on %s\n", text) );
 	Msg("Skill level changed to \"%s\" \n", text);
 }
@@ -5561,26 +5566,17 @@ void CAlienSwarm::RequestSkill( CASW_Player *pPlayer, int nSkill )
 				filter.RemoveRecipient( pPlayer );		// notify everyone except the player changing the difficulty level
 
 				//softcopy: skill level lock cvar control, we don't need 'asw-exec-skills' to do this!
-				if ( asw_level_lock.GetInt() > 0 )
+				int iSkillLock = asw_level_lock.GetInt();
+				if ( var->GetInt() < iSkillLock )    
 				{
-					if ( var->GetInt() < asw_level_lock.GetInt() )    
-					{
-						int lvlnotallow = var->GetInt(); 
-						const char *lvlname = "Normal";
-						var->SetValue( ( asw_level_lock.GetInt() ) );    
-						switch( lvlnotallow )
-						{ case 1: lvlname = "Easy"; break; 
-						  case 2: lvlname = "Normal"; break;
-						  case 3: lvlname = "Hard"; break; 
-						  case 4: lvlname = "Insane"; break;  
-						}
-						char text[128];	Q_snprintf(text, sizeof(text), "%s Level is not allowed on this server", lvlname );
-						UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, text);
-						Msg("%s\n",text);
-					}
-					engine->ServerCommand(CFmtStr("exec skill_%d.cfg\n", var->GetInt()));
-					//Msg("Ran skill_%d.cfg\n", var->GetInt());   //dedug check: whick skill file executed
+					char text[128];	Q_snprintf(text, sizeof(text), "%s Level is not allowed on this server", SkillLevelName());
+					//keep staying on current skill level if the seleted skill level is not allowed
+					var->SetValue(iOldSkill > var->GetInt() ? iOldSkill : iSkillLock);
+					UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE, text);
+					Msg("%s\n",text);
 				}
+				if (iSkillLock >=0)
+					engine->ServerCommand(CFmtStr("exec skill_%d.cfg\n", var->GetInt()));
 
 				switch(var->GetInt())
 				{
@@ -6954,8 +6950,15 @@ void CAlienSwarm::MarineDamageDebugInfo(CBaseEntity *pOther, const char *damageI
 {
 	//debug marine/alien damage activity
 	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
-	if (pMarine && asw_debug_alien_activity.GetBool())
-		Msg("----- Player %s has %s by %s %s -----\n", pMarine->GetPlayerName(), damageInfo, alienLabel, damageTypes);
+	if (pMarine)
+	{
+		if (IsCampaignGame() && asw_debug_alien_activity.GetBool())
+		{
+			char text[256];
+			Q_snprintf(text, sizeof(text),"----- Player %s has %s by %s %s -----", pMarine->GetPlayerName(), damageInfo, alienLabel, damageTypes);
+			MsgInterval(text);
+		}
+	}
 }
 void CAlienSwarm::SetColorScale(CBaseEntity *pAlien, const char *alienLabel)	//set aliens color scale function
 {
@@ -7011,6 +7014,27 @@ void CAlienSwarm::SetColorScale(CBaseEntity *pAlien, const char *alienLabel)	//s
 		SetModelScale(asw_scalemod.GetFloat());
 	*/
 }
+const char* CAlienSwarm::SkillLevelName(int iSkill)	//gets skill level name
+{
+	// iSkill = 0, it uses asw_skill to get the skill level name
+	// iSkill > 0, it uses iSkill to get the skill level name
+
+	ConVar *var = (ConVar *)cvar->FindVar( "asw_skill" );
+	const char* szLevelName = NULL;
+	if (var)
+	{
+		iSkill = iSkill > 0 ? iSkill : var->GetInt();
+		switch( iSkill )
+		{
+			case 1: szLevelName = "Easy"; break;
+			case 2: szLevelName = "Normal"; break;
+			case 3: szLevelName = "Hard"; break;
+			case 4: szLevelName = "Insane"; break;
+			case 5: szLevelName = "Brutal"; break;
+		}
+	}
+	return  szLevelName;
+}
 void CAlienSwarm::HeartOfSwarmBehaviors( CBaseEntity *pEntity, const char *szFlag )
 {
 	if (pEntity)
@@ -7044,6 +7068,48 @@ void CAlienSwarm::HeartOfSwarmPrune()
 			}
 		}
 	}
+}
+float CAlienSwarm::GetWeaponDamageReduction( CBaseEntity *pEntity, float fDamage, float fDmgScale )
+{ 
+	float fLessFactor = 0.01;	//more damage reduction on high damage weapons
+	float fResult = fDamage;
+
+	if (pEntity)
+	{
+		float fLDamage = fDamage * fDmgScale * fLessFactor;
+		fResult = fDmgScale > 0 && fDmgScale < 1 ? fLDamage : fDmgScale >= 1 ? fDamage : 0.0f;
+	}
+
+	return fResult;
+}
+float CAlienSwarm::PowerWeaponDamageReduction(const CTakeDamageInfo &info)
+{
+	CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(info.GetAttacker());
+	float fDamage = info.GetDamage();
+	float fResult = -1;
+
+	if (pMarine)
+	{
+			CASW_Weapon_Mining_Laser *pMiningLaser = dynamic_cast<CASW_Weapon_Mining_Laser*>(pMarine->GetActiveASWWeapon());
+			CASW_Weapon_Chainsaw *pChainsaw = dynamic_cast<CASW_Weapon_Chainsaw*>(pMarine->GetActiveASWWeapon());
+
+			if (pMiningLaser)
+				fResult = GetWeaponDamageReduction(pMiningLaser, fDamage, asw_mininglaser_damage_reduction.GetFloat());
+
+			if (pChainsaw)
+				fResult = GetWeaponDamageReduction(pChainsaw, fDamage, asw_chainsaw_damage_reduction.GetFloat());
+	}
+
+	return fResult;
+}
+void CAlienSwarm::MsgInterval(const char *szText, float fInterval)
+{
+	if (fLastMsgPromptTime + fInterval > gpGlobals->curtime)	//delay msg prompt to prevent lagging console
+		return;
+
+	Msg("%s\n", szText);
+
+	fLastMsgPromptTime = gpGlobals->curtime;
 }
 //
 
@@ -7284,14 +7350,15 @@ void CAlienSwarm::LevelInitPostEntity()
 		DevMsg("Ran command '%s'\n", execCmd);
 	}
 
-	//softcopy: skill lock control init if activated.
-	if (asw_level_lock.GetInt() > 0 )
+	//softcopy: skill level lock init.
+	int iSkillLock = asw_level_lock.GetInt();
+	if (asw_skill.GetInt() < iSkillLock)
 	{
-		if (asw_skill.GetInt() <= asw_level_lock.GetInt())
-			asw_skill.SetValue(asw_level_lock.GetInt());
-		engine->ServerCommand(CFmtStr("exec skill_%d.cfg\n",asw_skill.GetInt())); 
-		//Msg("Ran skill_%d.cfg\n",asw_skill.GetInt());		//dedug check:
+		asw_skill.SetValue(iSkillLock);
+		m_iSkillLevel = asw_skill.GetInt();
 	}
+	if (iSkillLock >=0 && !IsLobbyMap())	//if asw_level_lock is -1, no skill files will be executed 
+		engine->ServerCommand(CFmtStr("exec skill_%d.cfg\n", asw_skill.GetInt())); 
 
 	m_bPlayedBlipSpeech = false;
 	m_bQuickStart = false;

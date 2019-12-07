@@ -34,7 +34,9 @@ END_DATADESC()
 ConVar asw_sentry_debug_aim("asw_sentry_debug_aim", "0", FCVAR_CHEAT, "Draw debug lines for sentry gun aim");
 ConVar asw_sentry_icer_amount("asw_sentry_icer_amount", "0.4", FCVAR_CHEAT, "Sets the freeze amount for the icer sentry.");
 ConVar asw_sentry_icer_damage("asw_sentry_icer_damage", "1", FCVAR_CHEAT, "Sets the damage of the icer sentry.");
-ConVar asw_sentry_icer_range("asw_sentry_icer_range", "300", FCVAR_CHEAT, "Sets the shoot range of the icer sentry.");	//softcopy:
+//softcopy:
+ConVar asw_sentry_icer_range("asw_sentry_icer_range", "300", FCVAR_CHEAT, "Sets the shoot range of the icer sentry.");
+//ConVar asw_sentry_icer_tesla("asw_sentry_icer_tesla", "0", FCVAR_CHEAT, "Enables tesla on the icer sentry.");
 
 #define ASW_SENTRY_FIRE_RATE 0.1f		// time in seconds between each shot
 #define ASW_SENTRY_FIRE_ANGLE_THRESHOLD 3
@@ -114,7 +116,9 @@ void CASW_Sentry_Top_Icer::FireProjectiles( int numShotsToFire, ///< number of p
 	Assert( pMarineDeployer );
 	*/
 
-	SentryTesla();	//softcopy: sentry firing tesla
+	//softcopy: sentry firing tesla
+	//if (asw_sentry_icer_tesla.GetBool())
+	//	SentryTesla();
 
 	for ( int i = 0 ; i < numShotsToFire ; i++ )
 	{

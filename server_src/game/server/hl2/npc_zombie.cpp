@@ -46,6 +46,7 @@ ConVar asw_npc_zombie_color3("asw_npc_zombie_color3", "255 255 255", FCVAR_NONE,
 ConVar asw_npc_zombie_color3_percent("asw_npc_zombie_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of npc_zombie color",true,0,true,1);
 ConVar asw_npc_zombie_scalemod("asw_npc_zombie_scalemod", "1.0", FCVAR_NONE, "Sets the scale of normal npc_zombie.",true,0,true,1.2);
 ConVar asw_npc_zombie_scalemod_percent("asw_npc_zombie_scalemod_percent", "1.0", FCVAR_NONE, "Sets the percentage of normal npc_zombie scale.",true,0,true,1);
+ConVar asw_npc_zombie_speedboost("asw_npc_zombie_speedboost", "1", FCVAR_CHEAT | FCVAR_CCOOP, "boost speed for npc_zombie.");
 extern ConVar asw_debug_alien_damage;
 extern ConVar asw_debug_alien_spawn;
 
@@ -171,9 +172,11 @@ public:
 	void FootscuffSound( bool fRightFoot );
 
 	const char *GetMoanSound( int nSound );
-		
-	void Event_Killed( const CTakeDamageInfo &info );	//softcopy:
-	
+
+	//softcopy:
+	void Event_Killed( const CTakeDamageInfo &info );
+	float GetIdealSpeed() const;
+
 public:
 	DEFINE_CUSTOM_AI;
 
@@ -705,7 +708,12 @@ void CZombie::OnStateChange( NPC_STATE OldState, NPC_STATE NewState )
 //---------------------------------------------------------
 //---------------------------------------------------------
 
-void CZombie::Event_Killed( const CTakeDamageInfo &info )	//softcopy:
+//softcopy:
+float CZombie::GetIdealSpeed() const
+{
+	return BaseClass::GetIdealSpeed() * m_flPlaybackRate * asw_npc_zombie_speedboost.GetFloat();
+}
+void CZombie::Event_Killed( const CTakeDamageInfo &info )
 {
 	// Shut up my screaming sounds.
 	CPASAttenuationFilter filter( this );

@@ -257,6 +257,8 @@ public:
 	virtual bool ShouldMoveSlow() const;	// has this alien been hurt and so should move slow?
 	virtual bool ModifyAutoMovement( Vector &vecNewPos );
 	virtual float GetIdealSpeed() const;
+	virtual	float GetIdealAccel() const;
+	// freezeing
 	virtual void Freeze( float flFreezeAmount, CBaseEntity *pFreezer, Ray_t *pFreezeRay );
 	virtual bool ShouldBecomeStatue( void );
 	virtual bool IsMovementFrozen( void ) { return GetFrozenAmount() > 0.5f; }

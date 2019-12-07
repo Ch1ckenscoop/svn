@@ -1111,7 +1111,9 @@ void CASW_Player::PlayerUse()
 				{
 					if ( !pMarine->m_hUsingEntity.Get() || pMarine->m_hUsingEntity.Get() == pActivateEnt )		// if we're in the middle of using an entity, only allow reusing that same entity
 					{
-						pUsable->ActivateUseIcon( GetMarine(), nHoldType );
+						//softcopy:
+						//pUsable->ActivateUseIcon( GetMarine(), nHoldType );
+						ActivateUseIcon( pActivateEnt->entindex(), nHoldType );
 					}
 				}
 		#endif

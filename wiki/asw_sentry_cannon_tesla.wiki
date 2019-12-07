@@ -1,0 +1,10 @@
+======Sets sentry cannon firing tesla======
+= Description =
+
+Controls sentry cannon can firing tesla to stun alien. Sentry will stop firing tesla after alien has stunned and continue to shoot the alien if asw_sentry_cannon_tesla is enabled. 
+
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 2.2.7 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Bool] 
+|}

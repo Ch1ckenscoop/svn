@@ -20,17 +20,16 @@
 #include "asw_marine_resource.h"
 #include "asw_door.h"
 #include "particle_parse.h"
-#include "asw_weapon_mining_laser_shared.h"
-#include "asw_weapon_chainsaw_shared.h"
+#include "asw_health_bar_shared.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
 const int MAX_PLAYER_SQUAD = 4;
-
-ConVar	asw_colonist_health ( "asw_colonist_health", "100" );	//softcopy: was 90
-ConVar	asw_colonist_tom_health ( "asw_colonist_tom_health", "100" );	// tutorial guy who gets eaten	//softcopy: was 30
 //softcopy:
+ConVar	asw_colonist_health ( "asw_colonist_health", "100" );	//was 90
+ConVar	asw_colonist_tom_health ( "asw_colonist_tom_health", "100" );	// tutorial guy who gets eaten	//was 30
+ConVar  asw_colonist_healthbar("asw_colonist_healthbar", "1", FCVAR_CHEAT, "show colonist health status.");
 #define SWARM_COLONIST_MODEL_FEMALE  "models/humans/group01/female_01.mdl"	//female colonist
 
 #define SWARM_COLONIST_MODEL         "models/swarm/Colonist/Male/MaleColonist.mdl"
@@ -43,8 +42,6 @@ extern ConVar asw_sentry_friendly_fire_damage;
 extern ConVar asw_marine_ff_absorption;
 extern ConVar asw_marine_ff_absorption_build_rate;
 extern ConVar asw_marine_ff_absorption_decay_rate;
-extern ConVar asw_mininglaser_damage_reduction;
-extern ConVar asw_chainsaw_damage_reduction;
 extern ConVar asw_god;
 
 LINK_ENTITY_TO_CLASS( asw_colonist, CASW_Colonist );
@@ -72,7 +69,8 @@ CASW_Colonist::CASW_Colonist()
 	//Msg("CASW_Colonist created\n");        
 	isFemale=RandomInt(0,1)==0;
     Msg("%s created\n", isFemale ? "CASW_Colonist female" : "CASW_Colonist male");
-	selectedBy = -1;  
+	selectedBy = -1;
+	pHealthBar = NULL;	
 }
 
 CASW_Colonist::~CASW_Colonist()
@@ -291,17 +289,14 @@ int CASW_Colonist::OnTakeDamage_Alive( const CTakeDamageInfo &info )
 		//mining laser and chainsaw damage reductions
 		if (info.GetAttacker() && info.GetAttacker()->Classify() == CLASS_ASW_MARINE)
 		{
-			CASW_Marine *pMarine = dynamic_cast<CASW_Marine*>(info.GetAttacker());
-			if (pMarine)
+			if (ASWGameRules())
 			{
-				CASW_Weapon_Mining_Laser *pMiningLaser = dynamic_cast<CASW_Weapon_Mining_Laser*>(pMarine->GetActiveASWWeapon());
-				CASW_Weapon_Chainsaw *pChainsaw = dynamic_cast<CASW_Weapon_Chainsaw*>(pMarine->GetActiveASWWeapon());
-
-				if (pMiningLaser)
-					newInfo.ScaleDamage(CASW_Marine::GetScaleDamageReduction(pMiningLaser, newInfo, asw_mininglaser_damage_reduction.GetFloat()));
-				
-				if (pChainsaw)
-					newInfo.ScaleDamage(CASW_Marine::GetScaleDamageReduction(pChainsaw, newInfo, asw_chainsaw_damage_reduction.GetFloat()));
+				float fReduction = -1;
+#ifndef CLIENT_DLL
+				fReduction = ASWGameRules()->PowerWeaponDamageReduction(info);
+#endif
+				if (fReduction >= 0)
+					newInfo.ScaleDamage(fReduction);
 			}
 		}
 
@@ -636,9 +631,13 @@ void CASW_Colonist::ASWThinkEffects()
 void CASW_Colonist::NPCThink()
 {
 	ASWThinkEffects();
+	ShowHealthBar();	//softcopy:
+
 	BaseClass::NPCThink();
 }
 
+//softcopy:
+/*//AddSlowHeal won't be used in Ch1ckenscoop
 // healing
 void CASW_Colonist::AddSlowHeal(int iHealAmount, CASW_Marine *pMedic)
 {
@@ -659,9 +658,7 @@ void CASW_Colonist::AddSlowHeal(int iHealAmount, CASW_Marine *pMedic)
 			Extinguish();
 		}
 	}
-}
-
-//softcopy:
+}*/
 void CASW_Colonist::Extinguish()
 {
 	if (ASWBurning()) 
@@ -669,7 +666,6 @@ void CASW_Colonist::Extinguish()
 
 	BaseClass::Extinguish();
 }
-
 
 int CASW_Colonist::SelectFlinchSchedule_ASW()
 {
@@ -966,4 +962,31 @@ float CASW_Colonist::GetFFAbsorptionScale()
 	fScale = 0.05f + 0.95f * fScale;		// always do a minimum % damage
 
 	return fScale;
+}
+void CASW_Colonist::ShowHealthBar()
+{
+	if (!asw_colonist_healthbar.GetBool())
+		return;
+
+	if (pHealthBar)
+	{
+#ifndef CLIENT_DLL
+		pHealthBar->KeyValue("color", pHealthBar->GetHealthFraction() < 0.55 ? "255 0 0 255" : "125 255 250 255");
+#endif
+		return;	//skip entity creation if pHealthBar has been created
+	}
+
+	pHealthBar = CREATE_ENTITY( CASWHealthBar, "asw_health_bar" );
+	if (pHealthBar)
+	{
+		pHealthBar->SetAbsOrigin(GetAbsOrigin() + Vector(0, 0, -5));
+		pHealthBar->SetParent(this);
+#ifndef CLIENT_DLL
+		pHealthBar->KeyValue("scale", "1.1");
+		pHealthBar->KeyValue("StartDisabled", "0");
+		pHealthBar->KeyValue("hideatfullhealth", "1");
+#endif
+		DispatchSpawn(pHealthBar);
+		pHealthBar->Activate();
+	}
 }

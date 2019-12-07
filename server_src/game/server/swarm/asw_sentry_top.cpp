@@ -34,8 +34,7 @@ END_SEND_TABLE()
 ConVar asw_sentry_friendly_target("asw_sentry_friendly_target", "0", FCVAR_CHEAT, "Whether the sentry targets friendlies or not");
 //softcopy:
 //extern ConVar asw_sentry_friendly_fire_scale;	//unreferenced
-ConVar asw_sentry_tesla("asw_sentry_tesla", "0", FCVAR_CHEAT, "Enables Sentry firing tesla.");
-ConVar asw_sentry_angle("asw_sentry_angle", "0", FCVAR_CHEAT, "Enables sentry firing angle max 180 degrees.");
+ConVar asw_sentry_angle("asw_sentry_angle", "1", FCVAR_CHEAT, "Enables sentry firing angle max 180 degrees.");
 int iSentryDefaultRange;
 
 //---------------------------------------------------------
@@ -543,7 +542,7 @@ void CASW_Sentry_Top::MakeTracer( const Vector &vecTracerSrc, const trace_t &tr,
 //softcopy:	sentry tesla to slow down alien movement
 void CASW_Sentry_Top::SentryTesla()
 {
-	if (asw_sentry_tesla.GetBool())
+	//if (asw_sentry_tesla.GetBool())
 	{
 		CAI_BaseNPC *pNPC = dynamic_cast<CAI_BaseNPC*>(m_hEnemy.Get());
 		if (pNPC && !IsValidEnemy(pNPC))
