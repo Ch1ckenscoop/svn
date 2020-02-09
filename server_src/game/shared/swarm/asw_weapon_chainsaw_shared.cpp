@@ -177,6 +177,7 @@ void CASW_Weapon_Chainsaw::PrimaryAttack( void )
 	// don't fire underwater
 	if ( pMarine->GetWaterLevel() == 3 )
 	{
+#ifndef CLIENT_DLL	//softcopy:
 		if ( m_fireState != FIRE_OFF || m_hBeam )
 		{
 			EndAttack();
@@ -185,7 +186,7 @@ void CASW_Weapon_Chainsaw::PrimaryAttack( void )
 		{
 			WeaponSound( EMPTY );
 		}
-
+#endif
 		m_flNextPrimaryAttack = gpGlobals->curtime + GetWeaponInfo()->m_flFireRate;
 		m_flNextSecondaryAttack = gpGlobals->curtime + GetWeaponInfo()->m_flFireRate;
 		return;
@@ -462,10 +463,13 @@ void CASW_Weapon_Chainsaw::UpdateEffect( const Vector &startPoint, const Vector 
 	FX_Sparks( endPoint, 1, 2, vecNormal, 5, 32, 160 );
 #endif
 
+#ifndef CLIENT_DLL	//softcopy:
 	if ( m_hNoise )
 	{
 		m_hNoise->SetStartPos( endPoint );
 	}
+#endif
+
 }
 
 void CASW_Weapon_Chainsaw::CreateEffect( void )

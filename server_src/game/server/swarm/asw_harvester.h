@@ -79,8 +79,9 @@ public:
 	float m_flIdleDelay;
 	static float s_fNextSpawnSoundTime;
 	static float s_fNextPainSoundTime;
-
-	const char	*alienLabel, *damageTypes;	//softcopy:
+	//softcopy:
+	const char	*alienLabel, *damageTypes;
+	bool IsOldHarvester() { return !Q_strcmp(STRING(GetModelName()), SWARM_HARVESTER_MODEL); }
 
 private:
 	DEFINE_CUSTOM_AI;

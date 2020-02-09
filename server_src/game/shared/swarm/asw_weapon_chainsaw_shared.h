@@ -81,8 +81,10 @@ private:
 	float				m_flDmgTime;
 	float				m_flFireAnimTime;
 	bool				m_bPlayedIdleSound;
+#ifndef CLIENT_DLL	//softcopy:
 	CHandle<CBeam>		m_hBeam;
 	CHandle<CBeam>		m_hNoise;
+#endif
 
 	void				StartChainsawSound(); 
 	void				StopChainsawSound( bool bForce = false );

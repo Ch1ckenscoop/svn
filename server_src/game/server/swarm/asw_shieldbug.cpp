@@ -96,6 +96,7 @@ ConVar asw_shieldbug_color("asw_shieldbug_color", "255 255 255", FCVAR_NONE, "Se
 
 extern ConVar sv_gravity;
 extern ConVar asw_debug_marine_chatter;
+extern ConVar asw_debug_alien_damage;	//softcopy:
 
 IMPLEMENT_AUTO_LIST( IShieldbugAutoList );
 
@@ -119,6 +120,7 @@ CASW_Shieldbug::CASW_Shieldbug( void )
 	if (asw_old_shieldbug.GetInt()==2)
 		m_pszAlienModelName = RandomFloat()<=0.5 ? SWARM_SHIELDBUG_MODEL : SWARM_NEW_SHIELDBUG_MODEL;
 	m_fLastTouchHurtTime = 0;
+	SetPiplineShieldbug();
 
 	m_bLastShouldDefend = false;  
 	m_nDeathStyle = kDIE_FANCY;
@@ -165,7 +167,7 @@ void CASW_Shieldbug::Spawn( void )
 
 	//softcopy: set shieldbugs color & scale 
 	//SetRenderColor(asw_shieldbug_color.GetColor().r(), asw_shieldbug_color.GetColor().g(), asw_shieldbug_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
-	bOldShieldBug = !Q_strcmp(m_pszAlienModelName, SWARM_SHIELDBUG_MODEL);
+	bOldShieldBug = IsOldShieldBug();
 	alienLabel = bOldShieldBug ? "shieldbug_beta" : "shieldbug";
 	if (ASWGameRules())
 		ASWGameRules()->SetColorScale( this, alienLabel );
@@ -752,6 +754,8 @@ int CASW_Shieldbug::MeleeAttack1Conditions( float flDot, float flDist )
 ConVar asw_shieldbug_knockdown( "asw_shieldbug_knockdown", "1", FCVAR_CHEAT, "If set shieldbug will knock marines down with his melee attacks" );
 ConVar asw_shieldbug_knockdown_force( "asw_shieldbug_knockdown_force", "500", FCVAR_CHEAT, "Magnitude of knockdown force for shieldbug's melee attack" );
 ConVar asw_shieldbug_knockdown_lift( "asw_shieldbug_knockdown_lift", "300", FCVAR_CHEAT, "Upwards force for shieldbug's melee attack" );
+ConVar asw_shieldbug_beta_knockdown_force( "asw_shieldbug_beta_knockdown_force", "500", FCVAR_CHEAT, "Magnitude of knockdown force for beta shieldbug's melee attack" );
+ConVar asw_shieldbug_beta_knockdown_lift( "asw_shieldbug_beta_knockdown_lift", "300", FCVAR_CHEAT, "Upwards force for beta shieldbug's melee attack" );
 extern ConVar asw_god;	//Ch1ckensCoop: Disable shieldbug knockdown if asw_god is enabled.
 
 void CASW_Shieldbug::MeleeAttack( float distance, float damage, QAngle &viewPunch, Vector &shove )
@@ -769,17 +773,19 @@ void CASW_Shieldbug::MeleeAttack( float distance, float damage, QAngle &viewPunc
 	}
 
 	CBaseEntity *pHurt = CheckTraceHullAttack( distance, -Vector(16,16,32), Vector(16,16,32), damage, DMG_SLASH, asw_shieldbug_melee_force.GetFloat() );
-	//softcopy:
-	//if ( pHurt && asw_shieldbug_knockdown.GetBool() && !asw_god.GetBool() )
-	if ( pHurt && asw_shieldbug_knockdown.GetBool() )
+
+	if ( pHurt && asw_shieldbug_knockdown.GetBool() && !asw_god.GetBool() )
 	{
 		CASW_Marine *pMarine = CASW_Marine::AsMarine( pHurt );
 		if ( pMarine )
 		{
 			vecForceDir = ( pHurt->WorldSpaceCenter() - WorldSpaceCenter() );
 			vecForceDir.NormalizeInPlace();
-			vecForceDir *= asw_shieldbug_knockdown_force.GetFloat();
-			vecForceDir += Vector( 0, 0, asw_shieldbug_knockdown_lift.GetFloat() );
+			//softcopy: individul shieldbug/beta shieldbug knockdown lift force
+			//vecForceDir *= asw_shieldbug_knockdown_force.GetFloat();
+			//vecForceDir += Vector( 0, 0, asw_shieldbug_knockdown_lift.GetFloat() );
+			vecForceDir *= bOldShieldBug ? asw_shieldbug_beta_knockdown_force.GetFloat() : asw_shieldbug_knockdown_force.GetFloat();
+			vecForceDir += Vector(0, 0, bOldShieldBug ? asw_shieldbug_beta_knockdown_lift.GetFloat() : asw_shieldbug_knockdown_lift.GetFloat());
 			pMarine->Knockdown( this, vecForceDir  );
 
 			//softcopy: ignite/explode marine by shieldbug knockdown, 1=melee, 2=touch, 3=All
@@ -1014,6 +1020,17 @@ void CASW_Shieldbug::StartTouch( CBaseEntity *pOther )
 		m_fLastTouchHurtTime = gpGlobals->curtime;
 	}
 }
+void CASW_Shieldbug::SetPiplineShieldbug()	//fix pipline_shieldbug sometime missing in deima
+{
+	//only new shieldbug model has the scripted sequence 'intro',
+	//as hordemode will reverse normal/beta model aliens, it causes pipline_shieldbug sometime missing.
+	if (!Q_strnicmp( STRING(gpGlobals->mapname), "ASI-Jac2-Deima", 14))
+	{
+		//as deima loads shieldbug model before mission start, set new model to provide 'intro' for sure.
+		if (ASWGameRules() && ASWGameRules()->GetGameState() != ASW_GS_INGAME)
+			m_pszAlienModelName = SWARM_NEW_SHIELDBUG_MODEL;
+	}
+}
 
 bool CASW_Shieldbug::ShouldGib( const CTakeDamageInfo &info )
 {
@@ -1072,6 +1089,9 @@ bool CASW_Shieldbug::CanFlinch( void )
 void CASW_Shieldbug::SetHealthByDifficultyLevel()
 {		
 	SetHealth( ASWGameRules()->ModifyAlienHealthBySkillLevel( asw_shieldbug_health.GetInt() ) ); // was 500 - 2/19/10		
+	//softcopy:
+	if ( asw_debug_alien_damage.GetBool() )
+		Msg( "Setting %s %s's initial health to %d\n", bOldShieldBug ? "beta" : "", alienLabel, GetHealth() );
 }
 
 void CASW_Shieldbug::ASW_Ignite( float flFlameLifetime, float flSize, CBaseEntity *pAttacker, CBaseEntity *pDamagingWeapon /*= NULL */ )

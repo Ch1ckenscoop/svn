@@ -87,9 +87,13 @@ CASW_Parasite::CASW_Parasite( void )// : CASW_Alien()
 	m_hMother = NULL;
 
 	//softcopy: parasite/beta parasite/random both
-	//m_pszAlienModelName = SWARM_PARASITE_MODEL;
-	m_pszAlienModelName = asw_old_parasite.GetInt()==2 ? RandomFloat()<=0.5 ? SWARM_BETA_PARASITE_MODEL:SWARM_PARASITE_MODEL :
-						  asw_old_parasite.GetInt()==1 ? SWARM_BETA_PARASITE_MODEL:SWARM_PARASITE_MODEL;
+	if (asw_old_parasite.GetBool())
+		m_pszAlienModelName = SWARM_BETA_PARASITE_MODEL;
+	else
+		m_pszAlienModelName = SWARM_PARASITE_MODEL;
+	if (asw_old_parasite.GetInt()==2)
+		m_pszAlienModelName = RandomFloat()<=0.5f ? SWARM_BETA_PARASITE_MODEL : SWARM_PARASITE_MODEL;
+	m_bBetaParasite = false;
 	m_bCanBetaParasite = true;
 
 	m_nAlienCollisionGroup = ASW_COLLISION_GROUP_ALIEN;
@@ -176,8 +180,7 @@ void CASW_Parasite::Spawn( void )
 		m_bCanBetaParasite = true;
 	}
 	SetModel( m_pszAlienModelName );
-	//allow setting colors & scale
-	!Q_strcmp(m_pszAlienModelName, SWARM_PARASITE_MODEL) ? FClassnameIs(this, "asw_parasite_defanged") ? DefangedColorScale():ParasiteColorScale() : BParasiteColorScale();
+	IsBetaParasite() ? BetaParasite() : FClassnameIs(this, "asw_parasite_defanged") ? Defanged() : Parasite();	//Allow setting colors.
 
 	SetMoveType( MOVETYPE_STEP );
 	SetHullType(HULL_TINY);
@@ -1436,40 +1439,46 @@ bool CASW_Parasite::CanBeSeenBy( CAI_BaseNPC *pNPC )
 	return !m_bInfesting;
 }
 
-//softcopy: 
-void CASW_Parasite::DefangedColorScale()
+//softcopy:
+void CASW_Parasite::Defanged()
 {
 	m_bDefanged = true;
-	m_iHealth	= ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_parasite_defanged_health.GetInt());
 	SetBodygroup( 0, 1 );
 	m_fSuicideTime = gpGlobals->curtime + 60;
 	m_ClassType = (Class_T)CLASS_ASW_PARASITE_DEFANGED;
 	alienLabel = "parasite_safe";
 	if (ASWGameRules())
+	{
+		m_iHealth = ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_parasite_defanged_health.GetInt());
 		ASWGameRules()->SetColorScale( this, alienLabel );
+	}
 }
-void CASW_Parasite::ParasiteColorScale()
+void CASW_Parasite::Parasite()
 {
 	m_bDefanged = false;
-	m_iHealth	= ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_parasite_health.GetInt());
 	SetBodygroup( 0, 0 );
 	m_fSuicideTime = 0;
 	m_ClassType = (Class_T)CLASS_ASW_PARASITE;
 	alienLabel = "parasite";
 	if (ASWGameRules())
+	{
+		m_iHealth = ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_parasite_health.GetInt());
 		ASWGameRules()->SetColorScale( this, alienLabel );
+	}
 }
-void CASW_Parasite::BParasiteColorScale()
+void CASW_Parasite::BetaParasite()
 {
 	m_bBetaParasite = true;
-	m_iHealth	= ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_parasite_health.GetInt());
 	SetBodygroup( 0, 0 );
 	m_fSuicideTime = 0;
 	m_nSkin = asw_parasite_beta_skin.GetInt()==2 ? RandomFloat()<=0.5 ? 0:1 : asw_parasite_beta_skin.GetInt()==1 ? 1:0;	//allow changing skin
 	m_ClassType = (Class_T)CLASS_ASW_PARASITE;
 	alienLabel = "parasite_beta";
 	if (ASWGameRules())
+	{
+		m_iHealth = ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_parasite_health.GetInt());
 		ASWGameRules()->SetColorScale( this, alienLabel );
+	}
 }
 
 

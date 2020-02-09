@@ -217,6 +217,7 @@ BEGIN_DATADESC( CASW_Buzzer )
 
 	DEFINE_FIELD(m_fNextPainSound, FIELD_FLOAT),
 	DEFINE_SOUNDPATCH( m_pMoanSound ),
+	DEFINE_SOUNDPATCH( m_pRadSound ),	//softcopy:
 	DEFINE_FIELD( m_flMoanPitch, FIELD_FLOAT ),
 	DEFINE_FIELD( m_flNextMoanSound, FIELD_TIME ),
 	DEFINE_FIELD( m_bOnFire, FIELD_BOOLEAN ),
@@ -261,8 +262,13 @@ CASW_Buzzer::CASW_Buzzer()
 
 	//softcopy: buzzer/beta buzzer/random both
 	m_fLastTouchHurtTime = 0;
-	b_AlienModelName = asw_old_buzzer.GetInt()==2 ? RandomFloat()<=0.5f ? ASW_BETA_BUZZER_MODEL:ASW_BUZZER_MODEL :
-					   asw_old_buzzer.GetInt()==1 ? ASW_BETA_BUZZER_MODEL:ASW_BUZZER_MODEL;
+	if ( asw_old_buzzer.GetBool() )
+		b_AlienModelName = ASW_BETA_BUZZER_MODEL;
+	else
+		b_AlienModelName = ASW_BUZZER_MODEL;
+	if (asw_old_buzzer.GetInt()==2)
+		b_AlienModelName = RandomFloat()<=0.5f ? ASW_BETA_BUZZER_MODEL:ASW_BUZZER_MODEL;
+
 }
 
 CASW_Buzzer::~CASW_Buzzer()
@@ -2289,7 +2295,7 @@ void CASW_Buzzer::Spawn(void)
 
 	//softcopy:
 	//SetRenderColor(asw_buzzer_color.GetColor().r(), asw_buzzer_color.GetColor().g(), asw_buzzer_color.GetColor().b()); 
-	bOldBuzzer = !Q_strcmp(b_AlienModelName, ASW_BETA_BUZZER_MODEL);	//check if beta buzzer
+	bOldBuzzer = IsOldBuzzer();	//check if beta buzzer
 	if (ASWGameRules())
 		ASWGameRules()->SetColorScale(this, (alienLabel = bOldBuzzer ? "buzzer_beta" : "buzzer"));
 
@@ -2304,6 +2310,7 @@ void CASW_Buzzer::Spawn(void)
 
 	m_fHeadYaw			= 0;
 	m_pMoanSound = NULL;
+	m_pRadSound = NULL;	//softcopy:
 
 	NPCInit();
 
@@ -2443,6 +2450,9 @@ void CASW_Buzzer::StopLoopingSounds(void)
 	m_flEnginePitch1Time = gpGlobals->curtime;
 	CSoundEnvelopeController::GetController().SoundDestroy( m_pMoanSound );
 	m_pMoanSound = NULL;
+	//softcopy:
+	CSoundEnvelopeController::GetController().SoundDestroy( m_pRadSound );
+	m_pRadSound = NULL;
 }
 
 

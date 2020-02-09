@@ -110,7 +110,7 @@ void CASW_Harvester::Spawn( void )
 
 	//softcopy: 
 	//SetRenderColor(asw_harvester_color.GetColor().r(), asw_harvester_color.GetColor().g(), asw_harvester_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors
-	alienLabel = !Q_strcmp(m_pszAlienModelName, SWARM_HARVESTER_MODEL) ? "harvester_beta" : "harvester";
+	alienLabel = IsOldHarvester() ? "harvester_beta" : "harvester";
 	if (ASWGameRules())
 		ASWGameRules()->SetColorScale(this, alienLabel);
 }

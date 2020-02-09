@@ -7,7 +7,7 @@
 #include "cbase.h"
 #include "Sprite.h"
 
-//softcopy: header file has been spliteed
+//softcopy: it has splited to standalone header file
 #include "asw_health_bar_shared.h"
 /*
 #ifdef CLIENT_DLL

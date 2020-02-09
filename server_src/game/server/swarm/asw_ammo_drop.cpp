@@ -263,9 +263,6 @@ bool CASW_Ammo_Drop::IsUsable(CBaseEntity *pUser)
 			{
 				if (pSWeapon->m_iClip2 < pSWeapon->GetMaxClip2())
 				{
-					if (ASWGameRules()) //set as default of ammo pickup use(e) key time
-						ASWGameRules()->m_fWeaponDisassemble = ASW_USE_KEY_HOLD_SENTRY_TIME;
-
 					if (pPlayer && gpGlobals->curtime > m_fLastMessageTime)
 					{
 						ClientPrint(pPlayer, HUD_PRINTCENTER, "Press <use> (e) to pick up secondary ammo.");

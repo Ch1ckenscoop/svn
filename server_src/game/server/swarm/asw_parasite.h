@@ -106,12 +106,13 @@ public:
 	EHANDLE m_hPrepareToInfest;
 
 	//softcopy:
-	virtual void DefangedColorScale();
-	virtual void ParasiteColorScale();
-	virtual void BParasiteColorScale();
+	void Defanged();
+	void Parasite();
+	void BetaParasite();
 	const char *alienLabel, *damageTypes;
 	bool m_bCanBetaParasite;	//beta parasite not sit in egg
 	bool m_bBetaParasite;	//flag is beta parasite
+	bool IsBetaParasite() { return !Q_strcmp(STRING(GetModelName()), SWARM_BETA_PARASITE_MODEL); }
 
 protected:
 	DEFINE_CUSTOM_AI;

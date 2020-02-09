@@ -111,7 +111,10 @@ void CASW_Boomer::Spawn( void )
 
 void CASW_Boomer::SetHealthByDifficultyLevel()
 {
-	int iHealth = MAX( 25, ASWGameRules()->ModifyAlienHealthBySkillLevel( asw_boomer_health.GetInt() ) );
+	//softcopy:
+	//int iHealth = MAX( 25, ASWGameRules()->ModifyAlienHealthBySkillLevel( asw_boomer_health.GetInt() ) );
+	int iHealth = ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_boomer_health.GetInt());
+
 	if ( asw_debug_alien_damage.GetBool() )
 		Msg( "Setting boomer's initial health to %d\n", iHealth );
 	SetHealth( iHealth );

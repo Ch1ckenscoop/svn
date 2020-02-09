@@ -99,6 +99,8 @@ public:
 	float			m_fLastTouchHurtTime;
 	const char		*alienLabel, *damageTypes;
 	bool bOldShieldBug;
+	bool IsOldShieldBug() { return !Q_strcmp(STRING(GetModelName()), SWARM_SHIELDBUG_MODEL); }
+	void SetPiplineShieldbug();
 
 protected:
 	DEFINE_CUSTOM_AI;

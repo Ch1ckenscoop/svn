@@ -17,7 +17,7 @@
 #include "asw_weapon.h"
 #endif
 
-enum MININGLASER_FIRE_STATE { FIRE_OFF, FIRE_STARTUP, FIRE_LASER };
+//enum MININGLASER_FIRE_STATE { FIRE_OFF, FIRE_STARTUP, FIRE_LASER };	//softcopy:
 #define ASW_MINING_LASER_RANGE 200
 
 class CSoundPatch;
@@ -69,6 +69,10 @@ public:
 	virtual Class_T		Classify( void ) { return (Class_T) CLASS_ASW_MINING_LASER; }
 
 private:
+
+	//softcopy: set private to avoid the conflict with chainsaw
+	enum MININGLASER_FIRE_STATE { FIRE_OFF, FIRE_STARTUP, FIRE_LASER };
+
 	void	Attack( void );
 	void	EndAttack( void );
 	bool	Fire( const Vector &vecOrigSrc, const Vector &vecDir );

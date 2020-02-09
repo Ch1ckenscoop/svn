@@ -158,8 +158,11 @@ private:
 
 	float GetDamage();	//Ch1ckensCoop: allow easy damage modifications.
 	//softcopy:
-	bool IsNewDrone() { return !Q_strcmp(STRING(GetModelName()), SWARM_NEW_DRONE_MODEL); }
+	bool IsBetaDrone() { return !Q_strcmp(STRING(GetModelName()), SWARM_DRONE_MODEL); }
 	bool bBetaDroneSkin;
+	bool bBetaDroneJumper;
+	bool WallClimbDrone();
+
 };
 
 enum

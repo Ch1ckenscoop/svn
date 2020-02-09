@@ -24,6 +24,7 @@
 #include "animation.h"
 #include "scripted.h"
 #include "entitylist.h"
+#include "asw_gamerules.h"	//softcopy:
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -813,9 +814,15 @@ bool CAI_ScriptedSequence::StartSequence( CAI_BaseNPC *pTarget, string_t iszSeq,
 	int nSequence = pTarget->LookupSequence( STRING( iszSeq ) );
 	if (nSequence == -1)
 	{
-		//softcopy: the messages prompts too many from custom maps, need suppress!
-		if (!Q_strcmp(STRING(gpGlobals->mapname) , "ASI-Jac2-Deima")) //excluding Deima
-			Warning( "%s: unknown scripted sequence \"%s\"\n", pTarget->GetDebugName(), STRING( iszSeq ));
+		//softcopy: the messages prompts too many from custom maps, delay it a bit.
+		//Warning( "%s: unknown scripted sequence \"%s\"\n", pTarget->GetDebugName(), STRING( iszSeq ));
+		if (ASWGameRules())
+		{
+			char text[256];
+			Q_snprintf(text, sizeof(text),"%s: unknown scripted sequence \"%s\"\n", pTarget->GetDebugName(), STRING( iszSeq ));
+			ASWGameRules()->MsgInterval(text, 4);
+		}
+
 		nSequence = 0;
 	}
 

@@ -24,7 +24,7 @@
 
 class CASWHealthBar : public CSprite
 #ifdef CLIENT_DLL
-	public IHealthTracked
+	, public IHealthTracked
 #endif
 {
 #ifndef CLIENT_DLL

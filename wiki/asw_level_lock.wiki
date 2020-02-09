@@ -13,6 +13,10 @@ For example:
 #locks the skill level on 'Normal Level', player set 'Easy Level' is not allowed on server, player only can sets the skill level on or above 'Normal Level'. Also '[[https://github.com/Ch1ckenscoop/svn/blob/master/server/swarm/cfg/skill_2_example.cfg|skill_2.cfg]]' will be executed for this level settings.
 #locks the skill level on 'Hard Level', player set 'Normal Level' is not allowed on server, player only can sets the skill level on or above 'Hard Level'. Also '[[https://github.com/Ch1ckenscoop/svn/blob/master/server/swarm/cfg/skill_3_example.cfg|skill_3.cfg]]' will be executed for this level settings
 
+If skill level lock sets to 0, it's default to skill level [[https://github.com/Ch1ckenscoop/svn/blob/master/server/swarm/cfg/skill_2_example.cfg|Normal]], no skill level lock on any levels and runs skill_1.cfg - skill_5.cfg respectively when skill level has changed.
+
+If skill level lock sets to -1, the skill level lock function is completely disabled without running skill_1.cfg - skill_5.cfg.
+
 It is recommended that you create your own files [[https://github.com/Ch1ckenscoop/svn/blob/master/server/swarm/cfg/skill_1_example.cfg|skill_1.cfg]], [[https://github.com/Ch1ckenscoop/svn/blob/master/server/swarm/cfg/skill_2_example.cfg|skill_2.cfg]], [[https://github.com/Ch1ckenscoop/svn/blob/master/server/swarm/cfg/skill_3_example.cfg|skill_3.cfg]], [[https://github.com/Ch1ckenscoop/svn/blob/master/server/swarm/cfg/skill_4_example.cfg|skill_4.cfg]] & [[https://github.com/Ch1ckenscoop/svn/blob/master/server/swarm/cfg/skill_5_example.cfg|skill_5.cfg]], where you can place any settings you like on each level.
 
 =====Important Note:=====
@@ -22,5 +26,5 @@ It is recommended that you create your own files [[https://github.com/Ch1ckensco
 {|
 || [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
 |-
-|| 2.0 || `2` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
+|| 2.0 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Int] 
 |}

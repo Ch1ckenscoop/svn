@@ -56,7 +56,8 @@ ConVar asw_drone_jumper_scalemod_percent("asw_drone_jumper_scalemod_percent", "1
 ConVar asw_drone_touch_ignite("asw_drone_touch_ignite", "0", FCVAR_CHEAT, "Ignites marine on touch(1=drone, 2=jumper, 3=All).");
 ConVar asw_drone_melee_ignite("asw_drone_melee_ignite", "0", FCVAR_CHEAT, "Ignites marine on melee(1=drone, 2=jumper, 3=All).");
 ConVar asw_drone_touch_onfire("asw_drone_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if drone body on fire touch.");
-ConVar asw_drone_beta_skin("asw_drone_beta_skin", "1", FCVAR_CHEAT, "Set 1 to use new skins on beta drones model.");
+ConVar asw_drone_beta_skin("asw_drone_beta_skin", "1", FCVAR_NONE, "Sets the new skin of beta drones.");
+ConVar asw_drone_beta_jumper("asw_drone_beta_jumper", "1", FCVAR_CHEAT, "Sets the beta drone as jumping drone.");
 
 #define ASW_DRONE_MELEE1_START_ATTACK_RANGE asw_drone_start_melee_range.GetFloat()
 #define ASW_DRONE_MELEE1_RANGE asw_drone_melee_range.GetFloat()
@@ -160,7 +161,11 @@ CASW_Drone_Advanced::CASW_Drone_Advanced( void )
 	m_nAlienCollisionGroup = ASW_COLLISION_GROUP_ALIEN;
 	m_iDeadBodyGroup = 2;
 	//m_debugOverlays |= (OVERLAY_TEXT_BIT | OVERLAY_BBOX_BIT); 
-	bBetaDroneSkin = asw_drone_beta_skin.GetBool();	//softcopy:
+	//softcopy:
+	bBetaDroneSkin = asw_drone_beta_skin.GetBool();
+	bBetaDroneJumper = asw_drone_beta_jumper.GetBool();
+	m_nSkin = bBetaDroneSkin ? 1 : 0;
+
 }
 
 CASW_Drone_Advanced::~CASW_Drone_Advanced()
@@ -248,16 +253,21 @@ void CASW_Drone_Advanced::Spawn( void )
 		m_bJumper = true;
 		//softcopy:
 		//SetRenderColor(asw_drone_jumper_color.GetColor().r(), asw_drone_jumper_color.GetColor().g(), asw_drone_jumper_color.GetColor().b());	//Ch1ckensCoop: Allow setting colors.
-		m_nSkin = bBetaDroneSkin ? 3 : 2;	//beta jumpers new skin has wings
-		if (IsNewDrone() && bBetaDroneSkin)	//force beta drone jumpers to be new drone jumpers that jumpers looks like fly jumping
+		if (bBetaDroneJumper)	//beta drone jumper has wings
+		{
 			SetModel(SWARM_DRONE_MODEL);
+			m_nSkin = bBetaDroneSkin ? 3 : 2;
+		}
 
 		m_ClassType = (Class_T)CLASS_ASW_DRONE_JUMPER;
 	}
 	else
 	{
 		m_bJumper = false;
-		m_nSkin = bBetaDroneSkin ? 1:0;	//softcopy: beta drones new skin
+		//softcopy: beta drone wall climb animation
+		if (WallClimbDrone() && bBetaDroneJumper)
+			m_nSkin = bBetaDroneSkin ? 3 : 2;
+
 		m_bDisableJump = true;
 		CapabilitiesRemove( bits_CAP_MOVE_JUMP );
 		m_ClassType = (Class_T)CLASS_ASW_DRONE;
@@ -2463,6 +2473,36 @@ bool CASW_Drone_Advanced::ShouldClearOrdersOnMovementComplete()
 	}
 
 	return BaseClass::ShouldClearOrdersOnMovementComplete();
+}
+
+//softcopy: fix beta drone unknown scripted sequence 'Wall_Climb' on cargo elevator
+bool CASW_Drone_Advanced::WallClimbDrone()
+{
+	//beta drone has no Wall_Climb sequence, use wall_climb_loop to resume the animation.
+	if (ASWGameRules() && !ASWGameRules()->IsCargoMap())
+		return false;
+
+	const char *szEntity = STRING(GetEntityName());
+	if (Q_strnicmp(szEntity, "drone_climb_", 12))
+		return false;
+
+	char entname[22];
+	Q_snprintf(entname, sizeof(entname), "ss_%s", szEntity);
+	CBaseEntity *pEntity = NULL;
+	if ((pEntity = gEntList.FindEntityByName(pEntity, entname)) != NULL)
+	{
+		if (bBetaDroneJumper)
+			SetModel(SWARM_DRONE_MODEL);
+
+		if (IsBetaDrone())
+		{
+			const char *szSeq = "wall_climb_loop";
+			pEntity->KeyValue("m_iszPlay", szSeq);
+			pEntity->KeyValue("m_iszPostIdle", szSeq);
+			return true;
+		}
+	}
+	return false;
 }
 
 AI_BEGIN_CUSTOM_NPC( asw_drone_advanced, CASW_Drone_Advanced )

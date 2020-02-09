@@ -78,6 +78,7 @@ public:
 	//softcopy:
 	const char *alienLabel, *damageTypes;
 	bool bOldMortarBug;
+	bool IsOldMortar() { return !Q_strcmp(STRING(GetModelName()), SWARM_BETA_MORTARBUG_MODEL); }
 
 private:
 	DEFINE_CUSTOM_AI;

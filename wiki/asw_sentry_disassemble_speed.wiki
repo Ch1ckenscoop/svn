@@ -1,7 +1,9 @@
-======Sets disassemble speed of the sentry.======
+======Sets disassembly speed of the sentry.======
 = Description =
 
-Sets the sentry disassemble speed for all marines.
+Sets the senty disassembly speed for all marines, the default speed is 2 seconds.
+
+Controls the disassembly time from min. 0.2 to max. 2.0 seconds.
 
 {|
 || [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 

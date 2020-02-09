@@ -89,6 +89,8 @@ public:
 	// Classification
 	virtual Class_T		Classify( void ) { return (Class_T) CLASS_ASW_TESLA_TRAP_PROJECTILE; }
 
+	float GetDisassemblyTime() { return m_fWeaponDisassemble; }	//softcopy:
+
 private:
 	//bool	m_bCharged;
 	EHANDLE	m_hNearestNPC;
@@ -107,6 +109,8 @@ private:
 
 	bool	m_bAlreadyTaken;	//Ch1ckensCoop: Tesla traps pick-up
 	//int     m_iModification;
+
+	float	m_fWeaponDisassemble;	//softcopy: Tesla traps disassembly time
 
 	float m_flChargeInterval;
 

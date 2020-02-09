@@ -820,7 +820,9 @@ CAlienSwarm::CAlienSwarm()
 	m_bIsIntro = false;
 	m_bIsOutro = false;
 	m_bIsTutorial = false;
-	m_bIsCity17 = false;	//softcopy:
+	//softcopy:
+	m_bIsCity17 = false;
+	m_bIsCargoElevator = false;
 
 	m_bCheckAllPlayersLeft = false;
 	m_fEmptyServerTime = false;
@@ -7090,14 +7092,14 @@ float CAlienSwarm::PowerWeaponDamageReduction(const CTakeDamageInfo &info)
 
 	if (pMarine)
 	{
-			CASW_Weapon_Mining_Laser *pMiningLaser = dynamic_cast<CASW_Weapon_Mining_Laser*>(pMarine->GetActiveASWWeapon());
-			CASW_Weapon_Chainsaw *pChainsaw = dynamic_cast<CASW_Weapon_Chainsaw*>(pMarine->GetActiveASWWeapon());
+		CASW_Weapon_Mining_Laser *pMiningLaser = dynamic_cast<CASW_Weapon_Mining_Laser*>(pMarine->GetActiveASWWeapon());
+		CASW_Weapon_Chainsaw *pChainsaw = dynamic_cast<CASW_Weapon_Chainsaw*>(pMarine->GetActiveASWWeapon());
 
-			if (pMiningLaser)
-				fResult = GetWeaponDamageReduction(pMiningLaser, fDamage, asw_mininglaser_damage_reduction.GetFloat());
+		if (pMiningLaser)
+			fResult = GetWeaponDamageReduction(pMiningLaser, fDamage, asw_mininglaser_damage_reduction.GetFloat());
 
-			if (pChainsaw)
-				fResult = GetWeaponDamageReduction(pChainsaw, fDamage, asw_chainsaw_damage_reduction.GetFloat());
+		if (pChainsaw)
+			fResult = GetWeaponDamageReduction(pChainsaw, fDamage, asw_chainsaw_damage_reduction.GetFloat());
 	}
 
 	return fResult;
@@ -7265,7 +7267,10 @@ void CAlienSwarm::LevelInitPostEntity()
 	m_bIsOutro = ( !Q_strnicmp( mapName, "outro_", 6 ) );
 	m_bIsTutorial = ( !Q_strnicmp( mapName, "tutorial", 8 ) );
 	m_bIsLobby = ( !Q_strnicmp( mapName, "Lobby", 5 ) );
-	m_bIsCity17 = ( !Q_strnicmp( mapName, "as_city17_", 10 ) );	//softcopy:
+	//softcopy:
+	m_bIsCity17 = ( !Q_strnicmp( mapName, "as_city17_", 10 ) );
+	m_bIsCargoElevator = ( !Q_strnicmp( mapName, "ASI-Jac1-LandingBay_02", 22 ) );
+
 #ifndef CLIENT_DLL
 	bool m_bIsFullTreatment = ( !Q_strnicmp( mapName, "syntek_hospital", 15 ) );
 	m_bIsHeartOfSwarm = ( !Q_strnicmp( mapName, "themines2", 9 ) );	//softcopy:

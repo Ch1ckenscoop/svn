@@ -79,6 +79,11 @@ public:
 	inline void SetGunType( GunType_t iType );
 	inline void SetGunType( int iType );
 
+	//softcopy: sentry disassembly time
+	float GetDisassemblyTime() { return m_fWeaponDisassemble; }
+private:
+	float m_fWeaponDisassemble;
+
 protected:
 	
 	CNetworkVar( int, m_nGunType );

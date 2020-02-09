@@ -140,6 +140,7 @@ public:
 	const char		*alienLabel, *damageTypes, *b_AlienModelName;
 	float			m_fLastTouchHurtTime;
 	bool 			bOldBuzzer;
+	bool 			IsOldBuzzer() { return !Q_strcmp(STRING(GetModelName()), ASW_BETA_BUZZER_MODEL); }
 
 	enum BuzzerConditions
 	{

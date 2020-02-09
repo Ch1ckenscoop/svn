@@ -37,7 +37,7 @@ ConVar asw_tesla_trap_infinite_ammo("asw_tesla_trap_infinite_ammo", "0", FCVAR_C
 ConVar asw_tesla_trap_range("asw_tesla_trap_range", "200.0", FCVAR_CHEAT, "Sets the zap radius of the tesla traps.");
 ConVar asw_tesla_trap_damage("asw_tesla_trap_damage", "5.0", FCVAR_CHEAT, "Sets the damage for tesla traps.");
 ConVar asw_tesla_trap_fr("asw_tesla_trap_fr", "0.3", FCVAR_CHEAT, "Sets the firing rate for the tesla trap.", true,0.1f,false, 10.0f);
-ConVar asw_tesla_trap_disassemble_speed("asw_tesla_trap_disassemble_speed", "2", FCVAR_CHEAT, "Set tesla coil disassemble speed.", true,0,true,2);	//softcopy:
+ConVar asw_tesla_trap_disassemble_speed("asw_tesla_trap_disassemble_speed", "2", FCVAR_CHEAT, "Sets tesla trap disassembly speed.", true,0.1,true,2); //softcopy
 
 //Ch1ckensCoop: Hopefully fix tesla traps getting stuck in walls, but not sure how to yet. Try adjusting this cvar.
 ConVar asw_tesla_trap_stop_vel("asw_tesla_trap_stop_vel", "128.0", FCVAR_CHEAT, "If tesla trap is moving slower than this, stop movement and start settling.");
@@ -118,6 +118,7 @@ CASW_TeslaTrap::CASW_TeslaTrap()
 	g_aTeslaTraps.AddToTail( this );
 	m_hMarineDeployer = NULL;
 	m_CreatorWeaponClass = (Class_T)CLASS_ASW_UNKNOWN;
+	m_fWeaponDisassemble = asw_tesla_trap_disassemble_speed.GetFloat();	//softcopy: sets tesla trap disassembly speed
 }
 
 CASW_TeslaTrap::~CASW_TeslaTrap()
@@ -243,10 +244,6 @@ bool CASW_TeslaTrap::IsUsable(CBaseEntity *pUser)
 			ClientPrint(pBasePlayer, HUD_PRINTCENTER, "Hold <use> (e) to disassemble tesla coil.");
 			m_fLastMessageTime = gpGlobals->curtime + MAX_USERMESSAGE_RATE;
 		}
-		//softcopy: sets tesla trap disassemble speed
-		if (pBasePlayer && ASWGameRules())
-			ASWGameRules()->m_fWeaponDisassemble = asw_tesla_trap_disassemble_speed.GetFloat();
-
 		return true;
 	}
 	else

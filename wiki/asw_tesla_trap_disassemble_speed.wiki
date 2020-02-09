@@ -1,7 +1,9 @@
-======Sets the disassemble speed of the tesla trap.======
+======Sets the disassembly speed of the tesla trap.======
 = Description =
 
-Sets the tesla coil disassemble speed.
+Sets the tesla coil disassembly speed, the default speed is 2 seconds.
+
+Controls the disassembly time from min. 0.1 to max. 2.0 seconds.
 
 {|
 || [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 

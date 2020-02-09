@@ -102,7 +102,7 @@ public:
 	virtual void			Precache( void );
 	virtual void			Think( void );
 	virtual const char *GetGameDescription( void ) { return "Ch1ckensCoop"; }
-	virtual const char *GetCurrentVersion ( void ) { return "2.3.7"; }	//softcopy:
+	virtual const char *GetCurrentVersion ( void ) { return "2.3.8"; }	//softcopy:
 	virtual void			OnServerHibernating();
 	
 	// briefing roster functions
@@ -429,8 +429,6 @@ public:
 	virtual void SetGameState(int iNewState) { m_iGameState = iNewState; }
 	CNetworkVar(unsigned char, m_iGameState);
 
-	float m_fWeaponDisassemble;	//softcopy:
-
 #ifdef CLIENT_DLL
 
 	virtual void OnDataChanged( DataUpdateType_t updateType );
@@ -503,7 +501,10 @@ public:
 	bool IsIntroMap() { return m_bIsIntro; }
 	bool IsOutroMap() { return m_bIsOutro; }
 	bool IsLobbyMap() { return m_bIsLobby; }
-	bool IsCity17Map() { return m_bIsCity17; }	//softcopy:
+	//softcopy:
+	bool IsCity17Map() { return m_bIsCity17; }
+	bool IsCargoMap() { return m_bIsCargoElevator; }
+
 	static bool IsHardcoreFF();
 	static bool IsOnslaught();
 
@@ -511,8 +512,10 @@ public:
 	bool m_bIsIntro;
 	bool m_bIsOutro;
 	bool m_bIsLobby;		// lobby map is a temporary map that dedicated servers load into.  We detect that and start a new campaign game.
-	bool m_bIsCity17;
-	
+	//softcopy: 
+	bool m_bIsCity17;			//detect that is city17 campaign game.
+	bool m_bIsCargoElevator;	//detect that is cargo elevator campaign game.
+
 private:
 	char m_szPickupDenial[128];
 

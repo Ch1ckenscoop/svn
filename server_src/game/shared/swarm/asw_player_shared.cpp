@@ -67,6 +67,7 @@
 	#include "iasw_server_usable_entity.h"
 	#include "asw_lag_compensation.h"
 	#include "asw_ammo_drop.h"
+	#include "asw_tesla_trap.h"	//softcopy:
 	extern ConVar asw_move_marine;
 #endif
 #include "asw_gamerules.h"
@@ -1020,8 +1021,17 @@ void CASW_Player::PlayerUse()
 			{
 				//softcopy: sentry / tesla trap / guns secondary ammo pickup  use(e) key time
 				//if ( ( gpGlobals->curtime - m_flUseKeyDownTime ) >= ASW_USE_KEY_HOLD_SENTRY_TIME )
-				float fUseKeyTime = ASWGameRules() ? ASWGameRules()->m_fWeaponDisassemble : ASW_USE_KEY_HOLD_SENTRY_TIME;
+				float fUseKeyTime = ASW_USE_KEY_HOLD_SENTRY_TIME;
+#ifndef CLIENT_DLL
+				CASW_Sentry_Base *pSentry = dynamic_cast<CASW_Sentry_Base*>(pEnt);
+				CASW_TeslaTrap *pCoil = dynamic_cast<CASW_TeslaTrap*>(pEnt);
+				if (pSentry)
+					fUseKeyTime = pSentry->GetDisassemblyTime();
+				if (pCoil)
+					fUseKeyTime = pCoil->GetDisassemblyTime();
+#endif
 				if ((gpGlobals->curtime - m_flUseKeyDownTime) >= fUseKeyTime)
+
 				{
 					pActivateEnt = m_hUseKeyDownEnt.Get();
 					nHoldType = ASW_USE_HOLD_RELEASE_FULL;

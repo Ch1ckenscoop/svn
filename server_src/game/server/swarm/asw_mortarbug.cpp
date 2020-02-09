@@ -84,9 +84,14 @@ CASW_Mortarbug::CASW_Mortarbug()
 	//softcopy: mortarbug/beta mortarbug/random both
 	//m_pszAlienModelName = SWARM_MORTARBUG_MODEL;
 	//m_nAlienCollisionGroup = ASW_COLLISION_GROUP_ALIEN;
-	m_pszAlienModelName = asw_old_mortarbug.GetInt()==2 ? RandomFloat()<=0.5 ? SWARM_BETA_MORTARBUG_MODEL:SWARM_MORTARBUG_MODEL :
-						  asw_old_mortarbug.GetInt()==1 ? SWARM_BETA_MORTARBUG_MODEL:SWARM_MORTARBUG_MODEL;
 	m_nAlienCollisionGroup = ASW_COLLISION_GROUP_BIG_ALIEN;	//avoid stuck each other
+	if ( asw_old_mortarbug.GetBool() )
+		m_pszAlienModelName = SWARM_BETA_MORTARBUG_MODEL;
+	else
+		m_pszAlienModelName = SWARM_MORTARBUG_MODEL;
+	if (asw_old_mortarbug.GetInt()==2)
+		m_pszAlienModelName = RandomFloat()<=0.5 ? SWARM_BETA_MORTARBUG_MODEL:SWARM_MORTARBUG_MODEL;
+
 }
 
 CASW_Mortarbug::~CASW_Mortarbug()
@@ -109,7 +114,7 @@ void CASW_Mortarbug::Spawn( void )
 	m_takedamage = DAMAGE_NO;	// alien is invulnerable until she finds her first enemy
 	//softcopy:
 	//SetRenderColor(asw_mortarbug_color.GetColor().r(), asw_mortarbug_color.GetColor().g(), asw_mortarbug_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
-	bOldMortarBug = !Q_strcmp(m_pszAlienModelName, SWARM_BETA_MORTARBUG_MODEL);
+	bOldMortarBug = IsOldMortar();
 	alienLabel = bOldMortarBug ? "mortarbug_beta" : "mortarbug";
 	if (ASWGameRules())
 		ASWGameRules()->SetColorScale( this, alienLabel );
