@@ -6767,15 +6767,15 @@ void CAlienSwarm::OnPlayerFullyJoinedCheck(CASW_Player *pPlayer)
 			ipromlevel = asw_autokick_player_promotion.GetInt(),
 			iSteamPromotion = pPlayer->GetPromotion(),
 			iSteamLevel = pPlayer->GetLevel()+1;
-		if (iexplevel >= 1 && (iSteamPromotion < ipromlevel || (iSteamPromotion >= ipromlevel && iSteamLevel < iexplevel)))
+		if (iSteamPromotion < ipromlevel || (iSteamPromotion == ipromlevel && iSteamLevel < iexplevel))
 		{
 			char text[64], text2[64], text3[128];
 			ipromlevel==0 ? (Q_snprintf(text, sizeof(text),"<level %d> was auto kicked", iSteamLevel),
 							 Q_snprintf(text2,sizeof(text2),"need level %d+ to join this modded server", iexplevel)) :
 							(Q_snprintf(text, sizeof(text),"<promoted %d level %d> was auto kicked", iSteamPromotion, iSteamLevel),
-							 Q_snprintf(text2,sizeof(text2),"need promoted %d level %d+ to join this modded server", ipromlevel, iexplevel));
+							 Q_snprintf(text2,sizeof(text2),"need promoted %d level %d+ to join this modded server", ipromlevel, iexplevel >0 ? iexplevel:1));
 
-			engine->ServerCommand(CFmtStr("kickid %d Auto kicked:  Sorry! %s\n", pPlayer->GetUserID(), text2));
+			engine->ServerCommand(CFmtStr("kickid %s Auto kicked:  Sorry! %s\n", pPlayer->GetASWNetworkID(), text2));
 			Q_snprintf(text3, sizeof(text3),"%s %s, %s\n", pPlayer->GetPlayerName(), text, text2);
 			UTIL_ClientPrintAll(ASW_HUD_PRINTTALKANDCONSOLE,text3);
 			UTIL_LogPrintf("Client %s", text3);

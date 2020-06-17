@@ -26,6 +26,9 @@
 #define ASW_FLARES_FASTEST_REFIRE_TIME		0.1f
 
 ConVar asw_grenade_throw_delay("asw_grenade_throw_delay", "0.15", FCVAR_REPLICATED | FCVAR_CHEAT, "Delay before grenade entity is spawned when throwing");
+//softcopy:
+ConVar asw_grenade_hand_throw_damage("asw_grenade_hand_throw_damage", "0", FCVAR_CHEAT, "Adjust the Damage of hand grenade");
+ConVar asw_grenade_hand_throw_radius("asw_grenade_hand_throw_radius", "0", FCVAR_CHEAT, "Adjust the damage radius of hand grenade");
 
 IMPLEMENT_NETWORKCLASS_ALIASED( ASW_Weapon_Grenades, DT_ASW_Weapon_Grenades )
 
@@ -178,6 +181,11 @@ void CASW_Weapon_Grenades::DelayedAttack( void )
 
 	float fGrenadeRadius = GetBoomRadius( pMarine );
 	float fGrenadeDamage = GetBoomDamage( pMarine );
+	
+	//softcopy:
+	fGrenadeRadius += asw_grenade_hand_throw_radius.GetFloat();
+	fGrenadeDamage += asw_grenade_hand_throw_damage.GetFloat();
+
 	int iClusters = MarineSkills()->GetSkillBasedValueByMarine(pMarine, ASW_MARINE_SKILL_GRENADES, ASW_MARINE_SUBSKILL_GRENADE_CLUSTERS);
 	if (asw_debug_marine_damage.GetBool())
 	{
