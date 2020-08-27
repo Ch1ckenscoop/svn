@@ -9,8 +9,13 @@
 
 //Ch1ckensCoop: Enable an easy way to respawn marines during the game. Just for fun ;)
 
+//softcopy:
+CASW_Respawn_Marine g_Respawn_Marine;
+CASW_Respawn_Marine* ASWRespawnMarine() { return &g_Respawn_Marine; }
+
 CASW_Respawn_Marine::CASW_Respawn_Marine(void)
 {
+	InitMarineName();	//softcopy:
 }
 
 CASW_Respawn_Marine::~CASW_Respawn_Marine(void)
@@ -36,7 +41,8 @@ void RespawnMarineX(const char *marineName)
 	{
 		CASW_Marine_Resource *pMR = ASWGameResource()->GetMarineResource( i );
 
-		if (pMR->GetProfile()->GetShortName() == marineName)
+		if (pMR && !stricmp(pMR->GetProfile()->GetShortName(), marineName))	//softcopy: fixed crash and stricmp to work again
+		//if (pMR->GetProfile()->GetShortName() == marineName)
 		{
 			if ( pMR && pMR->GetHealthPercent() <= 0 ) // if marine exists, is dead
 			{
@@ -46,11 +52,13 @@ void RespawnMarineX(const char *marineName)
 			}
 		}
 	}
-	Msg("Marine %s doesn't exist in this game.\n", marineName);
+	//Msg("Marine %s doesn't exist in this game.\n", marineName);	//softcopy:
 }
 
 void RespawnMarine(const CCommand &command)
 {
+	//softcopy: respawn a marine/all marines  
+	/*
 	if (stricmp(command.ArgS(), "crash"))
 		RespawnMarineX("#asw_name_crash");
 	if (stricmp(command.ArgS(), "vegas"))
@@ -66,7 +74,16 @@ void RespawnMarine(const CCommand &command)
 	if (stricmp(command.ArgS(), "faith"))
 		RespawnMarineX("#asw_name_faith");
 	if (stricmp(command.ArgS(), "bastille"))
-		RespawnMarineX("#asw_name_bastille");		
+		RespawnMarineX("#asw_name_bastille");
+	*/
+	for (int i=0; i < CASW_Respawn_Marine::MARINE_INDEX_COUNT; i++)
+	{
+		const CASW_Respawn_Marine::MarineInfo *pMI = ASWRespawnMarine()->GetMarineInfo(i);
+
+		if (pMI && (!stricmp(command.ArgS(), pMI->m_MarineName) || !stricmp(command.ArgS(), "")))
+			RespawnMarineX(pMI->m_szMarineClassName);
+	}
+
 }
 
 static int RespawnAutoComplete(char const *partial, char commands[ COMMAND_COMPLETION_MAXITEMS ][ COMMAND_COMPLETION_ITEM_LENGTH ] )
@@ -77,3 +94,32 @@ static int RespawnAutoComplete(char const *partial, char commands[ COMMAND_COMPL
 }
 
 static ConCommand asw_respawn_marine("asw_respawn_marine", RespawnMarine, "Respawns a marine by their marine's name.", FCVAR_CHEAT);
+
+//softcopy:
+const CASW_Respawn_Marine::MarineInfo *CASW_Respawn_Marine::GetMarineInfo(int index)
+{
+	if (index < 0 || index >= MARINE_INDEX_COUNT)
+		return NULL;
+
+	return &m_MarineInfoArray[index];
+}
+void CASW_Respawn_Marine::InitMarineName()
+{
+	m_MarineInfoArray[CRASH_INDEX].m_MarineName = "crash";
+	m_MarineInfoArray[VEGAS_INDEX].m_MarineName = "vegas";
+	m_MarineInfoArray[WILDCAT_INDEX].m_MarineName = "wildcat";
+	m_MarineInfoArray[WOLFE_INDEX].m_MarineName = "wolfe";
+	m_MarineInfoArray[SARGE_INDEX].m_MarineName = "sarge";
+	m_MarineInfoArray[JAEGER_INDEX].m_MarineName = "jaeger";
+	m_MarineInfoArray[FAITH_INDEX].m_MarineName = "faith";
+	m_MarineInfoArray[BASTILLE_INDEX].m_MarineName = "bastille";
+
+	m_MarineInfoArray[CRASH_INDEX].m_szMarineClassName = "#asw_name_crash";
+	m_MarineInfoArray[VEGAS_INDEX].m_szMarineClassName = "#asw_name_vegas";
+	m_MarineInfoArray[WILDCAT_INDEX].m_szMarineClassName = "#asw_name_wildcat";
+	m_MarineInfoArray[WOLFE_INDEX].m_szMarineClassName = "#asw_name_wolfe";
+	m_MarineInfoArray[SARGE_INDEX].m_szMarineClassName = "#asw_name_sarge";
+	m_MarineInfoArray[JAEGER_INDEX].m_szMarineClassName = "#asw_name_jaeger";
+	m_MarineInfoArray[FAITH_INDEX].m_szMarineClassName = "#asw_name_faith";
+	m_MarineInfoArray[BASTILLE_INDEX].m_szMarineClassName = "#asw_name_bastille";
+}

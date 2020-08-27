@@ -3091,7 +3091,10 @@ void CASW_Marine::MeleeBleed(CTakeDamageInfo* info)
 void CASW_Marine::PerformResurrectionEffect( void ) RESTRICT
 {
 	DispatchParticleEffect( "marine_resurrection", PATTACH_ABSORIGIN_FOLLOW, this );
-	this->EmitSound( "Marine.Resurrect" );
+	//softcopy: add blink/sound effects
+	//this->EmitSound( "Marine.Resurrect" );
+	DispatchParticleEffect("Blink", this->GetAbsOrigin(), vec3_angle);
+	this->EmitSound("ASW_XP.LevelUp");
 }
 
 void CASW_Marine::BecomeInfested(CASW_Alien* pAlien)
