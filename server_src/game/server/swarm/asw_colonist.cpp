@@ -30,11 +30,13 @@ const int MAX_PLAYER_SQUAD = 4;
 ConVar	asw_colonist_health ( "asw_colonist_health", "100" );	//was 90
 ConVar	asw_colonist_tom_health ( "asw_colonist_tom_health", "100" );	// tutorial guy who gets eaten	//was 30
 ConVar  asw_colonist_healthbar("asw_colonist_healthbar", "1", FCVAR_CHEAT, "show colonist health status.");
+ConVar  asw_colonist_order("asw_colonist_order", "1", FCVAR_CHEAT, "order colonists nearby to follow/stop.");
 #define SWARM_COLONIST_MODEL_FEMALE  "models/humans/group01/female_01.mdl"	//female colonist
 
 #define SWARM_COLONIST_MODEL         "models/swarm/Colonist/Male/MaleColonist.mdl"
 
 //softcopy:
+#define ASW_COLONIST_ORDER_DISTANCE 500.0f
 extern ConVar asw_marine_death_protection;
 extern ConVar asw_marine_death_notifications;
 extern ConVar asw_sentry_friendly_fire_scale;
@@ -988,5 +990,39 @@ void CASW_Colonist::ShowHealthBar()
 #endif
 		DispatchSpawn(pHealthBar);
 		pHealthBar->Activate();
+	}
+}
+void CASW_Colonist::OrderNearbyColonist(CASW_Marine* pMarine, ASW_Orders NewOrders)
+{
+	if (pMarine && asw_colonist_order.GetBool())	//order colonist nearby to follow/stop
+	{
+		int iCount = 0;
+		CBaseEntity* pEntity = NULL;
+		while ((pEntity = gEntList.FindEntityByClassname(pEntity, "asw_colonist")) != NULL)
+		{
+			CASW_Colonist* pColonist = dynamic_cast<CASW_Colonist*>(pEntity);
+			if (pColonist && pColonist->GetAbsOrigin().DistTo(pMarine->GetAbsOrigin()) < ASW_COLONIST_ORDER_DISTANCE)
+			{
+				if (NewOrders == ASW_ORDER_FOLLOW && pColonist->isSelectedBy(pMarine))
+				{
+					SetSchedule(SCHED_SA_FOLLOW_MOVE);	//move when marine ordered nearby
+					continue;
+				}
+				if (NewOrders == ASW_ORDER_HOLD_POSITION && !pColonist->isSelectedBy(pMarine))
+					continue;
+
+				pColonist->ActivateUseIcon(pMarine, ASW_USE_RELEASE_QUICK);
+				iCount += 1;
+			}
+		}
+
+		if (iCount && NewOrders <= ASW_ORDER_FOLLOW)
+		{
+			char buf[128];
+			Q_snprintf(buf, sizeof(buf), "%s has ordered %i colonist%s to %s", pMarine->GetPlayerName(), iCount, iCount ? "s" : "", NewOrders ? "follow" : "stop");
+			UTIL_RecipientFilter(pMarine, buf, false);	//notify everyone except the player
+			Q_snprintf(buf, sizeof(buf), "%i colonist%s has ordered to %s", iCount, iCount ? "s" : "", NewOrders ? "follow" : "stop");
+			UTIL_RecipientFilter(pMarine, buf, true);	//notify the player only
+		}
 	}
 }

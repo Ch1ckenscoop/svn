@@ -35,6 +35,9 @@
 #include "engine/ivdebugoverlay.h"
 #include "datacache/imdlcache.h"
 #include "util.h"
+//softcopy:
+#include "asw_player.h"
+#include "asw_marine.h"
 
 
 
@@ -1100,7 +1103,37 @@ void UTIL_ClientPrintFilter( IRecipientFilter& filter, int msg_dest, const char 
 
 	MessageEnd();
 }
-					 
+//softcopy: bAdd is true : notify the player only
+//			bAdd is false: notify everyone except the player
+void UTIL_RecipientFilter(CBaseEntity* pOther, const char* buf, bool bAdd)
+{
+	if (!pOther)
+		return;
+
+	CBasePlayer* pPlayer = dynamic_cast<CBasePlayer*>(pOther);
+	CASW_Marine* pMarine = dynamic_cast<CASW_Marine*>(pOther);
+
+	if (pMarine)
+		pPlayer = pMarine->GetCommander();
+
+	if (!pPlayer)	// pPlayer/pMarine either
+		return;
+
+	CRecipientFilter filter;
+
+	if (bAdd)
+	{
+		filter.AddRecipient(pPlayer);
+		UTIL_ClientPrintFilter(filter,ASW_HUD_PRINTTALKANDCONSOLE, buf);	//notify the player only
+	}
+	else
+	{
+		filter.AddAllPlayers();
+		filter.RemoveRecipient(pPlayer);
+		UTIL_ClientPrintFilter(filter,ASW_HUD_PRINTTALKANDCONSOLE, buf);	//notify everyone except the player
+	}
+}
+
 void UTIL_ClientPrintAll( int msg_dest, const char *msg_name, const char *param1, const char *param2, const char *param3, const char *param4 )
 {
 	CReliableBroadcastRecipientFilter filter;

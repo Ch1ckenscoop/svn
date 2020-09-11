@@ -1,1 +1,9 @@
-//softcopy: dummy for alien swarm read it.   
+//softcopy:
+function dummy()
+{
+	//printl("Ran Mapspawn.");
+}
+if (GetMapName() == "lobby")
+{
+	dummy();
+}

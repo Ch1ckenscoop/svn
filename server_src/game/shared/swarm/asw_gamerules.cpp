@@ -169,7 +169,8 @@ ConVar asw_vote_kick_admin("asw_vote_kick_admin", "1", FCVAR_CHEAT, "Generic adm
 ConVar asw_vote_kick_ipcheck("asw_vote_kick_ipcheck", "1", FCVAR_CHEAT, "Player using duplicate IP can't start a vote kick."); 
 ConVar asw_debug_spectator_slot("asw_debug_spectator_slot", "0", FCVAR_CHEAT, "Show debug messages for spectator slots."); 
 ConVar asw_debug_alien_activity("asw_debug_alien_activity", "0", FCVAR_NONE, "Show debug messages for aliens damage activities");
-
+ConVar asw_player_information("asw_player_information", "0", FCVAR_CHEAT, "Show player skill/geo to console.");
+	
 static void UpdateMatchmakingTagsCallback( IConVar *pConVar, const char *pOldValue, float flOldValue )
 {
 	// update sv_tags to force an update of the matchmaking tags
@@ -1320,8 +1321,6 @@ bool CAlienSwarm::RosterSelect( CASW_Player *pPlayer, int RosterIndex, int nPref
 		//softcopy: not allow spectator to take over player slot
 		if (pPlayer && asw_spectator_takes_slot.GetBool())
 		{
-			CRecipientFilter filter;
-			filter.AddRecipient(pPlayer);
 			int iReserved = asw_lobby_player_select.GetInt();
 			if (SpectatorInLobby(pPlayer, false) && !bIsReserved)	//if player is spectator and not reserved, can't take slot
 			{
@@ -1330,7 +1329,7 @@ bool CAlienSwarm::RosterSelect( CASW_Player *pPlayer, int RosterIndex, int nPref
 				{
 					const char *text = "No free slots available, you are now spectator.";
 					const char *text2= "You couldn't take over the reserved slots.";
-					UTIL_ClientPrintFilter(filter,ASW_HUD_PRINTTALKANDCONSOLE,ASWGameResource()->m_iNumMarinesSelected >=iReserved ? text:text2);
+					UTIL_RecipientFilter(pPlayer, ASWGameResource()->m_iNumMarinesSelected >= iReserved ? text : text2, 1);
 					Msg("Spectator \"%s\" has attempted to take over the reserved slots.\n", pPlayer->GetPlayerName());
 				}
 			}
@@ -1374,12 +1373,10 @@ bool CAlienSwarm::RosterSelect( CASW_Player *pPlayer, int RosterIndex, int nPref
 				//softcopy: alert the player no slot availble for adding new marine
 				if (pPlayer)
 				{
-					CRecipientFilter filter;
-					filter.AddRecipient(pPlayer);
 					const char *text = "couldn't add new marine resource to list as no free slots";
 					char text2[128];
 					Q_snprintf(text2, sizeof(text2), "You %s", text);
-					UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, text2);
+					UTIL_RecipientFilter(pPlayer, text2, 1);
 					Msg("%s %s\n", pPlayer->GetPlayerName(), text);
 				}
 
@@ -5919,12 +5916,8 @@ void CAlienSwarm::SetKickVote(CASW_Player *pPlayer, int iPlayerIndex)
 				{
 					const char *text = "using duplicate IP on vote kick is not allowed on this server";
 					char text2[128]; Q_snprintf(text2, sizeof(text2), "\"%s\" %s", pPlayer->GetPlayerName(), text);
-					CRecipientFilter filter;
-					filter.AddRecipient(pPlayer);
-					CReliableBroadcastRecipientFilter filter2;
-					filter2.RemoveRecipient(pPlayer);	//notify everyone except the player
-					UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, text);
-					UTIL_ClientPrintFilter(filter2, ASW_HUD_PRINTTALKANDCONSOLE, text2);
+					UTIL_RecipientFilter(pPlayer, text, 1);		//notify the player only
+					UTIL_RecipientFilter(pPlayer, text2, 0);	//notify everyone except the player
 					UTIL_LogPrintf("%s\n", text2);
 					Msg("%s\n", text2);
 					return;
@@ -6761,6 +6754,24 @@ void CAlienSwarm::OnPlayerFullyJoinedCheck(CASW_Player *pPlayer)
 	if (!pPlayer)
 		return;
 
+	if (asw_player_information.GetBool())	//show player skill/geo informations
+	{
+		//show skill levels
+		Msg("Client \"%s\" promoted:%i level:%i ", pPlayer->GetPlayerName(), pPlayer->GetPromotion(), pPlayer->GetLevel()+1);
+		//show geo
+		ConVar *cannounce = (ConVar *)cvar->FindVar( "sm_cannounce_version" );
+		ConVar *cannounce_sp = (ConVar *)cvar->FindVar( "sm_cannounce_sp_version" );	//show skills/geo info in one line if possible
+		if (cannounce)
+		{
+			Msg("\n");
+			engine->ServerCommand(CFmtStr("sm_geolist #%d\n", pPlayer->GetUserID()));
+		}
+		else if (cannounce_sp)
+			engine->ServerCommand(CFmtStr("geoconsole #%d\n", pPlayer->GetUserID()));
+		else
+			Msg("\n");
+	}
+
 	if (asw_autokick_player.GetBool())	//kick player who has not enough promotion/experience level when joined in.
 	{
 		int iexplevel = asw_autokick_player_experience.GetInt(),
@@ -6899,9 +6910,7 @@ void CAlienSwarm::MarineSlotRelease()
 						int iIndexNum = ASWGameResource()->GetMarineResource(j)->GetProfileIndex();
 						{
 							RosterDeselect(pChosen, iIndexNum);
-							CRecipientFilter filter;
-							filter.AddRecipient(pChosen);
-							UTIL_ClientPrintFilter(filter,ASW_HUD_PRINTTALKANDCONSOLE, "One of your bots auto released for new joint player");
+							UTIL_RecipientFilter(pChosen, "One of your bots auto released for new joint player", 1);
 							Msg("%s bot profileIndex %i has released of iHighest %i\n", pChosen->GetPlayerName(), iIndexNum, iHighest); //debug:
 							break;
 						}

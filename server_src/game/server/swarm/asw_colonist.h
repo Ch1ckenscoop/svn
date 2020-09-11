@@ -85,6 +85,7 @@ public:
 	bool m_bPlayedCureScream;	// have we played a scream sound for our parasite?
 	CASWHealthBar* pHealthBar;
 	void ShowHealthBar();
+	void OrderNearbyColonist(CASW_Marine* pMarine, ASW_Orders NewOrders);
 
 private:
 	DECLARE_DATADESC();

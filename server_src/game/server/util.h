@@ -378,6 +378,8 @@ void UTIL_ValidateSoundName( string_t &name, const char *defaultStr );
 
 void UTIL_ClientPrintFilter( IRecipientFilter& filter, int msg_dest, const char *msg_name, const char *param1 = NULL, const char *param2 = NULL, const char *param3 = NULL, const char *param4 = NULL );
 
+void UTIL_RecipientFilter(CBaseEntity* pOther, const char* buf, bool bAdd);	//softcopy:
+
 // prints messages through the HUD
 void ClientPrint( CBasePlayer *player, int msg_dest, const char *msg_name, const char *param1 = NULL, const char *param2 = NULL, const char *param3 = NULL, const char *param4 = NULL );
 

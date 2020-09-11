@@ -52,6 +52,7 @@
 #include "asw_campaign_info.h"
 #include "sendprop_priorities.h"
 #include "asw_client_effects.h"
+#include "asw_colonist.h"	//softcopy:
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
@@ -2726,6 +2727,12 @@ void OrderNearbyMarines(CASW_Player *pPlayer, ASW_Orders NewOrders, bool bAcknow
 				}
 			}
 		}
+
+		//softcopy: order colonists to follow/stop
+		CASW_Colonist* pColonist = dynamic_cast<CASW_Colonist*>(gEntList.FindEntityByClassname( NULL, "asw_colonist" ));
+		if (pColonist)
+			pColonist->OrderNearbyColonist(pMyMarine, NewOrders);
+
 	}
 }
 
