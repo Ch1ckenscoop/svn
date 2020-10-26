@@ -34,7 +34,7 @@ public:
 	void ResetEgg();
 
 	int m_iRespawns;	//Ch1ckensCoop: Maximum egg respawns.
-	const char	*alienLabel, *damageTypes;	//softcopy:
+	const char	*szAlien, *damageTypes;	//softcopy:
 
 	bool m_bOpen, m_bHatched, m_bOpening;
 	float m_fHatchTime, m_fEggResetTime;

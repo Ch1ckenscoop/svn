@@ -6943,21 +6943,21 @@ void CAlienSwarm::DoTouchExplosion( CBaseEntity *pMarine )	//alien touch explosi
 		pMarine->TakeDamage( info );
 	}
 }
-void CAlienSwarm::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *alienLabel, const char *damageTypes)	//ignite effect
+void CAlienSwarm::MarineIgnite(CBaseEntity *pOther, const CTakeDamageInfo &info, const char *szAlien, const char *damageTypes)	//ignite effect
 {
 	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
 	if (!pMarine || pMarine->IsOnFire())	//won't ignite if marine already body on fire
 		return;
 
 	pMarine->ASW_Ignite( 1.5f, 1.5, info.GetAttacker(), info.GetWeapon() );
-	MarineDamageDebugInfo(pMarine, "ignited ", alienLabel, damageTypes);
+	MarineDamageDebugInfo(pMarine, "ignited ", szAlien, damageTypes);
 }
-void CAlienSwarm::MarineExplode(CBaseEntity *pMarine, const char *alienLabel, const char *damageTypes)	//explosion effect
+void CAlienSwarm::MarineExplode(CBaseEntity *pMarine, const char *szAlien, const char *damageTypes)	//explosion effect
 {
 	DoTouchExplosion(pMarine);
-	MarineDamageDebugInfo(pMarine, "exploded", alienLabel, damageTypes);
+	MarineDamageDebugInfo(pMarine, "exploded", szAlien, damageTypes);
 }
-void CAlienSwarm::MarineDamageDebugInfo(CBaseEntity *pOther, const char *damageInfo, const char *alienLabel, const char *damageTypes)
+void CAlienSwarm::MarineDamageDebugInfo(CBaseEntity *pOther, const char *damageInfo, const char *szAlien, const char *damageTypes)
 {
 	//debug marine/alien damage activity
 	CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
@@ -6966,25 +6966,25 @@ void CAlienSwarm::MarineDamageDebugInfo(CBaseEntity *pOther, const char *damageI
 		if (IsCampaignGame() && asw_debug_alien_activity.GetBool())
 		{
 			char text[256];
-			Q_snprintf(text, sizeof(text),"----- Player %s has %s by %s %s -----", pMarine->GetPlayerName(), damageInfo, alienLabel, damageTypes);
+			Q_snprintf(text, sizeof(text),"----- Player %s has %s by %s %s -----", pMarine->GetPlayerName(), damageInfo, szAlien, damageTypes);
 			MsgInterval(text);
 		}
 	}
 }
-void CAlienSwarm::SetColorScale(CBaseEntity *pAlien, const char *alienLabel)	//set aliens color scale function
+void CAlienSwarm::SetColorScale(CBaseEntity *pAlien, const char *szAlien)	//set aliens color scale function
 {
 	CBaseAnimating *pEnt = dynamic_cast<CBaseAnimating*>(pAlien);
 	if (!pEnt)
 		return;
 
 	char szEntity[8][60];
-	Q_snprintf(szEntity[0], sizeof(szEntity[0]), "asw_%s_color", alienLabel);
-	Q_snprintf(szEntity[1], sizeof(szEntity[1]), "asw_%s_color2", alienLabel);
-	Q_snprintf(szEntity[2], sizeof(szEntity[2]), "asw_%s_color3", alienLabel);
-	Q_snprintf(szEntity[3], sizeof(szEntity[3]), "asw_%s_color2_percent", alienLabel);
-	Q_snprintf(szEntity[4], sizeof(szEntity[4]), "asw_%s_color3_percent", alienLabel);
-	Q_snprintf(szEntity[5], sizeof(szEntity[5]), "asw_%s_scalemod_percent", alienLabel);
-	Q_snprintf(szEntity[6], sizeof(szEntity[6]), "asw_%s_scalemod", alienLabel);
+	Q_snprintf(szEntity[0], sizeof(szEntity[0]), "asw_%s_color", szAlien);
+	Q_snprintf(szEntity[1], sizeof(szEntity[1]), "asw_%s_color2", szAlien);
+	Q_snprintf(szEntity[2], sizeof(szEntity[2]), "asw_%s_color3", szAlien);
+	Q_snprintf(szEntity[3], sizeof(szEntity[3]), "asw_%s_color2_percent", szAlien);
+	Q_snprintf(szEntity[4], sizeof(szEntity[4]), "asw_%s_color3_percent", szAlien);
+	Q_snprintf(szEntity[5], sizeof(szEntity[5]), "asw_%s_scalemod_percent", szAlien);
+	Q_snprintf(szEntity[6], sizeof(szEntity[6]), "asw_%s_scalemod", szAlien);
 
 	ConVar *pColor  = (ConVar *)cvar->FindVar(szEntity[0]);
 	ConVar *pColor2 = (ConVar *)cvar->FindVar(szEntity[1]);

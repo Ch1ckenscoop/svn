@@ -109,7 +109,7 @@ public:
 	void Defanged();
 	void Parasite();
 	void BetaParasite();
-	const char *alienLabel, *damageTypes;
+	const char *szAlien, *damageTypes;
 	bool m_bCanBetaParasite;	//beta parasite not sit in egg
 	bool m_bBetaParasite;	//flag is beta parasite
 	bool IsBetaParasite() { return !Q_strcmp(STRING(GetModelName()), SWARM_BETA_PARASITE_MODEL); }

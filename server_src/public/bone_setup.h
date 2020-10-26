@@ -294,6 +294,12 @@ public:
 
 	CUtlVectorFixed< CIKTarget, 12 >	m_target;
 
+	//softcopy: Fixed 'CIKContext: object allocated on the heap may not be aligned 16' C4316 warnings, thanks Orange
+	void* operator new( size_t nSize )	{ return MemAlloc_AllocAligned(nSize, 16); }
+	void* operator new( size_t nSize, int /*nBlockUse*/, const char *pFileName, int nLine )	{ return MemAlloc_AllocAlignedFileLine(nSize, 16, pFileName, nLine); }
+	void operator delete( void* p )	{ MemAlloc_FreeAligned(p); }
+	void operator delete( void* p, int /*nBlockUse*/, const char *pFileName, int nLine )	{ MemAlloc_FreeAligned(p, pFileName, nLine); }
+
 private:
 
 	CStudioHdr const *m_pStudioHdr;

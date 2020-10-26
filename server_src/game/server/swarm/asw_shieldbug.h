@@ -97,7 +97,7 @@ public:
 	//softcopy:
 	virtual void	StartTouch( CBaseEntity *pOther );
 	float			m_fLastTouchHurtTime;
-	const char		*alienLabel, *damageTypes;
+	const char		*szAlien, *damageTypes;
 	bool bOldShieldBug;
 	bool IsOldShieldBug() { return !Q_strcmp(STRING(GetModelName()), SWARM_SHIELDBUG_MODEL); }
 	void SetPiplineShieldbug();

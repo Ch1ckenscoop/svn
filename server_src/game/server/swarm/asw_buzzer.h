@@ -137,7 +137,7 @@ public:
 	CHandle<CASW_Radiation_Volume> m_hRadVolume;
 	virtual void	StartRadLoopSound();
 	virtual void	DoRadiationLeak(const CTakeDamageInfo &info);
-	const char		*alienLabel, *damageTypes, *b_AlienModelName;
+	const char		*szAlien, *damageTypes, *b_AlienModelName;
 	float			m_fLastTouchHurtTime;
 	bool 			bOldBuzzer;
 	bool 			IsOldBuzzer() { return !Q_strcmp(STRING(GetModelName()), ASW_BETA_BUZZER_MODEL); }

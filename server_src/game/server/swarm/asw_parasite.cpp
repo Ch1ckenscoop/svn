@@ -882,12 +882,12 @@ void CASW_Parasite::InfestMarine(CASW_Marine* pMarine)
 			if ((iParasiteIgnite==1 || iParasiteIgnite==3) && !m_bDefanged) 
 			{
 				if (ASWGameRules())
-					ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+					ASWGameRules()->MarineIgnite(pMarine, info, szAlien, damageTypes);
 			}
 			else if (iParasiteIgnite >=2 && m_bBetaParasite)
 			{
 				if (ASWGameRules())
-					ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+					ASWGameRules()->MarineIgnite(pMarine, info, szAlien, damageTypes);
 			}
 		}
 		if (asw_parasite_beta_poison.GetBool())	//beta parasite infest & poison blur
@@ -906,7 +906,7 @@ void CASW_Parasite::InfestMarine(CASW_Marine* pMarine)
 						ClientPrint(pMarine->GetCommander(), HUD_PRINTCENTER, "See  the Map  to survive.");
 
 					if (ASWGameRules())
-						ASWGameRules()->MarineDamageDebugInfo(pMarine, "infested", alienLabel, "poison");	//debug infested poison
+						ASWGameRules()->MarineDamageDebugInfo(pMarine, "infested", szAlien, "poison");	//debug infested poison
 				}
 			}
 		}
@@ -1127,7 +1127,7 @@ void CASW_Parasite::TouchDamage( CBaseEntity *pOther )
 		if ( pMarine && m_bDefanged )
 		{
 			if (ASWGameRules())
-				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+				ASWGameRules()->MarineIgnite(pMarine, info, szAlien, damageTypes);
 		}
 	}
 }
@@ -1446,11 +1446,11 @@ void CASW_Parasite::Defanged()
 	SetBodygroup( 0, 1 );
 	m_fSuicideTime = gpGlobals->curtime + 60;
 	m_ClassType = (Class_T)CLASS_ASW_PARASITE_DEFANGED;
-	alienLabel = "parasite_safe";
+	szAlien = "parasite_safe";
 	if (ASWGameRules())
 	{
 		m_iHealth = ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_parasite_defanged_health.GetInt());
-		ASWGameRules()->SetColorScale( this, alienLabel );
+		ASWGameRules()->SetColorScale( this, szAlien );
 	}
 }
 void CASW_Parasite::Parasite()
@@ -1459,11 +1459,11 @@ void CASW_Parasite::Parasite()
 	SetBodygroup( 0, 0 );
 	m_fSuicideTime = 0;
 	m_ClassType = (Class_T)CLASS_ASW_PARASITE;
-	alienLabel = "parasite";
+	szAlien = "parasite";
 	if (ASWGameRules())
 	{
 		m_iHealth = ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_parasite_health.GetInt());
-		ASWGameRules()->SetColorScale( this, alienLabel );
+		ASWGameRules()->SetColorScale( this, szAlien );
 	}
 }
 void CASW_Parasite::BetaParasite()
@@ -1473,11 +1473,11 @@ void CASW_Parasite::BetaParasite()
 	m_fSuicideTime = 0;
 	m_nSkin = asw_parasite_beta_skin.GetInt()==2 ? RandomFloat()<=0.5 ? 0:1 : asw_parasite_beta_skin.GetInt()==1 ? 1:0;	//allow changing skin
 	m_ClassType = (Class_T)CLASS_ASW_PARASITE;
-	alienLabel = "parasite_beta";
+	szAlien = "parasite_beta";
 	if (ASWGameRules())
 	{
 		m_iHealth = ASWGameRules()->ModifyAlienHealthBySkillLevel(asw_parasite_health.GetInt());
-		ASWGameRules()->SetColorScale( this, alienLabel );
+		ASWGameRules()->SetColorScale( this, szAlien );
 	}
 }
 

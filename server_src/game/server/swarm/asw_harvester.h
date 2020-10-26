@@ -80,7 +80,7 @@ public:
 	static float s_fNextSpawnSoundTime;
 	static float s_fNextPainSoundTime;
 	//softcopy:
-	const char	*alienLabel, *damageTypes;
+	const char	*szAlien, *damageTypes;
 	bool IsOldHarvester() { return !Q_strcmp(STRING(GetModelName()), SWARM_HARVESTER_MODEL); }
 
 private:

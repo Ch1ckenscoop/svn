@@ -168,9 +168,9 @@ void CASW_Shieldbug::Spawn( void )
 	//softcopy: set shieldbugs color & scale 
 	//SetRenderColor(asw_shieldbug_color.GetColor().r(), asw_shieldbug_color.GetColor().g(), asw_shieldbug_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
 	bOldShieldBug = IsOldShieldBug();
-	alienLabel = bOldShieldBug ? "shieldbug_beta" : "shieldbug";
+	szAlien = bOldShieldBug ? "shieldbug_beta" : "shieldbug";
 	if (ASWGameRules())
-		ASWGameRules()->SetColorScale( this, alienLabel );
+		ASWGameRules()->SetColorScale( this, szAlien );
 	bOldShieldBug ? m_bDefending = true : false;	//fix beta shieldbug no defending after hurted by marine
 }
 
@@ -795,14 +795,14 @@ void CASW_Shieldbug::MeleeAttack( float distance, float damage, QAngle &viewPunc
 			if (asw_shieldbug_ignite.GetInt()== 1 || asw_shieldbug_ignite.GetInt()== 3)
 			{
 				if (ASWGameRules())
-					ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+					ASWGameRules()->MarineIgnite(pMarine, info, szAlien, damageTypes);
 			}
 			if ((asw_shieldbug_explode.GetInt()==1 || asw_shieldbug_explode.GetInt()==3) && iTouchDamage >0)
 			{
 				if (ASWGameRules())
 				{
 					ASWGameRules()->m_TouchExplosionDamage = iTouchDamage;
-					ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+					ASWGameRules()->MarineExplode(pMarine, szAlien, damageTypes);
 				}
 			}
 			pMarine->GetMarineSpeech()->ForceChatter(CHATTER_PAIN_LARGE, ASW_CHATTER_TIMER_NONE);
@@ -998,7 +998,7 @@ void CASW_Shieldbug::StartTouch( CBaseEntity *pOther )
 		if (asw_shieldbug_ignite.GetInt() >= 2 || (m_bOnFire && asw_shieldbug_touch_onfire.GetBool()))
 		{
 			if (ASWGameRules())
-				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+				ASWGameRules()->MarineIgnite(pMarine, info, szAlien, damageTypes);
 		}
 
 		if (m_fLastTouchHurtTime + 0.5f /*0.6*/ > gpGlobals->curtime || iTouchDamage <= 0)	//don't hurt him if he was hurt recently
@@ -1013,7 +1013,7 @@ void CASW_Shieldbug::StartTouch( CBaseEntity *pOther )
 			if (ASWGameRules())
 			{
 				ASWGameRules()->m_TouchExplosionDamage = iTouchDamage;
-				ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+				ASWGameRules()->MarineExplode(pMarine, szAlien, damageTypes);
 			}
 		}
 
@@ -1091,7 +1091,7 @@ void CASW_Shieldbug::SetHealthByDifficultyLevel()
 	SetHealth( ASWGameRules()->ModifyAlienHealthBySkillLevel( asw_shieldbug_health.GetInt() ) ); // was 500 - 2/19/10		
 	//softcopy:
 	if ( asw_debug_alien_damage.GetBool() )
-		Msg( "Setting %s %s's initial health to %d\n", bOldShieldBug ? "beta" : "", alienLabel, GetHealth() );
+		Msg( "Setting %s %s's initial health to %d\n", bOldShieldBug ? "beta" : "", szAlien, GetHealth() );
 }
 
 void CASW_Shieldbug::ASW_Ignite( float flFlameLifetime, float flSize, CBaseEntity *pAttacker, CBaseEntity *pDamagingWeapon /*= NULL */ )

@@ -324,9 +324,9 @@ void CZombie::Spawn( void )
 	//softcopy:
 	//m_iHealth			= sk_zombie_health.GetFloat();
 	m_iHealth = ASWGameRules()->ModifyAlienHealthBySkillLevel(sk_zombie_health.GetInt());
-	alienLabel = "npc_zombie";
+	szAlien = "npc_zombie";
 	if (ASWGameRules())
-		ASWGameRules()->SetColorScale( this, alienLabel );
+		ASWGameRules()->SetColorScale( this, szAlien );
 	SetCollisionGroup( ASW_COLLISION_GROUP_ALIEN );
 
 	m_flFieldOfView		= 0.2;

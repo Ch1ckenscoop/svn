@@ -32,7 +32,7 @@ public:
 	virtual float		GetIdealSpeed() const;	//Ch1ckensCoop: speed scale settings for the ranger.
 	//softcopy: 
 	virtual void 		StartTouch( CBaseEntity *pOther );
-	const char			*alienLabel, *damageTypes;
+	const char			*szAlien, *damageTypes;
 
 	virtual void		SetHealthByDifficultyLevel();
 

@@ -1459,7 +1459,7 @@ CBaseEntity *CNPC_BaseZombie::ClawAttack( float flDist, int iDamage, QAngle &qaV
 		//softcopy:
 		CASW_Marine *pMarine = CASW_Marine::AsMarine( pHurt );
 		if (pMarine && ASWGameRules())
-			ASWGameRules()->MarineDamageDebugInfo(pMarine, "damaged ", alienLabel, damageTypes = "claw attack");
+			ASWGameRules()->MarineDamageDebugInfo(pMarine, "damaged ", szAlien, damageTypes = "claw attack");
 
 	}
 	else 
@@ -1839,7 +1839,7 @@ void CNPC_BaseZombie::StartTouch( CBaseEntity *pOther )
 		damageTypes = "on touch";
 
 		//if (asw_grub_ignite.GetBool() && iZombieTouchDamage >0)
-		//	ASWGameRules()->MarineIgnite(pOther, info, alienLabel, damageTypes);
+		//	ASWGameRules()->MarineIgnite(pOther, info, szAlien, damageTypes);
 
 		if (iZombieTouchDamage > 0)
 		{
@@ -1857,7 +1857,7 @@ void CNPC_BaseZombie::StartTouch( CBaseEntity *pOther )
 			data.m_nOtherEntIndex = pOther->entindex();
 			DispatchEffect( "ASWAcidBurn", data );
 			if (ASWGameRules())
-				ASWGameRules()->MarineDamageDebugInfo(pOther, "damaged ", alienLabel, damageTypes);
+				ASWGameRules()->MarineDamageDebugInfo(pOther, "damaged ", szAlien, damageTypes);
 			m_fLastTouchHurtTime = gpGlobals->curtime;
 		}
 		

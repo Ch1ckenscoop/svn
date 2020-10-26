@@ -60,7 +60,7 @@ void CASW_Simple_Grub::Spawn(void)
 	//m_iHealth = 1;
 	iGrubDamage = asw_grub_touch_damage.GetInt();
 	m_iHealth = iGrubDamage > 0 ?  20 : 1;	//strong health if it has damage
-	alienLabel = "grub";
+	szAlien = "grub";
 
 	SetBlocksLOS(false);
 }
@@ -87,7 +87,7 @@ void CASW_Simple_Grub::GrubTouch( CBaseEntity *pOther )
 		damageTypes = "on touch";
 
 		if (asw_grub_ignite.GetBool() && iGrubDamage >0)
-			ASWGameRules()->MarineIgnite(pOther, info, alienLabel, damageTypes);
+			ASWGameRules()->MarineIgnite(pOther, info, szAlien, damageTypes);
 
 		if (iGrubDamage > 0)
 		{
@@ -105,7 +105,7 @@ void CASW_Simple_Grub::GrubTouch( CBaseEntity *pOther )
 			data.m_nOtherEntIndex = pOther->entindex();
 			DispatchEffect( "ASWAcidBurn", data );
 		
-			ASWGameRules()->MarineDamageDebugInfo(pOther, "damaged ", alienLabel, damageTypes);
+			ASWGameRules()->MarineDamageDebugInfo(pOther, "damaged ", szAlien, damageTypes);
 			m_fLastTouchHurtTime = gpGlobals->curtime;
 		}
 		else

@@ -274,7 +274,7 @@ void CASW_Drone_Advanced::Spawn( void )
 	}
 
 	if (ASWGameRules())
-		ASWGameRules()->SetColorScale( this, alienLabel = m_bJumper ? "drone_jumper" : "drone" );	//softcopy: Allow setting colors
+		ASWGameRules()->SetColorScale( this, szAlien = m_bJumper ? "drone_jumper" : "drone" );	//softcopy: Allow setting colors
 
 	SetHullType(HULL_MEDIUMBIG);
 
@@ -953,12 +953,12 @@ void CASW_Drone_Advanced::StartTouch( CBaseEntity *pOther )
 			if ((iDroneIgnite >=2 || bDroneIsOnFire) && m_bJumper)
 			{
 				if (ASWGameRules())
-					ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+					ASWGameRules()->MarineIgnite(pMarine, info, szAlien, damageTypes);
 			}
 			if (((iDroneIgnite==1 || iDroneIgnite==3) || bDroneIsOnFire) && !m_bJumper)
 			{
 				if (ASWGameRules())
-					ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+					ASWGameRules()->MarineIgnite(pMarine, info, szAlien, damageTypes);
 			}
 		}
 
@@ -1032,12 +1032,12 @@ void CASW_Drone_Advanced::MeleeAttack( float distance, float damage, QAngle &vie
 				if ( iDroneMeleeIgnite >= 2 && m_bJumper )
 				{
 					if (ASWGameRules())
-						ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+						ASWGameRules()->MarineIgnite(pMarine, info, szAlien, damageTypes);
 				}
 				if ( (iDroneMeleeIgnite == 1 || iDroneMeleeIgnite == 3) && !m_bJumper )
 				{
 					if (ASWGameRules())
-						ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+						ASWGameRules()->MarineIgnite(pMarine, info, szAlien, damageTypes);
 				}
 			}
 		}

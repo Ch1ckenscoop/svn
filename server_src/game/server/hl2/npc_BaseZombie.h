@@ -244,7 +244,7 @@ public:
 	virtual	bool		AllowedToIgnite( void ) { return true; }
 
 	//softcopy:
-	const char	*alienLabel, *damageTypes;
+	const char	*szAlien, *damageTypes;
 	bool  CorpseGib( const CTakeDamageInfo &info );
 	float m_fLastTouchHurtTime;
 	float m_fHurtSlowMoveTime;

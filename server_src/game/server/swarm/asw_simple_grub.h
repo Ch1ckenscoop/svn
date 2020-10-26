@@ -51,7 +51,7 @@ public:
 
 	//softcopy:
 	float m_fLastTouchHurtTime;
-	const char *alienLabel, *damageTypes;
+	const char *szAlien, *damageTypes;
 };
 
 

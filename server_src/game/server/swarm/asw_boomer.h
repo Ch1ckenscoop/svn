@@ -45,7 +45,7 @@ public:
 	//softcopy: 
 	virtual void 		StartTouch( CBaseEntity *pOther );
 	float				m_fLastTouchHurtTime;
-	const char			*alienLabel, *damageTypes;
+	const char			*szAlien, *damageTypes;
 
 	void 				MeleeAttack(float distance, float damage);
 

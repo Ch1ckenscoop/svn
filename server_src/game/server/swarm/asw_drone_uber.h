@@ -25,7 +25,7 @@ public:
 	virtual bool ModifyAutoMovement( Vector &vecNewPos );
 	//softcopy: 
 	virtual void StartTouch( CBaseEntity *pOther );
-	const char	*alienLabel, *damageTypes;
+	const char	*szAlien, *damageTypes;
 
 private:
 	float GetDamage();	//Ch1ckensCoop: easy modification of alien damages.

@@ -103,9 +103,9 @@ void CASW_Boomer::Spawn( void )
 
 	//softcopy: 
 	//SetRenderColor(asw_boomer_color.GetColor().r(), asw_boomer_color.GetColor().g(), asw_boomer_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
-	alienLabel = "boomer";
+	szAlien = "boomer";
 	if (ASWGameRules())
-		ASWGameRules()->SetColorScale( this, alienLabel );
+		ASWGameRules()->SetColorScale( this, szAlien );
 
 }
 
@@ -282,7 +282,7 @@ void CASW_Boomer::StartTouch( CBaseEntity *pOther )
 		if (asw_boomer_ignite.GetInt() >= 2 || (m_bOnFire && asw_boomer_touch_onfire.GetBool()))
 		{
 			if (ASWGameRules())
-				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+				ASWGameRules()->MarineIgnite(pMarine, info, szAlien, damageTypes);
 		}
 
 		if ( m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime || iTouchDamage <=0 )	//don't hurt him if he was hurt recently
@@ -297,7 +297,7 @@ void CASW_Boomer::StartTouch( CBaseEntity *pOther )
 			if (ASWGameRules())
 			{
 				ASWGameRules()->m_TouchExplosionDamage = iTouchDamage;
-				ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+				ASWGameRules()->MarineExplode(pMarine, szAlien, damageTypes);
 			}
 		}
 
@@ -319,12 +319,12 @@ void CASW_Boomer::MeleeAttack(float distance, float damage)
 			if (asw_boomer_ignite.GetInt() == 1 || asw_boomer_ignite.GetInt() == 3)
 			{
 				if (ASWGameRules())
-					ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+					ASWGameRules()->MarineIgnite(pMarine, info, szAlien, damageTypes);
 			}
 			if ((asw_boomer_explode.GetInt()==1 || asw_boomer_explode.GetInt()==3) && asw_boomer_touch_damage.GetInt() > 0)
 			{
 				if (ASWGameRules())
-					ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+					ASWGameRules()->MarineExplode(pMarine, szAlien, damageTypes);
 			}
 		}
 	}

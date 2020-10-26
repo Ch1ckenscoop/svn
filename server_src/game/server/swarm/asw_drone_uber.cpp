@@ -79,9 +79,9 @@ void CASW_Drone_Uber::Spawn( void )
 	//if the obsoleted entity is used, it will overwrite uber scale for compatibility
 	if (asw_drone_uber_scale.GetFloat() != 1)	
 		asw_drone_uber_scalemod.SetValue(asw_drone_uber_scale.GetFloat());
-	alienLabel = "drone_uber";
+	szAlien = "drone_uber";
 	if (ASWGameRules())
-		ASWGameRules()->SetColorScale(this, alienLabel);
+		ASWGameRules()->SetColorScale(this, szAlien);
 
 	if (asw_uber_scary.GetBool())	//Ch1ckensCoop: Make uber drones SCARY :S
 	{
@@ -132,7 +132,7 @@ float CASW_Drone_Uber::GetDamage()	//Ch1ckensCoop: Easy customizing of alien dam
 			{
 				CTakeDamageInfo info( this, this, sk_asw_uber_damage.GetFloat() /*damage*/, DMG_SLASH );
 				if (ASWGameRules())
-					ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, /*damageTypes*/ "melee attack");
+					ASWGameRules()->MarineIgnite(pMarine, info, szAlien, /*damageTypes*/ "melee attack");
 			}
 		}
 	}
@@ -151,7 +151,7 @@ void CASW_Drone_Uber::StartTouch( CBaseEntity *pOther )
 		{
 			CTakeDamageInfo info( this, this, 0, DMG_SLASH );
 			if (ASWGameRules())
-				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, /*damageTypes*/ "on touch");
+				ASWGameRules()->MarineIgnite(pMarine, info, szAlien, /*damageTypes*/ "on touch");
 		}
 	}
 }

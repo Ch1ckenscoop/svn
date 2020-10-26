@@ -47,7 +47,7 @@ public:
 	virtual void 		StartTouch( CBaseEntity *pOther );
 	CNetworkVar	( bool, m_bInflated );
 	float 				m_fLastTouchHurtTime;
-	const char			*alienLabel, *damageTypes;
+	const char			*szAlien, *damageTypes;
 
 	// sounds
 	virtual void PainSound( const CTakeDamageInfo &info );

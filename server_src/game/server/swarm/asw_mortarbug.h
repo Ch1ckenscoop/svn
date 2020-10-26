@@ -76,7 +76,7 @@ public:
 	static float s_fNextSpawnSoundTime;
 	static float s_fNextPainSoundTime;
 	//softcopy:
-	const char *alienLabel, *damageTypes;
+	const char *szAlien, *damageTypes;
 	bool bOldMortarBug;
 	bool IsOldMortar() { return !Q_strcmp(STRING(GetModelName()), SWARM_BETA_MORTARBUG_MODEL); }
 

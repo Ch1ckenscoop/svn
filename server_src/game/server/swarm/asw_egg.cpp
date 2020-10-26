@@ -130,9 +130,9 @@ void CASW_Egg::Spawn( void )
 	SetCollisionGroup( ASW_COLLISION_GROUP_EGG );
 
 	//softcopy:
-	alienLabel = "egg";
+	szAlien = "egg";
 	if (ASWGameRules())
-		ASWGameRules()->SetColorScale( this, alienLabel );
+		ASWGameRules()->SetColorScale( this, szAlien );
 
 	Precache();
 	SetModel(EGG_MODEL);
@@ -477,7 +477,7 @@ void CASW_Egg::EggTouch(CBaseEntity* pOther)
 		{
 			CTakeDamageInfo info( this, this, 0, DMG_BURN );
 			if (ASWGameRules())
-				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, "on fire touch");
+				ASWGameRules()->MarineIgnite(pMarine, info, szAlien, "on fire touch");
 		}
 
 	}

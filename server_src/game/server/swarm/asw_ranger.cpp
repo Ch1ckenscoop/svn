@@ -102,9 +102,9 @@ void CASW_Ranger::Spawn( void )
 
 	//softcopy:
 	//SetRenderColor(asw_ranger_color.GetColor().r(), asw_ranger_color.GetColor().g(), asw_ranger_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors.
-	alienLabel = "ranger";
+	szAlien = "ranger";
 	if (ASWGameRules())
-		ASWGameRules()->SetColorScale(this, alienLabel);
+		ASWGameRules()->SetColorScale(this, szAlien);
 
 	// Firing patterns
 	// 
@@ -353,7 +353,7 @@ void CASW_Ranger::StartTouch( CBaseEntity *pOther )
 		CASW_Marine *pMarine = CASW_Marine::AsMarine( pOther );
 		CTakeDamageInfo info( this, this, 0, DMG_SLASH );
 		if (pMarine && ASWGameRules())
-			ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, /*damageTypes*/ "on touch");
+			ASWGameRules()->MarineIgnite(pMarine, info, szAlien, /*damageTypes*/ "on touch");
 	}
 }
 

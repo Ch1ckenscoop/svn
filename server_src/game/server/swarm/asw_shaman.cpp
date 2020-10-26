@@ -73,9 +73,9 @@ void CASW_Shaman::Spawn( void )
 	BaseClass::Spawn();
 
 	//softcopy: set colors for shaman
-	alienLabel = "shaman";
+	szAlien = "shaman";
 	if (ASWGameRules())
-		ASWGameRules()->SetColorScale( this,  alienLabel );
+		ASWGameRules()->SetColorScale( this,  szAlien );
 
 	SetHullType( HULL_MEDIUM );
 	SetHealthByDifficultyLevel();
@@ -223,7 +223,7 @@ void CASW_Shaman::StartTouch( CBaseEntity *pOther )
 		if ( asw_shaman_ignite.GetBool() || (m_bOnFire && asw_shaman_touch_onfire.GetBool()) )
 		{
 			if (ASWGameRules())
-				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, /*damageTypes*/ "on touch");
+				ASWGameRules()->MarineIgnite(pMarine, info, szAlien, /*damageTypes*/ "on touch");
 		}
 
 		if (m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime)	// don't hurt him if he was hurt recently

@@ -71,7 +71,7 @@ public:
 	//softcopy: 
 	virtual void StartTouch( CBaseEntity *pOther );
 	float		 m_fLastTouchHurtTime;
-	const char	*alienLabel, *damageTypes;
+	const char	*szAlien, *damageTypes;
 	virtual void StartRadLoopSound();
 	virtual void DoRadiationLeak(const CTakeDamageInfo &info);
 	CSoundPatch	*m_pRadSound;

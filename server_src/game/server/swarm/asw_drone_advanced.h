@@ -135,7 +135,7 @@ public:
 		NEXT_CONDITION,
 	};
 
-	const char		*alienLabel, *damageTypes;	//softcopy:
+	const char		*szAlien, *damageTypes;	//softcopy:
 
 private:
 	Class_T			m_ClassType;

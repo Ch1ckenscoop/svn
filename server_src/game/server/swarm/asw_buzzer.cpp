@@ -1507,12 +1507,12 @@ void CASW_Buzzer::Slice( CBaseEntity *pHitEntity, float flInterval, trace_t &tr 
 			if (((iBuzzerMeleeIgnite==1 || iBuzzerMeleeIgnite==3) || iBuzzerIsOnFire) && !bOldBuzzer)
 			{
 				if (ASWGameRules())
-					ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+					ASWGameRules()->MarineIgnite(pMarine, info, szAlien, damageTypes);
 			}
 			if ((iBuzzerMeleeIgnite >=2 || iBuzzerIsOnFire) && bOldBuzzer)
 			{
 				if (ASWGameRules())
-					ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+					ASWGameRules()->MarineIgnite(pMarine, info, szAlien, damageTypes);
 			}
 		}
 	}
@@ -2297,7 +2297,7 @@ void CASW_Buzzer::Spawn(void)
 	//SetRenderColor(asw_buzzer_color.GetColor().r(), asw_buzzer_color.GetColor().g(), asw_buzzer_color.GetColor().b()); 
 	bOldBuzzer = IsOldBuzzer();	//check if beta buzzer
 	if (ASWGameRules())
-		ASWGameRules()->SetColorScale(this, (alienLabel = bOldBuzzer ? "buzzer_beta" : "buzzer"));
+		ASWGameRules()->SetColorScale(this, (szAlien = bOldBuzzer ? "buzzer_beta" : "buzzer"));
 
 	// Start out with full power! 
 	m_fEnginePowerScale = GetMaxEnginePower();

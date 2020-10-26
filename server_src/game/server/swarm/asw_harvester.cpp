@@ -110,9 +110,9 @@ void CASW_Harvester::Spawn( void )
 
 	//softcopy: 
 	//SetRenderColor(asw_harvester_color.GetColor().r(), asw_harvester_color.GetColor().g(), asw_harvester_color.GetColor().b());		//Ch1ckensCoop: Allow setting colors
-	alienLabel = IsOldHarvester() ? "harvester_beta" : "harvester";
+	szAlien = IsOldHarvester() ? "harvester_beta" : "harvester";
 	if (ASWGameRules())
-		ASWGameRules()->SetColorScale(this, alienLabel);
+		ASWGameRules()->SetColorScale(this, szAlien);
 }
 
 void CASW_Harvester::Precache( void )
@@ -543,7 +543,7 @@ void CASW_Harvester::StartTouch( CBaseEntity *pOther )
 		if ((iTouch == 1 || iTouch == 3) || (m_bOnFire && asw_harvester_touch_onfire.GetBool()))
 		{
 			if (ASWGameRules())
-				ASWGameRules()->MarineIgnite(pMarine, info, alienLabel, damageTypes);
+				ASWGameRules()->MarineIgnite(pMarine, info, szAlien, damageTypes);
 		}
 
 		if (m_fLastTouchHurtTime + 0.35f /*0.6f*/ > gpGlobals->curtime || iTouchDamage <= 0)	// don't hurt him if he was hurt recently
@@ -558,7 +558,7 @@ void CASW_Harvester::StartTouch( CBaseEntity *pOther )
 			if (ASWGameRules())
 			{
 				ASWGameRules()->m_TouchExplosionDamage = iTouchDamage;
-				ASWGameRules()->MarineExplode(pMarine, alienLabel, damageTypes);
+				ASWGameRules()->MarineExplode(pMarine, szAlien, damageTypes);
 			}
 		}
 
