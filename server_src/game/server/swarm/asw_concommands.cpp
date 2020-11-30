@@ -1983,13 +1983,14 @@ void ASW_READY_t( const CCommand &command )	//softcopy: force all marines ready 
 }
 ChatCommand ASW_READY_cc("/ready", ASW_READY_t);
 //help list
-void ASW_Help_t( const CCommand &command )	
+void ASW_Help_t( const CCommand &command )
 {
 	CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(UTIL_GetCommandClient());
 	CRecipientFilter filter; filter.AddRecipient(pPlayer);
 	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "/afk          (Chat command: leaves marine as a spectator)");
 	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "/afk release  (Chat command: leaves marine, spectator can take over your slot in Lobby)");
-	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "/ready        (Chat command: leader sets all marines ready to start game)");
+	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "/ready        (Chat command: lobby leader sets all marines ready to start game)");
+	UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "/asw_respawn_marine  (Chat command: lobby leader respawns dead marine/marines)");
 	//UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "/setleader    (Chat command, sets leader to someone else for admin)");
 	//UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "/kick         (Chat command, kick player for admin)");
 	//UTIL_ClientPrintFilter(filter, ASW_HUD_PRINTTALKANDCONSOLE, "ver           (client console command, check ch1ckenscoop version)");

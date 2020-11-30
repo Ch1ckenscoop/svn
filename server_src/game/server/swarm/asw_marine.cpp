@@ -896,7 +896,7 @@ void CASW_Marine::SetInitialCommander(CASW_Player *player)
 	Q_snprintf( m_szInitialCommanderNetworkID, sizeof(m_szInitialCommanderNetworkID), "%s", player ? player->GetASWNetworkID() : "None" );
 	//softcopy: show playername & userid, instead of only show steamID.
 	//Msg( " Marine %d:%s SetInitialCommander id to %s\n", entindex(), GetEntityName(), m_szInitialCommanderNetworkID );
-	Msg( " Marine %d:%s SetInitialCommander id to %s <%i><%s>\n", entindex(), GetEntityName(), GetPlayerName(), player->GetUserID(), m_szInitialCommanderNetworkID );  
+	Msg(" Marine %d:%s SetInitialCommander id to %s <%i><%s>\n", entindex(), GetMarineName(STRING(GetEntityName())), GetPlayerName(), player->GetUserID(), m_szInitialCommanderNetworkID);	
 }
 
 // called when a player takes direct control of this marine
@@ -2615,9 +2615,22 @@ bool CASW_Marine::TakeWeaponPickup( CASW_Weapon *pWeapon )
 	// equip the weapon
 	Weapon_Equip_In_Index( pWeapon, index );
 
+	//softcopy:	init weapons ammo from cvar
+	if (ASWGameRules())
+	{
+		pWeapon->SetClip1( ASWGameRules()->GiveAmmoToWeaponClips(pWeapon->GetClassname(), pWeapon, 1) ); //primary/extra ammo control
+		pWeapon->SetClip2( ASWGameRules()->GiveAmmoToWeaponClips(pWeapon->GetClassname(), pWeapon, 2) ); //secondary ammo control
+	}
+
 	// set the number of clips
-	if (pWeapon->GetPrimaryAmmoType()!=-1)
-		GiveAmmo(pWeapon->GetPrimaryAmmoCount(), pWeapon->GetPrimaryAmmoType());
+	//softcopy: get ammo from cvar when pickup weapon
+	/*if (pWeapon->GetPrimaryAmmoType()!=-1)
+		GiveAmmo(pWeapon->GetPrimaryAmmoCount(), pWeapon->GetPrimaryAmmoType());*/
+	if ( pWeapon->GetPrimaryAmmoType() != -1 )
+	{
+		int iClips = GetAmmoDef()->MaxCarry( pWeapon->GetPrimaryAmmoType(), this );
+		this->GiveAmmo( iClips, pWeapon->GetPrimaryAmmoType(), true );
+	}
 
 	//maybe switch to this weapon, if current is none
 	if (GetActiveWeapon()==NULL)
@@ -3603,6 +3616,8 @@ void CASW_Marine::Event_Killed( const CTakeDamageInfo &info )
 			{
 				char szName[ 256 ];
 				pMR->GetDisplayName( szName, sizeof( szName ) );
+
+				strcpy(szName, GetMarineName(szName));	//softcopy: replaces marine shortname to marine profile name if any
  
 				if ( pOtherMarine == this )
 				{

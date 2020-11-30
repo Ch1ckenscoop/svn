@@ -57,7 +57,7 @@ ConVar asw_rocket_color2("asw_rocket_color2", "255 255 255", FCVAR_NONE, "Sets t
 ConVar asw_rocket_color2_percent("asw_rocket_color2_percent", "0.0", FCVAR_NONE, "Sets the percentage of rockets color",true,0,true,1);
 ConVar asw_rocket_color3("asw_rocket_color3", "255 255 255", FCVAR_NONE, "Sets the color of rockets.");
 ConVar asw_rocket_color3_percent("asw_rocket_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of rockets color",true,0,true,1);
-ConVar asw_rocket_scalemod("asw_rocket_scalemod", "1.0", FCVAR_NONE, "Sets the scale of normal rockets.",true,0,true,5);
+ConVar asw_rocket_scalemod("asw_rocket_scalemod", "1.0", FCVAR_NONE, "Sets the scale of normal rockets.",true,0,true,4.5);
 ConVar asw_rocket_scalemod_percent("asw_rocket_scalemod_percent", "1.0", FCVAR_NONE, "Sets the percentage of normal rocket scale.",true,0,true,1);
 extern ConVar asw_marine_ff_absorption;
 

@@ -6,12 +6,18 @@
 #include "asw_player.h"
 #include "asw_marine_resource.h"
 #include "asw_marine.h"
+//softcopy:
+#include "asw_sourcemod_interface.h"
+#include "client.h"
+// memdbgon must be the last include file in a .cpp file!!!
+#include "memdbgon.h"
 
 //Ch1ckensCoop: Enable an easy way to respawn marines during the game. Just for fun ;)
 
 //softcopy:
 CASW_Respawn_Marine g_Respawn_Marine;
 CASW_Respawn_Marine* ASWRespawnMarine() { return &g_Respawn_Marine; }
+ConVar asw_respawn_marine_enable("asw_respawn_marine_enable", "0", FCVAR_CHEAT, "enables chat command '/asw_respawn_marine'.");
 
 CASW_Respawn_Marine::CASW_Respawn_Marine(void)
 {
@@ -24,6 +30,10 @@ CASW_Respawn_Marine::~CASW_Respawn_Marine(void)
 
 void RespawnMarineX(const char *marineName)
 {
+	//softcopy:
+	if (!ASWGameResource() || !ASWGameRules())
+		return;
+
 	const int numMarineResources = ASWGameResource()->GetMaxMarineResources();
 	CASW_Marine *pAliveMarine = NULL;
 	for ( int i=0; i < numMarineResources ; i++ )
@@ -47,7 +57,11 @@ void RespawnMarineX(const char *marineName)
 			if ( pMR && pMR->GetHealthPercent() <= 0 ) // if marine exists, is dead
 			{
 				ASWGameRules()->Resurrect( pMR, pAliveMarine );
-				DevMsg("Respawned marine: %s\n", pMR->GetProfile()->GetShortName());
+				//softcopy: want to know who has respawned
+				//DevMsg("Respawned marine: %s\n", pMR->GetProfile()->GetShortName());
+				if (pMR->GetMarineEntity())
+					Msg("Respawned marine: %s for %s\n", ASWGameRules()->MarineName(marineName), pMR->GetMarineEntity()->GetPlayerName());
+
 				return; // don't do two in a frame
 			}
 		}
@@ -76,6 +90,8 @@ void RespawnMarine(const CCommand &command)
 	if (stricmp(command.ArgS(), "bastille"))
 		RespawnMarineX("#asw_name_bastille");
 	*/
+	if (ASWGameRules() && ASWGameRules()->GetGameState() != ASW_GS_INGAME)
+		return;
 	for (int i=0; i < CASW_Respawn_Marine::MARINE_INDEX_COUNT; i++)
 	{
 		const CASW_Respawn_Marine::MarineInfo *pMI = ASWRespawnMarine()->GetMarineInfo(i);
@@ -123,3 +139,56 @@ void CASW_Respawn_Marine::InitMarineName()
 	m_MarineInfoArray[FAITH_INDEX].m_szMarineClassName = "#asw_name_faith";
 	m_MarineInfoArray[BASTILLE_INDEX].m_szMarineClassName = "#asw_name_bastille";
 }
+void ASW_Respawn_Marine_t( const CCommand &command )
+{
+	CASW_Player *pPlayer = dynamic_cast<CASW_Player*>(UTIL_GetCommandClient());
+	if (!( pPlayer || ASWGameResource()))
+		return;
+
+	if (ASWGameRules() && ASWGameRules()->GetGameState() != ASW_GS_INGAME)
+		return;
+
+	CSteamID requesterSteamID;
+	if (!pPlayer->GetSteamID(&requesterSteamID))
+		return;
+
+	int iAdminIndex = Sourcemod()->GetAdminIndex(requesterSteamID);	//Is this player an admin/leader ?
+
+	if (iAdminIndex < 0)
+	{
+		if (!asw_respawn_marine_enable.GetBool())
+		{
+			const char *text = "'/asw_respawn_marine' is not enabled on this server";
+			UTIL_RecipientFilter(pPlayer, text, 1);
+			Msg("%s.\n", text);
+			return;
+		}
+		
+		if (!(ASWGameResource()->GetLeader()==pPlayer))
+		{
+			UTIL_RecipientFilter(pPlayer, "You are not lobby leader or admin.", 1);
+			Msg("%s is not lobby leader or admin. to respawn dead marine.\n", pPlayer->GetPlayerName());
+			return;
+		}
+	}
+	else
+	{
+		if(!Sourcemod()->AdminHasPowers(iAdminIndex, CASW_Sourcemod_Interface::ADMIN_POWER_CHAT))
+		{
+			if (!Sourcemod()->AdminHasPowers(iAdminIndex, CASW_Sourcemod_Interface::ADMIN_POWER_KICK))
+			{
+				UTIL_RecipientFilter(pPlayer, "You do not have the respawn privilege, which is required for /asw_respawn_marine", 1);
+				Msg("%s has no the privilege to respawn dead marine.\n", pPlayer->GetPlayerName());
+				return;
+			}
+		}
+	}
+
+	for (int i=0; i < ASWRespawnMarine()->MARINE_INDEX_COUNT; i++)
+	{
+		const CASW_Respawn_Marine::MarineInfo *pMI = ASWRespawnMarine()->GetMarineInfo(i);
+		if (pMI && (!stricmp(command.ArgS(), pMI->m_MarineName) || !stricmp(command.ArgS(), "")))
+			RespawnMarineX(pMI->m_szMarineClassName);
+	}
+}
+ChatCommand ASW_Respawn_Marine_cc("/asw_respawn_marine", ASW_Respawn_Marine_t);	//respawn dead marine

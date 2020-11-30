@@ -31,3 +31,5 @@ private:
 	virtual void InitMarineName();
 
 };
+
+CASW_Respawn_Marine* ASWRespawnMarine();	//softcopy:

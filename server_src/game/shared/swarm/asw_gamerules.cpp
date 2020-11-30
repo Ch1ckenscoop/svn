@@ -93,6 +93,7 @@
 #include "particle_parse.h"
 #include "asw_colonist.h"
 #include "asw_queen.h"
+#include "ASW_Respawn_Marine.h"
 
 #endif
 #include "game_timescale_shared.h"
@@ -3116,7 +3117,7 @@ void CAlienSwarm::GiveStartingWeaponToMarine(CASW_Marine* pMarine, int iEquipInd
 	pWeapon->SetClip2( iSecondaryAmmo );
 
 	//Ch1ckensCoop: Secondary ammo control
-	if ( !stricmp(szWeaponClass, "asw_weapon_prifle") )
+	/*if ( !stricmp(szWeaponClass, "asw_weapon_prifle") )
 		pWeapon->SetClip2(asw_bonus_charges_stun_grenade.GetInt());
 	//softcopy:
 	if ( !stricmp(szWeaponClass, "asw_weapon_rifle"))
@@ -3179,7 +3180,9 @@ void CAlienSwarm::GiveStartingWeaponToMarine(CASW_Marine* pMarine, int iEquipInd
 		pWeapon->SetClip1(asw_bonus_charges_stim.GetInt());
 	//softcopy:
 	if ( !stricmp(szWeaponClass, "asw_weapon_medkit"))
-		pWeapon->SetClip1(asw_bonus_charges_medkit.GetInt());
+		pWeapon->SetClip1(asw_bonus_charges_medkit.GetInt());*/
+	pWeapon->SetClip1( GiveAmmoToWeaponClips(szWeaponClass, pWeapon, 1) );	//softcopy: 1: primary/extra ammo control
+	pWeapon->SetClip2( GiveAmmoToWeaponClips(szWeaponClass, pWeapon, 2) );	//softcopy: 2: secondary ammo control
 
 	// equip the weapon
 	pMarine->Weapon_Equip_In_Index( pWeapon, iSlot );
@@ -3207,6 +3210,81 @@ void CAlienSwarm::GiveStartingWeaponToMarine(CASW_Marine* pMarine, int iEquipInd
 	{
 		pWeapon->SetWeaponVisible(false);
 	}
+}
+
+int CAlienSwarm::GiveAmmoToWeaponClips(const char *szWeaponClass, CASW_Weapon* pWeapon, int iFlag)
+{
+	//primary ammo control not more than limitation 254
+	if (iFlag == 1)
+	{
+		if ( !stricmp(szWeaponClass, "asw_weapon_autogun") )
+			return asw_bonus_charges_autogun.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_flamer") )
+			return asw_bonus_charges_flamer.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_grenade_launcher") )
+			return asw_bonus_charges_grenade_launcher.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_minigun") )
+			return asw_bonus_charges_minigun.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_pistol") )
+			return asw_bonus_charges_pistol.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_prifle") )
+			return asw_bonus_charges_prifle.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_pdw") )
+			return asw_bonus_charges_pdw.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_railgun") )
+			return asw_bonus_charges_railgun.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_rifle") )
+			return asw_bonus_charges_rifle.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_shotgun") )
+			return asw_bonus_charges_shotgun.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_sniper_rifle") )
+			return asw_bonus_charges_sniper_rifle.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_vindicator") )
+			return asw_bonus_charges_vindicator.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_heal_gun") )
+			return asw_bonus_charges_healgun.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_heal_grenade") )
+			return asw_bonus_charges_heal_grenade.GetInt();
+
+		//Extra ammo control
+		if ( !stricmp(szWeaponClass, "asw_weapon_tesla_trap") )
+			return asw_bonus_charges_tesla_trap.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_flares") )
+			return asw_bonus_charges_flares.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_mines"))
+			return asw_bonus_charges_mines_fire.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_laser_mines"))
+			return asw_bonus_charges_laser_mines.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_electrified_armor"))
+			return asw_bonus_charges_elec_armor.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_buff_grenade"))
+			return asw_bonus_charges_damage_amp.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_hornet_barrage"))
+			return asw_bonus_charges_hornets.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_freeze_grenades"))
+			return asw_bonus_charges_grenades_freeze.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_smart_bomb"))
+			return asw_bonus_charges_smart_bomb.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_grenades"))
+			return asw_bonus_charges_grenades.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_stim"))
+			return asw_bonus_charges_stim.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_medkit"))
+			return asw_bonus_charges_medkit.GetInt();
+	}
+	
+	//Secondary ammo control
+	if (iFlag == 2)
+	{
+		if ( !stricmp(szWeaponClass, "asw_weapon_prifle") )
+			return asw_bonus_charges_stun_grenade.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_rifle"))
+			return asw_bonus_charges_rifle_grenade.GetInt();
+		if ( !stricmp(szWeaponClass, "asw_weapon_vindicator"))
+			return asw_bonus_charges_vindicator_grenade.GetInt();
+	}
+	
+	return iFlag == 1 ? pWeapon->GetDefaultClip1() : pWeapon->GetDefaultClip2();
 }
 
 // find all pickups in the level and increment charges
@@ -7121,6 +7199,25 @@ void CAlienSwarm::MsgInterval(const char *szText, float fInterval)
 	Msg("%s\n", szText);
 
 	fLastMsgPromptTime = gpGlobals->curtime;
+}
+const char* CAlienSwarm::MarineName(const char *szShortName)
+{
+	if (ASWRespawnMarine())
+	{
+		static char szMarineName[64];
+		for (int i=0; i < ASWRespawnMarine()->MARINE_INDEX_COUNT; i++)
+		{
+			const CASW_Respawn_Marine::MarineInfo *pMI = ASWRespawnMarine()->GetMarineInfo(i);
+			if (pMI && (!stricmp(szShortName, pMI->m_szMarineClassName)))
+			{
+				strcpy(szMarineName, pMI->m_MarineName);	//gets the marine profile name
+				*szMarineName=(char)toupper(*szMarineName);		//first letter uppercase 
+				return szMarineName;
+			}
+		}
+	}
+
+	return szShortName;
 }
 //
 

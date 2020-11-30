@@ -102,7 +102,7 @@ public:
 	virtual void			Precache( void );
 	virtual void			Think( void );
 	virtual const char *GetGameDescription( void ) { return "Ch1ckensCoop"; }
-	virtual const char *GetCurrentVersion ( void ) { return "2.4.2"; }	//softcopy:
+	virtual const char *GetCurrentVersion ( void ) { return "2.4.3"; }	//softcopy:
 	virtual void			OnServerHibernating();
 	
 	// briefing roster functions
@@ -124,6 +124,7 @@ public:
 	virtual bool			CanHaveAmmo( CBaseCombatCharacter *pPlayer, int iAmmoIndex );
 	void GiveStartingWeaponToMarine(CASW_Marine* pMarine, int iEquipIndex, int iSlot);	// gives the specified marine the specified starting gun and default ammo
 	void AddBonusChargesToPickups();
+	int GiveAmmoToWeaponClips(const char *szWeaponClass, CASW_Weapon* pWeapon, int iFlag);	//softcopy: init weapons ammo from cvar
 	
 	// spawning/connecting
 	CBaseEntity* GetMarineSpawnPoint(CBaseEntity *pStartEntity);	
@@ -163,6 +164,7 @@ public:
 	const char* SkillLevelName(int iSkill=0);
 	float fLastMsgPromptTime;
 	void MsgInterval(const char* szText, float fInterval=2.5f);
+	const char* MarineName(const char *szShortName);
 
 	// powerups
 	virtual void DropPowerup( CBaseEntity *pSource, const CTakeDamageInfo &info, const char *pszSourceClass );

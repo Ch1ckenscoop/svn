@@ -7,6 +7,7 @@
 #include "asw_shareddefs.h"
 #include "asw_playeranimstate.h"
 #include "asw_lag_compensation.h"
+#include "asw_gamerules.h"	//softcopy:
 
 class CASW_Player;
 class CASW_Marine_Resource;
@@ -702,6 +703,7 @@ public:
 	float m_flNextStumbleTime;
 private:
 	float m_flNextBreadcrumbTime;
+	const char *GetMarineName(const char *szName) { return ASWGameRules() ? ASWGameRules()->MarineName(szName) : szName; }	//softcopy:
 
 };
 

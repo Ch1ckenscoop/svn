@@ -67,19 +67,25 @@
 	"9"
 	{
 		"type"		"S"
-		"text"		"The current server time is {TIME}"
+		"text"		"TO ADMINS:\nRespawn marine by console command asw_respawn_marine <profile name or no name>"
+		"flags"		""
 	}
 	"10"
 	{
 		"type"		"S"
-		"text"		"Join our steam group: Ch1ckensCoop Servers!"
+		"text"		"The current server time is {TIME}"
 	}
 	"11"
 	{
 		"type"		"S"
+		"text"		"Join our steam group: Ch1ckensCoop Servers!"
+	}
+	"12"
+	{
+		"type"		"S"
 		"text"		"Have an idea? Found a bug?\nPost it at ch1ckenscoop website"
 	}	
-	"12"
+	"13"
 	{
 		"type"		"S"
 		"text"		"Don't like the new effects? Type /cfx in chat to toggle."

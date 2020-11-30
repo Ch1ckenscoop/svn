@@ -94,9 +94,24 @@ void CASW_Pickup_Weapon::InitWeapon(CASW_Marine* pMarine, CASW_Weapon* pWeapon)
 
 	// equip the weapon
 	pMarine->Weapon_Equip_In_Index( pWeapon, pMarine->GetWeaponPositionForPickup(GetWeaponClass()) );
+	
+	//softcopy: init weapons ammo from cvar
+	if (ASWGameRules())
+	{
+		pWeapon->SetClip1( ASWGameRules()->GiveAmmoToWeaponClips(pWeapon->GetClassname(), pWeapon, 1) ); //1: primary/extra ammo control
+		pWeapon->SetClip2( ASWGameRules()->GiveAmmoToWeaponClips(pWeapon->GetClassname(), pWeapon, 2) ); //2: seondary ammo control
+	}
+
 	// set the number of clips
-	if (pWeapon->GetPrimaryAmmoType()!=-1)
-		pMarine->GiveAmmo(GetNumClips() * pWeapon->GetMaxClip1(), pWeapon->GetPrimaryAmmoType());
+	//softcopy: get ammo from cvar when pickup weapon
+	//if (pWeapon->GetPrimaryAmmoType()!=-1)
+		//pMarine->GiveAmmo(GetNumClips() * pWeapon->GetMaxClip1(), pWeapon->GetPrimaryAmmoType());
+	if ( pWeapon->GetPrimaryAmmoType() != -1 )
+	{
+		int iClips = GetAmmoDef()->MaxCarry( pWeapon->GetPrimaryAmmoType(), pMarine );
+		pMarine->GiveAmmo( iClips, pWeapon->GetPrimaryAmmoType(), true );
+	}
+	
 }
 
 // player has used this item
