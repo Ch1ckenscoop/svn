@@ -2615,22 +2615,10 @@ bool CASW_Marine::TakeWeaponPickup( CASW_Weapon *pWeapon )
 	// equip the weapon
 	Weapon_Equip_In_Index( pWeapon, index );
 
-	//softcopy:	init weapons ammo from cvar
-	if (ASWGameRules())
-	{
-		pWeapon->SetClip1( ASWGameRules()->GiveAmmoToWeaponClips(pWeapon->GetClassname(), pWeapon, 1) ); //primary/extra ammo control
-		pWeapon->SetClip2( ASWGameRules()->GiveAmmoToWeaponClips(pWeapon->GetClassname(), pWeapon, 2) ); //secondary ammo control
-	}
-
 	// set the number of clips
 	//softcopy: get ammo from cvar when pickup weapon
-	/*if (pWeapon->GetPrimaryAmmoType()!=-1)
-		GiveAmmo(pWeapon->GetPrimaryAmmoCount(), pWeapon->GetPrimaryAmmoType());*/
-	if ( pWeapon->GetPrimaryAmmoType() != -1 )
-	{
-		int iClips = GetAmmoDef()->MaxCarry( pWeapon->GetPrimaryAmmoType(), this );
-		this->GiveAmmo( iClips, pWeapon->GetPrimaryAmmoType(), true );
-	}
+	if (pWeapon->GetPrimaryAmmoType()!=-1)
+		GiveAmmo(pWeapon->GetPrimaryAmmoCount(), pWeapon->GetPrimaryAmmoType());
 
 	//maybe switch to this weapon, if current is none
 	if (GetActiveWeapon()==NULL)
