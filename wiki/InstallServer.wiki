@@ -15,7 +15,9 @@ Set the URL to [[InstallServer.wiki|http://github.com/ch1ckenscoop/svn/trunk/ser
 
 After the checkout is complete, click OK again.
 
-Double click steamcmd.exe in the unziped folder, SteamCMD will automatically update and enter you in to a Steam >prompt
+Make sure the unzipped steamcmd folder is stand-alone from AlienSwarmServer folder.
+
+Double click steamcmd.exe in the unzipped folder, SteamCMD will automatically update and enter you in to a Steam >prompt
 
   * Type 'login yoursteamuserid' at the Steam >prompt. 
   * Enter  yoursteampassword  when prompt for password. 
