@@ -3023,7 +3023,8 @@ ConVar asw_bonus_charges_damage_amp("asw_bonus_charges_damage_amp", "5", FCVAR_C
 ConVar asw_bonus_charges_hornets("asw_bonus_charges_hornets", "3", FCVAR_CHEAT, "Number of hornet barrage usages a marine starts out with");
 ConVar asw_bonus_charges_grenades_freeze("asw_bonus_charges_grenades_freeze", "5", FCVAR_CHEAT, "Number of freeze grenades a marine starts out with.");
 ConVar asw_bonus_charges_smart_bomb("asw_bonus_charges_smart_bomb", "1", FCVAR_CHEAT, "Number of smart bomb usages a marine starts out with.");
-ConVar asw_bonus_charges_laser_mines("asw_bonus_charges_mines_laser", "12", FCVAR_CHEAT, "Number of laser mines a marine starts out with.");
+//ConVar asw_bonus_charges_laser_mines("asw_bonus_charges_mines_laser", "12", FCVAR_CHEAT, "Number of laser mines a marine starts out with.");	//softcopy: typo
+ConVar asw_bonus_charges_mines_laser("asw_bonus_charges_mines_laser", "12", FCVAR_CHEAT, "Number of laser mines a marine starts out with.");
 //ConVar asw_bonus_charges_stun_grenade("asw_bonus_charges_stun_grenade", "5", FCVAR_CHEAT, "Number of P-rifle grenades marine starts out with."); //softcopy:
 ConVar asw_bonus_charges_stim("asw_bonus_charges_stim", "3", FCVAR_CHEAT, "Number of adrenaline usages a marine starts out with.");
 ConVar asw_bonus_charges_medkit("asw_bonus_charges_medkit", "254", FCVAR_CHEAT, "Number of medkit usages a marine starts out with.");	//softcopy:
@@ -3163,7 +3164,8 @@ void CAlienSwarm::GiveStartingWeaponToMarine(CASW_Marine* pMarine, int iEquipInd
 	if ( !stricmp(szWeaponClass, "asw_weapon_mines"))
 		pWeapon->SetClip1(asw_bonus_charges_mines_fire.GetInt());
 	if ( !stricmp(szWeaponClass, "asw_weapon_laser_mines"))
-		pWeapon->SetClip1(asw_bonus_charges_laser_mines.GetInt());
+		//pWeapon->SetClip1(asw_bonus_charges_laser_mines.GetInt());	//softcopy: typo
+		pWeapon->SetClip1(asw_bonus_charges_mines_laser.GetInt());
 	if ( !stricmp(szWeaponClass, "asw_weapon_electrified_armor"))
 		pWeapon->SetClip1(asw_bonus_charges_elec_armor.GetInt());
 	if ( !stricmp(szWeaponClass, "asw_weapon_buff_grenade"))

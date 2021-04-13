@@ -211,9 +211,14 @@ struct DmxElementUnpackStructure_t
 #define PRAGMA_DISABLE_4310
 #define PRAGMA_ENABLE_4310
 #else
+#if _MSC_VER < 1920	//softcopy: MSC_VER c4310 c4463
 #define PRAGMA_DISABLE_4310 __pragma(warning(disable:4310))
 #define PRAGMA_ENABLE_4310 __pragma(warning(default:4310))
-#endif
+#else
+#define PRAGMA_DISABLE_4310 __pragma(warning(push)) __pragma(warning(disable:4310)) __pragma(warning(disable:4463))
+#define PRAGMA_ENABLE_4310 __pragma(warning(pop))
+#endif	//MSC_VER
+#endif	//PLATFORM_POSIX
 
 #define DECLARE_DMXELEMENT_BITFIELD( _fieldName, _type, _structName )								\
 	class CBitFieldInfo_##_fieldName 											\
@@ -245,8 +250,8 @@ PRAGMA_ENABLE_4310;																\
 					int k;														\
 					for ( k = j+1; k < 8*sizeof(_type); ++k )					\
 					{															\
-						unsigned int temp = ((unsigned int)pTest[i]) & ( 1 << k ) ;		\
-						if ( temp != 0 )										\
+						unsigned int temp2 = ((unsigned int)pTest[i]) & ( 1 << k ) ;		\
+						if ( temp2 != 0 )										\
 							continue;											\
 						break;													\
 					}															\

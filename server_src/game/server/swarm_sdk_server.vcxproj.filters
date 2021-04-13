@@ -72,6 +72,7 @@
     <None Include="vscript_server.nut">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="cpp.hint" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\shared\achievement_saverestore.cpp">
@@ -2324,6 +2325,8 @@
     <ClCompile Include="ASW_Sourcemod_Interface.cpp">
       <Filter>Source Files\Swarm\Ch1ckensCoop</Filter>
     </ClCompile>
+    <ClCompile Include="hl2\npc_BaseZombie.cpp" />
+    <ClCompile Include="hl2\npc_zombie.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\shared\achievement_saverestore.h">
@@ -4744,6 +4747,7 @@
     <ClInclude Include="ASW_Sourcemod_Interface.h">
       <Filter>Source Files\Swarm\Ch1ckensCoop</Filter>
     </ClInclude>
+    <ClInclude Include="hl2\npc_BaseZombie.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="..\..\lib\public\bonesetup.lib">

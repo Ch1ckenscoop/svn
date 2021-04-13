@@ -51,7 +51,11 @@ public:
 							m_pCachedRenderData = NULL;
 						}
 
+#if _MSC_VER < 1920	//softcopy: MSC_VER C5205 delete of an abstract class
 						~CBaseCommand()
+#else
+						virtual ~CBaseCommand()
+#endif
 						{
 							ReleaseCachedRenderData();
 						}

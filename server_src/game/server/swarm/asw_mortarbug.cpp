@@ -62,7 +62,7 @@ ConVar asw_mortarbug_beta_color3("asw_mortarbug_beta_color3", "255 255 255", FCV
 ConVar asw_mortarbug_beta_color3_percent("asw_mortarbug_beta_color3_percent", "0.0", FCVAR_NONE, "Sets the percentage of the beta mortarbugs color",true,0,true,1);
 ConVar asw_mortarbug_beta_scalemod("asw_mortarbug_beta_scalemod", "1.0", FCVAR_NONE, "Sets the scale of normal beta model mortarbugs.",true,0,true,1.5);
 ConVar asw_mortarbug_beta_scalemod_percent("asw_mortarbug_beta_scalemod_percent", "1.0", FCVAR_NONE, "Sets the percentage of normal beta mortarbugs scale.",true,0,true,1);
-ConVar asw_old_mortarbug( "asw_old_mortarbug","0", FCVAR_NONE, "0 = new model, 1 = beta mortarbug, 2 = random all.");
+ConVar asw_old_mortarbug( "asw_old_mortarbug", "2", FCVAR_CHEAT, "0 = new model, 1 = beta mortarbug, 2 = random all.");
 ConVar asw_mortarbug_touch("asw_mortarbug_touch", "0", FCVAR_CHEAT, "Ignites/explodes marine on mortar touch(1=ignite, 2=explode, 3=All).");
 ConVar asw_mortarbug_touch_onfire("asw_mortarbug_touch_onfire", "0", FCVAR_CHEAT, "Ignites marine if mortarbug body on fire touch.");
 ConVar asw_mortarbug_gib_chance("asw_mortarbug_gib_chance", "0.80", FCVAR_CHEAT, "Chance of mortarbug break into ragdoll pieces instead of ragdoll.");

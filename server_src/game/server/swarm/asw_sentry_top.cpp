@@ -19,6 +19,11 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+#if _MSC_VER >= 1920	//softcopy: MSC_VER
+#define PRAGMA_DISABLE_5205 __pragma(warning(push)) __pragma(warning(disable:5205))
+#define PRAGMA_ENABLE_5205 __pragma(warning(pop))
+#endif
+
 #define SENTRY_TOP_MODEL "models/sentry_gun/machinegun_top.mdl"
 
 LINK_ENTITY_TO_CLASS( asw_sentry_top, CASW_Sentry_Top );
@@ -407,6 +412,11 @@ bool CASW_Sentry_Top::CanSee(CBaseEntity* pEnt)
 		m_iCanSeeError = 1;
 		return false;
 	}
+//softcopy: MSC_VER
+#if _MSC_VER >= 1920
+PRAGMA_DISABLE_5205
+#endif
+
 	// do a trace from our shoot position to the enemy
 	trace_t		tr;
 	{
@@ -415,6 +425,11 @@ bool CASW_Sentry_Top::CanSee(CBaseEntity* pEnt)
 			pFilter, &tr);
 		delete pFilter;
 	}
+//softcopy: MSC_VER
+#if _MSC_VER >= 1920
+PRAGMA_ENABLE_5205	//
+#endif
+
 	m_iCanSeeError = 2;
 	bool bClear = tr.fraction == 1.0;
 	if (!bClear)

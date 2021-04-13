@@ -1797,8 +1797,11 @@ ConVar ai_setupbones_debug( "ai_setupbones_debug", "0", 0, "Shows that bones tha
 
 
 
-
+#if _MSC_VER < 1920	//softcopy: MSC_VER
 inline bool CBaseAnimating::CanSkipAnimation( void )
+#else
+bool CBaseAnimating::CanSkipAnimation( void )
+#endif
 {
 	if ( !sv_pvsskipanimation.GetBool() )
 		return false;

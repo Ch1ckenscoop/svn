@@ -22,7 +22,9 @@ public:
 	// Init/shutdown
 	virtual bool			Init( const char *platformName ) = 0;
 	virtual void			Shutdown( void ) = 0;
-
+#if _MSC_VER >= 1920
+	virtual ~IRegistry() {};	//softcopy: MSC_VER C5205: delete of an abstract class
+#endif
 	// Read/write integers
 	virtual int				ReadInt( const char *key, int defaultValue = 0 ) = 0;
 	virtual void			WriteInt( const char *key, int value ) = 0;

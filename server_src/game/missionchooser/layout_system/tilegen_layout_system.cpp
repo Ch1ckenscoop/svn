@@ -450,7 +450,14 @@ void CLayoutSystem::BeginGeneration( CMapLayout *pMapLayout )
 
 	// Reset random generator
 	int nSeed;
+
+#if _MSC_VER < 1920	//softcopy: MSC_VER
 	m_Random = CUniformRandomStream();
+#else
+	CUniformRandomStream m_Random2 = CUniformRandomStream();
+	m_Random = m_Random2;
+#endif
+
 	if ( m_nRandomSeed != 0 )
 	{
 		nSeed = m_nRandomSeed;
@@ -462,6 +469,7 @@ void CLayoutSystem::BeginGeneration( CMapLayout *pMapLayout )
 	}
 
 	m_Random.SetSeed( nSeed );
+
 	Log_Msg( LOG_TilegenLayoutSystem, "Beginning generation with random seed " );
 	Log_Msg( LOG_TilegenLayoutSystem, Color( 255, 255, 0, 255 ), "%d.\n", nSeed );
 

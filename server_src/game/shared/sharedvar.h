@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright ?1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -100,14 +100,22 @@ static void SharedVar_MakeEmpty( Type *pValue, int iCount = 1 )
 
 // EHANDLE Save/Restore specializations
 template<>
+#if _MSC_VER < 1920	//softcopy: MSC_VER
 TEMPLATE_STATIC void SharedVar_Save<EHANDLE>( ISave *pSave, EHANDLE *pValue, int iCount )
+#else
+void SharedVar_Save<EHANDLE>( ISave *pSave, EHANDLE *pValue, int iCount )
+#endif	
 {
 	pSave->WriteInt( &iCount );
 	pSave->WriteEHandle( pValue, iCount );
 }
 
 template<>
+#if _MSC_VER < 1920	//softcopy: MSC_VER
 TEMPLATE_STATIC void SharedVar_Restore<EHANDLE>( IRestore *pRestore, EHANDLE *pValue )
+#else
+	void SharedVar_Restore<EHANDLE>( IRestore *pRestore, EHANDLE *pValue )
+#endif
 {
 	int iCount = pRestore->ReadInt();
 	pRestore->ReadEHandle( pValue, iCount );

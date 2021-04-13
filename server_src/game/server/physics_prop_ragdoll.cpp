@@ -24,6 +24,11 @@
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+#if _MSC_VER >= 1920	//softcopy: MSC_VER
+#define PRAGMA_DISABLE_4838 __pragma(warning(push)) __pragma(warning(disable:4838))
+#define PRAGMA_ENABLE_4838 __pragma(warning(pop))
+#endif
+
 //-----------------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------------
@@ -69,6 +74,10 @@ END_SEND_TABLE()
 	DEFINE_PHYSPTR( m_ragdoll.list[i].pObject ), \
 	DEFINE_PHYSPTR( m_ragdoll.list[i].pConstraint ), \
 	DEFINE_FIELD( m_ragdoll.list[i].parentIndex, FIELD_INTEGER )
+//softcopy: MSC_VER
+#if _MSC_VER >= 1920
+PRAGMA_DISABLE_4838
+#endif
 
 BEGIN_DATADESC(CRagdollProp)
 //					m_ragdoll (custom handling)
@@ -150,6 +159,10 @@ BEGIN_DATADESC(CRagdollProp)
 	DEFINE_RAGDOLL_ELEMENT( 31 ),
 
 END_DATADESC()
+//softcopy: MSC_VER
+#if _MSC_VER >= 1920
+PRAGMA_ENABLE_4838
+#endif
 
 //-----------------------------------------------------------------------------
 // Disable auto fading under dx7 or when level fades are specified

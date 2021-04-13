@@ -282,7 +282,8 @@ typedef unsigned int		uint;
 
 // Maximum and minimum representable values
 #ifndef PLATFORM_OSX
-
+//softcopy: MSC_VER
+#if _MSC_VER < 1920
 #define  INT8_MAX			SCHAR_MAX
 #define  INT16_MAX			SHRT_MAX
 #define  INT32_MAX			LONG_MAX
@@ -297,6 +298,23 @@ typedef unsigned int		uint;
 #define  UINT16_MAX			((uint16)~0)
 #define  UINT32_MAX			((uint32)~0)
 #define  UINT64_MAX			((uint64)~0)
+#else
+//Copy from 1920 stdint.h
+#define INT8_MAX         127i8
+#define INT16_MAX        32767i16
+#define INT32_MAX        2147483647i32
+#define INT64_MAX        9223372036854775807i64
+
+#define INT8_MIN         (-127i8 - 1)
+#define INT16_MIN        (-32767i16 - 1)
+#define INT32_MIN        (-2147483647i32 - 1)
+#define INT64_MIN        (-9223372036854775807i64 - 1)
+
+#define UINT8_MAX        0xffui8
+#define UINT16_MAX       0xffffui16
+#define UINT32_MAX       0xffffffffui32
+#define UINT64_MAX       0xffffffffffffffffui64
+#endif // _MSC_VER
 
 #define  UINT8_MIN			0
 #define  UINT16_MIN			0

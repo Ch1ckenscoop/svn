@@ -2616,7 +2616,6 @@ bool CASW_Marine::TakeWeaponPickup( CASW_Weapon *pWeapon )
 	Weapon_Equip_In_Index( pWeapon, index );
 
 	// set the number of clips
-	//softcopy: get ammo from cvar when pickup weapon
 	if (pWeapon->GetPrimaryAmmoType()!=-1)
 		GiveAmmo(pWeapon->GetPrimaryAmmoCount(), pWeapon->GetPrimaryAmmoType());
 

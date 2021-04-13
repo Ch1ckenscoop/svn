@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright ?1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose:		Namespace for functions having to do with WC Edit mode
 //
@@ -34,6 +34,11 @@
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
+
+#if _MSC_VER >= 1920	//softcopy: MSC_VER
+#define PRAGMA_DISABLE_4838 __pragma(warning(push)) __pragma(warning(disable:4838))
+#define PRAGMA_ENABLE_4838 __pragma(warning(pop))
+#endif
 
 extern float			GetFloorZ(const Vector &origin);
 
@@ -711,6 +716,10 @@ public:
 
 
 LINK_ENTITY_TO_CLASS( hammer_updateignorelist, CWC_UpdateIgnoreList );
+//softcopy: MSC_VER
+#if _MSC_VER >= 1920
+PRAGMA_DISABLE_4838
+#endif
 
 BEGIN_DATADESC( CWC_UpdateIgnoreList )
 
@@ -735,7 +744,10 @@ BEGIN_DATADESC( CWC_UpdateIgnoreList )
 	DEFINE_KEYFIELD( m_nIgnoredEntityNames[15], FIELD_STRING, "IgnoredName16" ),
 
 END_DATADESC()
-
+//softcopy: MSC_VER
+#if _MSC_VER >= 1920
+PRAGMA_ENABLE_4838
+#endif
 
 
 CON_COMMAND( hammer_update_entity, "Updates the entity's position/angles when in edit mode" )

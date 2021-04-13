@@ -2786,7 +2786,9 @@ FORCEINLINE void CParticleCollection::KillParticle( int nPidx, unsigned int nKil
 
 	COMPILE_TIME_ASSERT( ( sizeof( KillListItem_t ) == 4 ) && ( MAX_PARTICLES_IN_A_SYSTEM < ( 1 << KILL_LIST_INDEX_BITS ) ) );
 	Assert( !( nPidx & ~KILL_LIST_INDEX_MASK ) && !( nKillFlags & ~KILL_LIST_FLAGS_MASK ) );
-	KillListItem_t killItem = { nPidx, nKillFlags };
+	//softcopy: MSC_VER 1920 c4838 conversion from 'unsigned int' to 'int' requires a narrowing conversion
+	//KillListItem_t killItem = { nPidx, nKillFlags };
+	KillListItem_t killItem = { (unsigned int)nPidx, nKillFlags };
 
 	Assert( m_nNumParticlesToKill < MAX_PARTICLES_IN_A_SYSTEM );
 	m_pParticleKillList[ m_nNumParticlesToKill++ ] = killItem;

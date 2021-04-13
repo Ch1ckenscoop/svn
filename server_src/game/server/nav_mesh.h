@@ -1,4 +1,4 @@
-//========= Copyright © 1996-2005, Valve Corporation, All rights reserved. ============//
+//========= Copyright ?1996-2005, Valve Corporation, All rights reserved. ============//
 //
 // Purpose: 
 //
@@ -199,7 +199,10 @@ public:
 	unsigned int operator()( const NavVisPair_t &item ) const
 	{
 		COMPILE_TIME_ASSERT( sizeof(CNavArea *) == 4 );
-		int key[2] = { (int)item.pAreas[0] + item.pAreas[1]->GetID(), (int)item.pAreas[1] + item.pAreas[0]->GetID() };
+		//softcopy: MSC_VER 1920 C4838 'unsigned int' to 'int' requires a narrowing conversion
+		//int key[2] = { (int)item.pAreas[0] + item.pAreas[1]->GetID(), (int)item.pAreas[1] + item.pAreas[0]->GetID() };
+		unsigned int key[2] = { (int)item.pAreas[0] + item.pAreas[1]->GetID(), (int)item.pAreas[1] + item.pAreas[0]->GetID() };
+
 		return Hash8( key );	
 	}
 };

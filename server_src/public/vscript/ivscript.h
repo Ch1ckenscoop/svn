@@ -521,7 +521,7 @@ private:
 #define BEGIN_SCRIPTDESC( className, baseClass, description )								BEGIN_SCRIPTDESC_NAMED( className, baseClass, #className, description )
 #define BEGIN_SCRIPTDESC_ROOT( className, description )										BEGIN_SCRIPTDESC_ROOT_NAMED( className, #className, description )
 
-#ifdef MSVC
+#if _MSC_VER < 1900 /*#ifdef MSVC*/	//softcopy: MSC_VER < vs2015
 	#define DEFINE_SCRIPTDESC_FUNCTION( className, baseClass ) \
 		ScriptClassDesc_t * GetScriptDesc( className * )
 #else

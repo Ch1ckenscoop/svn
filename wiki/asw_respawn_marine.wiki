@@ -1,0 +1,30 @@
+======Respawns dead marine/marines======
+= Description =
+
+Dead marine/marines can be respawned in game for fun.
+
+asw_respawn_marine is exclusively used for admin, also lobby leader is allowed to use the command if [[asw_respawn_marine_enable.wiki|asw_respawn_marine_enable]] is enabled
+
+This command can run on console or developer console and chat command '/asw_respawn_marine' as well.
+
+
+== Usage ==
+Console command:
+* asw_respawn_marine < marineshortname >
+
+Chat command:
+
+*/asw_respawn_marine < marineshortname >
+
+for example:
+
+* 'asw_respawn_marine sarge' to respawn dead marine sarge
+
+* 'asw_respawn_marine ' to respawn all dead marines
+
+ 
+{|
+|| [[asw_version.wiki|Server Version]] Added || Default || [[CvarFlags.wiki | CvarFlags]] || [ParamType Parameter Type] 
+|-
+|| 1.5.8 || `0` || [[FCVAR_CHEAT.wiki|FCVAR_CHEAT]] || [Bool] 
+|}

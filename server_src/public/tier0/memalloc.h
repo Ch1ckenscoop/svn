@@ -58,7 +58,10 @@ typedef size_t (*MemAllocFailHandler_t)( size_t );
 //-----------------------------------------------------------------------------
 abstract_class IMemAlloc
 {
-private:
+//softcopy:test	
+//private:
+public:
+
 	// Release versions
 	virtual void *Alloc( size_t nSize ) = 0;
 public:
@@ -67,7 +70,9 @@ public:
 	virtual void Free( void *pMem ) = 0;
     virtual void *Expand_NoLongerSupported( void *pMem, size_t nSize ) = 0;
 
-private:
+//softcopy:test	
+//private:
+public:
 	// Debug versions
     virtual void *Alloc( size_t nSize, const char *pFileName, int nLine ) = 0;
 public:
@@ -394,7 +399,13 @@ public:
 
 	#pragma warning(disable:4290)
 	#pragma warning(push)
-	#include <typeinfo.h>
+//softcopy: MSC_VER
+//#include "typeinfo.h"
+#if _MSC_VER < 1920
+#include <typeinfo.h>
+#else
+#include <typeinfo>
+#endif
 
 	// MEM_DEBUG_CLASSNAME is opt-in.
 	// Note: typeid().name() is not threadsafe, so if the project needs to access it in multiple threads

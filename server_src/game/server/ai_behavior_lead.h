@@ -71,7 +71,7 @@ struct AI_LeadArgs_t
 {
 	const char *pszGoal;
 	const char *pszWaitPoint;
-	unsigned 	flags;
+	int 		flags;	//unsigned 	flags;	//softcopy: MSC_VER 1920 C4838: conversion from flags to 'unsigned int' requires a narrowing conversion
 	float		flWaitDistance;
 	float		flLeadDistance;
 	float		flRetrieveDistance;

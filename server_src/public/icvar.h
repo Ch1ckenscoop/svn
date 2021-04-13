@@ -161,6 +161,9 @@ protected:
 		virtual void		Next( void ) = 0;
 		virtual	bool		IsValid( void ) = 0;
 		virtual ConCommandBase *Get( void ) = 0;
+#if _MSC_VER >= 1920
+		virtual ~ICVarIteratorInternal() {};	//softcopy: MSC_VER
+#endif
 	};
 
 	virtual ICVarIteratorInternal	*FactoryInternalIterator( void ) = 0;

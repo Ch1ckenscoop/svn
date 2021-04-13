@@ -138,13 +138,13 @@ CRoomTemplateEditDialog::CRoomTemplateEditDialog( Panel *parent, const char *nam
 		m_pSpawnWeightSlider->SetValue( m_pRoomTemplate->GetSpawnWeight() );
 		m_pTilesXSlider->SetValue( m_pRoomTemplate->GetTilesX() );
 		m_pTilesYSlider->SetValue( m_pRoomTemplate->GetTilesY() );
-		char buffer[12];
-		Q_snprintf( buffer, _countof( buffer ), "%d", m_pRoomTemplate->GetSpawnWeight() );
-		m_pSpawnWeightValue->SetText( buffer );
-		Q_snprintf( buffer, _countof( buffer ), "%d", m_pRoomTemplate->GetTilesX() );
+		char buffer2[12];
+		Q_snprintf( buffer2, _countof( buffer2 ), "%d", m_pRoomTemplate->GetSpawnWeight() );
+		m_pSpawnWeightValue->SetText( buffer2 );
+		Q_snprintf( buffer2, _countof( buffer2 ), "%d", m_pRoomTemplate->GetTilesX() );
 		m_pTilesXValue->SetText( buffer );
-		Q_snprintf( buffer, _countof( buffer ), "%d", m_pRoomTemplate->GetTilesY() );
-		m_pTilesYValue->SetText( buffer );
+		Q_snprintf( buffer2, _countof( buffer2 ), "%d", m_pRoomTemplate->GetTilesY() );
+		m_pTilesYValue->SetText( buffer2 );
 
 		// Set value for tile type.
 		int nTileType = m_pRoomTemplate->GetTileType();

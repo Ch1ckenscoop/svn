@@ -3673,9 +3673,11 @@ int CASW_MarineGameMovement::CheckStuck( void )
 	if ( developer.GetBool() )
 	{
 		bool isServer = player->IsServer();
+		//softcopy: MSC_VER 1920
 		engine->Con_NPrintf( isServer, "%s stuck on object %i/%s", 
 			isServer ? "server" : "client",
-			hitent , MoveHelper()->GetName(hitent) );
+			hitent.GetEntryIndex() /*hitent*/ ,
+			MoveHelper()->GetName(hitent) );
 	}
 #endif
 
