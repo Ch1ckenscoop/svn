@@ -19,16 +19,18 @@ Make sure the unzipped steamcmd folder is stand-alone from AlienSwarmServer fold
 
 Double click steamcmd.exe in the unzipped folder, SteamCMD will automatically update and enter you in to a Steam >prompt
 
-  * Type 'login yoursteamuserid' at the Steam >prompt. 
+Type the following command at the Steam >prompt:
+
+  * force_install_dir c:/AlienSwarmServer/   
+  * Type 'login yoursteamuserid'
   * Enter  yoursteampassword  when prompt for password. 
 
 After successfully logged in, it will prompt for enter 'steam guard code', check your Steam email account to get this code.
 
-Make sure the 'steam guard code' has been entered correctly, the 'license info...ok' will be prompted.
+Make sure the 'steam guard code' has been entered correctly, the 'Waiting for user info...ok' will be prompted.
 
 Type the following two commands at the Steam >prompt:
 
-  * force_install_dir c:/AlienSwarmServer/   
   * app_update 635 validate
 
 Make sure downloading 100% completion with message "Success! App '635' fully installed."
