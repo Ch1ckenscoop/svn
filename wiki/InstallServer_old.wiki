@@ -1,19 +1,19 @@
 ======How to install the Ch1ckensCoop server.======
 <a href=http://github.com/Ch1ckenscoop/Project><img align=right src=googlecode-home.png /></a>
 === Installing Ch1ckensCoop ===
-<a href=http://tortoisegit.org/download><img align=center src=tsvn_logo.png /></a>
+<a href=http://tortoisesvn.net/downloads.html><img align=center src=tsvn_logo.png /></a>
 
-You will need [http://tortoisegit.org/download TortoiseGit] and [http://media.steampowered.com/installer/steamcmd.zip SteamCMD] to download, TortoiseGit install, unzip steamcmd.zip and update Ch1ckensCoop. Make sure that you install the version that is appropriate for your OS.
+You will need [http://tortoisesvn.net/downloads.html TortoiseSVN] and [http://media.steampowered.com/installer/steamcmd.zip SteamCMD] to download, TortoiseSVN install, unzip steamcmd.zip and update Ch1ckensCoop. Make sure that you install the version that is appropriate for your OS.
 
-After installing TortoiseGit and rebooting your computer, create a folder (let's call it AlienSwarmServer) on a drive that has at least 3 GB of free space(for example: 'c:/AlienSwarmServer').
+After installing TortoiseSVN and rebooting your computer, create a folder (let's call it AlienSwarmServer) on a drive that has at least 3 GB of free space(for example: 'c:/AlienSwarmServer').
 
-Right click on the folder and select "TortoiseGit > Clone". 
+Right click on the folder and select "SVN Checkout". 
 
-<a href=https://github.com/Ch1ckenscoop/svn/blob/master/wiki/InstallServer.wiki ><img src=git_clone.png /></a>
+<a href=https://github.com/Ch1ckenscoop/svn/blob/master/wiki/InstallServer.wiki ><img src=svn_checkout.PNG /></a>
 
-Set the URL to [[InstallServer.wiki|http://github.com/Ch1ckenscoop/server.git]] and click OK.
+Set the URL to [[InstallServer.wiki|http://github.com/ch1ckenscoop/svn/trunk/server]] and click OK.
 
-After the clone is 'Success', click Close.
+After the checkout is complete, click OK again.
 
 Make sure the unzipped steamcmd folder is stand-alone from AlienSwarmServer folder.
 
@@ -38,13 +38,13 @@ Make sure downloading 100% completion with message "Success! App '635' fully ins
   * If any assertion failed or error found, start the following steps:
   *   1.delete AlienSwarmServer folder and steamcmd folder,
   *   2.create AlienSwarmServer folder and unzip steamcmd.zip again, 
-  *   3.restart from step "Right click on the folder and select 'TortoiseGit > Clone'".
+  *   3.restart from step "Right click on the folder and select 'SVN Checkout'".
 
   * Type 'quit' to exit Steamcmd.
 
-Right click on the AlienSwarmServer folder and click "TortoiseGit > Revert..."
+Right click on the AlienSwarmServer folder and click "TortoiseSVN > Revert..."
 
-<a href=https://github.com/Ch1ckenscoop/svn/blob/master/wiki/InstallServer.wiki ><img src=git_revert.png /></a>
+<a href=https://github.com/Ch1ckenscoop/svn/blob/master/wiki/InstallServer.wiki ><img src=svn_revert.png /></a>
 
 Tick the box for "Select all" and click OK.
 
