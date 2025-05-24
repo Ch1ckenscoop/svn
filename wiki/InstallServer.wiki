@@ -21,7 +21,7 @@ Double click steamcmd.exe in the unzipped folder, SteamCMD will automatically up
 
 Type the following commands at the Steam >prompt:
 
-  * force_install_dir c:/AlienSwarmServer/   
+  * force_install_dir c:/AlienSwarmServer/server   
   * Type 'login yoursteamuserid'
   * Enter  yoursteampassword  when prompt for password. 
 
@@ -40,16 +40,16 @@ Make sure downloading 100% completion with message "Success! App '635' fully ins
   *   2.create AlienSwarmServer folder and unzip steamcmd.zip again, 
   *   3.restart from step "Right click on the folder and select 'TortoiseGit > Clone'".
 
-  * Type 'quit' to exit Steamcmd.
+* Type 'quit' to exit Steamcmd.
 
-Right click on the AlienSwarmServer folder and click "TortoiseGit > Revert..."
+Double click on the AlienSwarmServer folder, right click on the 'server' folder and click "TortoiseGit > Revert..."
 
 <a href=https://github.com/Ch1ckenscoop/svn/blob/master/wiki/InstallServer.wiki ><img src=git_revert.png /></a>
 
 Tick the box for "Select all" and click OK.
 
 Good job! You've installed the Ch1ckensCoop Alien Swarm Server and 
-can now run it by double-clicking the "Start Server" batch file in your AlienSwarmServer folder.
+can now run it by double-clicking the "Start Server" batch file in your AlienSwarmServer/server folder.
 
 ===What's Next ?===
 * [[Changing_Settings.wiki|Modifying Ch1ckensCoop]]
